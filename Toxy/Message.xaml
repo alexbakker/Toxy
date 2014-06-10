@@ -7,7 +7,7 @@
         </Table.Columns>
 
         <TableRowGroup Name="MessageRows">
-            <TableRow>
+            <TableRow Block.FontSize="1" Foreground="Transparent">
                 <TableCell>
                     <TableCell.TextAlignment>Right</TableCell.TextAlignment>
                     <TableCell.Padding>0,0,20,0</TableCell.Padding>

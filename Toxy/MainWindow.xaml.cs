@@ -121,10 +121,7 @@ namespace Toxy
             }
 
             if (current_number == friendnumber)
-            {
-                //ChatDataGrid.Items.Add(data);
                 ChatBox.ScrollToEnd();
-            }
 
             this.Flash();
         }
@@ -149,10 +146,7 @@ namespace Toxy
             }
 
             if (current_number == friendnumber)
-            {
-                // ChatDataGrid.Items.Add(data);
                 ChatBox.ScrollToEnd();
-            }
 
             this.Flash();
         }
@@ -296,6 +290,7 @@ namespace Toxy
             {
                 FlowDocument document = GetNewFlowDocument();
                 convdic.Add(current_number, document);
+                ChatBox.Document = convdic[current_number];
             }
         }
 

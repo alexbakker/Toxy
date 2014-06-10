@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custom="clr-namespace:Toxy" x:Class="Toxy.MainWindow"
         Title="Toxy" MinWidth="717" MinHeight="513" Height="513" Width="717" ResizeMode="CanResizeWithGrip" Closing="MetroWindow_Closing"
-        GlowBrush="{DynamicResource AccentColorBrush}" Icon="Resources/Icons/icon.ico" SizeChanged="MetroWindow_SizeChanged" MouseLeftButtonUp="MetroWindow_MouseLeftButtonUp">
+        GlowBrush="{DynamicResource AccentColorBrush}" Icon="Resources/Icons/icon.ico" SizeChanged="MetroWindow_SizeChanged">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -147,7 +147,7 @@
                 </Grid>
             </Border>
             <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextBox_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
-            <RichTextBox Name="ChatBox" Margin="10,92,4,57" BorderThickness="1,1,1,0">
+            <RichTextBox IsReadOnly="True" Name="ChatBox" Margin="10,92,4,57" BorderThickness="1,1,1,0">
                 <FlowDocument>
                     <Paragraph>
                         <Run Text=""/>

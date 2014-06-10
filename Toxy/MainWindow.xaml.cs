@@ -29,10 +29,8 @@ namespace Toxy
     public partial class MainWindow : MetroWindow
     {
         private Tox tox;
-        //private Dictionary<int, List<MessageData>> convdic = new Dictionary<int, List<MessageData>>();
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
-        private FlowDocument doc;
-        private Stream doc_stream;
+
         private int current_number = 0;
         private bool resizing = false;
         private bool focusTextbox = false;
@@ -69,10 +67,6 @@ namespace Toxy
             }
 
             tox.Start();
-
-            doc_stream = Assembly.GetExecutingAssembly()
-                            .GetManifestResourceStream("Toxy.Message.xaml");
-            doc = (FlowDocument)XamlReader.Load(doc_stream);
 
             if (string.IsNullOrEmpty(tox.GetSelfName()))
                 tox.SetName("Toxy User");
@@ -121,17 +115,24 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             else
             {
-                convdic.Add(friendnumber, doc);
+                FlowDocument document = GetNewFlowDocument();
+                convdic.Add(friendnumber, document);
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
             if (current_number == friendnumber)
             {
                 //ChatDataGrid.Items.Add(data);
-                ScrollChatDataGrid();
+                ChatBox.ScrollToEnd();
             }
 
             this.Flash();
+        }
+
+        private FlowDocument GetNewFlowDocument()
+        {
+            Stream doc_stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Toxy.Message.xaml");
+            return (FlowDocument)XamlReader.Load(doc_stream);
         }
 
         private void tox_OnFriendMessage(int friendnumber, string message)
@@ -142,18 +143,15 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             else
             {
-                FlowDocument document = new FlowDocument();
-                doc_stream = Assembly.GetExecutingAssembly()
-                            .GetManifestResourceStream("Toxy.Message.xaml");
-                document = (FlowDocument)XamlReader.Load(doc_stream);
+                FlowDocument document = GetNewFlowDocument();
                 convdic.Add(friendnumber, document);
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
             if (current_number == friendnumber)
             {
-               // ChatDataGrid.Items.Add(data);
-                ScrollChatDataGrid();
+                // ChatDataGrid.Items.Add(data);
+                ChatBox.ScrollToEnd();
             }
 
             this.Flash();
@@ -191,8 +189,6 @@ namespace Toxy
             MessageRows.Rows.Add(newTableRow);
 
             ChatBox.Document = doc;
-            //convdic[friendnumber].Add(); = newDocument;
-            //doc = OkRichTextBox.Document;
         }
 
         private FriendControl GetFriendControlByNumber(int friendnumber)
@@ -293,26 +289,14 @@ namespace Toxy
 
             if (convdic.ContainsKey(current_number))
             {
-                //mfw DataGrid doesn't even implement AddRange(), and I thought wpf was an 'upgrade' from winforms...
-                //foreach (MessageData data in convdic[current_number])
-                  //  ChatDataGrid.Items.Add(data);
                 ChatBox.Document = convdic[current_number];
-                // ScrollChatDataGrid();
+                ChatBox.ScrollToEnd();
             }
             else
             {
-                FlowDocument document = new FlowDocument();
-                doc_stream = Assembly.GetExecutingAssembly()
-                            .GetManifestResourceStream("Toxy.Message.xaml");
-                document = (FlowDocument)XamlReader.Load(doc_stream);
+                FlowDocument document = GetNewFlowDocument();
                 convdic.Add(current_number, document);
             }
-        }
-
-        private void ScrollChatDataGrid()
-        {
-           // if (ChatDataGrid.Items.Count > 0)
-            //    ChatDataGrid.ScrollIntoView(ChatDataGrid.Items[ChatDataGrid.Items.Count - 1]);
         }
 
         private void friend_Click(object sender, RoutedEventArgs e)
@@ -405,6 +389,7 @@ namespace Toxy
                     TextToSend.CaretIndex = TextToSend.Text.Length;
                     return;
                 }
+
                 if (e.IsRepeat)
                     return;
 
@@ -424,13 +409,18 @@ namespace Toxy
 
                     MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetSelfName(), action) };
 
-                    /*if (convdic.ContainsKey(current_number))
-                        convdic[current_number].Add(data);
+                    if (convdic.ContainsKey(current_number))
+                    {
+                        AddNewRowToDocument(convdic[current_number], data);
+                    }
                     else
-                        convdic.Add(current_number, new List<MessageData>() { data });
+                    {
+                        FlowDocument document = GetNewFlowDocument();
+                        convdic.Add(current_number, document);
+                        AddNewRowToDocument(convdic[current_number], data);
+                    }
 
-                    ChatDataGrid.Items.Add(data);
-                    ScrollChatDataGrid();*/
+                    ChatBox.ScrollToEnd();
                 }
                 else
                 {
@@ -440,24 +430,28 @@ namespace Toxy
 
                     MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
 
-                   /* if (convdic.ContainsKey(current_number))
-                        convdic[current_number].Add(data);
+                    if (convdic.ContainsKey(current_number))
+                    {
+                        AddNewRowToDocument(convdic[current_number], data);
+                    }
                     else
-                        convdic.Add(current_number, new List<MessageData>() { data });
+                    {
+                        FlowDocument document = GetNewFlowDocument();
+                        convdic.Add(current_number, document);
+                        AddNewRowToDocument(convdic[current_number], data);
+                    }
 
-                    ChatDataGrid.Items.Add(data);
-                    ScrollChatDataGrid();*/
+                    ChatBox.ScrollToEnd();
                 }
 
                 TextToSend.Text = "";
                 e.Handled = true;
             }
-           
         }
 
         private void GithubButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/Reverp/Toxy");
+            Process.Start("https://github.com/Reverp/Toxy-WPF");
         }
 
         private void TextToSend_TextChanged(object sender, TextChangedEventArgs e)
@@ -489,13 +483,8 @@ namespace Toxy
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (!resizing)
-            {
-                if (focusTextbox)
-                {
-                    TextToSend.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous));
-                }
-            }
+            if (!resizing && focusTextbox)
+                TextToSend.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous));
         }
 
         private void TextToSend_OnGotFocus(object sender, RoutedEventArgs e)
@@ -506,11 +495,6 @@ namespace Toxy
         private void TextToSend_OnLostFocus(object sender, RoutedEventArgs e)
         {
             focusTextbox = false;
-        }
-
-        private void MetroWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
- 
         }
 
         private void Grid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -528,8 +512,6 @@ namespace Toxy
 
         private void ChatDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            //// Have to do this in the unusual case where the border of the cell gets selected
-            //// and causes a crash 'EditItem is not allowed'
             e.Cancel = true;
         }
     }

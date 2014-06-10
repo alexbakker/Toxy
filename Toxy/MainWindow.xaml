@@ -147,10 +147,10 @@
                 </Grid>
             </Border>
             <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextBox_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
-            <RichTextBox Name="ChatBox" HorizontalAlignment="Left" Height="308" Margin="10,92,0,0" VerticalAlignment="Top" Width="415">
+            <RichTextBox Name="ChatBox" Margin="10,92,4,57" BorderThickness="1,1,1,0">
                 <FlowDocument>
                     <Paragraph>
-                        <Run Text="RichTextBox"/>
+                        <Run Text=""/>
                     </Paragraph>
                 </FlowDocument>
             </RichTextBox>

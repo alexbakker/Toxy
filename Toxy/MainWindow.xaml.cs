@@ -155,9 +155,21 @@ namespace Toxy
                 convdic.Add(friendnumber, GetNewFlowDocument());
 
             FileTransfer transfer = AddNewFTRowToDocument(convdic[friendnumber], friendnumber, filenumber, filename, filesiz);
-            transfer.Control.OnAccept += delegate(int friendnum, int filenum) { transfer.Stream = new FileStream(filename, FileMode.Create); tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]); };
-            transfer.Control.OnDecline += delegate(int friendnum, int filenum) { tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]); };
+
+            transfer.Control.OnAccept += delegate(int friendnum, int filenum) 
+            { 
+                transfer.Stream = new FileStream(filename, FileMode.Create); 
+                tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]); 
+            };
+
+            transfer.Control.OnDecline += delegate(int friendnum, int filenum) 
+            { 
+                tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]); 
+            };
+
             transfers.Add(transfer);
+
+            this.Flash();
         }
 
         private void tox_OnConnectionStatusChanged(int friendnumber, byte status)
@@ -235,6 +247,7 @@ namespace Toxy
 
         private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
         {
+            //yes this is ugly, yes this will be cleaned up in the future
             FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
             FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
 
@@ -253,8 +266,6 @@ namespace Toxy
 
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
-
-            ChatBox.Document = doc;
 
             return transfer;
         }
@@ -544,7 +555,6 @@ namespace Toxy
                         AddNewRowToDocument(convdic[current_number], data);
                     }
 
-                    //ChatBox.ScrollToEnd();
                 }
 
                 TextToSend.Text = "";

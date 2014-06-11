@@ -79,6 +79,8 @@ namespace Toxy
             if (OnDecline != null)
                 OnDecline(friendnumber, filenumber);
 
+            MessageLabel.Content = "Canceled";
+
             TransferFinished();
         }
     }

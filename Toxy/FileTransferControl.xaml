@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Toxy.FileTransferControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" Height="72" BorderBrush="#FF008BFF" BorderThickness="0,1" Width="362.667">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <controls:MetroProgressBar Margin="0,65,0,-1" VerticalAlignment="Top" Value="30" Height="6" Foreground="#FF008BFF" BorderBrush="#FF008BFF"/>
+        <Label Name="MessageLabel" Content="ltable.cpp" VerticalAlignment="Top" Margin="41,13,0,0" HorizontalAlignment="Left" Width="165"/>
+        <Image HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="31" Source="Resources/FileDownload.png" Margin="10,18,0,0"/>
+        <controls:ProgressRing IsActive="True" Margin="0,18,49,20" Height="32" Width="32" HorizontalAlignment="Right" />
+        <Button
+                    Margin="0,16,54,16"
+                    IsEnabled="True"
+                    Visibility="Collapsed"
+                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39">
+            <Rectangle Width="15"
+                           Height="15"
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                     Visual="{DynamicResource appbar_check}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Button
+                    Margin="0,16,10,16"
+                    IsEnabled="True"
+                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39">
+            <Rectangle Width="15"
+                           Height="15"
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                     Visual="{DynamicResource appbar_close}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Label Content="16 kB" HorizontalAlignment="Left" Margin="41,31,0,0" VerticalAlignment="Top" Foreground="#FF4F4F4F"/>
+
+    </Grid>
+</UserControl>

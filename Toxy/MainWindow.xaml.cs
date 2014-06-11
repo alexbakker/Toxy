@@ -244,29 +244,41 @@ namespace Toxy
             FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, StatusLabel = label, ProgressBar = bar, CancelButton = button };
 
             TableRow newTableRow = new TableRow();
-            newTableRow.Tag = 1337;
+            InlineUIContainer fileTransferContainer = new InlineUIContainer();
+            FileTransferControl fileTransferControl = new FileTransferControl();
+            fileTransferContainer.Child = fileTransferControl;
+            
 
-            TableCell usernameTableCell = new TableCell();
             Paragraph usernameParagraph = new Paragraph();
+            usernameParagraph.Inlines.Add(fileTransferContainer);
 
-            usernameParagraph.Inlines.Add(tox.GetName(friendnumber));
-            usernameTableCell.Blocks.Add(usernameParagraph);
+            TableCell fileTableCell = new TableCell();
+            fileTableCell.ColumnSpan = 2;
+            fileTableCell.Blocks.Add(usernameParagraph);
 
-            TableCell messageTableCell = new TableCell();
-            Paragraph messageParagraph = new Paragraph();
+            newTableRow.Cells.Add(fileTableCell);
 
-            messageParagraph.Inlines.Add("Transferring " + filename);
+            //TableCell usernameTableCell = new TableCell();
+            //Paragraph usernameParagraph = new Paragraph();
 
-            messageParagraph.Inlines.Add(label);
-            messageParagraph.Inlines.Add("\n");
-            messageParagraph.Inlines.Add(bar);
-            messageParagraph.Inlines.Add("  ");
-            messageParagraph.Inlines.Add(button);
+            //usernameParagraph.Inlines.Add(tox.GetName(friendnumber));
+            //usernameTableCell.Blocks.Add(usernameParagraph);
 
-            messageTableCell.Blocks.Add(messageParagraph);
+            //TableCell messageTableCell = new TableCell();
+            //Paragraph messageParagraph = new Paragraph();
 
-            newTableRow.Cells.Add(usernameTableCell);
-            newTableRow.Cells.Add(messageTableCell);
+            //messageParagraph.Inlines.Add("Transferring " + filename);
+
+            //messageParagraph.Inlines.Add(label);
+            //messageParagraph.Inlines.Add("\n");
+            //messageParagraph.Inlines.Add(bar);
+            //messageParagraph.Inlines.Add("  ");
+            //messageParagraph.Inlines.Add(button);
+
+            //messageTableCell.Blocks.Add(messageParagraph);
+
+            //newTableRow.Cells.Add(usernameTableCell);
+            //newTableRow.Cells.Add(messageTableCell);
 
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);

@@ -29,12 +29,10 @@ namespace Toxy
         public int FriendNumber { get; set; }
         public int FileNumber { get; set; }
         public ulong FileSize { get; set; }
-        public ProgressBar ProgressBar { get; set; }
-        public Label StatusLabel { get; set; }
         public string FileName { get; set; }
         public Stream Stream { get; set; }
-        public Button CancelButton { get; set; }
-        //public bool Finishe
+
+        public FileTransferControl Control { get; set; }
     }
 
     /// <summary>
@@ -113,8 +111,8 @@ namespace Toxy
                         ft.Stream.Close();
                         ft.Stream = null;
 
-                        ft.CancelButton.Visibility = Visibility.Hidden;
-                        ft.StatusLabel.Content = "Finished";
+                        ft.Control.TransferFinished();
+                        ft.Control.SetStatus("Finished");
 
                         transfers.Remove(ft);
 
@@ -145,8 +143,8 @@ namespace Toxy
             ulong remaining = tox.FileDataRemaining(friendnumber, filenumber, 1);
             double value = (double)remaining / (double)ft.FileSize;
 
-            ft.ProgressBar.Value = (100 - (int)(value * 100));
-            ft.StatusLabel.Content = string.Format("{0}/{1}", ft.FileSize - remaining, ft.FileSize);
+            ft.Control.SetProgress(100 - (int)(value * 100));
+            ft.Control.SetStatus(string.Format("{0}/{1}", ft.FileSize - remaining, ft.FileSize));
 
             ft.Stream.Write(data, 0, data.Length);
         }
@@ -157,10 +155,9 @@ namespace Toxy
                 convdic.Add(friendnumber, GetNewFlowDocument());
 
             FileTransfer transfer = AddNewFTRowToDocument(convdic[friendnumber], friendnumber, filenumber, filename, filesiz);
+            transfer.Control.OnAccept += delegate(int friendnum, int filenum) { transfer.Stream = new FileStream(filename, FileMode.Create); tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]); };
+            transfer.Control.OnDecline += delegate(int friendnum, int filenum) { tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]); };
             transfers.Add(transfer);
-
-            tox.FileSendControl(friendnumber, 1, filenumber, (int)ToxFileControl.ACCEPT, new byte[0]);
-            transfer.Stream = new FileStream(filename, FileMode.Create);
         }
 
         private void tox_OnConnectionStatusChanged(int friendnumber, byte status)
@@ -238,16 +235,12 @@ namespace Toxy
 
         private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
         {
-            ProgressBar bar = new ProgressBar() { Value = 0, Width = 100 };
-            Label label = new Label() { Content = "0/" + filesize.ToString() };
-            Button button = new Button() { Content = "Cancel", Width = 75 };
-            FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, StatusLabel = label, ProgressBar = bar, CancelButton = button };
+            FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
+            FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
 
             TableRow newTableRow = new TableRow();
             InlineUIContainer fileTransferContainer = new InlineUIContainer();
-            FileTransferControl fileTransferControl = new FileTransferControl();
             fileTransferContainer.Child = fileTransferControl;
-            
 
             Paragraph usernameParagraph = new Paragraph();
             usernameParagraph.Inlines.Add(fileTransferContainer);
@@ -257,28 +250,6 @@ namespace Toxy
             fileTableCell.Blocks.Add(usernameParagraph);
 
             newTableRow.Cells.Add(fileTableCell);
-
-            //TableCell usernameTableCell = new TableCell();
-            //Paragraph usernameParagraph = new Paragraph();
-
-            //usernameParagraph.Inlines.Add(tox.GetName(friendnumber));
-            //usernameTableCell.Blocks.Add(usernameParagraph);
-
-            //TableCell messageTableCell = new TableCell();
-            //Paragraph messageParagraph = new Paragraph();
-
-            //messageParagraph.Inlines.Add("Transferring " + filename);
-
-            //messageParagraph.Inlines.Add(label);
-            //messageParagraph.Inlines.Add("\n");
-            //messageParagraph.Inlines.Add(bar);
-            //messageParagraph.Inlines.Add("  ");
-            //messageParagraph.Inlines.Add(button);
-
-            //messageTableCell.Blocks.Add(messageParagraph);
-
-            //newTableRow.Cells.Add(usernameTableCell);
-            //newTableRow.Cells.Add(messageTableCell);
 
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);

@@ -10,15 +10,16 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <controls:MetroProgressBar Margin="0,65,0,-1" VerticalAlignment="Top" Value="30" Height="6" Foreground="#FF008BFF" BorderBrush="#FF008BFF"/>
+        <controls:MetroProgressBar Name="TransferProgressBar" Margin="0,65,0,-1" VerticalAlignment="Top" Value="0" Height="6" Foreground="#FF008BFF" BorderBrush="#FF008BFF"/>
         <Label Name="MessageLabel" Content="ltable.cpp" VerticalAlignment="Top" Margin="41,13,0,0" HorizontalAlignment="Left" Width="165"/>
         <Image HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="31" Source="Resources/FileDownload.png" Margin="10,18,0,0"/>
-        <controls:ProgressRing IsActive="True" Margin="0,18,49,20" Height="32" Width="32" HorizontalAlignment="Right" />
+        <controls:ProgressRing Name="TransferProgressRing" Visibility="Collapsed" IsActive="True" Margin="0,18,49,20" Height="32" Width="32" HorizontalAlignment="Right" />
         <Button
+                    Name="AcceptButton"
                     Margin="0,16,54,16"
                     IsEnabled="True"
-                    Visibility="Collapsed"
-                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39">
+                    Visibility="Visible"
+                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39" Click="AcceptButton_Click">
             <Rectangle Width="15"
                            Height="15"
                            Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
@@ -29,9 +30,10 @@
             </Rectangle>
         </Button>
         <Button
+                    Name="DeclineButton"
                     Margin="0,16,10,16"
                     IsEnabled="True"
-                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39">
+                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39" Click="DeclineButton_Click">
             <Rectangle Width="15"
                            Height="15"
                            Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
@@ -41,7 +43,7 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>
-        <Label Content="16 kB" HorizontalAlignment="Left" Margin="41,31,0,0" VerticalAlignment="Top" Foreground="#FF4F4F4F"/>
+        <Label Name="SizeLabel" Content="16 kB" HorizontalAlignment="Left" Margin="41,31,0,0" VerticalAlignment="Top" Foreground="#FF4F4F4F"/>
 
     </Grid>
 </UserControl>

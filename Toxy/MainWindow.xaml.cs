@@ -374,7 +374,7 @@ namespace Toxy
             SettingsFlyout.IsOpen = false;
         }
 
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        private void TextToSend_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -509,6 +509,22 @@ namespace Toxy
         {
             e.Cancel = true;
         }
+
+        private void OnlineThumbButton_Click(object sender, EventArgs e)
+        {
+            tox.SetUserStatus(ToxUserStatus.NONE);
+        }
+
+        private void AwayThumbButton_Click(object sender, EventArgs e)
+        {
+            tox.SetUserStatus(ToxUserStatus.AWAY);
+        }
+
+        private void BusyThumbButton_Click(object sender, EventArgs e)
+        {
+            tox.SetUserStatus(ToxUserStatus.BUSY);
+        }
+
     }
 
     public class MessageData

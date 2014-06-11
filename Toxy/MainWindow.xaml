@@ -146,7 +146,7 @@
                     </Label>
                 </Grid>
             </Border>
-            <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextBox_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
+            <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
             <RichTextBox IsReadOnly="True" Name="ChatBox" Margin="10,92,4,57" BorderThickness="1,1,1,0">
                 <FlowDocument>
                     <Paragraph>
@@ -204,5 +204,16 @@
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo Description="Media Controls">
+            <TaskbarItemInfo.ThumbButtonInfos>
+                <ThumbButtonInfoCollection>
+                    <ThumbButtonInfo Description="Online" DismissWhenClicked="False" Click="OnlineThumbButton_Click"/>
+                    <ThumbButtonInfo Description="Away" DismissWhenClicked="False" Click="AwayThumbButton_Click"/>
+                    <ThumbButtonInfo Description="Busy" DismissWhenClicked="False" Click="BusyThumbButton_Click"/>
+                </ThumbButtonInfoCollection>
+            </TaskbarItemInfo.ThumbButtonInfos>
+        </TaskbarItemInfo>
+    </Window.TaskbarItemInfo>
 
 </controls:MetroWindow>

@@ -20,9 +20,23 @@ using System.Windows.Shapes;
 
 using MahApps.Metro.Controls;
 using SharpTox;
+using System.Threading;
 
 namespace Toxy
 {
+    class FileTransfer
+    {
+        public int FriendNumber { get; set; }
+        public int FileNumber { get; set; }
+        public ulong FileSize { get; set; }
+        public ProgressBar ProgressBar { get; set; }
+        public Label StatusLabel { get; set; }
+        public string FileName { get; set; }
+        public Stream Stream { get; set; }
+        public Button CancelButton { get; set; }
+        //public bool Finishe
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -30,6 +44,7 @@ namespace Toxy
     {
         private Tox tox;
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
+        private List<FileTransfer> transfers = new List<FileTransfer>();
 
         private int current_number = 0;
         private bool resizing = false;
@@ -49,6 +64,9 @@ namespace Toxy
             tox.OnStatusMessage += tox_OnStatusMessage;
             tox.OnTypingChange += tox_OnTypingChange;
             tox.OnConnectionStatusChanged += tox_OnConnectionStatusChanged;
+            tox.OnFileSendRequest += tox_OnFileSendRequest;
+            tox.OnFileData += tox_OnFileData;
+            tox.OnFileControl += tox_OnFileControl;
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -79,6 +97,70 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
+        }
+
+        private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
+        {
+            switch((ToxFileControl)control_type)
+            {
+                case ToxFileControl.FINISHED:
+                    {
+                        FileTransfer ft = GetFileTransfer(friendnumber, filenumber);
+
+                        if (ft == null)
+                            return;
+
+                        ft.Stream.Close();
+                        ft.Stream = null;
+
+                        ft.CancelButton.Visibility = Visibility.Hidden;
+                        ft.StatusLabel.Content = "Finished";
+
+                        transfers.Remove(ft);
+
+                        break;
+                    }
+            }
+        }
+
+        private FileTransfer GetFileTransfer(int friendnumber, int filenumber)
+        {
+            foreach (FileTransfer ft in transfers)
+                if (ft.FileNumber == filenumber && ft.FriendNumber == friendnumber)
+                    return ft;
+
+            return null;
+        }
+
+        private void tox_OnFileData(int friendnumber, int filenumber, byte[] data)
+        {
+            FileTransfer ft = GetFileTransfer(friendnumber, filenumber);
+
+            if (ft == null)
+                return;
+
+            if (ft.Stream == null)
+                throw new Exception("Unexpectedly received data");
+
+            ulong remaining = tox.FileDataRemaining(friendnumber, filenumber, 1);
+            double value = (double)remaining / (double)ft.FileSize;
+
+            ft.ProgressBar.Value = (100 - (int)(value * 100));
+            ft.StatusLabel.Content = string.Format("{0}/{1}", ft.FileSize - remaining, ft.FileSize);
+
+            ft.Stream.Write(data, 0, data.Length);
+        }
+
+        private void tox_OnFileSendRequest(int friendnumber, int filenumber, ulong filesiz, string filename)
+        {
+            if (!convdic.ContainsKey(friendnumber))
+                convdic.Add(friendnumber, GetNewFlowDocument());
+
+            FileTransfer transfer = AddNewFTRowToDocument(convdic[friendnumber], friendnumber, filenumber, filename, filesiz);
+            transfers.Add(transfer);
+
+            tox.FileSendControl(friendnumber, 1, filenumber, (int)ToxFileControl.ACCEPT, new byte[0]);
+            transfer.Stream = new FileStream(filename, FileMode.Create);
         }
 
         private void tox_OnConnectionStatusChanged(int friendnumber, byte status)
@@ -120,8 +202,8 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
-            if (current_number == friendnumber)
-                ChatBox.ScrollToEnd();
+            //if (current_number == friendnumber)
+              //  ChatBox.
 
             this.Flash();
         }
@@ -129,7 +211,10 @@ namespace Toxy
         private FlowDocument GetNewFlowDocument()
         {
             Stream doc_stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Toxy.Message.xaml");
-            return (FlowDocument)XamlReader.Load(doc_stream);
+            FlowDocument doc = (FlowDocument)XamlReader.Load(doc_stream);
+            doc.IsEnabled = true;
+
+            return doc;
         }
 
         private void tox_OnFriendMessage(int friendnumber, string message)
@@ -145,10 +230,50 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
-            if (current_number == friendnumber)
-                ChatBox.ScrollToEnd();
+            //if (current_number == friendnumber)
+              //  ChatBox.ScrollToEnd();
 
             this.Flash();
+        }
+
+        private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
+        {
+            ProgressBar bar = new ProgressBar() { Value = 0, Width = 100 };
+            Label label = new Label() { Content = "0/" + filesize.ToString() };
+            Button button = new Button() { Content = "Cancel", Width = 75 };
+            FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, StatusLabel = label, ProgressBar = bar, CancelButton = button };
+
+            TableRow newTableRow = new TableRow();
+            newTableRow.Tag = 1337;
+
+            TableCell usernameTableCell = new TableCell();
+            Paragraph usernameParagraph = new Paragraph();
+
+            usernameParagraph.Inlines.Add(tox.GetName(friendnumber));
+            usernameTableCell.Blocks.Add(usernameParagraph);
+
+            TableCell messageTableCell = new TableCell();
+            Paragraph messageParagraph = new Paragraph();
+
+            messageParagraph.Inlines.Add("Transferring " + filename);
+
+            messageParagraph.Inlines.Add(label);
+            messageParagraph.Inlines.Add("\n");
+            messageParagraph.Inlines.Add(bar);
+            messageParagraph.Inlines.Add("  ");
+            messageParagraph.Inlines.Add(button);
+
+            messageTableCell.Blocks.Add(messageParagraph);
+
+            newTableRow.Cells.Add(usernameTableCell);
+            newTableRow.Cells.Add(messageTableCell);
+
+            TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
+            MessageRows.Rows.Add(newTableRow);
+
+            ChatBox.Document = doc;
+
+            return transfer;
         }
 
         private void AddNewRowToDocument(FlowDocument doc, MessageData data)
@@ -284,7 +409,7 @@ namespace Toxy
             if (convdic.ContainsKey(current_number))
             {
                 ChatBox.Document = convdic[current_number];
-                ChatBox.ScrollToEnd();
+                //ChatBox.ScrollToEnd();
             }
             else
             {
@@ -415,7 +540,7 @@ namespace Toxy
                         AddNewRowToDocument(convdic[current_number], data);
                     }
 
-                    ChatBox.ScrollToEnd();
+                    //ChatBox.ScrollToEnd();
                 }
                 else
                 {
@@ -436,7 +561,7 @@ namespace Toxy
                         AddNewRowToDocument(convdic[current_number], data);
                     }
 
-                    ChatBox.ScrollToEnd();
+                    //ChatBox.ScrollToEnd();
                 }
 
                 TextToSend.Text = "";
@@ -524,7 +649,6 @@ namespace Toxy
         {
             tox.SetUserStatus(ToxUserStatus.BUSY);
         }
-
     }
 
     public class MessageData

@@ -115,7 +115,6 @@ namespace Toxy
                         ft.Control.SetStatus("Finished");
 
                         transfers.Remove(ft);
-
                         break;
                     }
             }
@@ -165,6 +164,19 @@ namespace Toxy
             transfer.Control.OnDecline += delegate(int friendnum, int filenum) 
             { 
                 tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]); 
+            };
+
+            transfer.Control.OnFileOpen += delegate()
+            {
+                Process.Start(transfer.FileName);
+            };
+
+            transfer.Control.OnFolderOpen += delegate()
+            {
+                string filePath = Environment.CurrentDirectory;
+                Process process = new Process();
+                process.StartInfo.FileName = filePath;
+                process.Start();
             };
 
             transfers.Add(transfer);
@@ -231,7 +243,28 @@ namespace Toxy
             MessageData data = new MessageData() { Username = tox.GetName(friendnumber), Message = message };
 
             if (convdic.ContainsKey(friendnumber))
-                AddNewRowToDocument(convdic[friendnumber], data);
+            {
+                try
+                {
+                    Run run = GetLastMessageRun(convdic[friendnumber]);
+
+                    if (run.Text == tox.GetName(friendnumber))
+                    {
+                        AppendToDocument(convdic[friendnumber], data);
+                    }
+                    else
+                    {
+                        AddNewRowToDocument(convdic[friendnumber], data);
+                    }
+                }
+                catch (Exception e)
+                {
+                    AddNewRowToDocument(convdic[friendnumber], data);
+                }
+                
+                
+            }
+                
             else
             {
                 FlowDocument document = GetNewFlowDocument();
@@ -239,31 +272,49 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
-            //if (current_number == friendnumber)
-              //  ChatBox.ScrollToEnd();
-
             this.Flash();
+        }
+
+        private Run GetLastMessageRun(FlowDocument doc)
+        {
+            try
+            {
+                Paragraph para = (Paragraph) doc.FindChildren<TableRow>()
+                    .Last()
+                    .FindChildren<TableCell>()
+                    .First()
+                    .Blocks.FirstBlock;
+
+                Run run = (Run) para.Inlines.FirstInline;
+                return run;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+            
         }
 
         private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
         {
-            //yes this is ugly, yes this will be cleaned up in the future
+            //yes this is ugly, yes this will be cleaned up in the future 
+            //probably not
             FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
             FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
-
+            Section usernameParagraph = new Section();
             TableRow newTableRow = new TableRow();
-            InlineUIContainer fileTransferContainer = new InlineUIContainer();
+            BlockUIContainer fileTransferContainer = new BlockUIContainer();
+            fileTransferControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+            fileTransferControl.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             fileTransferContainer.Child = fileTransferControl;
-
-            Paragraph usernameParagraph = new Paragraph();
-            usernameParagraph.Inlines.Add(fileTransferContainer);
-
+            usernameParagraph.Blocks.Add(fileTransferContainer);
+            usernameParagraph.Padding = new Thickness(0);
             TableCell fileTableCell = new TableCell();
             fileTableCell.ColumnSpan = 2;
             fileTableCell.Blocks.Add(usernameParagraph);
-
             newTableRow.Cells.Add(fileTableCell);
-
+            fileTableCell.Padding = new Thickness(0, 10, 0, 10);
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
 
@@ -276,11 +327,11 @@ namespace Toxy
 
             //Make a new row
             TableRow newTableRow = new TableRow();
-
             //Make a new cell and create a paragraph in it
             TableCell usernameTableCell = new TableCell();
+            usernameTableCell.Name = "usernameTableCell";
+            usernameTableCell.Padding = new Thickness(10, 0, 0, 0);
             Paragraph usernameParagraph = new Paragraph();
-
             usernameParagraph.Inlines.Add(data.Username);
             usernameTableCell.Blocks.Add(usernameParagraph);
 
@@ -296,12 +347,19 @@ namespace Toxy
             //Add the two cells to the row we made before
             newTableRow.Cells.Add(usernameTableCell);
             newTableRow.Cells.Add(messageTableCell);
-
             //Adds row to the Table > TableRowGroup
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
 
             ChatBox.Document = doc;
+        }
+
+        private void AppendToDocument(FlowDocument doc, MessageData data)
+        {
+            TableRow tableRow = doc.FindChildren<TableRow>().Last();
+            Paragraph para = (Paragraph) tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
+            Run run = (Run) para.Inlines.LastInline;
+            run.Text += "\n" + data.Message;
         }
 
         private FriendControl GetFriendControlByNumber(int friendnumber)
@@ -546,7 +604,22 @@ namespace Toxy
 
                     if (convdic.ContainsKey(current_number))
                     {
-                        AddNewRowToDocument(convdic[current_number], data);
+                        Run run = GetLastMessageRun(convdic[current_number]);
+                        if (run != null)
+                        {
+                            if (run.Text == data.Username)
+                            {
+                                AppendToDocument(convdic[current_number], data);
+                            }
+                            else
+                            {
+                                AddNewRowToDocument(convdic[current_number], data);
+                            }
+                        }
+                        else
+                        {
+                            AddNewRowToDocument(convdic[current_number], data);    
+                        }
                     }
                     else
                     {

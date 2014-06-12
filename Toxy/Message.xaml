@@ -1,22 +1,13 @@
-﻿<FlowDocument xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              ColumnWidth="400" FontSize="14" >
-    <Table>
+﻿<FlowDocument  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              ColumnWidth="400" PagePadding="0" FontSize="14" FontFamily="Arial">
+    <Table Padding="0" Margin="0" >
         <Table.Columns>
-            <TableColumn Width="100"/>
+            <TableColumn Width="100" />
             <TableColumn/>
         </Table.Columns>
 
-        <TableRowGroup Name="MessageRows">
-            <TableRow Block.FontSize="1" Foreground="Transparent">
-                <TableCell>
-                    <TableCell.TextAlignment>Right</TableCell.TextAlignment>
-                    <TableCell.Padding>0,0,20,0</TableCell.Padding>
-                    <Paragraph Name="UsernameParagraph"></Paragraph>
-                </TableCell>
-                <TableCell>
-                    <Paragraph Name="MessageParagraph"></Paragraph>
-                </TableCell>
-            </TableRow>
+        <TableRowGroup Name="MessageRows" >
+            
         </TableRowGroup>
     </Table>
 </FlowDocument>

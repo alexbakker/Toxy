@@ -31,6 +31,12 @@ namespace Toxy
         public delegate void OnDeclineDelegate(int friendnumber, int filenumber);
         public event OnDeclineDelegate OnDecline;
 
+        public delegate void OnFileOpenDelegate();
+        public event OnFileOpenDelegate OnFileOpen;
+
+        public delegate void OnFolderOpenDelegate();
+        public event OnFolderOpenDelegate OnFolderOpen;
+
         public FileTransferControl(string friendname, int friendnumber, int filenumber, string filename, ulong filesize)
         {
             this.filenumber = filenumber;
@@ -41,7 +47,7 @@ namespace Toxy
             InitializeComponent();
 
             SizeLabel.Content = filesize.ToString() + " bytes";
-            MessageLabel.Content = string.Format("{0} would like to share {1} with you", friendname, filename);
+            MessageLabel.Content = string.Format(filename);
         }
 
         public void SetStatus(string status)
@@ -53,6 +59,8 @@ namespace Toxy
         {
             AcceptButton.Visibility = Visibility.Collapsed;
             DeclineButton.Visibility = Visibility.Collapsed;
+            FileOpenButton.Visibility = Visibility.Visible;
+            FolderOpenButton.Visibility = Visibility.Visible;
         }
 
         public void TransferStarted()
@@ -82,6 +90,18 @@ namespace Toxy
             MessageLabel.Content = "Canceled";
 
             TransferFinished();
+        }
+
+        private void FileOpenButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (OnFileOpen != null)
+                OnFileOpen();
+        }
+
+        private void FolderOpenButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (OnFolderOpen != null)
+                OnFolderOpen();
         }
     }
 }

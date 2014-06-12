@@ -147,12 +147,8 @@
                 </Grid>
             </Border>
             <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
-            <FlowDocumentScrollViewer IsEnabled="True" Name="ChatBox" Margin="10,92,4,57" BorderThickness="1,1,1,0" IsHitTestVisible="True">
-                <FlowDocument IsEnabled="True">
-                    <Paragraph>
-                        <Run Text=""/>
-                    </Paragraph>
-                </FlowDocument>
+            <FlowDocumentScrollViewer IsEnabled="True" Name="ChatBox" Margin="0,92,0,91" BorderThickness="1,1,1,0" IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100" >
+    
             </FlowDocumentScrollViewer>
         </Grid>
         <Label Name="TypingStatusLabel" Content="" HorizontalAlignment="Left" Grid.Column="1" Margin="10,0,0,55" Height="26" VerticalAlignment="Bottom"/>

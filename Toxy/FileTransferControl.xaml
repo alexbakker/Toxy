@@ -4,14 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" Height="72" BorderBrush="#FF008BFF" BorderThickness="0,1" Width="362.667">
+             mc:Ignorable="d" Height="72" BorderBrush="#FF008BFF" BorderThickness="0,0.5">
 
     <Grid>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <controls:MetroProgressBar Name="TransferProgressBar" Margin="0,65,0,-1" VerticalAlignment="Top" Value="0" Height="6" Foreground="#FF008BFF" BorderBrush="#FF008BFF"/>
-        <Label Name="MessageLabel" Content="ltable.cpp" VerticalAlignment="Top" Margin="41,13,0,0" HorizontalAlignment="Left" Width="165"/>
+        <Label Name="MessageLabel" Content="ltable.cpp" VerticalAlignment="Top" Margin="41,13,93,0"/>
         <Image HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="31" Source="Resources/FileDownload.png" Margin="10,18,0,0"/>
         <controls:ProgressRing Name="TransferProgressRing" Visibility="Collapsed" IsActive="False" Margin="0,18,49,20" Height="32" Width="32" HorizontalAlignment="Right" />
         <Button
@@ -30,6 +31,21 @@
             </Rectangle>
         </Button>
         <Button
+                    Name="FolderOpenButton"
+                    Margin="0,16,54,16"
+                    IsEnabled="True"
+                    Visibility="Hidden"
+                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39" Click="FolderOpenButton_OnClick">
+            <Rectangle Width="15"
+                           Height="15"
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                     Visual="{DynamicResource appbar_folder_open}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Button
                     Name="DeclineButton"
                     Margin="0,16,10,16"
                     IsEnabled="True"
@@ -43,7 +59,22 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>
-        <Label Name="SizeLabel" Content="16 kB" HorizontalAlignment="Left" Margin="41,31,0,0" VerticalAlignment="Top" Foreground="#FF4F4F4F"/>
+        <Button
+                    Name="FileOpenButton"
+                    Margin="0,16,10,16"
+                    IsEnabled="True"
+                    Visibility="Hidden"
+                    Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Width="39" Click="FileOpenButton_OnClick">
+            <Rectangle Width="12"
+                           Height="12"
+                           Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                     Visual="{DynamicResource appbar_control_play}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Label Name="SizeLabel" Content="16 kB" Margin="41,31,98,0" VerticalAlignment="Top" Foreground="#FF4F4F4F"/>
 
     </Grid>
 </UserControl>

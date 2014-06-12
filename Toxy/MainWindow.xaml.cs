@@ -167,7 +167,8 @@ namespace Toxy
 
             transfer.Control.OnFileOpen += delegate()
             {
-                Process.Start(transfer.FileName);
+                try { Process.Start(transfer.FileName); }
+                catch { /*want to open a "choose program dialog" here*/ }
             };
 
             transfer.Control.OnFolderOpen += delegate()

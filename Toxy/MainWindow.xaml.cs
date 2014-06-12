@@ -223,9 +223,6 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
-            //if (current_number == friendnumber)
-              //  ChatBox.
-
             this.Flash();
         }
 
@@ -244,27 +241,20 @@ namespace Toxy
 
             if (convdic.ContainsKey(friendnumber))
             {
-                try
-                {
-                    Run run = GetLastMessageRun(convdic[friendnumber]);
+                Run run = GetLastMessageRun(convdic[friendnumber]);
 
+                if (run != null)
+                {
                     if (run.Text == tox.GetName(friendnumber))
-                    {
                         AppendToDocument(convdic[friendnumber], data);
-                    }
                     else
-                    {
                         AddNewRowToDocument(convdic[friendnumber], data);
-                    }
                 }
-                catch (Exception e)
+                else
                 {
                     AddNewRowToDocument(convdic[friendnumber], data);
                 }
-                
-                
             }
-                
             else
             {
                 FlowDocument document = GetNewFlowDocument();
@@ -292,8 +282,6 @@ namespace Toxy
             {
                 return null;
             }
-
-            
         }
 
         private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
@@ -302,19 +290,24 @@ namespace Toxy
             //probably not
             FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
             FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
+            
             Section usernameParagraph = new Section();
             TableRow newTableRow = new TableRow();
+
             BlockUIContainer fileTransferContainer = new BlockUIContainer();
             fileTransferControl.HorizontalAlignment = HorizontalAlignment.Stretch;
             fileTransferControl.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             fileTransferContainer.Child = fileTransferControl;
+
             usernameParagraph.Blocks.Add(fileTransferContainer);
             usernameParagraph.Padding = new Thickness(0);
+
             TableCell fileTableCell = new TableCell();
             fileTableCell.ColumnSpan = 2;
             fileTableCell.Blocks.Add(usernameParagraph);
             newTableRow.Cells.Add(fileTableCell);
             fileTableCell.Padding = new Thickness(0, 10, 0, 10);
+
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
 
@@ -327,10 +320,12 @@ namespace Toxy
 
             //Make a new row
             TableRow newTableRow = new TableRow();
+
             //Make a new cell and create a paragraph in it
             TableCell usernameTableCell = new TableCell();
             usernameTableCell.Name = "usernameTableCell";
             usernameTableCell.Padding = new Thickness(10, 0, 0, 0);
+
             Paragraph usernameParagraph = new Paragraph();
             usernameParagraph.Inlines.Add(data.Username);
             usernameTableCell.Blocks.Add(usernameParagraph);
@@ -347,6 +342,7 @@ namespace Toxy
             //Add the two cells to the row we made before
             newTableRow.Cells.Add(usernameTableCell);
             newTableRow.Cells.Add(messageTableCell);
+
             //Adds row to the Table > TableRowGroup
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
@@ -400,11 +396,9 @@ namespace Toxy
         /// </summary>
         private void InitFriends()
         {
-            foreach (int FriendNumber in tox.GetFriendlist())
-            {
-                //Creates a new FriendControl for every friend
+            //Creates a new FriendControl for every friend
+            foreach (int FriendNumber in tox.GetFriendlist()) 
                 AddFriendToView(FriendNumber);
-            }
         }
 
         /// <summary>
@@ -461,7 +455,6 @@ namespace Toxy
             if (convdic.ContainsKey(current_number))
             {
                 ChatBox.Document = convdic[current_number];
-                //ChatBox.ScrollToEnd();
             }
             else
             {
@@ -500,6 +493,7 @@ namespace Toxy
             SettingsStatus.Text = tox.GetSelfStatusMessage();
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
+
         private void AddFriend_Click(object sender, RoutedEventArgs e)
         {
             TextRange message = new TextRange(AddFriendMessage.Document.ContentStart, AddFriendMessage.Document.ContentEnd);
@@ -591,8 +585,6 @@ namespace Toxy
                         convdic.Add(current_number, document);
                         AddNewRowToDocument(convdic[current_number], data);
                     }
-
-                    //ChatBox.ScrollToEnd();
                 }
                 else
                 {
@@ -608,13 +600,9 @@ namespace Toxy
                         if (run != null)
                         {
                             if (run.Text == data.Username)
-                            {
                                 AppendToDocument(convdic[current_number], data);
-                            }
                             else
-                            {
                                 AddNewRowToDocument(convdic[current_number], data);
-                            }
                         }
                         else
                         {

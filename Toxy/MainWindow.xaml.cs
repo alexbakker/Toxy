@@ -22,6 +22,8 @@ using MahApps.Metro.Controls;
 using SharpTox;
 using System.Threading;
 
+using Path = System.IO.Path;
+
 namespace Toxy
 {
     class FileTransfer
@@ -170,10 +172,8 @@ namespace Toxy
 
             transfer.Control.OnFolderOpen += delegate()
             {
-                string filePath = Environment.CurrentDirectory;
-                Process process = new Process();
-                process.StartInfo.FileName = filePath;
-                process.Start();
+                string filePath = Path.Combine(Environment.CurrentDirectory, filename);
+                Process.Start("explorer.exe", @"/select, " + filePath);
             };
 
             transfers.Add(transfer);

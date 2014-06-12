@@ -35,9 +35,6 @@ namespace Toxy
         public FileTransferControl Control { get; set; }
     }
 
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : MetroWindow
     {
         private Tox tox;
@@ -286,8 +283,6 @@ namespace Toxy
 
         private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
         {
-            //yes this is ugly, yes this will be cleaned up in the future 
-            //probably not
             FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
             FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
             
@@ -391,9 +386,6 @@ namespace Toxy
             new ToxNode("54.199.139.199", 33445, "7F9C31FE850E97CEFD4C4591DF93FC757C7C12549DDD55F8EEAECC34FE76C029", false) 
         };
 
-        /// <summary>
-        /// Loops through the received friendlist and calls AddFriendToView
-        /// </summary>
         private void InitFriends()
         {
             //Creates a new FriendControl for every friend
@@ -401,10 +393,6 @@ namespace Toxy
                 AddFriendToView(FriendNumber);
         }
 
-        /// <summary>
-        /// Adds the specific friend to the FriendWrapper
-        /// </summary>
-        /// <param name="friendNumber">Specific friendnumber</param>
         private void AddFriendToView(int friendNumber)
         {
             string friendName = tox.GetName(friendNumber);

@@ -26,17 +26,6 @@ using Path = System.IO.Path;
 
 namespace Toxy
 {
-    class FileTransfer
-    {
-        public int FriendNumber { get; set; }
-        public int FileNumber { get; set; }
-        public ulong FileSize { get; set; }
-        public string FileName { get; set; }
-        public Stream Stream { get; set; }
-
-        public FileTransferControl Control { get; set; }
-    }
-
     public partial class MainWindow : MetroWindow
     {
         private Tox tox;
@@ -57,6 +46,7 @@ namespace Toxy
             tox.OnNameChange += tox_OnNameChange;
             tox.OnFriendMessage += tox_OnFriendMessage;
             tox.OnFriendAction += tox_OnFriendAction;
+            tox.OnFriendRequest += tox_OnFriendRequest;
             tox.OnUserStatus += tox_OnUserStatus;
             tox.OnStatusMessage += tox_OnStatusMessage;
             tox.OnTypingChange += tox_OnTypingChange;
@@ -94,6 +84,20 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
+        }
+
+        private void tox_OnFriendRequest(string id, string message)
+        {
+            int friendnumber;
+            try 
+            {
+                friendnumber = tox.AddFriendNoRequest(id);
+                AddFriendToView(friendnumber);
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.ToString()); 
+            }
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
@@ -155,7 +159,7 @@ namespace Toxy
             FileTransfer transfer = AddNewFTRowToDocument(convdic[friendnumber], friendnumber, filenumber, filename, filesiz);
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum) 
-            { 
+            {
                 transfer.Stream = new FileStream(filename, FileMode.Create); 
                 tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]); 
             };
@@ -698,5 +702,16 @@ namespace Toxy
     {
         public string Username { get; set; }
         public string Message { get; set; }
+    }
+
+    public class FileTransfer
+    {
+        public int FriendNumber { get; set; }
+        public int FileNumber { get; set; }
+        public ulong FileSize { get; set; }
+        public string FileName { get; set; }
+        public Stream Stream { get; set; }
+
+        public FileTransferControl Control { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Collections;
+using System.Net;
 using System.ComponentModel;
+using System.Collections;
 using System.Runtime.InteropServices;
+
+using SharpTox;
 
 namespace Toxy
 {
@@ -15,26 +18,66 @@ namespace Toxy
 
         public static string DiscoverToxID(string domain)
         {
-            if (domain.Contains("@"))
+            if (domain.Contains("@utox.org"))
+            {
+                string[] split = domain.Split('@');
+                string public_key = new WebClient().DownloadString("http://utox.org/qkey");
+
+                ToxDns tox_dns = new ToxDns(public_key);
+                uint request_id;
+                string dns3_string = tox_dns.GenerateDns3String(split[0], out request_id);
+
+                string query = string.Format("_{0}._tox.{1}", dns3_string, split[1]);
+
+                string[] records = GetSPFRecords(query);
+
+                foreach (string record in records)
+                {
+                    if (record.Contains("v=tox3"))
+                    {
+                        string[] entries = record.Split(';');
+
+                        foreach (string entry in entries)
+                        {
+                            string[] parts = entry.Split('=');
+                            string name = parts[0];
+                            string value = parts[1];
+
+                            if (name == "id")
+                            {
+                                string result = tox_dns.DecryptDns3TXT(value, request_id);
+
+                                tox_dns.Kill();
+                                return result;
+                            }
+                        }
+                    }
+                }
+
+                tox_dns.Kill();
+            }
+            else if (domain.Contains("@"))
+            {
                 domain = domain.Replace("@", "._tox.");
 
-            string[] records = GetSPFRecords(domain);
+                string[] records = GetSPFRecords(domain);
 
-            foreach (string record in records)
-            {
-                if (!(record.Contains("v=tox1") || record.Contains("v=tox2")))
-                    continue;
-
-                string[] entries = record.Split(';');
-
-                foreach (string entry in entries)
+                foreach (string record in records)
                 {
-                    string[] split = entry.Split('=');
-                    string name = split[0];
-                    string value = split[1];
+                    if (record.Contains("v=tox1"))
+                    {
+                        string[] entries = record.Split(';');
 
-                    if (name == "id")
-                        return value;
+                        foreach (string entry in entries)
+                        {
+                            string[] parts = entry.Split('=');
+                            string name = parts[0];
+                            string value = parts[1];
+
+                            if (name == "id")
+                                return value;
+                        }
+                    }
                 }
             }
 

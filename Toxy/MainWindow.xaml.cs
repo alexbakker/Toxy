@@ -535,7 +535,14 @@ namespace Toxy
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+                return;
             }
+
+            AddFriendID.Text = string.Empty;
+            AddFriendMessage.Document.Blocks.Clear();
+            AddFriendMessage.Document.Blocks.Add(new Paragraph(new Run("Hello, I'd like to add you to my friends list.")));
+
+            FriendFlyout.IsOpen = false;
         }
 
         private void Status_SelectionChanged(object sender, SelectionChangedEventArgs e)

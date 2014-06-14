@@ -421,6 +421,22 @@ namespace Toxy
             friend.FriendStatusLabel.Content = friendStatus;
             friend.Click += friend_Click;
             FriendWrapper.Children.Add(friend);
+
+            MenuItem item = new MenuItem();
+            item.Header = "Delete";
+            item.Click += delegate(object sender, RoutedEventArgs e) 
+            {
+                if (friend != null)
+                {
+                    FriendWrapper.Children.Remove(friend);
+                    friend = null;
+
+                    tox.DeleteFriend(friendNumber);
+                }
+            };
+
+            friend.ContextMenu = new ContextMenu();
+            friend.ContextMenu.Items.Add(item);
         }
 
         private void SelectFriendControl(FriendControl friend)

@@ -211,5 +211,4 @@
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
     </Window.TaskbarItemInfo>
-
 </controls:MetroWindow>

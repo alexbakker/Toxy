@@ -186,7 +186,7 @@ namespace Toxy
             this.Flash();
         }
 
-        private void tox_OnConnectionStatusChanged(int friendnumber, byte status)
+        private void tox_OnConnectionStatusChanged(int friendnumber, int status)
         {
             if (status == 0)
             {

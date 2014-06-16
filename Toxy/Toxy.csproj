@@ -68,6 +68,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GroupControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FriendControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -85,6 +89,9 @@
       <DependentUpon>FileTransferControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormExtensions.cs" />
+    <Compile Include="GroupControl.xaml.cs">
+      <DependentUpon>GroupControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FriendControl.xaml.cs">
       <DependentUpon>FriendControl.xaml</DependentUpon>
     </Compile>

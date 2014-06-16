@@ -6,7 +6,7 @@
              xmlns:custom="clr-namespace:Toxy"
              mc:Ignorable="d" Height="60" BorderThickness="4,0,0,0" BorderBrush="Red" Width="2000">
         <!--Hacking the width above in order to keep the gray background on resize -->
-    <Grid Name="FriendGrid" Height="60" VerticalAlignment="Top">
+    <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
         <Label Name="FriendNameLabel" Content="Friend Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
         <Label Name="FriendStatusLabel" Content="Friend Status" HorizontalAlignment="Left" Margin="55,24,0,0" VerticalAlignment="Top" Width="245"/>
         <Image HorizontalAlignment="Left" Height="40" Source="pack://application:,,,/Resources/Icons/profilepicture.png"  VerticalAlignment="Top" Width="40" Margin="10,10,0,0"/>

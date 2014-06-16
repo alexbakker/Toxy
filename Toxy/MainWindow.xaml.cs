@@ -30,9 +30,11 @@ namespace Toxy
     {
         private Tox tox;
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
+        private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
 
         private int current_number = 0;
+        private Type current_type = typeof(FriendControl);
         private bool resizing = false;
         private bool focusTextbox = false;
         private bool typing = false;
@@ -56,6 +58,8 @@ namespace Toxy
             tox.OnFileControl += tox_OnFileControl;
 
             tox.OnGroupInvite += tox_OnGroupInvite;
+            tox.OnGroupMessage += tox_OnGroupMessage;
+            tox.OnGroupAction += tox_OnGroupAction;   
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -88,6 +92,52 @@ namespace Toxy
                 SelectFriendControl(GetFriendControlByNumber(0));
         }
 
+        private void tox_OnGroupAction(int groupnumber, int friendgroupnumber, string action)
+        {
+            MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetGroupMemberName(groupnumber, friendgroupnumber), action) };
+
+            if (groupdic.ContainsKey(groupnumber))
+                AddNewRowToDocument(groupdic[groupnumber], data);
+            else
+            {
+                FlowDocument document = GetNewFlowDocument();
+                groupdic.Add(groupnumber, document);
+                AddNewRowToDocument(groupdic[groupnumber], data);
+            }
+
+            this.Flash();
+        }
+
+        private void tox_OnGroupMessage(int groupnumber, int friendgroupnumber, string message)
+        {
+            MessageData data = new MessageData() { Username = tox.GetGroupMemberName(groupnumber, friendgroupnumber), Message = message };
+
+            if (groupdic.ContainsKey(groupnumber))
+            {
+                Run run = GetLastMessageRun(groupdic[groupnumber]);
+
+                if (run != null)
+                {
+                    if (run.Text == data.Username)
+                        AppendToDocument(groupdic[groupnumber], data);
+                    else
+                        AddNewRowToDocument(groupdic[groupnumber], data);
+                }
+                else
+                {
+                    AddNewRowToDocument(groupdic[groupnumber], data);
+                }
+            }
+            else
+            {
+                FlowDocument document = GetNewFlowDocument();
+                groupdic.Add(groupnumber, document);
+                AddNewRowToDocument(groupdic[groupnumber], data);
+            }
+
+            this.Flash();
+        }
+
         private void tox_OnGroupInvite(int friendnumber, string group_public_key)
         {
             //auto join groupchats for now
@@ -97,7 +147,7 @@ namespace Toxy
             if (groupnumber != -1)
                 AddGroupToView(groupnumber);
         }
-
+        
         private void tox_OnFriendRequest(string id, string message)
         {
             int friendnumber;
@@ -440,7 +490,12 @@ namespace Toxy
 
         private void group_Click(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            GroupControl control = (GroupControl)sender;
+
+            TypingStatusLabel.Content = "";
+
+            if (!control.Selected)
+                SelectGroupControl(control);
         }
 
         private void AddFriendToView(int friendNumber)
@@ -484,9 +539,52 @@ namespace Toxy
             friend.ContextMenu.Items.Add(item);
         }
 
+        private void SelectGroupControl(GroupControl group)
+        {
+            Grid grid = (Grid)group.FindName("MainGrid");
+            group.Selected = true;
+            grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
+
+            int friendNumber = group.GroupNumber;
+
+            foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())
+            {
+                Grid grid1 = (Grid)control.FindName("MainGrid");
+                control.Selected = false;
+                grid1.Background = new SolidColorBrush(Colors.White);
+            }
+
+            foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
+            {
+                if (group != control)
+                {
+                    Grid grid1 = (Grid)control.FindName("MainGrid");
+                    control.Selected = false;
+                    grid1.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+
+            Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
+            Friendstatus.Text = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
+
+            current_type = typeof(GroupControl);
+            current_number = group.GroupNumber;
+
+            if (groupdic.ContainsKey(current_number))
+            {
+                ChatBox.Document = groupdic[current_number];
+            }
+            else
+            {
+                FlowDocument document = GetNewFlowDocument();
+                groupdic.Add(current_number, document);
+                ChatBox.Document = groupdic[current_number];
+            }
+        }
+
         private void SelectFriendControl(FriendControl friend)
         {
-            Grid grid = (Grid)friend.FindName("FriendGrid");
+            Grid grid = (Grid)friend.FindName("MainGrid");
             friend.Selected = true;
             grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
 
@@ -496,14 +594,23 @@ namespace Toxy
             {
                 if (friend != control)
                 {
-                    Grid grid1 = (Grid)control.FindName("FriendGrid");
+                    Grid grid1 = (Grid)control.FindName("MainGrid");
                     control.Selected = false;
                     grid1.Background = new SolidColorBrush(Colors.White);
                 }
             }
 
+            foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
+            {
+                Grid grid1 = (Grid)control.FindName("MainGrid");
+                control.Selected = false;
+                grid1.Background = new SolidColorBrush(Colors.White);
+            }
+
             Friendname.Text = tox.GetName(friendNumber);
             Friendstatus.Text = tox.GetStatusMessage(friendNumber);
+
+            current_type = typeof(FriendControl);
             current_number = friend.FriendNumber;
 
             if (convdic.ContainsKey(current_number))
@@ -527,7 +634,8 @@ namespace Toxy
             else
                 TypingStatusLabel.Content = tox.GetName(control.FriendNumber) + " is typing...";
 
-            SelectFriendControl(control);
+            if (!control.Selected)
+                SelectFriendControl(control);
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -632,7 +740,12 @@ namespace Toxy
                 {
                     //action
                     string action = text.Substring(4);
-                    int messageid = tox.SendAction(current_number, action);
+                    int messageid = -1;
+
+                    if (current_type == typeof(FriendControl))
+                        messageid = tox.SendAction(current_number, action);
+                    else if (current_type == typeof(GroupControl))
+                        tox.SendGroupAction(current_number, action);
 
                     MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetSelfName(), action) };
 
@@ -651,7 +764,13 @@ namespace Toxy
                 {
                     //regular message
                     string message = text;
-                    int messageid = tox.SendMessage(current_number, message);
+
+                    int messageid = -1;
+
+                    if (current_type == typeof(FriendControl))
+                        messageid = tox.SendMessage(current_number, message);
+                    else if (current_type == typeof(GroupControl))
+                        tox.SendGroupMessage(current_number, message);
 
                     MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
 
@@ -667,7 +786,7 @@ namespace Toxy
                         }
                         else
                         {
-                            AddNewRowToDocument(convdic[current_number], data);    
+                            AddNewRowToDocument(convdic[current_number], data);
                         }
                     }
                     else
@@ -676,7 +795,6 @@ namespace Toxy
                         convdic.Add(current_number, document);
                         AddNewRowToDocument(convdic[current_number], data);
                     }
-
                 }
 
                 TextToSend.Text = "";
@@ -764,7 +882,7 @@ namespace Toxy
         {
             tox.SetUserStatus(ToxUserStatus.BUSY);
         }
-    }
+}
 
     public class MessageData
     {

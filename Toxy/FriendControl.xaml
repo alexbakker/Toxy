@@ -4,10 +4,41 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:custom="clr-namespace:Toxy"
-             mc:Ignorable="d" Height="60" BorderThickness="4,0,0,0" BorderBrush="Red" Width="2000">
-        <!--Hacking the width above in order to keep the gray background on resize -->
+             mc:Ignorable="d" Height="60" BorderThickness="4,0,0,0"  Width="2000">
+    <!--Hacking the width above in order to keep the gray background on resize -->
     <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
         <Label Name="FriendNameLabel" Content="Friend Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
+        <Grid Name="ButtonsGrid" Visibility="Collapsed" ZIndex="9999">
+            <Button
+                        Name="AcceptButton"
+                        Height="30"
+                        Width="30"
+                        IsEnabled="True"
+                        Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Margin="0,24,1911,6">
+                <Rectangle Width="10"
+                               Height="10"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_check}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button
+                        Height="30"
+                        Width="30"
+                        Name="DeclineButton"
+                        Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Margin="0,24,1886,6">
+                    <Rectangle Width="10"
+                               Height="10"
+                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_close}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+        </Grid>
         <Label Name="FriendStatusLabel" Content="Friend Status" HorizontalAlignment="Left" Margin="55,24,0,0" VerticalAlignment="Top" Width="245"/>
         <Image HorizontalAlignment="Left" Height="40" Source="pack://application:,,,/Resources/Icons/profilepicture.png"  VerticalAlignment="Top" Width="40" Margin="10,10,0,0"/>
         <Button Name="HackButton" VerticalAlignment="Top" Height="60" Opacity="0" Click="Button_Click" Margin="0,0,-4,0"/>

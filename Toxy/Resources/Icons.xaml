@@ -30,4 +30,12 @@
     <Canvas x:Key="appbar_folder_open" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
         <Path Width="44" Height="26" Canvas.Left="19" Canvas.Top="24" Stretch="Fill" Fill="#FF000000" Data="F1 M 19,50L 28,34L 63,34L 54,50L 19,50 Z M 19,28.0001L 35,28C 36,25 37.4999,24.0001 37.4999,24.0001L 48.75,24C 49.3023,24 50,24.6977 50,25.25L 50,28L 53.9999,28.0001L 53.9999,32L 27,32L 19,46.4L 19,28.0001 Z "/>
      </Canvas>
+
+    <Canvas x:Key="appbar_notification" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="41.9999" Height="28" Canvas.Left="17" Canvas.Top="24.0001" Stretch="Fill" Fill="#FF000000" Data="F1 M 20,24.0001L 55.9999,24.0001C 57.6568,24.0001 58.9999,25.3432 58.9999,27.0001L 58.9999,49.0001C 58.9999,50.6569 57.6567,52.0001 55.9999,52.0001L 20,52.0001C 18.3431,52.0001 17,50.6569 17,49.0001L 17,27.0001C 17,25.3433 18.3431,24.0001 20,24.0001 Z M 22,31L 22,33L 51,33L 51,31L 22,31 Z M 22,37L 22,39L 44,39L 44,37L 22,37 Z M 22,43L 22,45L 51,45L 51,43L 22,43 Z "/>
+    </Canvas>
+
+    <Canvas x:Key="appbar_notification_above" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+        <Path Width="38" Height="33" Canvas.Left="19" Canvas.Top="24" Stretch="Fill" Fill="#FF000000" Data="F1 M 19,24L 57,24L 57,48L 47,48L 38,57L 29,48L 19,48L 19,24 Z "/>
+    </Canvas>
 </ResourceDictionary>

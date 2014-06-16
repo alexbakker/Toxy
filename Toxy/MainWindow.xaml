@@ -65,10 +65,20 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Margin="0,0,0,0">
+            <TabControl Name="ListViewTabControl" SelectionChanged="ListViewTabControl_OnSelectionChanged" Margin="0,94,0,56">
+                <TabItem Header="Chats">
+                    <ScrollViewer Name="ChatListViewer" Margin="-4,0,0,0" >
+                        <WrapPanel Name="FriendWrapper" HorizontalAlignment="Left"></WrapPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Name="RequestsTabItem"  Header="Requests">
+                    <ScrollViewer Name="NotificationViewer" Margin="-8,0,0,0">
+                        <WrapPanel Name="NotificationWrapper"></WrapPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
 
-            <ScrollViewer Margin="0,140,10,10" >
-                <WrapPanel Name="FriendWrapper" HorizontalAlignment="Left"/>
-            </ScrollViewer>
+
             <Border BorderBrush="Black" BorderThickness="0" Height="94" VerticalAlignment="Top" Background="#FF41B1E1">
                 <Grid>
                     <Label>
@@ -80,13 +90,13 @@
                     </Label>
                 </Grid>
             </Border>
-            <Border BorderThickness="0,1,0,0" Margin="5,94,0,0" Height="46" VerticalAlignment="Top">
-                <Grid Height="45" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,0">
+            <Border BorderThickness="0,1,0,0" Margin="0,0,5,10" Height="46" VerticalAlignment="Bottom">
+                <Grid Margin="5,0">
                     <Button
             		Height="44"
             		Width="44"
             		VerticalAlignment="Top"
-            		Style="{DynamicResource MetroCircleButtonStyle}" Margin="0,0,0,0" Click="OpenAddFriend_Click">
+            		Style="{DynamicResource MetroCircleButtonStyle}" Click="OpenAddFriend_Click" Margin="65,0,126,0">
                         <Rectangle Width="20"
             			Height="20">
                             <Rectangle.Fill>
@@ -97,9 +107,8 @@
                     </Button>
                     <Button
             		Height="44"
-            		Width="44"
             		VerticalAlignment="Top"
-            		Style="{DynamicResource MetroCircleButtonStyle}" Margin="49,0,-49,0" Click="OpenSettings_Click">
+            		Style="{DynamicResource MetroCircleButtonStyle}"  Click="OpenSettings_Click" Width="44" Margin="114,0,77,0">
                         <Rectangle Width="20"
             			Height="20">
                             <Rectangle.Fill>
@@ -108,6 +117,7 @@
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
+
                 </Grid>
             </Border>
             <ComboBox BorderBrush="Transparent" Background="Transparent" Name="Status" Margin="79,60,0,0" VerticalAlignment="Top" SelectionChanged="Status_SelectionChanged" Height="26" HorizontalAlignment="Left" Width="106">
@@ -148,7 +158,7 @@
             </Border>
             <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
             <FlowDocumentScrollViewer IsEnabled="True" Name="ChatBox" Margin="0,92,0,91" BorderThickness="1,1,1,0" IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100" >
-    
+
             </FlowDocumentScrollViewer>
         </Grid>
         <Label Name="TypingStatusLabel" Content="" HorizontalAlignment="Left" Grid.Column="1" Margin="10,0,0,55" Height="26" VerticalAlignment="Bottom"/>

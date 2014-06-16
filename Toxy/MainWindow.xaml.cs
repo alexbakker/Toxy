@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
@@ -150,11 +151,9 @@ namespace Toxy
         
         private void tox_OnFriendRequest(string id, string message)
         {
-            int friendnumber;
             try 
             {
-                friendnumber = tox.AddFriendNoRequest(id);
-                AddFriendToView(friendnumber);
+                AddFriendRequestToView(id);
             }
             catch (Exception ex) 
             {
@@ -539,6 +538,37 @@ namespace Toxy
             friend.ContextMenu.Items.Add(item);
         }
 
+        private void AddFriendRequestToView(string id)
+        {
+            string friendName = id;
+
+            FriendControl friend = new FriendControl();
+            friend.FriendNameLabel.Content = friendName;
+            friend.ButtonsGrid.Visibility = Visibility.Visible;
+            friend.AcceptButton.Click += (sender, e) => AcceptButton_Click(id, friend);
+            friend.DeclineButton.Click += (sender, e) => DeclineButton_Click(friend);
+            friend.FriendStatusLabel.Visibility = Visibility.Collapsed;
+            
+            NotificationWrapper.Children.Add(friend);
+            if (ListViewTabControl.SelectedIndex != 1)
+            {
+                RequestsTabItem.Header = "Requests*";
+            }
+        }
+
+        void AcceptButton_Click(string id, FriendControl friendControl)
+        {
+            int friendnumber = tox.AddFriendNoRequest(id);
+            tox.SetSendsReceipts(friendnumber, true);
+            AddFriendToView(friendnumber);
+            NotificationWrapper.Children.Remove(friendControl);
+        }
+
+        void DeclineButton_Click(FriendControl friendControl)
+        {
+            NotificationWrapper.Children.Remove(friendControl);
+        }
+
         private void SelectGroupControl(GroupControl group)
         {
             Grid grid = (Grid)group.FindName("MainGrid");
@@ -863,11 +893,6 @@ namespace Toxy
             }
         }
 
-        private void ChatDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
-        {
-            e.Cancel = true;
-        }
-
         private void OnlineThumbButton_Click(object sender, EventArgs e)
         {
             tox.SetUserStatus(ToxUserStatus.NONE);
@@ -882,7 +907,20 @@ namespace Toxy
         {
             tox.SetUserStatus(ToxUserStatus.BUSY);
         }
-}
+
+        private void RequestsTabItem_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (RequestsTabItem.IsSelected)
+            {
+                RequestsTabItem.Header = "Requests";
+            }
+        }
+    }
 
     public class MessageData
     {

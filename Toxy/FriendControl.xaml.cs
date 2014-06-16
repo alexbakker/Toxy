@@ -27,7 +27,7 @@ namespace Toxy
         public bool Selected = false;
         public readonly int FriendNumber;
 
-        public FriendControl(int friendnumber)
+        public FriendControl(int friendnumber = 0)
         {
             FriendNumber = friendnumber;
 

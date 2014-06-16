@@ -110,7 +110,7 @@
                     </Button>
                 </Grid>
             </Border>
-            <ComboBox Name="Status" Margin="90,54,0,0" VerticalAlignment="Top" SelectionChanged="Status_SelectionChanged" Height="26" HorizontalAlignment="Left" Width="130">
+            <ComboBox BorderBrush="Transparent" Background="Transparent" Name="Status" Margin="79,60,0,0" VerticalAlignment="Top" SelectionChanged="Status_SelectionChanged" Height="26" HorizontalAlignment="Left" Width="106">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/Icons/Online.png" Width="20" Height="20" />
                     <TextBlock Foreground="Green">Online</TextBlock>

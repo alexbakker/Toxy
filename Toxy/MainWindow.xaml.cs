@@ -55,6 +55,8 @@ namespace Toxy
             tox.OnFileData += tox_OnFileData;
             tox.OnFileControl += tox_OnFileControl;
 
+            tox.OnGroupInvite += tox_OnGroupInvite;
+
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
             {
@@ -84,6 +86,16 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
+        }
+
+        private void tox_OnGroupInvite(int friendnumber, string group_public_key)
+        {
+            //auto join groupchats for now
+
+            int groupnumber = tox.JoinGroup(friendnumber, group_public_key);
+
+            if (groupnumber != -1)
+                AddGroupToView(groupnumber);
         }
 
         private void tox_OnFriendRequest(string id, string message)
@@ -396,6 +408,39 @@ namespace Toxy
             //Creates a new FriendControl for every friend
             foreach (int FriendNumber in tox.GetFriendlist()) 
                 AddFriendToView(FriendNumber);
+        }
+
+        private void AddGroupToView(int groupnumber)
+        {
+            string groupname = string.Format("Groupchat #{0}", groupnumber);
+            string groupstatus = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
+
+            GroupControl group = new GroupControl(groupnumber);
+            group.GroupNameLabel.Content = groupname;
+            group.GroupStatusLabel.Content = groupstatus;
+            group.Click += group_Click;
+            FriendWrapper.Children.Add(group);
+
+            MenuItem item = new MenuItem();
+            item.Header = "Delete";
+            item.Click += delegate(object sender, RoutedEventArgs e)
+            {
+                if (group != null)
+                {
+                    FriendWrapper.Children.Remove(group);
+                    group = null;
+
+                    tox.DeleteGroupChat(groupnumber);
+                }
+            };
+
+            group.ContextMenu = new ContextMenu();
+            group.ContextMenu.Items.Add(item);
+        }
+
+        private void group_Click(object sender, RoutedEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         private void AddFriendToView(int friendNumber)

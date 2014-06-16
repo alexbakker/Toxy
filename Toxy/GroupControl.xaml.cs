@@ -39,28 +39,6 @@ namespace Toxy
             GroupNameLabel.Content = name;
         }
 
-        public void SetStatus(ToxUserStatus newStatus)
-        {
-            switch (newStatus)
-            {
-                case ToxUserStatus.NONE:
-                    this.BorderBrush = new SolidColorBrush(Color.FromRgb(6, 225, 1));
-                    break;
-
-                case ToxUserStatus.BUSY:
-                    this.BorderBrush = new SolidColorBrush(Color.FromRgb(214, 43, 79));
-                    break;
-
-                case ToxUserStatus.AWAY:
-                    this.BorderBrush = new SolidColorBrush(Color.FromRgb(229, 222, 31));
-                    break;
-
-                case ToxUserStatus.INVALID:
-                    this.BorderBrush = new SolidColorBrush(Colors.Red);
-                    break;
-            }
-        }
-
         public void SetStatusMessage(string newStatusMessage)
         {
             GroupStatusLabel.Content = newStatusMessage;

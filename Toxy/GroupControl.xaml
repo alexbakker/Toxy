@@ -3,9 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:custom="clr-namespace:Toxy"
-             mc:Ignorable="d" Height="60" BorderThickness="4,0,0,0" BorderBrush="Red" Width="2000">
-        <!--Hacking the width above in order to keep the gray background on resize -->
+             xmlns:custom="clr-namespace:Toxy">
     <Grid Name="GroupGrid" Height="60" VerticalAlignment="Top">
         <Label Name="GroupNameLabel" Content="Group Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
         <Label Name="GroupStatusLabel" Content="Group Status" HorizontalAlignment="Left" Margin="55,24,0,0" VerticalAlignment="Top" Width="245"/>

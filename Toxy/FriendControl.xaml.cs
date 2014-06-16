@@ -24,6 +24,7 @@ namespace Toxy
     {
         public event RoutedEventHandler Click;
 
+        public FlowDocument RequestFlowDocument;
         public bool Selected = false;
         public readonly int FriendNumber;
 

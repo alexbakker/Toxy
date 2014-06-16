@@ -2,26 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using System.IO;
-using System.Threading.Tasks;
 using System.Diagnostics;
 
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using MahApps.Metro.Controls;
 using SharpTox;
-using System.Threading;
 
 using Path = System.IO.Path;
 
@@ -153,7 +145,7 @@ namespace Toxy
         {
             try 
             {
-                AddFriendRequestToView(id);
+                AddFriendRequestToView(id, message);
             }
             catch (Exception ex) 
             {
@@ -538,7 +530,7 @@ namespace Toxy
             friend.ContextMenu.Items.Add(item);
         }
 
-        private void AddFriendRequestToView(string id)
+        private void AddFriendRequestToView(string id, string message)
         {
             string friendName = id;
 
@@ -548,12 +540,20 @@ namespace Toxy
             friend.AcceptButton.Click += (sender, e) => AcceptButton_Click(id, friend);
             friend.DeclineButton.Click += (sender, e) => DeclineButton_Click(friend);
             friend.FriendStatusLabel.Visibility = Visibility.Collapsed;
+            MessageData messageData = new MessageData() {Message = message, Username = "Request Message"};
+            friend.RequestFlowDocument = GetNewFlowDocument();
+            friend.Click += (sender, e) => FriendRequest_Click(friend, messageData);
             
             NotificationWrapper.Children.Add(friend);
             if (ListViewTabControl.SelectedIndex != 1)
             {
                 RequestsTabItem.Header = "Requests*";
             }
+        }
+
+        private void FriendRequest_Click(FriendControl friendControl, MessageData messageData)
+        {
+            AddNewRowToDocument(friendControl.RequestFlowDocument, messageData);
         }
 
         void AcceptButton_Click(string id, FriendControl friendControl)
@@ -906,11 +906,6 @@ namespace Toxy
         private void BusyThumbButton_Click(object sender, EventArgs e)
         {
             tox.SetUserStatus(ToxUserStatus.BUSY);
-        }
-
-        private void RequestsTabItem_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            
         }
 
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

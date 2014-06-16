@@ -34,11 +34,6 @@ namespace Toxy
             InitializeComponent();
         }
 
-        public void SetName(string name)
-        {
-            FriendNameLabel.Content = name;
-        }
-
         public void SetStatus(ToxUserStatus newStatus)
         {
             switch (newStatus)

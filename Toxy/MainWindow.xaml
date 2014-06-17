@@ -1,22 +1,24 @@
 ﻿<controls:MetroWindow
-        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:custom="clr-namespace:Toxy" x:Class="Toxy.MainWindow"
-        Title="Toxy" MinWidth="717" MinHeight="513" Height="513" Width="717" ResizeMode="CanResizeWithGrip" Closing="MetroWindow_Closing"
-        GlowBrush="{DynamicResource AccentColorBrush}" Icon="Resources/Icons/icon.ico" SizeChanged="MetroWindow_SizeChanged">
-    <Window.Resources>
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:custom="clr-namespace:Toxy" xmlns:ViewModels="clr-namespace:Toxy.ViewModels" x:Class="Toxy.MainWindow"
+    Title="Toxy" MinWidth="717" MinHeight="513" Height="513" Width="717" ResizeMode="CanResizeWithGrip"
+    Closing="MetroWindow_Closing"
+    GlowBrush="{DynamicResource AccentColorBrush}" Icon="Resources/Icons/icon.ico"
+    SizeChanged="MetroWindow_SizeChanged">
+    <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <Style x:Key="UsernameCellStyle" TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Padding" Value="20"/>
-                        <Setter Property="Margin" Value="0, 20, 0, 0"/>
+                        <Setter Property="Padding" Value="20" />
+                        <Setter Property="Margin" Value="0, 20, 0, 0" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridCell}">
                                     <Grid Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                                        <ContentPresenter HorizontalAlignment="Right" VerticalAlignment="Top" />
                                     </Grid>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -27,7 +29,7 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridCell}">
                                     <Grid>
-                                        <ContentPresenter  VerticalAlignment="Top"/>
+                                        <ContentPresenter VerticalAlignment="Top" />
                                     </Grid>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -35,14 +37,14 @@
                     </Style>
                 </ResourceDictionary>
                 <ResourceDictionary>
-                    <Style x:Key="ChangeOnHover" TargetType="Rectangle">
+                    <Style x:Key="ChangeOnHover" TargetType="{x:Type Rectangle}">
                         <Setter Property="Fill" Value="Gray" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Fill" Value="Green"/>
+                                <Setter Property="Fill" Value="Green" />
                             </Trigger>
-                            <Trigger Property="Button.IsPressed" Value="True">
-                                <Setter Property="Fill" Value="Red"/>
+                            <Trigger Property="ButtonBase.IsPressed" Value="True">
+                                <Setter Property="Fill" Value="Red" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -52,87 +54,107 @@
                         <ResourceDictionary Source="/Resources/Icons.xaml" />
                     </ResourceDictionary.MergedDictionaries>
                 </ResourceDictionary>
-                <ResourceDictionary Source="Styles/Combobox.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Styles/Combobox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
 
-    </Window.Resources>
+    </controls:MetroWindow.Resources>
 
-    <Grid Margin="0,0,0,0" MouseLeftButtonUp="Grid_MouseLeftButtonUp" >
+    <Grid Margin="0,0,0,0" MouseLeftButtonUp="Grid_MouseLeftButtonUp">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" MinWidth="250"/>
-            <ColumnDefinition Width="2*" MinWidth="250"/>
+            <ColumnDefinition Width="1*" MinWidth="250" />
+            <ColumnDefinition Width="2*" MinWidth="250" />
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Margin="0,0,0,0">
-            <TabControl Name="ListViewTabControl" SelectionChanged="ListViewTabControl_OnSelectionChanged" Margin="0,94,0,56">
+            <TabControl x:Name="ListViewTabControl" SelectionChanged="ListViewTabControl_OnSelectionChanged"
+                        Margin="0,94,0,56">
                 <TabItem Header="Chats">
-                    <ScrollViewer Name="ChatListViewer" Margin="-4,0,0,0" >
-                        <WrapPanel Name="FriendWrapper" HorizontalAlignment="Stretch"></WrapPanel>
+                    <ScrollViewer x:Name="ChatListViewer" Margin="-4,0,0,0">
+                        <WrapPanel x:Name="FriendWrapper" HorizontalAlignment="Stretch" />
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Name="RequestsTabItem"  Header="Requests">
-                    <ScrollViewer Name="NotificationViewer" Margin="-8,0,0,0">
-                        <WrapPanel Name="NotificationWrapper" HorizontalAlignment="Stretch"></WrapPanel>
+                <TabItem x:Name="RequestsTabItem" Header="Requests">
+                    <ScrollViewer x:Name="NotificationViewer" Margin="-8,0,0,0">
+                        <WrapPanel x:Name="NotificationWrapper" HorizontalAlignment="Stretch" />
                     </ScrollViewer>
                 </TabItem>
             </TabControl>
 
 
-            <Border BorderBrush="Black" BorderThickness="0" Height="94" VerticalAlignment="Top" Background="#FF41B1E1">
+            <Border BorderBrush="Black" BorderThickness="0" Height="94" VerticalAlignment="Top"
+                    Background="{DynamicResource AccentColorBrush}">
                 <Grid>
                     <Label>
-                        <TextBlock Name="Username" HorizontalAlignment="Left" Margin="84,-2,0,0" VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis">Username</TextBlock>
+                        <TextBlock x:Name="Username" HorizontalAlignment="Left" Margin="84,-2,0,0"
+                                   VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis">
+                            <Run Text="Username" />
+                        </TextBlock>
                     </Label>
-                    <Image HorizontalAlignment="Left" Height="73" Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png" VerticalAlignment="Top" Width="73" Margin="10,10,0,0"/>
-                    <Label >
-                        <TextBlock Name="Userstatus"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="84,30,0,0" FontStyle="Italic" TextTrimming="CharacterEllipsis">User Message</TextBlock>
+                    <Image HorizontalAlignment="Left" Height="73"
+                           Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png"
+                           VerticalAlignment="Top" Width="73" Margin="10,10,0,0" />
+                    <Label>
+                        <TextBlock x:Name="Userstatus" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                   Margin="84,30,0,0" FontStyle="Italic" TextTrimming="CharacterEllipsis">
+                            <Run Text="User Message" />
+                        </TextBlock>
                     </Label>
                 </Grid>
             </Border>
             <Border BorderThickness="0,1,0,0" Margin="0,0,5,10" Height="46" VerticalAlignment="Bottom">
                 <Grid Margin="5,0">
                     <Button
-            		Height="44"
-            		Width="44"
-            		VerticalAlignment="Top"
-            		Style="{DynamicResource MetroCircleButtonStyle}" Click="OpenAddFriend_Click" Margin="65,0,126,0">
+                        Height="44"
+                        Width="44"
+                        VerticalAlignment="Top"
+                        Style="{DynamicResource MetroCircleButtonStyle}" Click="OpenAddFriend_Click"
+                        Margin="65,0,126,0">
                         <Rectangle Width="20"
-            			Height="20">
+                                   Height="20">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill"
-            					Visual="{StaticResource appbar_user_add}" />
+                                             Visual="{StaticResource appbar_user_add}" />
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
                     <Button
-            		Height="44"
-            		VerticalAlignment="Top"
-            		Style="{DynamicResource MetroCircleButtonStyle}"  Click="OpenSettings_Click" Width="44" Margin="114,0,77,0">
+                        Height="44"
+                        VerticalAlignment="Top"
+                        Style="{DynamicResource MetroCircleButtonStyle}" Click="OpenSettings_Click" Width="44"
+                        Margin="114,0,77,0">
                         <Rectangle Width="20"
-            			Height="20">
+                                   Height="20">
                             <Rectangle.Fill>
                                 <VisualBrush Stretch="Fill"
-            					Visual="{StaticResource appbar_cog}" />
+                                             Visual="{StaticResource appbar_cog}" />
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
 
                 </Grid>
             </Border>
-            <ComboBox Style="{StaticResource MetroComboBox2}" Name="Status" Margin="79,60,0,0" VerticalAlignment="Top" SelectionChanged="Status_SelectionChanged" Height="26" HorizontalAlignment="Left" Width="106">
+            <ComboBox Style="{StaticResource MetroComboBox2}" x:Name="Status" Margin="79,60,0,0"
+                      VerticalAlignment="Top" SelectionChanged="Status_SelectionChanged" Height="26"
+                      HorizontalAlignment="Left" Width="106">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/Icons/Online.png" Width="20" Height="20" />
-                    <TextBlock Foreground="Green">Online</TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" >
-                    <Image Source="Resources/Icons/Away.png" Width="20" Height="20"/>
-                    <TextBlock Foreground="Black">Away</TextBlock>
+                    <TextBlock Foreground="Green">
+                        <Run Text="Online" />
+                    </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/Icons/Busy.png" Width="20" Height="20"/>
-                    <TextBlock Foreground="Black">Busy</TextBlock>
+                    <Image Source="Resources/Icons/Away.png" Width="20" Height="20" />
+                    <TextBlock Foreground="Black">
+                        <Run Text="Away" />
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/Icons/Busy.png" Width="20" Height="20" />
+                    <TextBlock Foreground="Black">
+                        <Run Text="Busy" />
+                    </TextBlock>
                 </StackPanel>
             </ComboBox>
         </Grid>
@@ -141,85 +163,113 @@
                       VerticalAlignment="Stretch"
                       BorderThickness="0,0,2,0">
             <GridSplitter.BorderBrush>
-                <ImageBrush ImageSource="Resources/Divider.png"/>
+                <ImageBrush ImageSource="Resources/Divider.png" />
             </GridSplitter.BorderBrush>
         </GridSplitter>
-        <Grid Grid.Column="1" Margin="0,0,24,0" >
+        <Grid Grid.Column="1" Margin="0,0,24,0">
             <Border BorderBrush="Black" BorderThickness="0" Height="92" Margin="10,0,0,0" VerticalAlignment="Top">
                 <Grid>
 
-                    <Image HorizontalAlignment="Right" Height="73" Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
-                    <Label HorizontalAlignment="Right" Margin="0,0,73,0" >
-                        <TextBlock Name="Friendname" VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis">Friendname</TextBlock>
+                    <Image HorizontalAlignment="Right" Height="73"
+                           Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png"
+                           VerticalAlignment="Top" Margin="0,10,0,0" />
+                    <Label HorizontalAlignment="Right" Margin="0,0,73,0">
+                        <TextBlock x:Name="Friendname" VerticalAlignment="Top" FontSize="25"
+                                   TextTrimming="CharacterEllipsis">
+                            <Run Text="Friendname" />
+                        </TextBlock>
                     </Label>
-                    <Label HorizontalAlignment="Right" Margin="0,35,78,31" >
-                        <TextBlock Name="Friendstatus"  VerticalAlignment="Top" FontStyle="Italic" TextTrimming="CharacterEllipsis">User Message</TextBlock>
+                    <Label HorizontalAlignment="Right" Margin="0,35,78,31">
+                        <TextBlock x:Name="Friendstatus" VerticalAlignment="Top" FontStyle="Italic"
+                                   TextTrimming="CharacterEllipsis">
+                            <Run Text="User Message" />
+                        </TextBlock>
                     </Label>
                 </Grid>
             </Border>
-            <TextBox Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus" TextChanged="TextToSend_TextChanged" AcceptsReturn="False"/>
-            <FlowDocumentScrollViewer IsEnabled="True" Name="ChatBox" Margin="0,92,0,91" BorderThickness="1,1,1,0" IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100" >
-
-            </FlowDocumentScrollViewer>
+            <TextBox x:Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom"
+                     KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus"
+                     TextChanged="TextToSend_TextChanged" AcceptsReturn="False" />
+            <FlowDocumentScrollViewer IsEnabled="True" x:Name="ChatBox" Margin="0,92,0,91" BorderThickness="1,1,1,0"
+                                      IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100" />
         </Grid>
-        <Label Name="TypingStatusLabel" Content="" HorizontalAlignment="Left" Grid.Column="1" Margin="10,0,0,55" Height="26" VerticalAlignment="Bottom"/>
+        <Label x:Name="TypingStatusLabel" Content="" HorizontalAlignment="Left" Grid.Column="1" Margin="10,0,0,55"
+               Height="26" VerticalAlignment="Bottom" />
     </Grid>
+
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout Name="FriendFlyout" Header="Add a friend" Position="Right" Width="325" BorderThickness="0">
+            <controls:Flyout x:Name="FriendFlyout" Header="Add a friend" Position="Right" Width="325"
+                             BorderThickness="0">
                 <Grid>
-                    <Label Content="Enter your friend's ID" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="AddFriendID" Height="23" Margin="16,41,10,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-                    <Label Content="Enter an invitation message" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top"/>
-                    <RichTextBox Name="AddFriendMessage" Height="131" Margin="16,106,10,0" VerticalAlignment="Top">
+                    <Label Content="Enter your friend's ID" HorizontalAlignment="Left" Margin="10,10,0,0"
+                           VerticalAlignment="Top" />
+                    <TextBox x:Name="AddFriendID" Height="23" Margin="16,41,10,0" TextWrapping="Wrap"
+                             VerticalAlignment="Top" />
+                    <Label Content="Enter an invitation message" HorizontalAlignment="Left" Margin="10,75,0,0"
+                           VerticalAlignment="Top" />
+                    <RichTextBox x:Name="AddFriendMessage" Height="131" Margin="16,106,10,0" VerticalAlignment="Top">
                         <FlowDocument>
                             <Paragraph>
-                                <Run Text="Hello, I'd like to add you to my friends list."/>
+                                <Run Text="Hello, I'd like to add you to my friends list." />
                             </Paragraph>
                         </FlowDocument>
                     </RichTextBox>
-                    <Button Name="AddFriendButton" Content="Add" Margin="0,242,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="AddFriend_Click"/>
+                    <Button x:Name="AddFriendButton" Content="Add" Margin="0,242,10,0" VerticalAlignment="Top"
+                            HorizontalAlignment="Right" Width="75" Click="AddFriend_Click" />
                 </Grid>
             </controls:Flyout>
-            <controls:Flyout Name="SettingsFlyout" Header="Settings" Position="Right" Width="325">
+            <controls:Flyout x:Name="SettingsFlyout" Header="Settings" Position="Right" Width="325">
                 <Grid>
-                    <Label Content="Enter your desired username"  HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <TextBox Name="SettingsUsername" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="275" Margin="15,41,0,0"/>
-                    <Label Content="Enter your desired status message" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,82,0,0"/>
-                    <TextBox Name="SettingsStatus" AcceptsReturn="True" HorizontalAlignment="Left" Height="41" Margin="15,113,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="275"/>
-                    <Button Name="SaveSettingsButton" Content="Save" Margin="0,242,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="SaveSettingsButton_OnClick"/>
-                    <Button Name="CopyIDButton" Content="Copy ID" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="160,242,0,0" Click="CopyIDButton_Click"/>
+                    <Label Content="Enter your desired username" HorizontalAlignment="Left" Margin="10,10,0,0"
+                           VerticalAlignment="Top" />
+                    <TextBox x:Name="SettingsUsername" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
+                             Text="" VerticalAlignment="Top" Width="275" Margin="15,41,0,0" />
+                    <Label Content="Enter your desired status message" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" Margin="10,82,0,0" />
+                    <TextBox x:Name="SettingsStatus" AcceptsReturn="True" HorizontalAlignment="Left" Height="41"
+                             Margin="15,113,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="275" />
+                    <ListBox x:Name="AccentListBox" ItemsSource="{Binding AccentColors}" DisplayMemberPath="Name"
+                             Margin="15,200,0,0" Height="160" VerticalAlignment="Top" HorizontalAlignment="Left"
+                             Width="275" />
+                    <Button x:Name="SaveSettingsButton" Content="Save" Margin="0,242,10,10" VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right" Width="75" Click="SaveSettingsButton_OnClick" />
+                    <Button x:Name="CopyIDButton" Content="Copy ID" HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom" Width="75" Margin="160,242,0,10" Click="CopyIDButton_Click" />
                 </Grid>
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button Name="GithubButton" Click="GithubButton_Click">
+            <Button x:Name="GithubButton" Click="GithubButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20"
-                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill"
-                             Visual="{StaticResource appbar_github}" />
+                                         Visual="{StaticResource appbar_github}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock Margin="4 0 0 0"
-                       VerticalAlignment="Center"
-                       Text="GitHub" />
+                               VerticalAlignment="Center"
+                               Text="GitHub" />
                 </StackPanel>
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
-    <Window.TaskbarItemInfo>
+    <controls:MetroWindow.TaskbarItemInfo>
         <TaskbarItemInfo Description="Status Controls">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfoCollection>
-                    <ThumbButtonInfo Description="Online" DismissWhenClicked="False" Click="OnlineThumbButton_Click"/>
-                    <ThumbButtonInfo Description="Away" DismissWhenClicked="False" Click="AwayThumbButton_Click"/>
-                    <ThumbButtonInfo Description="Busy" DismissWhenClicked="False" Click="BusyThumbButton_Click"/>
+                    <ThumbButtonInfo Description="Online" DismissWhenClicked="False" Click="OnlineThumbButton_Click" />
+                    <ThumbButtonInfo Description="Away" DismissWhenClicked="False" Click="AwayThumbButton_Click" />
+                    <ThumbButtonInfo Description="Busy" DismissWhenClicked="False" Click="BusyThumbButton_Click" />
                 </ThumbButtonInfoCollection>
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
-    </Window.TaskbarItemInfo>
+    </controls:MetroWindow.TaskbarItemInfo>
+    <controls:MetroWindow.DataContext>
+        <ViewModels:MainWindowViewModel />
+    </controls:MetroWindow.DataContext>
 </controls:MetroWindow>

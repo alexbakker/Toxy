@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
-
+using MahApps.Metro;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 using MahApps.Metro.Controls;
 using SharpTox;
-
+using Toxy.ViewModels;
 using Path = System.IO.Path;
 
 namespace Toxy
@@ -26,6 +26,8 @@ namespace Toxy
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
+        private AppTheme currentTheme = ThemeManager.AppThemes.First(x => x.Name == "BaseLight");
+        private Accent currentAccent = ThemeManager.Accents.First(x => x.Name == "Blue");
 
         private int current_number = 0;
         private Type current_type = typeof(FriendControl);
@@ -36,7 +38,8 @@ namespace Toxy
         public MainWindow()
         {
             InitializeComponent();
-
+            currentAccent = ThemeManager.Accents.First(x => x.Name == "Green");
+            ThemeManager.ChangeAppStyle(Application.Current, currentAccent, currentTheme);
             tox = new Tox(false);
             tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;
@@ -151,7 +154,7 @@ namespace Toxy
             GroupControl groupControl = GetGroupControlByNumber(groupnumber);
             if (groupControl != null)
             {
-                groupControl.BorderBrush = (Brush) FindResource("AccentColorBrush");
+                groupControl.BorderBrush = (Brush)FindResource("AccentColorBrush");
             }
 
             if (current_number == groupnumber && current_type == typeof(GroupControl))
@@ -825,6 +828,10 @@ namespace Toxy
             Userstatus.Text = SettingsStatus.Text;
 
             SettingsFlyout.IsOpen = false;
+
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+            var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)

@@ -659,7 +659,7 @@ namespace Toxy
         {
             Grid grid = (Grid)group.FindName("MainGrid");
             group.Selected = true;
-            grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
+            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3"); 
 
             int friendNumber = group.GroupNumber;
 

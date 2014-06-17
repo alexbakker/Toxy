@@ -237,6 +237,9 @@ namespace Toxy
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum)
             {
+                if (transfer.Stream != null)
+                    return;
+
                 SaveFileDialog dialog = new SaveFileDialog();
                 dialog.FileName = filename;
 

@@ -63,12 +63,6 @@ namespace Toxy
             FolderOpenButton.Visibility = Visibility.Visible;
         }
 
-        public void TransferStarted()
-        {
-            AcceptButton.Visibility = Visibility.Collapsed;
-            TransferProgressRing.Visibility = Visibility.Visible;
-        }
-
         public void SetProgress(int value)
         {
             TransferProgressBar.Value = value;
@@ -79,6 +73,7 @@ namespace Toxy
             if (OnAccept != null)
                 OnAccept(friendnumber, filenumber);
 
+            AcceptButton.Visibility = Visibility.Collapsed;
             MessageLabel.Content = filename;
         }
 

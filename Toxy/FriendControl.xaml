@@ -2,13 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:custom="clr-namespace:Toxy"
-             mc:Ignorable="d" Height="60" BorderThickness="4,0,0,0" 
+             mc:Ignorable="d" Height="60" BorderThickness="4,0,0,0"
              Width="{Binding RelativeSource=
                     {RelativeSource FindAncestor,
                     AncestorType={x:Type WrapPanel}},
                     Path=ActualWidth}">
+  
     <!--Hacking the width above in order to keep the gray background on resize -->
     <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
         <Label Name="FriendNameLabel" Content="Friend Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
@@ -47,7 +49,7 @@
 
         <Image HorizontalAlignment="Left" Height="40" Source="pack://application:,,,/Resources/Icons/profilepicture.png"  VerticalAlignment="Top" Width="40" Margin="10,10,0,0"/>
         <Rectangle Name="StatusRectangle" Height="11"  VerticalAlignment="Top" Margin="39,39,0,0" HorizontalAlignment="Left" Width="11"/>
-        <Button Name="HackButton" VerticalAlignment="Top" Height="60" Opacity="0" Click="Button_Click"/>
+        <Button Name="HackButton" VerticalAlignment="Top" Height="60" Opacity="0" Click="Button_Click" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave"/>
 
     </Grid>
 </UserControl>

@@ -701,7 +701,8 @@ namespace Toxy
         {
             Grid grid = (Grid)friend.FindName("MainGrid");
             friend.Selected = true;
-            grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
+            //grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
+            grid.Background = (Brush) FindResource("AccentColorBrush3");
 
             int friendNumber = friend.FriendNumber;
 

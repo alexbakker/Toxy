@@ -74,5 +74,17 @@ namespace Toxy
             if (Click != null)
                 Click(this, e);
         }
+
+        private void HackButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (!Selected)
+                MainGrid.Background = (Brush) FindResource("AccentColorBrush4");
+        }
+
+        private void HackButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!Selected)
+                MainGrid.Background = null;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -69,6 +70,7 @@ namespace Toxy
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            this.BorderBrush = null;
             if (Click != null)
                 Click(this, e);
         }

@@ -46,6 +46,7 @@ namespace Toxy
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            this.BorderBrush = null;
             if (Click != null)
                 Click(this, e);
         }

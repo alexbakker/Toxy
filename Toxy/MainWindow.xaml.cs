@@ -148,6 +148,11 @@ namespace Toxy
                 groupdic.Add(groupnumber, document);
                 AddNewRowToDocument(groupdic[groupnumber], data);
             }
+            GroupControl groupControl = GetGroupControlByNumber(groupnumber);
+            if (groupControl != null)
+            {
+                groupControl.BorderBrush = (Brush) FindResource("AccentColorBrush");
+            }
 
             if (current_number == groupnumber && current_type == typeof(GroupControl))
                 ScrollChatBox();
@@ -352,6 +357,8 @@ namespace Toxy
                 convdic.Add(friendnumber, document);
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
+
+            GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();

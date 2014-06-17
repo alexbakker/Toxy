@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:custom="clr-namespace:Toxy"
+             BorderThickness="4,0,0,0" 
              Width="{Binding RelativeSource=
                     {RelativeSource FindAncestor,
                     AncestorType={x:Type WrapPanel}},

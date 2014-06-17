@@ -52,7 +52,8 @@ namespace Toxy
 
             tox.OnGroupInvite += tox_OnGroupInvite;
             tox.OnGroupMessage += tox_OnGroupMessage;
-            tox.OnGroupAction += tox_OnGroupAction;   
+            tox.OnGroupAction += tox_OnGroupAction;
+            tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -83,6 +84,22 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
+        }
+
+        private void tox_OnGroupNamelistChange(int groupnumber, int peernumber, ToxChatChange change)
+        {
+            GroupControl control = GetGroupControlByNumber(groupnumber);
+            if (control == null)
+                return;
+
+            if (change == ToxChatChange.PEER_ADD || change == ToxChatChange.PEER_DEL)
+            {
+                string status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
+                control.SetStatusMessage(status);
+
+                if (current_number == groupnumber && current_type == typeof(GroupControl))
+                    Friendstatus.Text = status;
+            }
         }
 
         private void tox_OnGroupAction(int groupnumber, int friendgroupnumber, string action)
@@ -449,6 +466,15 @@ namespace Toxy
         {
             foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())
                 if (control.FriendNumber == friendnumber)
+                    return control;
+
+            return null;
+        }
+
+        private GroupControl GetGroupControlByNumber(int groupnumber)
+        {
+            foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
+                if (control.GroupNumber == groupnumber)
                     return control;
 
             return null;

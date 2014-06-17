@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:custom="clr-namespace:Toxy">
+             xmlns:custom="clr-namespace:Toxy"
+             Width="{Binding RelativeSource=
+                    {RelativeSource FindAncestor,
+                    AncestorType={x:Type WrapPanel}},
+                    Path=ActualWidth}">
     <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
         <Label Name="GroupNameLabel" Content="Group Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
         <Label Name="GroupStatusLabel" Content="Group Status" HorizontalAlignment="Left" Margin="55,24,0,0" VerticalAlignment="Top" Width="245"/>

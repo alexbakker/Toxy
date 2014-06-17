@@ -69,12 +69,12 @@
             <TabControl Name="ListViewTabControl" SelectionChanged="ListViewTabControl_OnSelectionChanged" Margin="0,94,0,56">
                 <TabItem Header="Chats">
                     <ScrollViewer Name="ChatListViewer" Margin="-4,0,0,0" >
-                        <WrapPanel Name="FriendWrapper" HorizontalAlignment="Left"></WrapPanel>
+                        <WrapPanel Name="FriendWrapper" HorizontalAlignment="Stretch"></WrapPanel>
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Name="RequestsTabItem"  Header="Requests">
                     <ScrollViewer Name="NotificationViewer" Margin="-8,0,0,0">
-                        <WrapPanel Name="NotificationWrapper"></WrapPanel>
+                        <WrapPanel Name="NotificationWrapper" HorizontalAlignment="Stretch"></WrapPanel>
                     </ScrollViewer>
                 </TabItem>
             </TabControl>

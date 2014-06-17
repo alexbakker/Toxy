@@ -399,8 +399,6 @@ namespace Toxy
             //Adds row to the Table > TableRowGroup
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
-
-            ChatBox.Document = doc;
         }
 
         private void AppendToDocument(FlowDocument doc, MessageData data)

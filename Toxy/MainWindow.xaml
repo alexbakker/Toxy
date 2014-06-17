@@ -150,10 +150,10 @@
 
                     <Image HorizontalAlignment="Right" Height="73" Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png" VerticalAlignment="Top" Margin="0,10,0,0"/>
                     <Label HorizontalAlignment="Right" Margin="0,0,73,0" >
-                        <TextBlock Name="Friendname" VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis" FlowDirection="RightToLeft">Friendname</TextBlock>
+                        <TextBlock Name="Friendname" VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis">Friendname</TextBlock>
                     </Label>
                     <Label HorizontalAlignment="Right" Margin="0,35,78,31" >
-                        <TextBlock Name="Friendstatus"  VerticalAlignment="Top" FontStyle="Italic" TextTrimming="CharacterEllipsis" FlowDirection="RightToLeft">User Message</TextBlock>
+                        <TextBlock Name="Friendstatus"  VerticalAlignment="Top" FontStyle="Italic" TextTrimming="CharacterEllipsis">User Message</TextBlock>
                     </Label>
                 </Grid>
             </Border>

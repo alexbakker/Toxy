@@ -40,19 +40,19 @@ namespace Toxy
             switch (newStatus)
             {
                 case ToxUserStatus.NONE:
-                    this.BorderBrush = new SolidColorBrush(Color.FromRgb(6, 225, 1));
+                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(6, 225, 1));
                     break;
 
                 case ToxUserStatus.BUSY:
-                    this.BorderBrush = new SolidColorBrush(Color.FromRgb(214, 43, 79));
+                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(214, 43, 79));
                     break;
 
                 case ToxUserStatus.AWAY:
-                    this.BorderBrush = new SolidColorBrush(Color.FromRgb(229, 222, 31));
+                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(229, 222, 31));
                     break;
 
                 case ToxUserStatus.INVALID:
-                    this.BorderBrush = new SolidColorBrush(Colors.Red);
+                    StatusRectangle.Fill = new SolidColorBrush(Colors.Red);
                     break;
             }
         }

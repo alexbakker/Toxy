@@ -10,17 +10,17 @@
                     {RelativeSource FindAncestor,
                     AncestorType={x:Type WrapPanel}},
                     Path=ActualWidth}">
-  
+
     <!--Hacking the width above in order to keep the gray background on resize -->
     <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
         <Label Name="FriendNameLabel" Content="Friend Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
-        <Grid Name="ButtonsGrid" Visibility="Collapsed" ZIndex="9999">
+        <Grid Name="ButtonsGrid" Visibility="Collapsed" ZIndex="9999" HorizontalAlignment="Left" Margin="55,0,0,0" >
             <Button
                         Name="AcceptButton"
                         Height="30"
                         Width="30"
                         IsEnabled="True"
-                        Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Margin="0,24,1911,6">
+                        Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Left" Margin="0,24,0,6">
                 <Rectangle Width="10"
                                Height="10"
                                Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
@@ -34,7 +34,7 @@
                         Height="30"
                         Width="30"
                         Name="DeclineButton"
-                        Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Right" Margin="0,24,1886,6">
+                        Style="{DynamicResource MetroCircleButtonStyle}" HorizontalAlignment="Left" Margin="25,24,0,6">
                 <Rectangle Width="10"
                                Height="10"
                                Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">

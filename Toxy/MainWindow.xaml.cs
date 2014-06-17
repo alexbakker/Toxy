@@ -357,7 +357,8 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
-            GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+            if(current_number != friendnumber)
+                GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();
@@ -449,6 +450,11 @@ namespace Toxy
             usernameTableCell.Padding = new Thickness(10, 0, 0, 0);
 
             Paragraph usernameParagraph = new Paragraph();
+            usernameParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
+            if (data.Username != tox.GetSelfName())
+            {
+                usernameParagraph.Foreground = (Brush) FindResource("AccentColorBrush");
+            }
             usernameParagraph.Inlines.Add(data.Username);
             usernameTableCell.Blocks.Add(usernameParagraph);
 

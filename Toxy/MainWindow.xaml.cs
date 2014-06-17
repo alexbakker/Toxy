@@ -5,6 +5,7 @@ using System.Reflection;
 using System.IO;
 using System.Diagnostics;
 
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -163,22 +164,22 @@ namespace Toxy
             if (groupnumber != -1)
                 AddGroupToView(groupnumber);
         }
-        
+
         private void tox_OnFriendRequest(string id, string message)
         {
-            try 
+            try
             {
                 AddFriendRequestToView(id, message);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString()); 
+                MessageBox.Show(ex.ToString());
             }
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
         {
-            switch((ToxFileControl)control_type)
+            switch ((ToxFileControl)control_type)
             {
                 case ToxFileControl.FINISHED:
                     {
@@ -234,15 +235,21 @@ namespace Toxy
 
             FileTransfer transfer = AddNewFTRowToDocument(convdic[friendnumber], friendnumber, filenumber, filename, filesiz);
 
-            transfer.Control.OnAccept += delegate(int friendnum, int filenum) 
+            transfer.Control.OnAccept += delegate(int friendnum, int filenum)
             {
-                transfer.Stream = new FileStream(filename, FileMode.Create); 
-                tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]); 
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.FileName = filename;
+
+                if (dialog.ShowDialog() == true) //guess what, this bool is nullable
+                {
+                    transfer.Stream = new FileStream(dialog.FileName, FileMode.Create);
+                    tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]);
+                }
             };
 
-            transfer.Control.OnDecline += delegate(int friendnum, int filenum) 
-            { 
-                tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]); 
+            transfer.Control.OnDecline += delegate(int friendnum, int filenum)
+            {
+                tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
             };
 
             transfer.Control.OnFileOpen += delegate()
@@ -377,13 +384,13 @@ namespace Toxy
         {
             try
             {
-                Paragraph para = (Paragraph) doc.FindChildren<TableRow>()
+                Paragraph para = (Paragraph)doc.FindChildren<TableRow>()
                     .Last()
                     .FindChildren<TableCell>()
                     .First()
                     .Blocks.FirstBlock;
 
-                Run run = (Run) para.Inlines.FirstInline;
+                Run run = (Run)para.Inlines.FirstInline;
                 return run;
             }
             catch (Exception e)
@@ -396,7 +403,7 @@ namespace Toxy
         {
             FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
             FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
-            
+
             Section usernameParagraph = new Section();
             TableRow newTableRow = new TableRow();
 
@@ -457,8 +464,8 @@ namespace Toxy
         private void AppendToDocument(FlowDocument doc, MessageData data)
         {
             TableRow tableRow = doc.FindChildren<TableRow>().Last();
-            Paragraph para = (Paragraph) tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
-            Run run = (Run) para.Inlines.LastInline;
+            Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
+            Run run = (Run)para.Inlines.LastInline;
             run.Text += "\n" + data.Message;
         }
 
@@ -507,7 +514,7 @@ namespace Toxy
         private void InitFriends()
         {
             //Creates a new FriendControl for every friend
-            foreach (int FriendNumber in tox.GetFriendlist()) 
+            foreach (int FriendNumber in tox.GetFriendlist())
                 AddFriendToView(FriendNumber);
         }
 
@@ -578,7 +585,7 @@ namespace Toxy
 
             MenuItem item = new MenuItem();
             item.Header = "Delete";
-            item.Click += delegate(object sender, RoutedEventArgs e) 
+            item.Click += delegate(object sender, RoutedEventArgs e)
             {
                 if (friend != null)
                 {
@@ -603,10 +610,10 @@ namespace Toxy
             friend.AcceptButton.Click += (sender, e) => AcceptButton_Click(id, friend);
             friend.DeclineButton.Click += (sender, e) => DeclineButton_Click(friend);
             friend.FriendStatusLabel.Visibility = Visibility.Collapsed;
-            MessageData messageData = new MessageData() {Message = message, Username = "Request Message"};
+            MessageData messageData = new MessageData() { Message = message, Username = "Request Message" };
             friend.RequestFlowDocument = GetNewFlowDocument();
             friend.Click += (sender, e) => FriendRequest_Click(friend, messageData);
-            
+
             NotificationWrapper.Children.Add(friend);
             if (ListViewTabControl.SelectedIndex != 1)
             {

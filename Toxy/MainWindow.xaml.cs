@@ -98,6 +98,9 @@ namespace Toxy
                 AddNewRowToDocument(groupdic[groupnumber], data);
             }
 
+            if (current_number == groupnumber && current_type == typeof(GroupControl))
+                ScrollChatBox();
+
             this.Flash();
         }
 
@@ -127,6 +130,9 @@ namespace Toxy
                 groupdic.Add(groupnumber, document);
                 AddNewRowToDocument(groupdic[groupnumber], data);
             }
+
+            if (current_number == groupnumber && current_type == typeof(GroupControl))
+                ScrollChatBox();
 
             this.Flash();
         }
@@ -278,6 +284,9 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
+            if (current_number == friendnumber && current_type == typeof(FriendControl))
+                ScrollChatBox();
+
             this.Flash();
         }
 
@@ -317,7 +326,34 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
+            if (current_number == friendnumber && current_type == typeof(FriendControl))
+                ScrollChatBox();
+
             this.Flash();
+        }
+
+        public void ScrollChatBox()
+        {
+            ScrollViewer viewer = FindScrollViewer(ChatBox);
+
+            if (viewer != null)
+                viewer.ScrollToBottom();
+        }
+
+        public static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
+        {
+            if (VisualTreeHelper.GetChildrenCount(viewer) == 0)
+                return null;
+
+            DependencyObject first = VisualTreeHelper.GetChild(viewer, 0);
+            if (first == null)
+                return null;
+
+            Decorator border = (Decorator)VisualTreeHelper.GetChild(first, 0);
+            if (border == null)
+                return null;
+
+            return (ScrollViewer)border.Child;
         }
 
         private Run GetLastMessageRun(FlowDocument doc)
@@ -484,7 +520,10 @@ namespace Toxy
             TypingStatusLabel.Content = "";
 
             if (!control.Selected)
+            {
                 SelectGroupControl(control);
+                ScrollChatBox();
+            }
         }
 
         private void AddFriendToView(int friendNumber)
@@ -663,7 +702,10 @@ namespace Toxy
                 TypingStatusLabel.Content = tox.GetName(control.FriendNumber) + " is typing...";
 
             if (!control.Selected)
+            {
                 SelectFriendControl(control);
+                ScrollChatBox();
+            }
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -824,6 +866,8 @@ namespace Toxy
                         AddNewRowToDocument(convdic[current_number], data);
                     }
                 }
+
+                ScrollChatBox();
 
                 TextToSend.Text = "";
                 e.Handled = true;

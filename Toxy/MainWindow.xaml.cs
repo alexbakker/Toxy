@@ -360,6 +360,7 @@ namespace Toxy
             if(current_number != friendnumber)
                 GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
 
+
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();
 
@@ -453,7 +454,7 @@ namespace Toxy
             usernameParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
             if (data.Username != tox.GetSelfName())
             {
-                usernameParagraph.Foreground = (Brush) FindResource("AccentColorBrush");
+                usernameParagraph.SetResourceReference(Paragraph.ForegroundProperty, "AccentColorBrush"); 
             }
             usernameParagraph.Inlines.Add(data.Username);
             usernameTableCell.Blocks.Add(usernameParagraph);
@@ -702,7 +703,7 @@ namespace Toxy
             Grid grid = (Grid)friend.FindName("MainGrid");
             friend.Selected = true;
             //grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
-            grid.Background = (Brush) FindResource("AccentColorBrush3");
+            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3"); 
 
             int friendNumber = friend.FriendNumber;
 
@@ -835,6 +836,7 @@ namespace Toxy
             var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
             var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)

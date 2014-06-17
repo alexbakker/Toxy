@@ -26,8 +26,6 @@ namespace Toxy
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
-        private AppTheme currentTheme = ThemeManager.AppThemes.First(x => x.Name == "BaseLight");
-        private Accent currentAccent = ThemeManager.Accents.First(x => x.Name == "Blue");
 
         private int current_number = 0;
         private Type current_type = typeof(FriendControl);
@@ -38,8 +36,6 @@ namespace Toxy
         public MainWindow()
         {
             InitializeComponent();
-            currentAccent = ThemeManager.Accents.First(x => x.Name == "Green");
-            ThemeManager.ChangeAppStyle(Application.Current, currentAccent, currentTheme);
             tox = new Tox(false);
             tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;

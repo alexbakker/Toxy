@@ -554,6 +554,14 @@ namespace Toxy
                     FriendWrapper.Children.Remove(group);
                     group = null;
 
+                    if (groupdic.ContainsKey(groupnumber))
+                    {
+                        groupdic.Remove(groupnumber);
+
+                        if (current_number == groupnumber && current_type == typeof(GroupControl))
+                            ChatBox.Document = null;
+                    }
+
                     tox.DeleteGroupChat(groupnumber);
                 }
             };
@@ -607,6 +615,14 @@ namespace Toxy
                 {
                     FriendWrapper.Children.Remove(friend);
                     friend = null;
+
+                    if (convdic.ContainsKey(friendNumber))
+                    {
+                        convdic.Remove(friendNumber);
+
+                        if (current_number == friendNumber && current_type == typeof(FriendControl))
+                            ChatBox.Document = null;
+                    }
 
                     tox.DeleteFriend(friendNumber);
                 }

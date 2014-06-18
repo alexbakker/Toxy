@@ -513,12 +513,18 @@ namespace Toxy
         {
             FriendControl control = GetFriendControlByNumber(friendnumber);
             control.SetStatusMessage(newstatus);
+
+            if (current_number == friendnumber && current_type == typeof(FriendControl))
+                Friendstatus.Text = newstatus;
         }
 
         private void tox_OnNameChange(int friendnumber, string newname)
         {
             FriendControl control = GetFriendControlByNumber(friendnumber);
             control.SetUsername(newname);
+
+            if (current_number == friendnumber && current_type == typeof(FriendControl))
+                Friendname.Text = newname;
         }
 
         private ToxNode[] nodes = new ToxNode[] { 

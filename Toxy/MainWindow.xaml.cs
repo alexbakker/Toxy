@@ -115,6 +115,9 @@ namespace Toxy
                 AddNewRowToDocument(groupdic[groupnumber], data);
             }
 
+            if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
+                GetGroupControlByNumber(groupnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+
             if (current_number == groupnumber && current_type == typeof(GroupControl))
                 ScrollChatBox();
 
@@ -147,11 +150,9 @@ namespace Toxy
                 groupdic.Add(groupnumber, document);
                 AddNewRowToDocument(groupdic[groupnumber], data);
             }
-            GroupControl groupControl = GetGroupControlByNumber(groupnumber);
-            if (groupControl != null)
-            {
-                groupControl.BorderBrush = (Brush)FindResource("AccentColorBrush");
-            }
+
+            if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
+                GetGroupControlByNumber(groupnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == groupnumber && current_type == typeof(GroupControl))
                 ScrollChatBox();
@@ -315,6 +316,9 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
+            if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
+                GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();
 
@@ -357,9 +361,8 @@ namespace Toxy
                 AddNewRowToDocument(convdic[friendnumber], data);
             }
 
-            if(current_number != friendnumber)
+            if(!(current_number == friendnumber && current_type == typeof(FriendControl)))
                 GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
-
 
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();

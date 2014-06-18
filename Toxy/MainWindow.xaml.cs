@@ -4,19 +4,22 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
-using MahApps.Metro;
-using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Text.RegularExpressions;
 
+using MahApps.Metro;
 using MahApps.Metro.Controls;
+
 using SharpTox;
 using Toxy.ViewModels;
+
 using Path = System.IO.Path;
+using Microsoft.Win32;
 
 namespace Toxy
 {
@@ -466,7 +469,34 @@ namespace Toxy
             TableCell messageTableCell = new TableCell();
             Paragraph messageParagraph = new Paragraph();
 
-            messageParagraph.Inlines.Add(data.Message);
+            string[] urls = Regex.Matches(data.Message, @"(http|ftp|https):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?").Cast<Match>().Select(m => m.Value).ToArray();
+            List<int> indices = new List<int>();
+
+            if (urls.Length > 0)
+            {
+                foreach (string url in urls)
+                {
+                    indices.Add(data.Message.IndexOf(url));
+                    data.Message = data.Message.Replace(url, "");
+                }
+
+                messageParagraph.Inlines.Add(data.Message);
+                Inline inline = messageParagraph.Inlines.LastInline;
+
+                for (int i = indices.Count; i-- > 0; )
+                {
+                    string url = urls[i];
+                    int index = indices[i];
+
+                    Run run = new Run(url);
+                    TextPointer pointer = inline.ContentStart;
+
+                    Hyperlink link = new Hyperlink(run, pointer.GetPositionAtOffset(index));
+                    link.IsEnabled = true;
+                    link.Click += delegate(object sender, RoutedEventArgs args) { Process.Start(url); };
+                    link.NavigateUri = new Uri(url);
+                }
+            }
 
             //messageParagraph.Inlines.Add(fakeHyperlink);
             messageTableCell.Blocks.Add(messageParagraph);
@@ -484,6 +514,8 @@ namespace Toxy
         {
             TableRow tableRow = doc.FindChildren<TableRow>().Last();
             Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
+            
+            //what if this is a hyperlink?
             Run run = (Run)para.Inlines.LastInline;
             run.Text += "\n" + data.Message;
         }

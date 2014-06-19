@@ -501,8 +501,15 @@ namespace Toxy
 
                     Hyperlink link = new Hyperlink(run, pointer.GetPositionAtOffset(index));
                     link.IsEnabled = true;
-                    link.Click += delegate(object sender, RoutedEventArgs args) { Process.Start(url); };
-                    //link.NavigateUri = new Uri(url);
+                    link.Click += delegate(object sender, RoutedEventArgs args)
+                    {
+                        try { Process.Start(url); }
+                        catch
+                        {
+                            try { Process.Start("http://" + url); }
+                            catch { }
+                        }
+                    };
                 }
             }
             else

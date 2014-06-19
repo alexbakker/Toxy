@@ -320,7 +320,7 @@ namespace Toxy
             }
 
             if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
-                GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+                GetFriendControlByNumber(friendnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();
@@ -365,7 +365,7 @@ namespace Toxy
             }
 
             if(!(current_number == friendnumber && current_type == typeof(FriendControl)))
-                GetFriendControlByNumber(friendnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+                GetFriendControlByNumber(friendnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == friendnumber && current_type == typeof(FriendControl))
                 ScrollChatBox();

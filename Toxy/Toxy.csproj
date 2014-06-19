@@ -155,11 +155,6 @@
     <Resource Include="Resources\Icons\profilepictureNormal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons\Online.png" />
-    <Resource Include="Resources\Icons\Busy.png" />
-    <Resource Include="Resources\Icons\Away.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons\icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +162,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\FileDownload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Away.png" />
+    <Resource Include="Resources\Icons\Busy.png" />
+    <Resource Include="Resources\Icons\Online.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -84,6 +84,7 @@ namespace Toxy
             Userstatus.Text = tox.GetSelfStatusMessage();
             StatusRectangle.Fill = new SolidColorBrush(Colors.LimeGreen);
 
+            SetStatus(null);
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
@@ -1101,6 +1102,49 @@ namespace Toxy
             if (RequestsTabItem.IsSelected)
             {
                 RequestsTabItem.Header = "Requests";
+            }
+        }
+
+        private void StatusRectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StatusContextMenu.PlacementTarget = this;
+            StatusContextMenu.IsOpen = true;
+        }
+
+        private void MenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)e.Source;
+            SetStatus((ToxUserStatus)int.Parse(menuItem.Tag.ToString()));
+        }
+
+        private void SetStatus(ToxUserStatus? newStatus)
+        {
+            if (newStatus == null)
+            {
+                newStatus = tox.GetSelfUserStatus();
+            }
+            else
+            {
+                tox.SetUserStatus(newStatus.GetValueOrDefault());
+            }
+            
+            switch (newStatus)
+            {
+                case ToxUserStatus.NONE:
+                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(6, 225, 1));
+                    break;
+
+                case ToxUserStatus.BUSY:
+                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(214, 43, 79));
+                    break;
+
+                case ToxUserStatus.AWAY:
+                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(229, 222, 31));
+                    break;
+
+                case ToxUserStatus.INVALID:
+                    StatusRectangle.Fill = new SolidColorBrush(Colors.Red);
+                    break;
             }
         }
     }

@@ -92,11 +92,33 @@
                 <Image HorizontalAlignment="Left" Height="50"
                            Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png"
                            VerticalAlignment="Top" Width="50" Margin="10,10,0,0" />
-                <Rectangle Name="StatusRectangle" Height="11"  VerticalAlignment="Top" Margin="49,49,0,0" HorizontalAlignment="Left" Width="11"/>
+                <Rectangle Name="StatusRectangle" Height="11"  VerticalAlignment="Top" Margin="49,49,0,0" HorizontalAlignment="Left" Width="11" MouseLeftButtonDown="StatusRectangle_MouseLeftButtonDown">
+                    <Rectangle.ContextMenu>
+                        <ContextMenu Name="StatusContextMenu" MenuItem.Click="MenuItem_MouseLeftButtonDown">
+                            <MenuItem Header="Online" Tag="0">
+                                <MenuItem.Icon>
+                                    <Image Width="15" Height="15" Source="Resources/Icons/Online.png"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Away" Tag="1">
+                                <MenuItem.Icon>
+                                    <Image Width="15" Height="15" Source="Resources/Icons/Away.png"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Busy" Tag="2">
+                                <MenuItem.Icon>
+                                    <Image Width="15" Height="15" Source="Resources/Icons/Busy.png"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Rectangle.ContextMenu>
+                   
+                </Rectangle>
                 <TextBlock x:Name="Userstatus" HorizontalAlignment="Left" VerticalAlignment="Top"
                                    Margin="65,35,0,0" FontStyle="Italic" TextTrimming="CharacterEllipsis">
                             <Run Text="User Message" />
                 </TextBlock>
+        
             </Grid>
             <Border BorderThickness="0,1,0,0" Margin="0,0,5,10" Height="46" VerticalAlignment="Bottom">
                 <Grid Margin="5,0">

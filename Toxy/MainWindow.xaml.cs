@@ -119,7 +119,7 @@ namespace Toxy
             }
 
             if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
-                GetGroupControlByNumber(groupnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+                GetGroupControlByNumber(groupnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == groupnumber && current_type == typeof(GroupControl))
                 ScrollChatBox();
@@ -155,7 +155,7 @@ namespace Toxy
             }
 
             if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
-                GetGroupControlByNumber(groupnumber).BorderBrush = (Brush)FindResource("AccentColorBrush");
+                GetGroupControlByNumber(groupnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == groupnumber && current_type == typeof(GroupControl))
                 ScrollChatBox();

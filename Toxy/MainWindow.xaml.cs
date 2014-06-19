@@ -469,16 +469,31 @@ namespace Toxy
             TableCell messageTableCell = new TableCell();
             Paragraph messageParagraph = new Paragraph();
 
+            ProcessMessage(data, messageParagraph, false);
+
+            //messageParagraph.Inlines.Add(fakeHyperlink);
+            messageTableCell.Blocks.Add(messageParagraph);
+
+            //Add the two cells to the row we made before
+            newTableRow.Cells.Add(usernameTableCell);
+            newTableRow.Cells.Add(messageTableCell);
+
+            //Adds row to the Table > TableRowGroup
+            TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
+            MessageRows.Rows.Add(newTableRow);
+        }
+
+        private void ProcessMessage(MessageData data, Paragraph messageParagraph, bool append)
+        {
             List<string> urls = new List<string>();
+            List<int> indices = new List<int>();
             string[] parts = data.Message.Split(' ');
 
-            foreach(string part in parts)
+            foreach (string part in parts)
             {
-                if (Regex.IsMatch(part, @"([\d\w-.]+?\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|pro)(\b|\W(?<!&|=)(?!\.\s|\.{3}).*?))(\s|$)"))
+                if (Regex.IsMatch(part, @"([\d\w-.]+?\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|me|mil|museum|name|net|org|pro)(\b|\W(?<!&|=)(?!\.\s|\.{3}).*?))(\s|$)"))
                     urls.Add(part);
             }
-            
-            List<int> indices = new List<int>();
 
             if (urls.Count > 0)
             {
@@ -488,7 +503,11 @@ namespace Toxy
                     data.Message = data.Message.Replace(url, "");
                 }
 
-                messageParagraph.Inlines.Add(data.Message);
+                if (!append)
+                    messageParagraph.Inlines.Add(data.Message);
+                else
+                    messageParagraph.Inlines.Add("\n" + data.Message);
+                
                 Inline inline = messageParagraph.Inlines.LastInline;
 
                 for (int i = indices.Count; i-- > 0; )
@@ -514,29 +533,19 @@ namespace Toxy
             }
             else
             {
-                messageParagraph.Inlines.Add(data.Message);
+                if (!append)
+                    messageParagraph.Inlines.Add(data.Message);
+                else
+                    messageParagraph.Inlines.Add("\n" + data.Message);
             }
-
-            //messageParagraph.Inlines.Add(fakeHyperlink);
-            messageTableCell.Blocks.Add(messageParagraph);
-
-            //Add the two cells to the row we made before
-            newTableRow.Cells.Add(usernameTableCell);
-            newTableRow.Cells.Add(messageTableCell);
-
-            //Adds row to the Table > TableRowGroup
-            TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
-            MessageRows.Rows.Add(newTableRow);
         }
 
         private void AppendToDocument(FlowDocument doc, MessageData data)
         {
             TableRow tableRow = doc.FindChildren<TableRow>().Last();
             Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
-            
-            //what if this is a hyperlink?
-            Run run = (Run)para.Inlines.LastInline;
-            run.Text += "\n" + data.Message;
+
+            ProcessMessage(data, para, true);
         }
 
         private FriendControl GetFriendControlByNumber(int friendnumber)

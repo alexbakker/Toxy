@@ -469,10 +469,18 @@ namespace Toxy
             TableCell messageTableCell = new TableCell();
             Paragraph messageParagraph = new Paragraph();
 
-            string[] urls = Regex.Matches(data.Message, @"(http|ftp|https):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?").Cast<Match>().Select(m => m.Value).ToArray();
+            List<string> urls = new List<string>();
+            string[] parts = data.Message.Split(' ');
+
+            foreach(string part in parts)
+            {
+                if (Regex.IsMatch(part, @"([\d\w-.]+?\.(a[cdefgilmnoqrstuwz]|b[abdefghijmnorstvwyz]|c[acdfghiklmnoruvxyz]|d[ejkmnoz]|e[ceghrst]|f[ijkmnor]|g[abdefghilmnpqrstuwy]|h[kmnrtu]|i[delmnoqrst]|j[emop]|k[eghimnprwyz]|l[abcikrstuvy]|m[acdghklmnopqrstuvwxyz]|n[acefgilopruz]|om|p[aefghklmnrstwy]|qa|r[eouw]|s[abcdeghijklmnortuvyz]|t[cdfghjkmnoprtvwz]|u[augkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]|aero|arpa|biz|com|coop|edu|info|int|gov|mil|museum|name|net|org|pro)(\b|\W(?<!&|=)(?!\.\s|\.{3}).*?))(\s|$)"))
+                    urls.Add(part);
+            }
+            
             List<int> indices = new List<int>();
 
-            if (urls.Length > 0)
+            if (urls.Count > 0)
             {
                 foreach (string url in urls)
                 {
@@ -494,8 +502,12 @@ namespace Toxy
                     Hyperlink link = new Hyperlink(run, pointer.GetPositionAtOffset(index));
                     link.IsEnabled = true;
                     link.Click += delegate(object sender, RoutedEventArgs args) { Process.Start(url); };
-                    link.NavigateUri = new Uri(url);
+                    //link.NavigateUri = new Uri(url);
                 }
+            }
+            else
+            {
+                messageParagraph.Inlines.Add(data.Message);
             }
 
             //messageParagraph.Inlines.Add(fakeHyperlink);

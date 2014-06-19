@@ -82,7 +82,7 @@ namespace Toxy
             Username.Text = tox.GetSelfName();
 
             Userstatus.Text = tox.GetSelfStatusMessage();
-            Status.SelectedIndex = 0;
+            StatusRectangle.Fill = new SolidColorBrush(Colors.LimeGreen);
 
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
@@ -905,7 +905,7 @@ namespace Toxy
 
         private void Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            tox.SetUserStatus((ToxUserStatus)Status.SelectedIndex);
+            //tox.SetUserStatus((ToxUserStatus)Status.SelectedIndex);
         }
 
         private void SaveSettingsButton_OnClick(object sender, RoutedEventArgs e)

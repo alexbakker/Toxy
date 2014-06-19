@@ -69,7 +69,7 @@
 
         <Grid Grid.Column="0" Margin="0,0,0,0">
             <TabControl x:Name="ListViewTabControl" SelectionChanged="ListViewTabControl_OnSelectionChanged"
-                        Margin="0,94,0,56">
+                        Margin="0,70,0,56">
                 <TabItem Header="Chats">
                     <ScrollViewer x:Name="ChatListViewer" Margin="-4,0,0,0">
                         <WrapPanel x:Name="FriendWrapper" HorizontalAlignment="Stretch" />
@@ -83,26 +83,21 @@
             </TabControl>
 
 
-            <Border BorderBrush="Black" BorderThickness="0" Height="94" VerticalAlignment="Top"
-                    Background="{DynamicResource AccentColorBrush}">
-                <Grid>
-                    <Label>
-                        <TextBlock x:Name="Username" HorizontalAlignment="Left" Margin="84,-2,0,0"
-                                   VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis">
+
+            <Grid>
+                <TextBlock x:Name="Username" HorizontalAlignment="Left" Margin="65,3,0,0"
+                                   VerticalAlignment="Top" FontSize="25" TextTrimming="CharacterEllipsis" Height="35">
                             <Run Text="Username" />
-                        </TextBlock>
-                    </Label>
-                    <Image HorizontalAlignment="Left" Height="73"
+                </TextBlock>
+                <Image HorizontalAlignment="Left" Height="50"
                            Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png"
-                           VerticalAlignment="Top" Width="73" Margin="10,10,0,0" />
-                    <Label>
-                        <TextBlock x:Name="Userstatus" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                   Margin="84,30,0,0" FontStyle="Italic" TextTrimming="CharacterEllipsis">
+                           VerticalAlignment="Top" Width="50" Margin="10,10,0,0" />
+                <Rectangle Name="StatusRectangle" Height="11"  VerticalAlignment="Top" Margin="49,49,0,0" HorizontalAlignment="Left" Width="11"/>
+                <TextBlock x:Name="Userstatus" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                   Margin="65,35,0,0" FontStyle="Italic" TextTrimming="CharacterEllipsis">
                             <Run Text="User Message" />
-                        </TextBlock>
-                    </Label>
-                </Grid>
-            </Border>
+                </TextBlock>
+            </Grid>
             <Border BorderThickness="0,1,0,0" Margin="0,0,5,10" Height="46" VerticalAlignment="Bottom">
                 <Grid Margin="5,0">
                     <Button
@@ -135,28 +130,6 @@
 
                 </Grid>
             </Border>
-            <ComboBox Style="{StaticResource MetroComboBox2}" x:Name="Status" Margin="79,60,0,0"
-                      VerticalAlignment="Top" SelectionChanged="Status_SelectionChanged" Height="26"
-                      HorizontalAlignment="Left" Width="106">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/Icons/Online.png" Width="20" Height="20" />
-                    <TextBlock Foreground="Green">
-                        <Run Text="Online" />
-                    </TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/Icons/Away.png" Width="20" Height="20" />
-                    <TextBlock Foreground="Black">
-                        <Run Text="Away" />
-                    </TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/Icons/Busy.png" Width="20" Height="20" />
-                    <TextBlock Foreground="Black">
-                        <Run Text="Busy" />
-                    </TextBlock>
-                </StackPanel>
-            </ComboBox>
         </Grid>
         <GridSplitter Grid.Column="0" Width="2"
                       HorizontalAlignment="Right"
@@ -191,7 +164,7 @@
                      KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus"
                      TextChanged="TextToSend_TextChanged" AcceptsReturn="False" SelectionBrush="{DynamicResource AccentColorBrush}"/>
             <FlowDocumentScrollViewer IsEnabled="True" x:Name="ChatBox" Margin="0,92,0,91" BorderThickness="1,1,1,0"
-                                      IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100" />
+                                      IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100"/>
         </Grid>
         <Label x:Name="TypingStatusLabel" Content="" HorizontalAlignment="Left" Grid.Column="1" Margin="10,0,0,55"
                Height="26" VerticalAlignment="Bottom" />

@@ -943,7 +943,7 @@ namespace Toxy
                 if (string.IsNullOrEmpty(text))
                     return;
 
-                if (tox.GetFriendConnectionStatus(current_number) == 0)
+                if (tox.GetFriendConnectionStatus(current_number) == 0 && current_type == typeof(FriendControl))
                     return;
 
                 if (text.StartsWith("/me "))

@@ -53,7 +53,7 @@
         
 
     </Grid>
-    <Button Name="HackButton" VerticalAlignment="Top" Height="60" Opacity="0" Click="Button_Click" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave"/>
+        <Button Name="HackButton" VerticalAlignment="Top" Height="60" Opacity="0" Click="Button_Click" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave"/>
     <Rectangle Name="NewMessageIndicator" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="4"/>
 
     </Grid>

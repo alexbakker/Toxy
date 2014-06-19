@@ -674,6 +674,7 @@ namespace Toxy
             friend.FriendNameLabel.Content = friendName;
             friend.FriendStatusLabel.Content = friendStatus;
             friend.Click += friend_Click;
+            friend.FocusTextBox += friend_FocusTextBox;
             FriendWrapper.Children.Add(friend);
 
             MenuItem item = new MenuItem();
@@ -699,6 +700,11 @@ namespace Toxy
 
             friend.ContextMenu = new ContextMenu();
             friend.ContextMenu.Items.Add(item);
+        }
+
+        void friend_FocusTextBox(object sender, RoutedEventArgs e)
+        {
+            TextToSend.Focus();
         }
 
         private void AddFriendRequestToView(string id, string message)

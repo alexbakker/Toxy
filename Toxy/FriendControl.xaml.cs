@@ -24,6 +24,7 @@ namespace Toxy
     public partial class FriendControl : UserControl
     {
         public event RoutedEventHandler Click;
+        public event RoutedEventHandler FocusTextBox;
 
         public FlowDocument RequestFlowDocument;
         public bool Selected = false;
@@ -71,6 +72,8 @@ namespace Toxy
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NewMessageIndicator.Fill = null;
+            if (this.Selected)
+                FocusTextBox(this, e);
             if (Click != null)
                 Click(this, e);
         }

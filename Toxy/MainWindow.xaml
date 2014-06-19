@@ -257,9 +257,9 @@
         <TaskbarItemInfo Description="Status Controls">
             <TaskbarItemInfo.ThumbButtonInfos>
                 <ThumbButtonInfoCollection>
-                    <ThumbButtonInfo Description="Online" DismissWhenClicked="False" Click="OnlineThumbButton_Click" />
-                    <ThumbButtonInfo Description="Away" DismissWhenClicked="False" Click="AwayThumbButton_Click" />
-                    <ThumbButtonInfo Description="Busy" DismissWhenClicked="False" Click="BusyThumbButton_Click" />
+                    <ThumbButtonInfo Description="Online" DismissWhenClicked="False" Click="OnlineThumbButton_Click" ImageSource="Resources/Icons/Online.png" />
+                    <ThumbButtonInfo Description="Away" DismissWhenClicked="False" Click="AwayThumbButton_Click" ImageSource="Resources/Icons/Away.png" />
+                    <ThumbButtonInfo Description="Busy" DismissWhenClicked="False" Click="BusyThumbButton_Click" ImageSource="Resources/Icons/Busy.png" />
                 </ThumbButtonInfoCollection>
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>

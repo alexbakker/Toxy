@@ -1084,17 +1084,17 @@ namespace Toxy
 
         private void OnlineThumbButton_Click(object sender, EventArgs e)
         {
-            tox.SetUserStatus(ToxUserStatus.NONE);
+            SetStatus(ToxUserStatus.NONE);
         }
 
         private void AwayThumbButton_Click(object sender, EventArgs e)
         {
-            tox.SetUserStatus(ToxUserStatus.AWAY);
+            SetStatus(ToxUserStatus.AWAY);
         }
 
         private void BusyThumbButton_Click(object sender, EventArgs e)
         {
-            tox.SetUserStatus(ToxUserStatus.BUSY);
+            SetStatus(ToxUserStatus.BUSY);
         }
 
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

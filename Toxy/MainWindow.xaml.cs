@@ -513,7 +513,7 @@ namespace Toxy
                 for (int i = indices.Count; i-- > 0; )
                 {
                     string url = urls[i];
-                    int index = indices[i];
+                    int index = append ? indices[i] + 1 : indices[i];
 
                     Run run = new Run(url);
                     TextPointer pointer = new TextRange(inline.ContentStart, inline.ContentEnd).Text == "\n" ? inline.ContentEnd : inline.ContentStart;

@@ -489,7 +489,7 @@
                                  Margin="4"
                                  StrokeThickness="0" />
                         <Ellipse x:Name="ellipsebg"
-                                 Fill="{StaticResource AccentColorBrush2}"
+                                 Fill="{DynamicResource AccentColorBrush2}"
                                  Opacity="0"
                                  Margin="4"
                                  StrokeThickness="0" />

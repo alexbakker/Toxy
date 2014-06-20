@@ -124,6 +124,12 @@ namespace Toxy
         {
             if (call != null)
                 call.Start();
+
+            int friendnumber = toxav.GetPeerID(call_index, 0);
+            FriendControl control = GetFriendControlByNumber(friendnumber);
+            FriendWrapper.Children.Remove(control);
+            ChatGrid.Children.Insert(0, control);
+            //PinnedFriendGrid.Children.Add(control);
         }
 
         private void toxav_OnInvite(int call_index, IntPtr args)
@@ -669,6 +675,7 @@ namespace Toxy
             //Creates a new FriendControl for every friend
             foreach (int FriendNumber in tox.GetFriendlist())
                 AddFriendToView(FriendNumber);
+                
         }
 
         private void AddGroupToView(int groupnumber)

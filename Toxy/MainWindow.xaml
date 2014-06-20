@@ -71,9 +71,15 @@
             <TabControl x:Name="ListViewTabControl" SelectionChanged="ListViewTabControl_OnSelectionChanged"
                         Margin="0,70,0,56">
                 <TabItem Header="Chats">
-                    <ScrollViewer x:Name="ChatListViewer" Margin="-4,0,0,0">
-                        <WrapPanel x:Name="FriendWrapper" HorizontalAlignment="Stretch" />
-                    </ScrollViewer>
+                    <Grid Name="ChatGrid" Margin="-4,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer x:Name="ChatListViewer" Height="Auto" VerticalAlignment="Stretch"  Grid.Row="1">
+                            <WrapPanel x:Name="FriendWrapper" HorizontalAlignment="Stretch" />
+                        </ScrollViewer>
+                    </Grid>
                 </TabItem>
                 <TabItem x:Name="RequestsTabItem" Header="Requests">
                     <ScrollViewer x:Name="NotificationViewer" Margin="-8,0,0,0">
@@ -112,13 +118,13 @@
                             </MenuItem>
                         </ContextMenu>
                     </Rectangle.ContextMenu>
-                   
+
                 </Rectangle>
                 <TextBlock x:Name="Userstatus" HorizontalAlignment="Left" VerticalAlignment="Top"
                                    Margin="65,35,0,0" FontStyle="Italic" TextTrimming="CharacterEllipsis">
                             <Run Text="User Message" />
                 </TextBlock>
-        
+
             </Grid>
             <Border BorderThickness="0,1,0,0" Margin="0,0,5,10" Height="46" VerticalAlignment="Bottom">
                 <Grid Margin="5,0">
@@ -162,7 +168,7 @@
                                 </Style>
                             </Rectangle.Style>
                             <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
+                                <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_user_add}" />
                             </Rectangle.OpacityMask>
                         </Rectangle>

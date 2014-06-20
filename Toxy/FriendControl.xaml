@@ -48,7 +48,7 @@
                     </Rectangle>
                 </Button>
             </Grid>
-            <Grid  Visibility="Visible" ZIndex="9999" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave" HorizontalAlignment="Right" Width="80">
+            <Grid Name="CallButtonGrid" Visibility="Collapsed" ZIndex="9999" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave" HorizontalAlignment="Right" Width="80">
                 <Button
                         Name="AcceptCallButton"
                         Height="35"

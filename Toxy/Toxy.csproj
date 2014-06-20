@@ -38,6 +38,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.0.13.1.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="NAudio">
+      <HintPath>..\packages\NAudio.1.7.1\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="SharpTox, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SharpTox\SharpTox\bin\Debug\SharpTox.dll</HintPath>
@@ -64,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="FileTransferControl.xaml">
       <SubType>Designer</SubType>

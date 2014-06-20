@@ -26,6 +26,9 @@ namespace Toxy
     public partial class MainWindow : MetroWindow
     {
         private Tox tox;
+        private ToxAv toxav;
+        private ToxCall call;
+
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
@@ -58,6 +61,12 @@ namespace Toxy
             tox.OnGroupAction += tox_OnGroupAction;
             tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
 
+            toxav = new ToxAv(tox.GetPointer(), ToxAv.DefaultCodecSettings, 1);
+            toxav.Invoker = Dispatcher.BeginInvoke;
+            toxav.OnInvite += toxav_OnInvite;
+            toxav.OnStart += toxav_OnStart;
+            toxav.OnStarting += toxav_OnStart;
+
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
             {
@@ -88,6 +97,31 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
+        }
+
+        private void toxav_OnStart(int call_index, IntPtr args)
+        {
+            call.Start();
+        }
+
+        private void toxav_OnInvite(int call_index, IntPtr args)
+        {
+            //TODO: notify the user of another incoming call
+            if (call != null)
+                return;
+
+            int friendnumber = toxav.GetPeerID(call_index, 0);
+            FriendControl control = GetFriendControlByNumber(friendnumber);
+
+            control.CallButtonGrid.Visibility = Visibility.Visible;
+            control.AcceptCallButton.Click += delegate(object sender, RoutedEventArgs e)
+            {
+                if (call != null)
+                return;
+
+                call = new ToxCall(tox, toxav, call_index);
+                call.Answer();
+            };
         }
 
         private void tox_OnGroupNamelistChange(int groupnumber, int peernumber, ToxChatChange change)

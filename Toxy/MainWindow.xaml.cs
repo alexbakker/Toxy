@@ -714,7 +714,7 @@ namespace Toxy
 
             FriendControl friend = new FriendControl();
             friend.FriendNameLabel.Content = friendName;
-            friend.ButtonsGrid.Visibility = Visibility.Visible;
+            friend.RequestButtonGrid.Visibility = Visibility.Visible;
             friend.AcceptButton.Click += (sender, e) => AcceptButton_Click(id, friend);
             friend.DeclineButton.Click += (sender, e) => DeclineButton_Click(friend);
             friend.FriendStatusLabel.Visibility = Visibility.Collapsed;

@@ -10,11 +10,14 @@
                     {RelativeSource FindAncestor,
                     AncestorType={x:Type WrapPanel}},
                     Path=ActualWidth}">
+    <UserControl.Resources>
+        <ResourceDictionary Source="Styles/Combobox.xaml" />
+    </UserControl.Resources>
     <Grid ZIndex="1">
         <!--Hacking the width above in order to keep the gray background on resize -->
         <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
             <Label Name="FriendNameLabel" Content="Friend Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
-            <Grid Name="ButtonsGrid" Visibility="Collapsed" ZIndex="9999" HorizontalAlignment="Left" Margin="55,0,0,0" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave">
+            <Grid x:Name="RequestButtonGrid" Visibility="Collapsed" ZIndex="9999" HorizontalAlignment="Left" Margin="55,0,0,0" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave">
                 <Button
                         Name="AcceptButton"
                         Height="30"
@@ -41,6 +44,95 @@
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill"
                                          Visual="{DynamicResource appbar_close}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+            </Grid>
+            <Grid  Visibility="Visible" ZIndex="9999" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave" HorizontalAlignment="Right" Width="80">
+                <Button
+                        Name="AcceptCallButton"
+                        Height="35"
+                        Width="35"
+                        Style="{DynamicResource MetroCircleLovelyButtonStyle}" HorizontalAlignment="Left" Margin="14,10,0,15">
+
+                    <Rectangle Height="18" Width="10"
+                               Fill="{StaticResource BlackBrush}">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=AcceptCallButton,Path=IsMouseOver}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="White"
+                                                         Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="Black"
+                                                         Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                                <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_phone}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Name="DenyCallButton"
+                        Height="35"
+                        Width="35"
+                        
+                        Style="{DynamicResource MetroCircleLovelyButtonStyle}" HorizontalAlignment="Left" Margin="45,10,0,15">
+                    <Rectangle Width="15"
+                               Height="13"
+                               Name="OkRectangle"
+                               Fill="{StaticResource BlackBrush}">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=DenyCallButton,Path=IsMouseOver}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="White"
+                                                         Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="Black"
+                                                         Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_phone_hangup}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>

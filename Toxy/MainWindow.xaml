@@ -125,28 +125,89 @@
                     <Button
                         Height="44"
                         Width="44"
+                        Name="OpenAddFriendButton"
                         VerticalAlignment="Top"
-                        Style="{DynamicResource MetroCircleButtonStyle}" Click="OpenAddFriend_Click"
+                        Style="{DynamicResource MetroCircleLovelyButtonStyle}" Click="OpenAddFriend_Click"
                         Margin="65,0,126,0">
                         <Rectangle Width="20"
+                                   Fill="{StaticResource BlackBrush}"
                                    Height="20">
-                            <Rectangle.Fill>
-                                <VisualBrush Stretch="Fill"
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=OpenAddFriendButton,Path=IsMouseOver}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="White"
+                                                         Duration="0:0:0.3" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="Black"
+                                                         Duration="0:0:0.3" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                            <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_user_add}" />
-                            </Rectangle.Fill>
+                            </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
                     <Button
                         Height="44"
+                        Name="OpenSettingsButton"
                         VerticalAlignment="Top"
-                        Style="{DynamicResource MetroCircleButtonStyle}" Click="OpenSettings_Click" Width="44"
+                        Style="{DynamicResource MetroCircleLovelyButtonStyle}" Click="OpenSettings_Click" Width="44"
                         Margin="114,0,77,0">
                         <Rectangle Width="20"
+                                   Fill="Black"
                                    Height="20">
-                            <Rectangle.Fill>
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=OpenSettingsButton,Path=IsMouseOver}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="White"
+                                                         Duration="0:0:0.3" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="Black"
+                                                         Duration="0:0:0.3" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                            <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_cog}" />
-                            </Rectangle.Fill>
+                            </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
 

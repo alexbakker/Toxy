@@ -66,6 +66,11 @@ namespace Toxy
             toxav.OnInvite += toxav_OnInvite;
             toxav.OnStart += toxav_OnStart;
             toxav.OnStarting += toxav_OnStart;
+            toxav.OnEnd += toxav_OnEnd;
+            toxav.OnEnding += toxav_OnEnd;
+            toxav.OnPeerTimeout += toxav_OnEnd;
+            toxav.OnRequestTimeout += toxav_OnEnd;
+            toxav.OnReject += toxav_OnEnd;
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -99,9 +104,26 @@ namespace Toxy
                 SelectFriendControl(GetFriendControlByNumber(0));
         }
 
+        private void toxav_OnEnd(int call_index, IntPtr args)
+        {
+            if (call == null)
+                return;
+
+            call.Stop();
+            
+            int friendnumber = toxav.GetPeerID(call_index, 0);
+            FriendControl control = GetFriendControlByNumber(friendnumber);
+
+            if (control != null)
+                control.CallButtonGrid.Visibility = Visibility.Collapsed;
+
+            call = null;
+        }
+
         private void toxav_OnStart(int call_index, IntPtr args)
         {
-            call.Start();
+            if (call != null)
+                call.Start();
         }
 
         private void toxav_OnInvite(int call_index, IntPtr args)
@@ -113,14 +135,25 @@ namespace Toxy
             int friendnumber = toxav.GetPeerID(call_index, 0);
             FriendControl control = GetFriendControlByNumber(friendnumber);
 
+            if (control == null)
+                return;
+
             control.CallButtonGrid.Visibility = Visibility.Visible;
             control.AcceptCallButton.Click += delegate(object sender, RoutedEventArgs e)
             {
                 if (call != null)
-                return;
+                    return;
 
                 call = new ToxCall(tox, toxav, call_index);
                 call.Answer();
+            };
+
+            control.DenyCallButton.Click += delegate(object sender, RoutedEventArgs e)
+            {
+                toxav.Reject(call_index, "I'm busy...");
+                control.CallButtonGrid.Visibility = Visibility.Collapsed;
+
+                call = null;
             };
         }
 
@@ -886,6 +919,11 @@ namespace Toxy
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (call != null)
+                call.Stop();
+
+            toxav.Kill();
+
             tox.Save("data");
             tox.Kill();
         }

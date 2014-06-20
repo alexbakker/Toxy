@@ -114,7 +114,7 @@ namespace Toxy
                 Console.WriteLine("Could not send audio");
         }
 
-        private void Stop()
+        public void Stop()
         {
             if (thread != null)
             {
@@ -124,8 +124,6 @@ namespace Toxy
                 toxav.KillTransmission(CallIndex);
                 toxav.Hangup(CallIndex);
             }
-
-            //Close();
         }
 
         public void Answer()

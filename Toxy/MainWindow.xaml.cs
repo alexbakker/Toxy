@@ -548,9 +548,16 @@ namespace Toxy
             //messageParagraph.Inlines.Add(fakeHyperlink);
             messageTableCell.Blocks.Add(messageParagraph);
 
+            TableCell timestampTableCell = new TableCell();
+            Paragraph timestamParagraph = new Paragraph();
+            timestampTableCell.TextAlignment = TextAlignment.Right;
+            timestamParagraph.Inlines.Add(DateTime.Now.ToShortTimeString());
+            timestampTableCell.Blocks.Add(timestamParagraph);
+            timestamParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
             //Add the two cells to the row we made before
             newTableRow.Cells.Add(usernameTableCell);
             newTableRow.Cells.Add(messageTableCell);
+            newTableRow.Cells.Add(timestampTableCell);
 
             //Adds row to the Table > TableRowGroup
             TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
@@ -617,8 +624,9 @@ namespace Toxy
         private void AppendToDocument(FlowDocument doc, MessageData data)
         {
             TableRow tableRow = doc.FindChildren<TableRow>().Last();
-            Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
-
+            Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().ElementAt(1).Blocks.LastBlock;
+            Paragraph timestampParagraph = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
+            timestampParagraph.Inlines.Add(Environment.NewLine + DateTime.Now.ToShortTimeString());
             ProcessMessage(data, para, true);
         }
 

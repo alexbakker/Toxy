@@ -4,6 +4,7 @@
         <Table.Columns>
             <TableColumn Width="100" />
             <TableColumn/>
+            <TableColumn Width="75"/>
         </Table.Columns>
 
         <TableRowGroup Name="MessageRows" >

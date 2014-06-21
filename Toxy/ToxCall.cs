@@ -20,11 +20,13 @@ namespace Toxy
         private uint frame_size;
 
         public int CallIndex;
+        public int FriendNumber;
 
-        public ToxCall(Tox tox, ToxAv toxav, int callindex)
+        public ToxCall(Tox tox, ToxAv toxav, int callindex, int friendnumber)
         {
             this.tox = tox;
             this.toxav = toxav;
+            this.FriendNumber = friendnumber;
 
             CallIndex = callindex;
         }

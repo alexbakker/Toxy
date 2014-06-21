@@ -111,6 +111,8 @@ namespace Toxy
                 return;
 
             EndCall();
+            CallButton.Visibility = Visibility.Visible;
+            HangupButton.Visibility = Visibility.Hidden;
         }
 
         private void toxav_OnStart(int call_index, IntPtr args)
@@ -119,6 +121,10 @@ namespace Toxy
                 call.Start();
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
+            FriendControl callingFriend = GetFriendControlByNumber(friendnumber);
+            callingFriend.CallButtonGrid.Visibility = Visibility.Collapsed;
+            CallButton.Visibility = Visibility.Hidden;
+            HangupButton.Visibility = Visibility.Visible;
             AddCallControl(friendnumber);
             //PinnedFriendGrid.Children.Add(control);
         }
@@ -141,7 +147,7 @@ namespace Toxy
                 if (call != null)
                     return;
 
-                call = new ToxCall(tox, toxav, call_index);
+                call = new ToxCall(tox, toxav, call_index, friendnumber);
                 call.Answer();
             };
 
@@ -927,6 +933,13 @@ namespace Toxy
 
             Friendname.Text = tox.GetName(friendNumber);
             Friendstatus.Text = tox.GetStatusMessage(friendNumber);
+            if (call != null)
+            {
+                if (call.FriendNumber != friendNumber)
+                {
+                    HangupButton.Visibility = Visibility.Hidden;
+                }
+            }
 
             current_type = typeof(FriendControl);
             current_number = friend.FriendNumber;
@@ -1275,7 +1288,8 @@ namespace Toxy
             if (call_index == -1)
                 return;
 
-             call = new ToxCall(tox, toxav, call_index);
+            int friendnumber = toxav.GetPeerID(call_index, 0);
+            call = new ToxCall(tox, toxav, call_index, friendnumber);
         }
     }
 

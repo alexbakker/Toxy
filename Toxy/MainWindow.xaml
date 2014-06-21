@@ -297,6 +297,54 @@
                             </Rectangle.Style>
                         </Rectangle>
                     </Button>
+                    <Button Name="HangupButton" Visibility="Hidden" Click="CallButton_OnClick" VerticalAlignment="Top" Style="{DynamicResource MetroCircleLovelyButtonStyle}" Margin="0,56,78,0" Height="32" HorizontalAlignment="Right" Width="32">
+                        <Rectangle Width="15"
+                               Height="15"
+                       Margin="0,-1"
+                               Fill="{StaticResource BlackBrush}" RenderTransformOrigin="0.5,0.5">
+                            <Rectangle.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="-259.861"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Rectangle.RenderTransform>
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_phone_hangup}" />
+                            </Rectangle.OpacityMask>
+                            <Rectangle.Style>
+                                <Style TargetType="Rectangle">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=HangupButton,Path=IsMouseOver}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="White"
+                                                         Duration="0:0:0.3" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="Black"
+                                                         Duration="0:0:0.3" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Button>
                 </Grid>
             </Border>
             <TextBox x:Name="TextToSend" Margin="10,0,4,10" Height="47" VerticalAlignment="Bottom" TextWrapping="Wrap"

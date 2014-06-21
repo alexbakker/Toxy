@@ -874,7 +874,7 @@ namespace Toxy
             CallControl callControl = new CallControl();
             callControl.SetPartner(tox.GetName(friendnumber));
             callControl.HangupButton.Click += (sender, e) => HangupButton_Click();
-            ChatGrid.Children.Add(callControl);
+            ChatGrid.Children.Insert(0, callControl);
         }
 
         private void HangupButton_Click()

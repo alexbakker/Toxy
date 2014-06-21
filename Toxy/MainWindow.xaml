@@ -76,7 +76,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-
+    
                         <ScrollViewer x:Name="ChatListViewer" Height="Auto" VerticalAlignment="Stretch"  Grid.Row="1">
                             <WrapPanel x:Name="FriendWrapper" HorizontalAlignment="Stretch" />
                         </ScrollViewer>

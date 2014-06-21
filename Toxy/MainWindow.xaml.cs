@@ -102,6 +102,7 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
+           
         }
 
         private void toxav_OnEnd(int call_index, IntPtr args)
@@ -109,15 +110,7 @@ namespace Toxy
             if (call == null)
                 return;
 
-            call.Stop();
-            
-            int friendnumber = toxav.GetPeerID(call_index, 0);
-            FriendControl control = GetFriendControlByNumber(friendnumber);
-
-            if (control != null)
-                control.CallButtonGrid.Visibility = Visibility.Collapsed;
-
-            call = null;
+            EndCall();
         }
 
         private void toxav_OnStart(int call_index, IntPtr args)
@@ -126,9 +119,7 @@ namespace Toxy
                 call.Start();
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
-            FriendControl control = GetFriendControlByNumber(friendnumber);
-            FriendWrapper.Children.Remove(control);
-            ChatGrid.Children.Insert(0, control);
+            AddCallControl(friendnumber);
             //PinnedFriendGrid.Children.Add(control);
         }
 
@@ -876,6 +867,36 @@ namespace Toxy
                 groupdic.Add(current_number, document);
                 ChatBox.Document = groupdic[current_number];
             }
+        }
+
+        private void AddCallControl(int friendnumber)
+        {
+            CallControl callControl = new CallControl();
+            callControl.SetPartner(tox.GetName(friendnumber));
+            callControl.HangupButton.Click += (sender, e) => HangupButton_Click();
+            ChatGrid.Children.Add(callControl);
+        }
+
+        private void HangupButton_Click()
+        {
+            if (call == null)
+                return;
+
+            EndCall();
+        }
+
+        private void EndCall()
+        {
+            call.Stop();
+
+            int friendnumber = toxav.GetPeerID(call.CallIndex, 0);
+            FriendControl control = GetFriendControlByNumber(friendnumber);
+
+            if (control != null)
+                control.CallButtonGrid.Visibility = Visibility.Collapsed;
+
+            call = null;
+            ChatGrid.Children.RemoveAt(0);
         }
 
         private void SelectFriendControl(FriendControl friend)

@@ -67,8 +67,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CallControl.xaml.cs">
+      <DependentUpon>CallControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Page Include="CallControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FileTransferControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

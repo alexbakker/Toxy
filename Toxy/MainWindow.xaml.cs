@@ -156,10 +156,16 @@ namespace Toxy
 
             control.DenyCallButton.Click += delegate(object sender, RoutedEventArgs e)
             {
-                toxav.Reject(call_index, "I'm busy...");
-                control.CallButtonGrid.Visibility = Visibility.Collapsed;
-
-                call = null;
+                if (call == null)
+                {
+                    toxav.Reject(call_index, "I'm busy...");
+                    control.CallButtonGrid.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    call.Stop();
+                    call = null;
+                }
             };
         }
 

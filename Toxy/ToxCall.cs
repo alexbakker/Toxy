@@ -49,7 +49,7 @@ namespace Toxy
             //wave_out.DeviceNumber = config["device_output"];
             wave_out.Init(wave_provider);
 
-            wave_source = new WaveIn(/*this.Handle*/);
+            wave_source = new WaveIn();
             //wave_source.DeviceNumber = config["device_input"];
             wave_source.WaveFormat = format;
             wave_source.DataAvailable += wave_source_DataAvailable;
@@ -59,8 +59,6 @@ namespace Toxy
 
             thread = new Thread(receive);
             thread.Start();
-
-            //Text = "Calling " + tox.GetName(toxav.GetPeerID(CallIndex, 0));
         }
 
         private void wave_source_RecordingStopped(object sender, StoppedEventArgs e)
@@ -116,14 +114,21 @@ namespace Toxy
 
         public void Stop()
         {
+            //TODO: we might want to block here until RecordingStopped and PlaybackStopped are fired
+            wave_source.StopRecording();
+            wave_out.Stop();
+
+            wave_source.Dispose();
+            wave_out.Dispose();
+
             if (thread != null)
             {
                 thread.Abort();
-                thread.Join();
-
-                toxav.KillTransmission(CallIndex);
-                toxav.Hangup(CallIndex);
+                thread.Join();             
             }
+
+            toxav.KillTransmission(CallIndex);
+            toxav.Hangup(CallIndex);
         }
 
         public void Answer()

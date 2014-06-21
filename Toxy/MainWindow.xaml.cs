@@ -1261,6 +1261,22 @@ namespace Toxy
                     break;
             }
         }
+
+        private void CallButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (call != null)
+                return;
+
+            int call_index = -1;
+            ToxAvError error = toxav.Call(ref call_index, current_number, ToxAvCallType.Audio, 30);
+            if (error != ToxAvError.None)
+                return;
+
+            if (call_index == -1)
+                return;
+
+             call = new ToxCall(tox, toxav, call_index);
+        }
     }
 
     public class MessageData

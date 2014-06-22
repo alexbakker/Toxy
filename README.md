@@ -17,6 +17,7 @@ Feel free to contribute.
   - One to one conversations
   - Friendrequest listing
 * Group chats
+* Voice chats
 * File transfers (receiving only)
 * Typing detection
 * DNS discovery (tox1 and tox3)

@@ -27,7 +27,7 @@ namespace Toxy
             InitializeComponent();
         }
 
-        public void SetPartner(string username)
+        public void SetLabel(string username)
         {
             PartnerLabel.Content = username;
         }

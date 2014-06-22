@@ -117,11 +117,18 @@ namespace Toxy
         public void Stop()
         {
             //TODO: we might want to block here until RecordingStopped and PlaybackStopped are fired
-            wave_source.StopRecording();
-            wave_out.Stop();
 
-            wave_source.Dispose();
-            wave_out.Dispose();
+            if (wave_source != null)
+            {
+                wave_source.StopRecording();
+                wave_source.Dispose();
+            }
+
+            if (wave_out != null)
+            {
+                wave_out.Stop();
+                wave_out.Dispose();
+            }
 
             if (thread != null)
             {
@@ -142,7 +149,7 @@ namespace Toxy
 
         public void Call(int current_number, ToxAvCallType call_type, int ringing_seconds)
         {
-            toxav.Call(ref CallIndex, current_number, call_type, ringing_seconds);
+            toxav.Call(current_number, call_type, ringing_seconds, out CallIndex);
         }
     }
 }

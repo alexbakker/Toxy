@@ -765,8 +765,8 @@ namespace Toxy
                 friendName = tox.GetClientID(friendNumber);
 
             FriendControl friend = new FriendControl(friendNumber);
-            friend.FriendNameLabel.Content = friendName;
-            friend.FriendStatusLabel.Content = friendStatus;
+            friend.FriendNameLabel.Text = friendName;
+            friend.FriendStatusLabel.Text = friendStatus;
             friend.Click += friend_Click;
             friend.FocusTextBox += friend_FocusTextBox;
             FriendWrapper.Children.Add(friend);
@@ -806,7 +806,7 @@ namespace Toxy
             string friendName = id;
 
             FriendControl friend = new FriendControl();
-            friend.FriendNameLabel.Content = friendName;
+            friend.FriendNameLabel.Text = friendName;
             friend.RequestButtonGrid.Visibility = Visibility.Visible;
             friend.AcceptButton.Click += (sender, e) => AcceptButton_Click(id, friend);
             friend.DeclineButton.Click += (sender, e) => DeclineButton_Click(friend);

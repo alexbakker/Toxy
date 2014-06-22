@@ -61,12 +61,12 @@ namespace Toxy
 
         public void SetStatusMessage(string newStatusMessage)
         {
-            FriendStatusLabel.Content = newStatusMessage;
+            FriendStatusLabel.Text = newStatusMessage;
         }
 
         public void SetUsername(string newUsername)
         {
-            FriendNameLabel.Content = newUsername;
+            FriendNameLabel.Text = newUsername;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

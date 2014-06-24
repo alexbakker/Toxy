@@ -1079,9 +1079,12 @@ namespace Toxy
 
             SettingsFlyout.IsOpen = false;
 
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-            var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+            if (AccentListBox.SelectedItem != null)
+            {
+                var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+                var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
+                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+            }
 
         }
 

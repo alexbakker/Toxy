@@ -305,7 +305,7 @@ namespace Toxy
                 return;
 
             if (ft.Stream == null)
-                throw new Exception("Unexpectedly received data");
+                throw new NullReferenceException("Unexpectedly received data");
 
             ulong remaining = tox.FileDataRemaining(friendnumber, filenumber, 1);
             double value = (double)remaining / (double)ft.FileSize;

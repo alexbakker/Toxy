@@ -792,8 +792,37 @@ namespace Toxy
                 }
             };
 
+            MenuItem item2 = new MenuItem();
+            item2.Header = "Invite";
+            item2.Visibility = Visibility.Collapsed;
+
             friend.ContextMenu = new ContextMenu();
             friend.ContextMenu.Items.Add(item);
+            friend.ContextMenu.Items.Add(item2);
+            friend.ContextMenuOpening += delegate(object sender, ContextMenuEventArgs e)
+            {
+                item2.Items.Clear();
+                GroupControl[] groupcontrols = FriendWrapper.FindChildren<GroupControl>().ToArray<GroupControl>();
+                if (groupcontrols.Length > 0)
+                {
+                    item2.Visibility = Visibility.Visible;
+                    foreach (GroupControl control in groupcontrols)
+                    {
+                        MenuItem groupitem = new MenuItem();
+                        groupitem.Header = control.GroupNameLabel.Content;
+                        groupitem.Click += delegate(object s, RoutedEventArgs e2)
+                        {
+                            tox.InviteFriend(friendNumber, control.GroupNumber);
+                        };
+
+                        item2.Items.Add(groupitem);
+                    }
+                }
+                else
+                {
+                    item2.Visibility = Visibility.Collapsed;
+                }
+            };
         }
 
         void friend_FocusTextBox(object sender, RoutedEventArgs e)

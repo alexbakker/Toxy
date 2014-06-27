@@ -102,7 +102,6 @@ namespace Toxy
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
                 SelectFriendControl(GetFriendControlByNumber(0));
-           
         }
 
         private void toxav_OnEnd(int call_index, IntPtr args)
@@ -129,7 +128,6 @@ namespace Toxy
                 HangupButton.Visibility = Visibility.Visible;
 
             AddCallControl(friendnumber, "{0}");
-            //PinnedFriendGrid.Children.Add(control);
         }
 
         private void toxav_OnInvite(int call_index, IntPtr args)
@@ -190,12 +188,12 @@ namespace Toxy
             MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetGroupMemberName(groupnumber, friendgroupnumber), action) };
 
             if (groupdic.ContainsKey(groupnumber))
-                AddNewRowToDocument(groupdic[groupnumber], data);
+                groupdic[groupnumber].AddNewMessageRow(tox, data);
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 groupdic.Add(groupnumber, document);
-                AddNewRowToDocument(groupdic[groupnumber], data);
+                groupdic[groupnumber].AddNewMessageRow(tox, data);
             }
 
             if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
@@ -218,20 +216,20 @@ namespace Toxy
                 if (run != null)
                 {
                     if (run.Text == data.Username)
-                        AppendToDocument(groupdic[groupnumber], data);
+                        groupdic[groupnumber].AppendMessage(data);
                     else
-                        AddNewRowToDocument(groupdic[groupnumber], data);
+                        groupdic[groupnumber].AddNewMessageRow(tox, data);
                 }
                 else
                 {
-                    AddNewRowToDocument(groupdic[groupnumber], data);
+                    groupdic[groupnumber].AddNewMessageRow(tox, data);
                 }
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 groupdic.Add(groupnumber, document);
-                AddNewRowToDocument(groupdic[groupnumber], data);
+                groupdic[groupnumber].AddNewMessageRow(tox, data);
             }
 
             if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
@@ -316,12 +314,12 @@ namespace Toxy
             ft.Stream.Write(data, 0, data.Length);
         }
 
-        private void tox_OnFileSendRequest(int friendnumber, int filenumber, ulong filesiz, string filename)
+        private void tox_OnFileSendRequest(int friendnumber, int filenumber, ulong filesize, string filename)
         {
             if (!convdic.ContainsKey(friendnumber))
                 convdic.Add(friendnumber, GetNewFlowDocument());
 
-            FileTransfer transfer = AddNewFTRowToDocument(convdic[friendnumber], friendnumber, filenumber, filename, filesiz);
+            FileTransfer transfer = convdic[friendnumber].AddNewFileTransfer(tox, friendnumber, filenumber, filename, filesize);
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum)
             {
@@ -396,12 +394,12 @@ namespace Toxy
             MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetName(friendnumber), action) };
 
             if (convdic.ContainsKey(friendnumber))
-                AddNewRowToDocument(convdic[friendnumber], data);
+                convdic[friendnumber].AddNewMessageRow(tox, data);
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 convdic.Add(friendnumber, document);
-                AddNewRowToDocument(convdic[friendnumber], data);
+                convdic[friendnumber].AddNewMessageRow(tox, data);
             }
 
             if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
@@ -433,20 +431,20 @@ namespace Toxy
                 if (run != null)
                 {
                     if (run.Text == tox.GetName(friendnumber))
-                        AppendToDocument(convdic[friendnumber], data);
+                        convdic[friendnumber].AppendMessage(data);
                     else
-                        AddNewRowToDocument(convdic[friendnumber], data);
+                        convdic[friendnumber].AddNewMessageRow(tox, data);
                 }
                 else
                 {
-                    AddNewRowToDocument(convdic[friendnumber], data);
+                    convdic[friendnumber].AddNewMessageRow(tox, data);
                 }
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 convdic.Add(friendnumber, document);
-                AddNewRowToDocument(convdic[friendnumber], data);
+                convdic[friendnumber].AddNewMessageRow(tox, data);
             }
 
             if(!(current_number == friendnumber && current_type == typeof(FriendControl)))
@@ -499,146 +497,6 @@ namespace Toxy
             {
                 return null;
             }
-        }
-
-        private FileTransfer AddNewFTRowToDocument(FlowDocument doc, int friendnumber, int filenumber, string filename, ulong filesize)
-        {
-            FileTransferControl fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize);
-            FileTransfer transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, Control = fileTransferControl };
-
-            Section usernameParagraph = new Section();
-            TableRow newTableRow = new TableRow();
-
-            BlockUIContainer fileTransferContainer = new BlockUIContainer();
-            fileTransferControl.HorizontalAlignment = HorizontalAlignment.Stretch;
-            fileTransferControl.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-            fileTransferContainer.Child = fileTransferControl;
-
-            usernameParagraph.Blocks.Add(fileTransferContainer);
-            usernameParagraph.Padding = new Thickness(0);
-
-            TableCell fileTableCell = new TableCell();
-            fileTableCell.ColumnSpan = 2;
-            fileTableCell.Blocks.Add(usernameParagraph);
-            newTableRow.Cells.Add(fileTableCell);
-            fileTableCell.Padding = new Thickness(0, 10, 0, 10);
-
-            TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
-            MessageRows.Rows.Add(newTableRow);
-
-            return transfer;
-        }
-
-        private void AddNewRowToDocument(FlowDocument doc, MessageData data)
-        {
-            doc.IsEnabled = true;
-
-            //Make a new row
-            TableRow newTableRow = new TableRow();
-
-            //Make a new cell and create a paragraph in it
-            TableCell usernameTableCell = new TableCell();
-            usernameTableCell.Name = "usernameTableCell";
-            usernameTableCell.Padding = new Thickness(10, 0, 0, 0);
-
-            Paragraph usernameParagraph = new Paragraph();
-            usernameParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
-            if (data.Username != tox.GetSelfName())
-            {
-                usernameParagraph.SetResourceReference(Paragraph.ForegroundProperty, "AccentColorBrush"); 
-            }
-            usernameParagraph.Inlines.Add(data.Username);
-            usernameTableCell.Blocks.Add(usernameParagraph);
-
-            //Make a new cell and create a paragraph in it
-            TableCell messageTableCell = new TableCell();
-            Paragraph messageParagraph = new Paragraph();
-
-            ProcessMessage(data, messageParagraph, false);
-
-            //messageParagraph.Inlines.Add(fakeHyperlink);
-            messageTableCell.Blocks.Add(messageParagraph);
-
-            TableCell timestampTableCell = new TableCell();
-            Paragraph timestamParagraph = new Paragraph();
-            timestampTableCell.TextAlignment = TextAlignment.Right;
-            timestamParagraph.Inlines.Add(DateTime.Now.ToShortTimeString());
-            timestampTableCell.Blocks.Add(timestamParagraph);
-            timestamParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
-            //Add the two cells to the row we made before
-            newTableRow.Cells.Add(usernameTableCell);
-            newTableRow.Cells.Add(messageTableCell);
-            newTableRow.Cells.Add(timestampTableCell);
-
-            //Adds row to the Table > TableRowGroup
-            TableRowGroup MessageRows = (TableRowGroup)doc.FindName("MessageRows");
-            MessageRows.Rows.Add(newTableRow);
-        }
-
-        private void ProcessMessage(MessageData data, Paragraph messageParagraph, bool append)
-        {
-            List<string> urls = new List<string>();
-            List<int> indices = new List<int>();
-            string[] parts = data.Message.Split(' ');
-
-            foreach (string part in parts)
-            {
-                if (Regex.IsMatch(part, @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$"))
-                    urls.Add(part);
-            }
-
-            if (urls.Count > 0)
-            {
-                foreach (string url in urls)
-                {
-                    indices.Add(data.Message.IndexOf(url));
-                    data.Message = data.Message.Replace(url, "");
-                }
-
-                if (!append)
-                    messageParagraph.Inlines.Add(data.Message);
-                else
-                    messageParagraph.Inlines.Add("\n" + data.Message);
-                
-                Inline inline = messageParagraph.Inlines.LastInline;
-
-                for (int i = indices.Count; i-- > 0; )
-                {
-                    string url = urls[i];
-                    int index = append ? indices[i] + 1 : indices[i];
-
-                    Run run = new Run(url);
-                    TextPointer pointer = new TextRange(inline.ContentStart, inline.ContentEnd).Text == "\n" ? inline.ContentEnd : inline.ContentStart;
-
-                    Hyperlink link = new Hyperlink(run, pointer.GetPositionAtOffset(index));
-                    link.IsEnabled = true;
-                    link.Click += delegate(object sender, RoutedEventArgs args)
-                    {
-                        try { Process.Start(url); }
-                        catch
-                        {
-                            try { Process.Start("http://" + url); }
-                            catch { }
-                        }
-                    };
-                }
-            }
-            else
-            {
-                if (!append)
-                    messageParagraph.Inlines.Add(data.Message);
-                else
-                    messageParagraph.Inlines.Add("\n" + data.Message);
-            }
-        }
-
-        private void AppendToDocument(FlowDocument doc, MessageData data)
-        {
-            TableRow tableRow = doc.FindChildren<TableRow>().Last();
-            Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().ElementAt(1).Blocks.LastBlock;
-            Paragraph timestampParagraph = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
-            timestampParagraph.Inlines.Add(Environment.NewLine + DateTime.Now.ToShortTimeString());
-            ProcessMessage(data, para, true);
         }
 
         private FriendControl GetFriendControlByNumber(int friendnumber)
@@ -853,7 +711,7 @@ namespace Toxy
 
         private void FriendRequest_Click(FriendControl friendControl, MessageData messageData)
         {
-            AddNewRowToDocument(friendControl.RequestFlowDocument, messageData);
+            friendControl.RequestFlowDocument.AddNewMessageRow(tox, messageData);
         }
 
         void AcceptButton_Click(string id, FriendControl friendControl)
@@ -1154,13 +1012,13 @@ namespace Toxy
 
                     if (convdic.ContainsKey(current_number))
                     {
-                        AddNewRowToDocument(convdic[current_number], data);
+                        convdic[current_number].AddNewMessageRow(tox, data);
                     }
                     else
                     {
                         FlowDocument document = GetNewFlowDocument();
                         convdic.Add(current_number, document);
-                        AddNewRowToDocument(convdic[current_number], data);
+                        convdic[current_number].AddNewMessageRow(tox, data);
                     }
                 }
                 else
@@ -1183,20 +1041,20 @@ namespace Toxy
                         if (run != null)
                         {
                             if (run.Text == data.Username)
-                                AppendToDocument(convdic[current_number], data);
+                                convdic[current_number].AppendMessage(data);
                             else
-                                AddNewRowToDocument(convdic[current_number], data);
+                                convdic[current_number].AddNewMessageRow(tox, data);
                         }
                         else
                         {
-                            AddNewRowToDocument(convdic[current_number], data);
+                            convdic[current_number].AddNewMessageRow(tox, data);
                         }
                     }
                     else
                     {
                         FlowDocument document = GetNewFlowDocument();
                         convdic.Add(current_number, document);
-                        AddNewRowToDocument(convdic[current_number], data);
+                        convdic[current_number].AddNewMessageRow(tox, data);
                     }
                 }
 

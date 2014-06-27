@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-using SharpTox;
+using SharpTox.Core;
 
 using MahApps.Metro;
 using MahApps.Metro.Controls;

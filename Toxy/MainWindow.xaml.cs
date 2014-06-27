@@ -15,7 +15,9 @@ using System.Text.RegularExpressions;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 
-using SharpTox;
+using SharpTox.Core;
+using SharpTox.Av;
+
 using Toxy.ViewModels;
 
 using Path = System.IO.Path;

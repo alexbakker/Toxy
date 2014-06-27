@@ -2,7 +2,8 @@
 using System.Threading;
 
 using NAudio.Wave;
-using SharpTox;
+using SharpTox.Core;
+using SharpTox.Av;
 
 namespace Toxy
 {

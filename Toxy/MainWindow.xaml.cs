@@ -335,6 +335,9 @@ namespace Toxy
             transfer.Control.OnDecline += delegate(int friendnum, int filenum)
             {
                 tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+
+                if (transfer.Stream != null)
+                    transfer.Stream.Close();
             };
 
             transfer.Control.OnFileOpen += delegate()

@@ -376,7 +376,7 @@ namespace Toxy
 
         private void tox_OnTypingChange(int friendnumber, bool is_typing)
         {
-            if (current_number == friendnumber)
+            if (current_number == friendnumber && current_type == typeof(FriendControl))
             {
                 if (is_typing)
                     TypingStatusLabel.Content = tox.GetName(friendnumber) + " is typing...";
@@ -1062,6 +1062,9 @@ namespace Toxy
 
         private void TextToSend_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (current_type != typeof(FriendControl))
+                return;
+
             string text = TextToSend.Text;
 
             if (string.IsNullOrEmpty(text))

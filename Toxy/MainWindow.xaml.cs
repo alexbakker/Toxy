@@ -696,7 +696,7 @@ namespace Toxy
             };
         }
 
-        void friend_FocusTextBox(object sender, RoutedEventArgs e)
+        private void friend_FocusTextBox(object sender, RoutedEventArgs e)
         {
             TextToSend.Focus();
         }
@@ -984,6 +984,8 @@ namespace Toxy
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)
         {
+            string text = TextToSend.Text;
+
             if (e.Key == Key.Enter)
             {
                 if (Keyboard.IsKeyDown(Key.LeftShift))
@@ -995,8 +997,6 @@ namespace Toxy
 
                 if (e.IsRepeat)
                     return;
-
-                string text = TextToSend.Text;
 
                 if (string.IsNullOrEmpty(text))
                     return;
@@ -1068,6 +1068,21 @@ namespace Toxy
                 ScrollChatBox();
 
                 TextToSend.Text = "";
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Tab && current_type == typeof(GroupControl))
+            {
+                string[] names = tox.GetGroupNames(current_number);
+
+                foreach (string name in names)
+                {
+                    if (!name.ToLower().StartsWith(text.ToLower()))
+                        continue;
+
+                    TextToSend.Text = string.Format("{0}, ", name);
+                    TextToSend.SelectionStart = TextToSend.Text.Length;
+                }
+
                 e.Handled = true;
             }
         }

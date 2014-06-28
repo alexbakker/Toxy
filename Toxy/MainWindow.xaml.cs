@@ -495,6 +495,14 @@ namespace Toxy
             }
         }
 
+        private void NewGroupButton_Click(object sender, RoutedEventArgs e)
+        {
+            int groupnumber = tox.NewGroup();
+
+            if (groupnumber != -1)
+                AddGroupToView(groupnumber);
+        }
+
         private FriendControl GetFriendControlByNumber(int friendnumber)
         {
             foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())

@@ -181,7 +181,7 @@ namespace Toxy
                 control.SetStatusMessage(status);
 
                 if (current_number == groupnumber && current_type == typeof(GroupControl))
-                    Friendstatus.Text = status;
+                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(groupnumber));//Friendstatus.Text = status;
             }
         }
 
@@ -571,11 +571,11 @@ namespace Toxy
         private void AddGroupToView(int groupnumber)
         {
             string groupname = string.Format("Groupchat #{0}", groupnumber);
-            string groupstatus = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
+            //string groupstatus = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
 
             GroupControl group = new GroupControl(groupnumber);
             group.GroupNameLabel.Content = groupname;
-            group.GroupStatusLabel.Content = groupstatus;
+            group.GroupStatusLabel.Content = string.Join(", ", tox.GetGroupNames(groupnumber));
             group.Click += group_Click;
             FriendWrapper.Children.Add(group);
 
@@ -767,7 +767,7 @@ namespace Toxy
             CallButton.Visibility = Visibility.Hidden;
 
             Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
-            Friendstatus.Text = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
+            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));//string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
 
             current_type = typeof(GroupControl);
             current_number = group.GroupNumber;

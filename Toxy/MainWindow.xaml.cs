@@ -908,6 +908,7 @@ namespace Toxy
         {
             SettingsUsername.Text = tox.GetSelfName();
             SettingsStatus.Text = tox.GetSelfStatusMessage();
+            SettingsNospam.Text = tox.GetNospam().ToString();
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
 
@@ -963,6 +964,10 @@ namespace Toxy
             tox.SetName(SettingsUsername.Text);
             tox.SetStatusMessage(SettingsStatus.Text);
 
+            uint nospam;
+            if (uint.TryParse(SettingsNospam.Text, out nospam))
+                tox.SetNospam(nospam);
+
             Username.Text = SettingsUsername.Text;
             Userstatus.Text = SettingsStatus.Text;
 
@@ -974,7 +979,6 @@ namespace Toxy
                 var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
             }
-
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)

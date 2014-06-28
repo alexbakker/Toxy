@@ -380,9 +380,15 @@
                     <Label Content="Enter your desired status message" HorizontalAlignment="Left"
                            VerticalAlignment="Top" Margin="10,82,0,0" />
                     <TextBox x:Name="SettingsStatus" AcceptsReturn="True" HorizontalAlignment="Left" Height="41"
-                             Margin="15,113,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="275" />
+                             Margin="15,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275" />
+                    <Label Content="Change nospam (note: this will change your id)" HorizontalAlignment="Left"
+                           Margin="10,169,0,0" />
+                    <TextBox x:Name="SettingsNospam" AcceptsReturn="True" HorizontalAlignment="Left" Height="23"
+                             Margin="15,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275" />
+                    <Label Content="Pick an accent color" HorizontalAlignment="Left"
+                           Margin="10,239,0,0" />
                     <ListBox x:Name="AccentListBox" ItemsSource="{Binding AccentColors}" DisplayMemberPath="Name"
-                             Margin="15,200,0,0" Height="160" VerticalAlignment="Top" HorizontalAlignment="Left"
+                             Margin="15,270,0,0" Height="100" VerticalAlignment="Top" HorizontalAlignment="Left"
                              Width="275" />
                     <Button x:Name="SaveSettingsButton" Content="Save" Margin="0,242,10,10" VerticalAlignment="Bottom"
                             HorizontalAlignment="Right" Width="75" Click="SaveSettingsButton_OnClick" />

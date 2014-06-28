@@ -181,7 +181,7 @@ namespace Toxy
                 control.SetStatusMessage(status);
 
                 if (current_number == groupnumber && current_type == typeof(GroupControl))
-                    Friendstatus.Text = status;
+                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(groupnumber));//Friendstatus.Text = status;
             }
         }
 
@@ -255,14 +255,8 @@ namespace Toxy
 
         private void tox_OnFriendRequest(string id, string message)
         {
-            try
-            {
-                AddFriendRequestToView(id, message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            try { AddFriendRequestToView(id, message); }
+            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
@@ -313,7 +307,8 @@ namespace Toxy
             ft.Control.SetProgress(100 - (int)(value * 100));
             ft.Control.SetStatus(string.Format("{0}/{1}", ft.FileSize - remaining, ft.FileSize));
 
-            ft.Stream.Write(data, 0, data.Length);
+            if (ft.Stream.CanWrite)
+                ft.Stream.Write(data, 0, data.Length);
         }
 
         private void tox_OnFileSendRequest(int friendnumber, int filenumber, ulong filesize, string filename)
@@ -322,6 +317,11 @@ namespace Toxy
                 convdic.Add(friendnumber, GetNewFlowDocument());
 
             FileTransfer transfer = convdic[friendnumber].AddNewFileTransfer(tox, friendnumber, filenumber, filename, filesize);
+
+            FriendControl control = GetFriendControlByNumber(friendnumber);
+            if (control != null)
+                if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
+                    control.NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum)
             {
@@ -341,6 +341,9 @@ namespace Toxy
             transfer.Control.OnDecline += delegate(int friendnum, int filenum)
             {
                 tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+
+                if (transfer.Stream != null)
+                    transfer.Stream.Close();
             };
 
             transfer.Control.OnFileOpen += delegate()
@@ -382,7 +385,7 @@ namespace Toxy
 
         private void tox_OnTypingChange(int friendnumber, bool is_typing)
         {
-            if (current_number == friendnumber)
+            if (current_number == friendnumber && current_type == typeof(FriendControl))
             {
                 if (is_typing)
                     TypingStatusLabel.Content = tox.GetName(friendnumber) + " is typing...";
@@ -458,7 +461,7 @@ namespace Toxy
             this.Flash();
         }
 
-        public void ScrollChatBox()
+        private void ScrollChatBox()
         {
             ScrollViewer viewer = FindScrollViewer(ChatBox);
 
@@ -466,7 +469,7 @@ namespace Toxy
                 viewer.ScrollToBottom();
         }
 
-        public static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
+        private static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
         {
             if (VisualTreeHelper.GetChildrenCount(viewer) == 0)
                 return null;
@@ -499,6 +502,14 @@ namespace Toxy
             {
                 return null;
             }
+        }
+
+        private void NewGroupButton_Click(object sender, RoutedEventArgs e)
+        {
+            int groupnumber = tox.NewGroup();
+
+            if (groupnumber != -1)
+                AddGroupToView(groupnumber);
         }
 
         private FriendControl GetFriendControlByNumber(int friendnumber)
@@ -543,7 +554,8 @@ namespace Toxy
                 Friendname.Text = newname;
         }
 
-        private ToxNode[] nodes = new ToxNode[] { 
+        private ToxNode[] nodes = new ToxNode[] 
+        { 
             new ToxNode("192.254.75.98", 33445, "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F", false),
             new ToxNode("37.187.46.132", 33445, "A9D98212B3F972BD11DA52BEB0658C326FCCC1BFD49F347F9C2D3D8B61E1B927", false),
             new ToxNode("54.199.139.199", 33445, "7F9C31FE850E97CEFD4C4591DF93FC757C7C12549DDD55F8EEAECC34FE76C029", false) 
@@ -554,17 +566,16 @@ namespace Toxy
             //Creates a new FriendControl for every friend
             foreach (int FriendNumber in tox.GetFriendlist())
                 AddFriendToView(FriendNumber);
-                
         }
 
         private void AddGroupToView(int groupnumber)
         {
             string groupname = string.Format("Groupchat #{0}", groupnumber);
-            string groupstatus = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
+            //string groupstatus = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
 
             GroupControl group = new GroupControl(groupnumber);
             group.GroupNameLabel.Content = groupname;
-            group.GroupStatusLabel.Content = groupstatus;
+            group.GroupStatusLabel.Content = string.Join(", ", tox.GetGroupNames(groupnumber));
             group.Click += group_Click;
             FriendWrapper.Children.Add(group);
 
@@ -685,7 +696,7 @@ namespace Toxy
             };
         }
 
-        void friend_FocusTextBox(object sender, RoutedEventArgs e)
+        private void friend_FocusTextBox(object sender, RoutedEventArgs e)
         {
             TextToSend.Focus();
         }
@@ -705,10 +716,9 @@ namespace Toxy
             friend.Click += (sender, e) => FriendRequest_Click(friend, messageData);
 
             NotificationWrapper.Children.Add(friend);
+
             if (ListViewTabControl.SelectedIndex != 1)
-            {
                 RequestsTabItem.Header = "Requests*";
-            }
         }
 
         private void FriendRequest_Click(FriendControl friendControl, MessageData messageData)
@@ -757,7 +767,7 @@ namespace Toxy
             CallButton.Visibility = Visibility.Hidden;
 
             Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
-            Friendstatus.Text = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
+            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));//string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
 
             current_type = typeof(GroupControl);
             current_number = group.GroupNumber;
@@ -841,13 +851,9 @@ namespace Toxy
             if (call != null)
             {
                 if (call.FriendNumber != friendNumber)
-                {
                     HangupButton.Visibility = Visibility.Hidden;
-                }
                 else
-                {
                     HangupButton.Visibility = Visibility.Visible;
-                }
             }
             else
             {
@@ -908,6 +914,7 @@ namespace Toxy
         {
             SettingsUsername.Text = tox.GetSelfName();
             SettingsStatus.Text = tox.GetSelfStatusMessage();
+            SettingsNospam.Text = tox.GetNospam().ToString();
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
 
@@ -953,15 +960,14 @@ namespace Toxy
             FriendFlyout.IsOpen = false;
         }
 
-        private void Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //tox.SetUserStatus((ToxUserStatus)Status.SelectedIndex);
-        }
-
         private void SaveSettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
             tox.SetName(SettingsUsername.Text);
             tox.SetStatusMessage(SettingsStatus.Text);
+
+            uint nospam;
+            if (uint.TryParse(SettingsNospam.Text, out nospam))
+                tox.SetNospam(nospam);
 
             Username.Text = SettingsUsername.Text;
             Userstatus.Text = SettingsStatus.Text;
@@ -974,11 +980,12 @@ namespace Toxy
                 var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
             }
-
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)
         {
+            string text = TextToSend.Text;
+
             if (e.Key == Key.Enter)
             {
                 if (Keyboard.IsKeyDown(Key.LeftShift))
@@ -990,8 +997,6 @@ namespace Toxy
 
                 if (e.IsRepeat)
                     return;
-
-                string text = TextToSend.Text;
 
                 if (string.IsNullOrEmpty(text))
                     return;
@@ -1065,6 +1070,21 @@ namespace Toxy
                 TextToSend.Text = "";
                 e.Handled = true;
             }
+            else if (e.Key == Key.Tab && current_type == typeof(GroupControl))
+            {
+                string[] names = tox.GetGroupNames(current_number);
+
+                foreach (string name in names)
+                {
+                    if (!name.ToLower().StartsWith(text.ToLower()))
+                        continue;
+
+                    TextToSend.Text = string.Format("{0}, ", name);
+                    TextToSend.SelectionStart = TextToSend.Text.Length;
+                }
+
+                e.Handled = true;
+            }
         }
 
         private void GithubButton_Click(object sender, RoutedEventArgs e)
@@ -1074,6 +1094,9 @@ namespace Toxy
 
         private void TextToSend_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (current_type != typeof(FriendControl))
+                return;
+
             string text = TextToSend.Text;
 
             if (string.IsNullOrEmpty(text))
@@ -1146,9 +1169,7 @@ namespace Toxy
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RequestsTabItem.IsSelected)
-            {
                 RequestsTabItem.Header = "Requests";
-            }
         }
 
         private void StatusRectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -1166,13 +1187,9 @@ namespace Toxy
         private void SetStatus(ToxUserStatus? newStatus)
         {
             if (newStatus == null)
-            {
                 newStatus = tox.GetSelfUserStatus();
-            }
             else
-            {
                 tox.SetUserStatus(newStatus.GetValueOrDefault());
-            }
             
             switch (newStatus)
             {
@@ -1222,22 +1239,5 @@ namespace Toxy
 
             EndCall();
         }
-    }
-
-    public class MessageData
-    {
-        public string Username { get; set; }
-        public string Message { get; set; }
-    }
-
-    public class FileTransfer
-    {
-        public int FriendNumber { get; set; }
-        public int FileNumber { get; set; }
-        public ulong FileSize { get; set; }
-        public string FileName { get; set; }
-        public Stream Stream { get; set; }
-
-        public FileTransferControl Control { get; set; }
     }
 }

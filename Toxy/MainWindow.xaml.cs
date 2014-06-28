@@ -307,7 +307,8 @@ namespace Toxy
             ft.Control.SetProgress(100 - (int)(value * 100));
             ft.Control.SetStatus(string.Format("{0}/{1}", ft.FileSize - remaining, ft.FileSize));
 
-            ft.Stream.Write(data, 0, data.Length);
+            if (ft.Stream.CanWrite)
+                ft.Stream.Write(data, 0, data.Length);
         }
 
         private void tox_OnFileSendRequest(int friendnumber, int filenumber, ulong filesize, string filename)
@@ -316,6 +317,11 @@ namespace Toxy
                 convdic.Add(friendnumber, GetNewFlowDocument());
 
             FileTransfer transfer = convdic[friendnumber].AddNewFileTransfer(tox, friendnumber, filenumber, filename, filesize);
+
+            FriendControl control = GetFriendControlByNumber(friendnumber);
+            if (control != null)
+                if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
+                    control.NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum)
             {

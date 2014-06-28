@@ -255,14 +255,8 @@ namespace Toxy
 
         private void tox_OnFriendRequest(string id, string message)
         {
-            try
-            {
-                AddFriendRequestToView(id, message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+            try { AddFriendRequestToView(id, message); }
+            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
@@ -458,7 +452,7 @@ namespace Toxy
             this.Flash();
         }
 
-        public void ScrollChatBox()
+        private void ScrollChatBox()
         {
             ScrollViewer viewer = FindScrollViewer(ChatBox);
 
@@ -466,7 +460,7 @@ namespace Toxy
                 viewer.ScrollToBottom();
         }
 
-        public static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
+        private static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
         {
             if (VisualTreeHelper.GetChildrenCount(viewer) == 0)
                 return null;
@@ -543,7 +537,8 @@ namespace Toxy
                 Friendname.Text = newname;
         }
 
-        private ToxNode[] nodes = new ToxNode[] { 
+        private ToxNode[] nodes = new ToxNode[] 
+        { 
             new ToxNode("192.254.75.98", 33445, "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F", false),
             new ToxNode("37.187.46.132", 33445, "A9D98212B3F972BD11DA52BEB0658C326FCCC1BFD49F347F9C2D3D8B61E1B927", false),
             new ToxNode("54.199.139.199", 33445, "7F9C31FE850E97CEFD4C4591DF93FC757C7C12549DDD55F8EEAECC34FE76C029", false) 
@@ -554,7 +549,6 @@ namespace Toxy
             //Creates a new FriendControl for every friend
             foreach (int FriendNumber in tox.GetFriendlist())
                 AddFriendToView(FriendNumber);
-                
         }
 
         private void AddGroupToView(int groupnumber)
@@ -705,10 +699,9 @@ namespace Toxy
             friend.Click += (sender, e) => FriendRequest_Click(friend, messageData);
 
             NotificationWrapper.Children.Add(friend);
+
             if (ListViewTabControl.SelectedIndex != 1)
-            {
                 RequestsTabItem.Header = "Requests*";
-            }
         }
 
         private void FriendRequest_Click(FriendControl friendControl, MessageData messageData)
@@ -841,13 +834,9 @@ namespace Toxy
             if (call != null)
             {
                 if (call.FriendNumber != friendNumber)
-                {
                     HangupButton.Visibility = Visibility.Hidden;
-                }
                 else
-                {
                     HangupButton.Visibility = Visibility.Visible;
-                }
             }
             else
             {
@@ -952,11 +941,6 @@ namespace Toxy
             AddFriendMessage.Document.Blocks.Add(new Paragraph(new Run("Hello, I'd like to add you to my friends list.")));
 
             FriendFlyout.IsOpen = false;
-        }
-
-        private void Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //tox.SetUserStatus((ToxUserStatus)Status.SelectedIndex);
         }
 
         private void SaveSettingsButton_OnClick(object sender, RoutedEventArgs e)
@@ -1150,9 +1134,7 @@ namespace Toxy
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RequestsTabItem.IsSelected)
-            {
                 RequestsTabItem.Header = "Requests";
-            }
         }
 
         private void StatusRectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -1170,13 +1152,9 @@ namespace Toxy
         private void SetStatus(ToxUserStatus? newStatus)
         {
             if (newStatus == null)
-            {
                 newStatus = tox.GetSelfUserStatus();
-            }
             else
-            {
                 tox.SetUserStatus(newStatus.GetValueOrDefault());
-            }
             
             switch (newStatus)
             {
@@ -1226,22 +1204,5 @@ namespace Toxy
 
             EndCall();
         }
-    }
-
-    public class MessageData
-    {
-        public string Username { get; set; }
-        public string Message { get; set; }
-    }
-
-    public class FileTransfer
-    {
-        public int FriendNumber { get; set; }
-        public int FileNumber { get; set; }
-        public ulong FileSize { get; set; }
-        public string FileName { get; set; }
-        public Stream Stream { get; set; }
-
-        public FileTransferControl Control { get; set; }
     }
 }

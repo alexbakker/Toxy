@@ -71,6 +71,7 @@
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="FlowDocumentExtensions.cs" />
+    <Compile Include="Classes.cs" />
     <Compile Include="ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="CallControl.xaml">

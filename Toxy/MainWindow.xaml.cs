@@ -752,6 +752,8 @@ namespace Toxy
                 Grid grid1 = (Grid)control.FindName("MainGrid");
                 control.Selected = false;
                 grid1.Background = new SolidColorBrush(Colors.White);
+                control.FriendNameLabel.Foreground = new SolidColorBrush(Colors.Black);
+                control.FriendStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
             }
 
             foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
@@ -761,6 +763,11 @@ namespace Toxy
                     Grid grid1 = (Grid)control.FindName("MainGrid");
                     control.Selected = false;
                     grid1.Background = new SolidColorBrush(Colors.White);
+                }
+                else
+                {
+                    control.GroupNameLabel.Foreground = new SolidColorBrush(Colors.White);
+                    control.GroupStatusLabel.Foreground = new SolidColorBrush(Colors.White);
                 }
             }
 
@@ -852,6 +859,8 @@ namespace Toxy
                 Grid grid1 = (Grid)control.FindName("MainGrid");
                 control.Selected = false;
                 grid1.Background = new SolidColorBrush(Colors.White);
+                control.GroupNameLabel.Foreground = new SolidColorBrush(Colors.Black);
+                control.GroupStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
             }
 
             Friendname.Text = tox.GetName(friendNumber);

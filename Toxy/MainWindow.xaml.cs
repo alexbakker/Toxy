@@ -826,9 +826,8 @@ namespace Toxy
             friend.Selected = true;
             //grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
             grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3"); 
-
             int friendNumber = friend.FriendNumber;
-
+            
             foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())
             {
                 if (friend != control)
@@ -836,6 +835,13 @@ namespace Toxy
                     Grid grid1 = (Grid)control.FindName("MainGrid");
                     control.Selected = false;
                     grid1.Background = new SolidColorBrush(Colors.White);
+                    control.FriendNameLabel.Foreground = new SolidColorBrush(Colors.Black);
+                    control.FriendStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
+                }
+                else
+                {
+                    control.FriendNameLabel.Foreground = new SolidColorBrush(Colors.White);
+                    control.FriendStatusLabel.Foreground = new SolidColorBrush(Colors.White);
                 }
             }
 

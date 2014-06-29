@@ -76,6 +76,7 @@
                         </Grid.RowDefinitions>
 
                         <ScrollViewer x:Name="ChatListViewer" Height="Auto" VerticalAlignment="Stretch"  Grid.Row="1">
+                    
                             <WrapPanel x:Name="FriendWrapper" HorizontalAlignment="Stretch" />
                         </ScrollViewer>
 
@@ -264,10 +265,8 @@
         <GridSplitter Grid.Column="0" Width="2"
                       HorizontalAlignment="Right"
                       VerticalAlignment="Stretch"
-                      BorderThickness="0,0,2,0">
-            <GridSplitter.BorderBrush>
-                <ImageBrush ImageSource="Resources/Divider.png" />
-            </GridSplitter.BorderBrush>
+                      BorderThickness="0,0,2,0" BorderBrush="#FFDADADA"
+                      >
         </GridSplitter>
         <Grid Grid.Column="1" Margin="0,0,24,0">
             <Border BorderBrush="Black" BorderThickness="0" Height="92" Margin="10,0,0,0" VerticalAlignment="Top">

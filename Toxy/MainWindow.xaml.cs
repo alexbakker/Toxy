@@ -1267,5 +1267,10 @@ namespace Toxy
             EndCall();
         }
 
+        private void FileButton_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }

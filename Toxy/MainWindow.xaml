@@ -319,6 +319,46 @@
                         </Rectangle.Style>
                     </Rectangle>
                 </Button>
+                <Button Name="FileButton" Click="FileButton_OnClick" VerticalAlignment="Top" Style="{DynamicResource MetroCircleLovelyButtonStyle}" Margin="0,34,10,0" Height="32" HorizontalAlignment="Right" Width="32">
+                    <Rectangle Width="15"
+                               Height="15"
+                               Margin="0,-1"
+                               Fill="{StaticResource BlackBrush}" RenderTransformOrigin="0.5,0.5">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{DynamicResource appbar_paperclip}" />
+                        </Rectangle.OpacityMask>
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=FileButton,Path=IsMouseOver}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="White"
+                                                         Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation
+                                                         Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                         To="Black"
+                                                         Duration="0:0:0.3" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                </Button>
                 <Button Name="HangupButton" Visibility="Hidden" VerticalAlignment="Top" Style="{DynamicResource MetroCircleLovelyButtonStyle}" Margin="0,4,10,0" Height="32" HorizontalAlignment="Right" Width="32" Click="MainHangupButton_OnClick">
                     <Rectangle Width="15"
                                Height="15"

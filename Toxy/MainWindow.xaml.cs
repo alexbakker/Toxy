@@ -1038,15 +1038,18 @@ namespace Toxy
 
                     MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetSelfName(), action) };
 
-                    if (convdic.ContainsKey(current_number))
+                    if (current_type == typeof(FriendControl))
                     {
-                        convdic[current_number].AddNewMessageRow(tox, data);
-                    }
-                    else
-                    {
-                        FlowDocument document = GetNewFlowDocument();
-                        convdic.Add(current_number, document);
-                        convdic[current_number].AddNewMessageRow(tox, data);
+                        if (convdic.ContainsKey(current_number))
+                        {
+                            convdic[current_number].AddNewMessageRow(tox, data);
+                        }
+                        else
+                        {
+                            FlowDocument document = GetNewFlowDocument();
+                            convdic.Add(current_number, document);
+                            convdic[current_number].AddNewMessageRow(tox, data);
+                        }
                     }
                 }
                 else
@@ -1063,26 +1066,29 @@ namespace Toxy
 
                     MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
 
-                    if (convdic.ContainsKey(current_number))
+                    if (current_type == typeof(FriendControl))
                     {
-                        Run run = GetLastMessageRun(convdic[current_number]);
-                        if (run != null)
+                        if (convdic.ContainsKey(current_number))
                         {
-                            if (run.Text == data.Username)
-                                convdic[current_number].AppendMessage(data);
+                            Run run = GetLastMessageRun(convdic[current_number]);
+                            if (run != null)
+                            {
+                                if (run.Text == data.Username)
+                                    convdic[current_number].AppendMessage(data);
+                                else
+                                    convdic[current_number].AddNewMessageRow(tox, data);
+                            }
                             else
+                            {
                                 convdic[current_number].AddNewMessageRow(tox, data);
+                            }
                         }
                         else
                         {
+                            FlowDocument document = GetNewFlowDocument();
+                            convdic.Add(current_number, document);
                             convdic[current_number].AddNewMessageRow(tox, data);
                         }
-                    }
-                    else
-                    {
-                        FlowDocument document = GetNewFlowDocument();
-                        convdic.Add(current_number, document);
-                        convdic[current_number].AddNewMessageRow(tox, data);
                     }
                 }
 

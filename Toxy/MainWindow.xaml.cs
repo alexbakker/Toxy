@@ -179,10 +179,10 @@ namespace Toxy
             {
                 string status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
                 control.SetStatusMessage(status);
-
-                if (current_number == groupnumber && current_type == typeof(GroupControl))
-                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(groupnumber));//Friendstatus.Text = status;
             }
+
+            if (current_number == groupnumber && current_type == typeof(GroupControl))
+                Friendstatus.Text = string.Join(", ", tox.GetGroupNames(groupnumber));//Friendstatus.Text = status;
         }
 
         private void tox_OnGroupAction(int groupnumber, int friendgroupnumber, string action)
@@ -452,7 +452,7 @@ namespace Toxy
                 convdic[friendnumber].AddNewMessageRow(tox, data);
             }
 
-            if(!(current_number == friendnumber && current_type == typeof(FriendControl)))
+            if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
                 GetFriendControlByNumber(friendnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
             if (current_number == friendnumber && current_type == typeof(FriendControl))
@@ -743,7 +743,7 @@ namespace Toxy
         {
             Grid grid = (Grid)group.FindName("MainGrid");
             group.Selected = true;
-            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3"); 
+            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3");
 
             int friendNumber = group.GroupNumber;
 
@@ -825,7 +825,9 @@ namespace Toxy
             Grid grid = (Grid)friend.FindName("MainGrid");
             friend.Selected = true;
             //grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
+
             grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3"); 
+
             int friendNumber = friend.FriendNumber;
             
             foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())
@@ -1196,7 +1198,7 @@ namespace Toxy
                 newStatus = tox.GetSelfUserStatus();
             else
                 tox.SetUserStatus(newStatus.GetValueOrDefault());
-            
+
             switch (newStatus)
             {
                 case ToxUserStatus.NONE:

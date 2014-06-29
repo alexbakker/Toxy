@@ -751,7 +751,7 @@ namespace Toxy
             {
                 Grid grid1 = (Grid)control.FindName("MainGrid");
                 control.Selected = false;
-                grid1.Background = new SolidColorBrush(Colors.White);
+                grid1.Background = new SolidColorBrush(Color.FromRgb(239, 239, 239));
             }
 
             foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
@@ -760,7 +760,7 @@ namespace Toxy
                 {
                     Grid grid1 = (Grid)control.FindName("MainGrid");
                     control.Selected = false;
-                    grid1.Background = new SolidColorBrush(Colors.White);
+                    grid1.Background = new SolidColorBrush(Color.FromRgb(239, 239, 239));
                 }
             }
 

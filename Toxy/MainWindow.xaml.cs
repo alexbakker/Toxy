@@ -307,10 +307,7 @@ namespace Toxy
                                 transfer.Thread.Join();
                             }
 
-                            transfer.Control.AcceptButton.Visibility = Visibility.Collapsed;
-                            transfer.Control.DeclineButton.Visibility = Visibility.Collapsed;
-                            transfer.Control.FileOpenButton.Visibility = Visibility.Collapsed;
-                            transfer.Control.FolderOpenButton.Visibility = Visibility.Collapsed;
+                            transfer.Control.HideAllButtons();
                             transfer.Control.SetStatus("Transfer killed!");
                         }
 
@@ -364,8 +361,8 @@ namespace Toxy
             transfer.Stream.Close();
             tox.FileSendControl(transfer.FriendNumber, 0, transfer.FileNumber, ToxFileControl.FINISHED, new byte[0]);
 
+            transfer.Control.HideAllButtons();
             transfer.Control.SetStatus("Finished!");
-            transfer.Control.DeclineButton.Visibility = Visibility.Collapsed;
             transfer.Finished = true;
         }
 

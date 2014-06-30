@@ -368,7 +368,7 @@
             <TextBox x:Name="TextToSend" Height="57"  VerticalAlignment="Bottom" TextWrapping="Wrap"
                      KeyDown="TextToSend_KeyDown" LostFocus="TextToSend_OnLostFocus" GotFocus="TextToSend_OnGotFocus"
                      TextChanged="TextToSend_TextChanged" AcceptsReturn="False" SelectionBrush="{DynamicResource AccentColorBrush}" Margin="10,0,18,10"/>
-            <FlowDocumentScrollViewer IsEnabled="True" x:Name="ChatBox" Margin="0,72,0,57" BorderThickness="0,0,0,0"
+            <FlowDocumentScrollViewer IsEnabled="True" x:Name="ChatBox" Margin="0,72" BorderThickness="0,0,0,0"
                                       BorderBrush="#FFDADADA"
                                       IsHitTestVisible="True" ClipToBounds="True" MaxZoom="100" MinZoom="100"/>
         </Grid>

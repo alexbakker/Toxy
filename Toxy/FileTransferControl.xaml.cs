@@ -52,7 +52,7 @@ namespace Toxy
 
         public void SetStatus(string status)
         {
-            //I guess this doesn't do anything, for now
+            Dispatcher.BeginInvoke(((Action)(() => MessageLabel.Content = status)));
         }
 
         public void TransferFinished()
@@ -65,7 +65,7 @@ namespace Toxy
 
         public void SetProgress(int value)
         {
-            TransferProgressBar.Value = value;
+            Dispatcher.BeginInvoke(((Action)(() => TransferProgressBar.Value = value)));
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)

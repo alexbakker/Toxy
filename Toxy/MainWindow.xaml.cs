@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 using MahApps.Metro;
 using MahApps.Metro.Controls;
@@ -274,18 +275,81 @@ namespace Toxy
                         ft.Stream = null;
 
                         ft.Control.TransferFinished();
-                        ft.Control.SetStatus("Finished");
+                        ft.Control.SetStatus("Finished!");
+                        ft.Finished = true;
 
                         transfers.Remove(ft);
+                        break;
+                    }
+
+                case ToxFileControl.ACCEPT:
+                    {
+                        FileTransfer ft = GetFileTransfer(friendnumber, filenumber);
+                        ft.Control.SetStatus("Transferring....");
+                        ft.Stream = new FileStream(ft.FileName, FileMode.Open);
+                        ft.Thread = new Thread(transferFile);
+                        ft.Thread.Start(ft);
+
+                        break;
+                    }
+                    
+                case ToxFileControl.KILL:
+                    {
+
+
                         break;
                     }
             }
         }
 
+        private void transferFile(object ft)
+        {
+            FileTransfer transfer = (FileTransfer)ft;
+
+            IntPtr ptr = tox.GetPointer();
+            int chunk_size = tox.FileDataSize(transfer.FriendNumber);
+            byte[] buffer = new byte[chunk_size];
+
+            while (true)
+            {
+                ulong remaining = tox.FileDataRemaining(transfer.FriendNumber, transfer.FileNumber, 0);
+                if (remaining > (ulong)chunk_size)
+                {
+                    if (transfer.Stream.Read(buffer, 0, chunk_size) == 0)
+                        break;
+
+                    while (!tox.FileSendData(transfer.FriendNumber, transfer.FileNumber, buffer))
+                    {
+                        Console.WriteLine("Whoops, could not send data");
+                        Thread.Sleep((int)ToxFunctions.DoInterval(ptr));
+                    }
+
+                    Console.WriteLine("Data sent: {0} bytes", buffer.Length);
+                }
+                else
+                {
+                    if (transfer.Stream.Read(buffer, 0, (int)remaining) == 0)
+                        break;
+
+                    tox.FileSendData(transfer.FriendNumber, transfer.FileNumber, buffer);
+
+                    Console.WriteLine("Sent the last chunk of data: {0} bytes", buffer.Length);
+                }       
+
+                double value = (double)remaining / (double)transfer.FileSize;
+                transfer.Control.SetProgress(100 - (int)(value * 100));
+            }
+
+            tox.FileSendControl(transfer.FriendNumber, 0, transfer.FileNumber, ToxFileControl.FINISHED, new byte[0]);
+
+            transfer.Control.SetStatus("Finished!");
+            transfer.Finished = true;
+        }
+
         private FileTransfer GetFileTransfer(int friendnumber, int filenumber)
         {
             foreach (FileTransfer ft in transfers)
-                if (ft.FileNumber == filenumber && ft.FriendNumber == friendnumber)
+                if (ft.FileNumber == filenumber && ft.FriendNumber == friendnumber && !ft.Finished)
                     return ft;
 
             return null;
@@ -342,8 +406,15 @@ namespace Toxy
             {
                 tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
 
+                if (transfer.Thread != null)
+                {
+                    transfer.Thread.Abort();
+                    transfer.Thread.Join();
+                }
+
                 if (transfer.Stream != null)
                     transfer.Stream.Close();
+
             };
 
             transfer.Control.OnFileOpen += delegate()
@@ -1269,8 +1340,32 @@ namespace Toxy
 
         private void FileButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (current_type != typeof(FriendControl))
+                return;
 
+            if (tox.GetFriendConnectionStatus(current_number) != 1)
+                return;
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = Environment.CurrentDirectory;
+            dialog.Multiselect = false;
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            string filename = dialog.FileName;
+            FileInfo info = new FileInfo(filename);
+            int filenumber = tox.NewFileSender(current_number, (ulong)info.Length, filename.Split('\\').Last<string>());
+
+            if (filenumber == -1)
+                return;
+
+            FileTransfer ft = convdic[current_number].AddNewFileTransfer(tox, current_number, filenumber, filename, (ulong)info.Length);
+            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(current_number)));
+            ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
+            ft.Control.DeclineButton.Visibility = Visibility.Visible;
+
+            transfers.Add(ft);
         }
-
     }
 }

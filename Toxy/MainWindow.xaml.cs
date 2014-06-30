@@ -320,14 +320,18 @@ namespace Toxy
 
                     while (!tox.FileSendData(transfer.FriendNumber, transfer.FileNumber, buffer))
                     {
-                        Console.WriteLine("Whoops, could not send data");
-                        Thread.Sleep((int)ToxFunctions.DoInterval(ptr));
+                        int time = (int)ToxFunctions.DoInterval(ptr);
+
+                        Console.WriteLine("Could not send data, sleeping for {0}ms", time);
+                        Thread.Sleep(time);
                     }
 
                     Console.WriteLine("Data sent: {0} bytes", buffer.Length);
                 }
                 else
                 {
+                    buffer = new byte[remaining];
+
                     if (transfer.Stream.Read(buffer, 0, (int)remaining) == 0)
                         break;
 
@@ -340,9 +344,11 @@ namespace Toxy
                 transfer.Control.SetProgress(100 - (int)(value * 100));
             }
 
+            transfer.Stream.Close();
             tox.FileSendControl(transfer.FriendNumber, 0, transfer.FileNumber, ToxFileControl.FINISHED, new byte[0]);
 
             transfer.Control.SetStatus("Finished!");
+            transfer.Control.DeclineButton.Visibility = Visibility.Collapsed;
             transfer.Finished = true;
         }
 
@@ -782,6 +788,7 @@ namespace Toxy
             friend.AcceptButton.Click += (sender, e) => AcceptButton_Click(id, friend);
             friend.DeclineButton.Click += (sender, e) => DeclineButton_Click(friend);
             friend.FriendStatusLabel.Visibility = Visibility.Collapsed;
+
             MessageData messageData = new MessageData() { Message = message, Username = "Request Message" };
             friend.RequestFlowDocument = GetNewFlowDocument();
             friend.Click += (sender, e) => FriendRequest_Click(friend, messageData);
@@ -797,7 +804,7 @@ namespace Toxy
             friendControl.RequestFlowDocument.AddNewMessageRow(tox, messageData);
         }
 
-        void AcceptButton_Click(string id, FriendControl friendControl)
+        private void AcceptButton_Click(string id, FriendControl friendControl)
         {
             int friendnumber = tox.AddFriendNoRequest(id);
             tox.SetSendsReceipts(friendnumber, true);
@@ -805,7 +812,7 @@ namespace Toxy
             NotificationWrapper.Children.Remove(friendControl);
         }
 
-        void DeclineButton_Click(FriendControl friendControl)
+        private void DeclineButton_Click(FriendControl friendControl)
         {
             NotificationWrapper.Children.Remove(friendControl);
         }
@@ -990,6 +997,16 @@ namespace Toxy
         {
             if (call != null)
                 call.Stop();
+
+            foreach(FileTransfer transfer in transfers)
+            {
+                if (transfer.Thread != null)
+                {
+                    //TODO: show a message warning the users that there are still file transfers in progress
+                    transfer.Thread.Abort();
+                    transfer.Thread.Join();
+                }
+            }
 
             toxav.Kill();
 

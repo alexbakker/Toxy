@@ -4,14 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" Height="72" BorderBrush="#FF008BFF" BorderThickness="0,0.5">
+             mc:Ignorable="d" Height="72" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="0,0.5">
 
     <Grid>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <controls:MetroProgressBar Name="TransferProgressBar" Margin="0,65,0,-1" VerticalAlignment="Top" Value="0" Height="6" Foreground="#FF008BFF" BorderBrush="#FF008BFF"/>
+        <controls:MetroProgressBar Name="TransferProgressBar" Margin="0,65,0,-1" VerticalAlignment="Top" Value="0" Height="6" Foreground="{DynamicResource AccentColorBrush}" BorderBrush="{DynamicResource AccentColorBrush}"/>
         <Label Name="MessageLabel" Content="ltable.cpp" VerticalAlignment="Top" Margin="41,13,93,0"/>
         <Image HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="31" Source="Resources/FileDownload.png" Margin="10,18,0,0"/>
         <controls:ProgressRing Name="TransferProgressRing" Visibility="Collapsed" IsActive="False" Margin="0,18,49,20" Height="32" Width="32" HorizontalAlignment="Right" />

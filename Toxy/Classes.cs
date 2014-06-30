@@ -18,6 +18,7 @@ namespace Toxy
         public string FileName { get; set; }
         public Stream Stream { get; set; }
         public bool Finished { get; set; }
+        public bool IsSender { get; set; }
 
         public FileTransferControl Control { get; set; }
     }

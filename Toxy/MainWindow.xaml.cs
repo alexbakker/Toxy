@@ -292,10 +292,27 @@ namespace Toxy
 
                         break;
                     }
-                    
+
                 case ToxFileControl.KILL:
                     {
+                        FileTransfer transfer = GetFileTransfer(friendnumber, filenumber);
+                        if (transfer != null)
+                        {
+                            if (transfer.Stream != null)
+                                transfer.Stream.Close();
 
+                            if (transfer.Thread != null)
+                            {
+                                transfer.Thread.Abort();
+                                transfer.Thread.Join();
+                            }
+
+                            transfer.Control.AcceptButton.Visibility = Visibility.Collapsed;
+                            transfer.Control.DeclineButton.Visibility = Visibility.Collapsed;
+                            transfer.Control.FileOpenButton.Visibility = Visibility.Collapsed;
+                            transfer.Control.FolderOpenButton.Visibility = Visibility.Collapsed;
+                            transfer.Control.SetStatus("Transfer killed!");
+                        }
 
                         break;
                     }
@@ -338,7 +355,7 @@ namespace Toxy
                     tox.FileSendData(transfer.FriendNumber, transfer.FileNumber, buffer);
 
                     Console.WriteLine("Sent the last chunk of data: {0} bytes", buffer.Length);
-                }       
+                }
 
                 double value = (double)remaining / (double)transfer.FileSize;
                 transfer.Control.SetProgress(100 - (int)(value * 100));
@@ -386,7 +403,7 @@ namespace Toxy
             if (!convdic.ContainsKey(friendnumber))
                 convdic.Add(friendnumber, GetNewFlowDocument());
 
-            FileTransfer transfer = convdic[friendnumber].AddNewFileTransfer(tox, friendnumber, filenumber, filename, filesize);
+            FileTransfer transfer = convdic[friendnumber].AddNewFileTransfer(tox, friendnumber, filenumber, filename, filesize, false);
 
             FriendControl control = GetFriendControlByNumber(friendnumber);
             if (control != null)
@@ -410,7 +427,10 @@ namespace Toxy
 
             transfer.Control.OnDecline += delegate(int friendnum, int filenum)
             {
-                tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+                if (!transfer.IsSender)
+                    tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+                else
+                    tox.FileSendControl(friendnumber, 0, filenumber, ToxFileControl.KILL, new byte[0]);
 
                 if (transfer.Thread != null)
                 {
@@ -1377,7 +1397,7 @@ namespace Toxy
             if (filenumber == -1)
                 return;
 
-            FileTransfer ft = convdic[current_number].AddNewFileTransfer(tox, current_number, filenumber, filename, (ulong)info.Length);
+            FileTransfer ft = convdic[current_number].AddNewFileTransfer(tox, current_number, filenumber, filename, (ulong)info.Length, true);
             ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(current_number)));
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;

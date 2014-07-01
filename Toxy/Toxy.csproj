@@ -70,6 +70,7 @@
     <Compile Include="CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
     <Compile Include="FlowDocumentExtensions.cs" />
     <Compile Include="Classes.cs" />
     <Compile Include="ToxCall.cs" />

@@ -297,6 +297,7 @@ namespace Toxy
                 case ToxFileControl.KILL:
                     {
                         FileTransfer transfer = GetFileTransfer(friendnumber, filenumber);
+                        transfer.Finished = true;
                         if (transfer != null)
                         {
                             if (transfer.Stream != null)
@@ -1415,6 +1416,23 @@ namespace Toxy
             ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(current_number)));
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;
+
+            ft.Control.OnDecline += delegate(int friendnum, int filenum)
+            {
+                if (ft.Thread != null)
+                {
+                    ft.Thread.Abort();
+                    ft.Thread.Join();
+                }
+
+                if (ft.Stream != null)
+                    ft.Stream.Close();
+
+                if (!ft.IsSender)
+                    tox.FileSendControl(ft.FriendNumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+                else
+                    tox.FileSendControl(ft.FriendNumber, 0, filenumber, ToxFileControl.KILL, new byte[0]);
+            };
 
             transfers.Add(ft);
         }

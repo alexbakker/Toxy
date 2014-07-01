@@ -45,6 +45,7 @@ namespace Toxy
         public MainWindow()
         {
             InitializeComponent();
+
             tox = new Tox(false);
             tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;
@@ -469,11 +470,20 @@ namespace Toxy
 
                 control.SetStatusMessage("Last seen: " + lastOnline.ToShortDateString() + " " + lastOnline.ToLongTimeString());
                 control.SetStatus(ToxUserStatus.INVALID); //not the proper way to do it, I know...
+
+                if (current_number == friendnumber && current_type == typeof(FriendControl))
+                {
+                    CallButton.Visibility = Visibility.Hidden;
+                    FileButton.Visibility = Visibility.Hidden;
+                }
             }
             else
             {
                 if (current_number == friendnumber && current_type == typeof(FriendControl))
+                {
                     CallButton.Visibility = Visibility.Visible;
+                    FileButton.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -871,6 +881,7 @@ namespace Toxy
             }
 
             CallButton.Visibility = Visibility.Hidden;
+            FileButton.Visibility = Visibility.Hidden;
 
             Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
             Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));//string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
@@ -974,9 +985,15 @@ namespace Toxy
             else
             {
                 if (tox.GetFriendConnectionStatus(friendNumber) != 1)
+                {
                     CallButton.Visibility = Visibility.Hidden;
+                    FileButton.Visibility = Visibility.Hidden;
+                }
                 else
+                {
                     CallButton.Visibility = Visibility.Visible;
+                    FileButton.Visibility = Visibility.Visible;
+                }
             }
 
             current_type = typeof(FriendControl);

@@ -43,7 +43,7 @@
     </Reference>
     <Reference Include="SharpTox, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SharpTox\SharpTox\bin\Debug\SharpTox.dll</HintPath>
+      <HintPath>..\libs\SharpTox.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -70,6 +70,7 @@
     <Compile Include="CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
     <Compile Include="FlowDocumentExtensions.cs" />
     <Compile Include="Classes.cs" />
     <Compile Include="ToxCall.cs" />
@@ -180,6 +181,12 @@
     <Resource Include="Resources\Icons\Away.png" />
     <Resource Include="Resources\Icons\Busy.png" />
     <Resource Include="Resources\Icons\Online.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\libs\libtoxav.dll">
+      <Link>libtoxav.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

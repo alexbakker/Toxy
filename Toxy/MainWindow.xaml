@@ -91,7 +91,7 @@
                               MinWidth="250"
                               MaxWidth="{Binding ElementName=RootGrid, Path=ActualWidth, Mode=OneWay, Converter={StaticResource MaxWidthConverter}, ConverterParameter='250'}" />
             <!-- the grid splitter -->
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="2" />
             <!-- right side of the grid splitter -->
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
@@ -187,7 +187,7 @@
                            VerticalAlignment="Top"
                            Margin="65,35,0,0"
                            FontStyle="Italic"
-                           TextTrimming="CharacterEllipsis">
+                           TextTrimming="CharacterEllipsis" FontSize="14">
                             <Run Text="User Message" />
                 </TextBlock>
 
@@ -336,7 +336,7 @@
         <GridSplitter Grid.Column="1"
                       Width="2"
                       HorizontalAlignment="Center"
-                      BorderBrush="#FFDADADA" />
+                      BorderBrush="#8E8E8E" />
 
         <Grid Grid.Column="2">
             <Border BorderBrush="#FFDADADA"

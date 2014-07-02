@@ -858,7 +858,7 @@ namespace Toxy
                 Grid grid1 = (Grid)control.FindName("MainGrid");
                 control.Selected = false;
 
-                grid1.Background = new SolidColorBrush(Colors.White);
+                grid1.Background = new SolidColorBrush(Colors.Transparent);
 
                 control.FriendNameLabel.Foreground = new SolidColorBrush(Colors.Black);
                 control.FriendStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
@@ -870,7 +870,7 @@ namespace Toxy
                 {
                     Grid grid1 = (Grid)control.FindName("MainGrid");
                     control.Selected = false;
-                    grid1.Background = new SolidColorBrush(Colors.White);
+                    grid1.Background = new SolidColorBrush(Colors.Transparent);
                     control.GroupNameLabel.Foreground = new SolidColorBrush(Colors.Black);
                     control.GroupStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
                 }
@@ -954,7 +954,7 @@ namespace Toxy
                 {
                     Grid grid1 = (Grid)control.FindName("MainGrid");
                     control.Selected = false;
-                    grid1.Background = new SolidColorBrush(Colors.White);
+                    grid1.Background = new SolidColorBrush(Colors.Transparent);
                     control.FriendNameLabel.Foreground = new SolidColorBrush(Colors.Black);
                     control.FriendStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
                 }
@@ -969,7 +969,7 @@ namespace Toxy
             {
                 Grid grid1 = (Grid)control.FindName("MainGrid");
                 control.Selected = false;
-                grid1.Background = new SolidColorBrush(Colors.White);
+                grid1.Background = new SolidColorBrush(Colors.Transparent);
                 control.GroupNameLabel.Foreground = new SolidColorBrush(Colors.Black);
                 control.GroupStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
             }

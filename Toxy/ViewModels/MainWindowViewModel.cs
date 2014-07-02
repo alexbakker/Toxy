@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro;
 
@@ -22,6 +23,16 @@ namespace Toxy.ViewModels
         }
     }
 
+    public class AppThemeMenuData : AccentColorMenuData
+    {
+        protected override void DoChangeTheme(object sender)
+        {
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            var appTheme = ThemeManager.GetAppTheme(this.Name);
+            ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme);
+        }
+    }
+
     public class MainWindowViewModel
     {
 
@@ -32,9 +43,14 @@ namespace Toxy.ViewModels
             this.AccentColors = ThemeManager.Accents
                                             .Select(a => new AccentColorMenuData() { Name = a.Name, ColorBrush = a.Resources["AccentColorBrush"] as Brush })
                                             .ToList();
+
+            this.AppThemes = ThemeManager.AppThemes
+                                          .Select(a => new AppThemeMenuData() { Name = a.Name, BorderColorBrush = a.Resources["BlackColorBrush"] as Brush, ColorBrush = a.Resources["WhiteColorBrush"] as Brush })
+                                          .ToList();
         }
 
         public List<AccentColorMenuData> AccentColors { get; set; }
+        public List<AppThemeMenuData> AppThemes { get; set; }
 
     }
 }

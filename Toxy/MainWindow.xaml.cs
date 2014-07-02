@@ -1118,11 +1118,17 @@ namespace Toxy
 
             SettingsFlyout.IsOpen = false;
 
-            if (AccentListBox.SelectedItem != null)
+            if (AccentComboBox.SelectedItem != null)
             {
                 var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-                var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentListBox.SelectedItem).Name);
+                var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+            }
+            if (AppThemeComboBox.SelectedItem != null)
+            {
+                var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+                var appTheme = ThemeManager.GetAppTheme(((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name);
+                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
             }
         }
 

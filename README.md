@@ -18,14 +18,14 @@ Feel free to contribute.
   - Friendrequest listing
 * Group chats
 * Voice chats
-* File transfers (receiving only)
+* File transfers
 * Typing detection
 * DNS discovery (tox1 and tox3)
 * Theme customization
 
 ### Screenshots
 
-![Main Window](http://reverbs.pw/i/d7ee1c.png)
+![Main Window](http://reverbs.pw/i/46f5a9.png)
 
 Binaries
 ===

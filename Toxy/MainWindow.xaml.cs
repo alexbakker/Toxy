@@ -743,6 +743,7 @@ namespace Toxy
             FriendControl friend = new FriendControl(friendNumber);
             friend.FriendNameLabel.Text = friendName;
             friend.FriendStatusLabel.Text = friendStatus;
+            friend.SetStatus(ToxUserStatus.INVALID);
             friend.Click += friend_Click;
             friend.FocusTextBox += friend_FocusTextBox;
             FriendWrapper.Children.Add(friend);
@@ -768,6 +769,17 @@ namespace Toxy
                 }
             };
 
+            MenuItem copyIDMenuitem = new MenuItem();
+            copyIDMenuitem.Header = "Copy ID";
+            copyIDMenuitem.Click += delegate(object sender, RoutedEventArgs e)
+            {
+                if (friend != null)
+                {
+                    Clipboard.Clear();
+                    Clipboard.SetText(tox.GetClientID(friendNumber));
+                }
+            };
+
             MenuItem item2 = new MenuItem();
             item2.Header = "Invite";
             item2.Visibility = Visibility.Collapsed;
@@ -775,6 +787,7 @@ namespace Toxy
             friend.ContextMenu = new ContextMenu();
             friend.ContextMenu.Items.Add(item);
             friend.ContextMenu.Items.Add(item2);
+            friend.ContextMenu.Items.Add(copyIDMenuitem);
             friend.ContextMenuOpening += delegate(object sender, ContextMenuEventArgs e)
             {
                 item2.Items.Clear();

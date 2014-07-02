@@ -130,8 +130,7 @@
             </TabControl>
             <Grid>
                 <TextBlock x:Name="Username"
-                           HorizontalAlignment="Left"
-                           Margin="65,3,0,0"
+                           Margin="65,3,10,0"
                            VerticalAlignment="Top"
                            FontSize="25"
                            TextTrimming="CharacterEllipsis"
@@ -183,9 +182,8 @@
 
                 </Rectangle>
                 <TextBlock x:Name="Userstatus"
-                           HorizontalAlignment="Left"
                            VerticalAlignment="Top"
-                           Margin="65,35,0,0"
+                           Margin="65,35,10,0"
                            FontStyle="Italic"
                            TextTrimming="CharacterEllipsis" FontSize="14">
                             <Run Text="User Message" />
@@ -350,10 +348,10 @@
                             Click="CallButton_OnClick"
                             VerticalAlignment="Top"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,4,10,0"
-                            Height="32"
+                            Margin="0,14,0,0"
+                            Height="37"
                             HorizontalAlignment="Right"
-                            Width="32">
+                            Width="37">
                         <Rectangle Width="15"
                                    Height="15"
                                    Margin="0,-1"
@@ -405,10 +403,10 @@
                             Click="FileButton_OnClick"
                             VerticalAlignment="Top"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,34,10,0"
-                            Height="32"
+                            Margin="0,14,42,0"
+                            Height="37"
                             HorizontalAlignment="Right"
-                            Width="32">
+                            Width="37">
                         <Rectangle Width="10"
                                    Height="17"
                                    Margin="0,-1"
@@ -628,7 +626,7 @@
                              DisplayMemberPath="Name"
                              Margin="15,270,0,0"
                              VerticalAlignment="Top"
-                             HorizontalAlignment="Left"
+                             HorizontalAlignment="Stretch"
                              Width="275" />
                     <ComboBox x:Name="AppThemeComboBox"
                              ItemsSource="{Binding AppThemes}"

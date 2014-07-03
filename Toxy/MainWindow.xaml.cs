@@ -571,7 +571,8 @@ namespace Toxy
             ScrollViewer viewer = FindScrollViewer(ChatBox);
 
             if (viewer != null)
-                viewer.ScrollToBottom();
+                if (viewer.ScrollableHeight == viewer.VerticalOffset)
+                    viewer.ScrollToBottom();
         }
 
         private static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)

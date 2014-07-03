@@ -400,6 +400,7 @@
                         </Rectangle>
                     </Button>
                     <Button Name="FileButton"
+                            Panel.ZIndex="1"
                             Click="FileButton_OnClick"
                             VerticalAlignment="Top"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"

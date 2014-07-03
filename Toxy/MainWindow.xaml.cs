@@ -1070,9 +1070,22 @@ namespace Toxy
 
         private void OpenSettings_Click(object sender, RoutedEventArgs e)
         {
-            SettingsUsername.Text = tox.GetSelfName();
-            SettingsStatus.Text = tox.GetSelfStatusMessage();
-            SettingsNospam.Text = tox.GetNospam().ToString();
+            if (!SettingsFlyout.IsOpen)
+            {
+                SettingsUsername.Text = tox.GetSelfName();
+                SettingsStatus.Text = tox.GetSelfStatusMessage();
+                SettingsNospam.Text = tox.GetNospam().ToString();
+
+                Tuple<AppTheme, Accent> style = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+                Accent accent = ThemeManager.GetAccent(style.Item2.Name);
+                if (accent != null)
+                    AccentComboBox.SelectedItem = AccentComboBox.Items.Cast<AccentColorMenuData>().Single(a => a.Name == style.Item2.Name);
+
+                AppTheme theme = ThemeManager.GetAppTheme(style.Item1.Name);
+                if (theme != null)
+                    AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
+            }
+
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
 
@@ -1138,6 +1151,7 @@ namespace Toxy
                 var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
             }
+
             if (AppThemeComboBox.SelectedItem != null)
             {
                 var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);

@@ -1124,6 +1124,11 @@ namespace Toxy
                 this.ShowMessageAsync("An error occurred", Tools.GetAFError(ex.Error));
                 return;
             }
+            catch
+            {
+                this.ShowMessageAsync("An error occurred", "The ID you entered is not valid.");
+                return;
+            }
 
             AddFriendID.Text = string.Empty;
             AddFriendMessage.Document.Blocks.Clear();

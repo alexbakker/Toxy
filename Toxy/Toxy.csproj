@@ -73,6 +73,7 @@
     <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
     <Compile Include="FlowDocumentExtensions.cs" />
     <Compile Include="Classes.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="CallControl.xaml">

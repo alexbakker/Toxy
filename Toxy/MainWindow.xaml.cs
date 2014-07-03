@@ -15,6 +15,7 @@ using System.Threading;
 
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 using SharpTox.Core;
 using SharpTox.Av;
@@ -1118,9 +1119,9 @@ namespace Toxy
                 FriendFlyout.IsOpen = false;
                 AddFriendToView(friendnumber);
             }
-            catch (Exception ex)
+            catch (ToxAFException ex)
             {
-                MessageBox.Show(ex.ToString());
+                this.ShowMessageAsync("An error occurred", Tools.GetAFError(ex.Error));
                 return;
             }
 

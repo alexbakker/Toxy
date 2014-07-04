@@ -20,7 +20,7 @@ using SharpTox.Core;
 using SharpTox.Av;
 
 using Toxy.ViewModels;
-
+using Toxy.Views;
 using Path = System.IO.Path;
 using Microsoft.Win32;
 

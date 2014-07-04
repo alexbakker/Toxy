@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Toxy.FriendControl"
+﻿<UserControl x:Class="Toxy.Views.FriendControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,7 @@
                     AncestorType={x:Type WrapPanel}},
                     Path=ActualWidth}">
     <UserControl.Resources>
-        <ResourceDictionary Source="Styles/Combobox.xaml" />
+        <ResourceDictionary Source="/Styles/Combobox.xaml" />
     </UserControl.Resources>
     <Grid ZIndex="1">
         <!--Hacking the width above in order to keep the gray background on resize -->

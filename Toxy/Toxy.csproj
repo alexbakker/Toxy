@@ -67,7 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CallControl.xaml.cs">
+    <Compile Include="Views\CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
@@ -77,19 +77,19 @@
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Page Include="CallControl.xaml">
+    <Page Include="Views\CallControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FileTransferControl.xaml">
+    <Page Include="Views\FileTransferControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GroupControl.xaml">
+    <Page Include="Views\GroupControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="FriendControl.xaml">
+    <Page Include="Views\FriendControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -102,14 +102,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DnsTools.cs" />
-    <Compile Include="FileTransferControl.xaml.cs">
+    <Compile Include="Views\FileTransferControl.xaml.cs">
       <DependentUpon>FileTransferControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormExtensions.cs" />
-    <Compile Include="GroupControl.xaml.cs">
+    <Compile Include="Views\GroupControl.xaml.cs">
       <DependentUpon>GroupControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FriendControl.xaml.cs">
+    <Compile Include="Views\FriendControl.xaml.cs">
       <DependentUpon>FriendControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">

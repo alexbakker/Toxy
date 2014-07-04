@@ -2,7 +2,20 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListBox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <Style x:Key="ToxyMetroListBoxItem"
+           TargetType="{x:Type ListBoxItem}"
+           BasedOn="{StaticResource MetroListBoxItem}">
+        <Setter Property="Background"
+                Value="{DynamicResource WhiteBrush}" />
+    </Style>
+    <Style TargetType="ListBoxItem"
+           BasedOn="{StaticResource ToxyMetroListBoxItem}" />
 
     <Style x:Key="MetroCircleLovelyButtonStyle"
            TargetType="{x:Type Button}">

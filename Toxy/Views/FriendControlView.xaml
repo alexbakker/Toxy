@@ -8,18 +8,12 @@
              d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
              RenderOptions.ClearTypeHint="Enabled"
              TextOptions.TextFormattingMode="Display"
-             Background="{DynamicResource WhiteBrush}"
              Height="60"
              BorderThickness="0">
 
     <Grid ZIndex="1">
-        <!--Hacking the width above in order to keep the gray background on resize -->
-        <Grid Name="MainGrid"
-              Height="60"
-              VerticalAlignment="Top">
+        <Grid Name="MainGrid">
             <TextBlock Text="{Binding UserName, Mode=OneWay}"
-                       RenderOptions.ClearTypeHint="Enabled"
-                       TextOptions.TextFormattingMode="Display"
                        HorizontalAlignment="Left"
                        Margin="55,4,-1,0"
                        VerticalAlignment="Top"
@@ -28,11 +22,8 @@
                        TextTrimming="CharacterEllipsis" />
             <Grid x:Name="RequestButtonGrid"
                   Visibility="Collapsed"
-                  ZIndex="9999"
                   HorizontalAlignment="Left"
-                  Margin="55,0,0,0"
-                  MouseEnter="HackButton_MouseEnter"
-                  MouseLeave="HackButton_MouseLeave">
+                  Margin="55,0,0,0">
                 <Button Name="AcceptButton"
                         Height="30"
                         Width="30"
@@ -67,9 +58,6 @@
             </Grid>
             <Grid Name="CallButtonGrid"
                   Visibility="Collapsed"
-                  ZIndex="9999"
-                  MouseEnter="HackButton_MouseEnter"
-                  MouseLeave="HackButton_MouseLeave"
                   HorizontalAlignment="Right"
                   Width="80">
                 <Button Name="AcceptCallButton"
@@ -161,6 +149,7 @@
                     </Rectangle>
                 </Button>
             </Grid>
+
             <TextBlock Text="{Binding StatusMessage, Mode=OneWay}"
                        HorizontalAlignment="Left"
                        Margin="55,30,0,0"
@@ -173,20 +162,15 @@
                    VerticalAlignment="Top"
                    Width="40"
                    Margin="10,10,0,0" />
+
             <Rectangle Name="StatusRectangle"
                        Height="11"
                        VerticalAlignment="Top"
                        Margin="39,39,0,0"
                        HorizontalAlignment="Left"
                        Width="11" />
-            <Button x:Name="HackButton"
-                    VerticalAlignment="Top"
-                    Height="60"
-                    Opacity="0"
-                    Click="Button_Click"
-                    MouseEnter="HackButton_MouseEnter"
-                    MouseLeave="HackButton_MouseLeave" />
         </Grid>
+
         <Rectangle Name="NewMessageIndicator"
                    HorizontalAlignment="Left"
                    Height="60"

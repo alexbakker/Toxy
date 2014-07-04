@@ -90,8 +90,7 @@ namespace Toxy.Views
 
         public void HideAllButtons()
         {
-            Dispatcher.BeginInvoke(((Action)(() =>
-            {
+            Dispatcher.BeginInvoke(((Action)(() => {
                 AcceptButton.Visibility = Visibility.Collapsed;
                 DeclineButton.Visibility = Visibility.Collapsed;
                 FileOpenButton.Visibility = Visibility.Collapsed;

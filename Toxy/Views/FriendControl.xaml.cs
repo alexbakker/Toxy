@@ -71,7 +71,7 @@ namespace Toxy.Views
         private void HackButton_MouseEnter(object sender, MouseEventArgs e)
         {
             if (!Selected)
-                MainGrid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush4"); 
+                MainGrid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush4");
         }
 
         private void HackButton_MouseLeave(object sender, MouseEventArgs e)

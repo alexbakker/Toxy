@@ -10,7 +10,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 using MahApps.Metro;
@@ -149,8 +148,7 @@ namespace Toxy
                 return;
 
             control.CallButtonGrid.Visibility = Visibility.Visible;
-            control.AcceptCallButton.Click += delegate(object sender, RoutedEventArgs e)
-            {
+            control.AcceptCallButton.Click += delegate(object sender, RoutedEventArgs e) {
                 if (call != null)
                     return;
 
@@ -158,8 +156,7 @@ namespace Toxy
                 call.Answer();
             };
 
-            control.DenyCallButton.Click += delegate(object sender, RoutedEventArgs e)
-            {
+            control.DenyCallButton.Click += delegate(object sender, RoutedEventArgs e) {
                 if (call == null)
                 {
                     toxav.Reject(call_index, "I'm busy...");
@@ -411,8 +408,7 @@ namespace Toxy
                 if (!(current_number == friendnumber && current_type == typeof(FriendControl)))
                     control.NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
 
-            transfer.Control.OnAccept += delegate(int friendnum, int filenum)
-            {
+            transfer.Control.OnAccept += delegate(int friendnum, int filenum) {
                 if (transfer.Stream != null)
                     return;
 
@@ -426,8 +422,7 @@ namespace Toxy
                 }
             };
 
-            transfer.Control.OnDecline += delegate(int friendnum, int filenum)
-            {
+            transfer.Control.OnDecline += delegate(int friendnum, int filenum) {
                 if (!transfer.IsSender)
                     tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
                 else
@@ -444,14 +439,12 @@ namespace Toxy
 
             };
 
-            transfer.Control.OnFileOpen += delegate()
-            {
+            transfer.Control.OnFileOpen += delegate() {
                 try { Process.Start(transfer.FileName); }
                 catch { /*want to open a "choose program dialog" here*/ }
             };
 
-            transfer.Control.OnFolderOpen += delegate()
-            {
+            transfer.Control.OnFolderOpen += delegate() {
                 string filePath = Path.Combine(Environment.CurrentDirectory, filename);
                 Process.Start("explorer.exe", @"/select, " + filePath);
             };
@@ -688,8 +681,7 @@ namespace Toxy
 
             MenuItem item = new MenuItem();
             item.Header = "Delete";
-            item.Click += delegate(object sender, RoutedEventArgs e)
-            {
+            item.Click += delegate(object sender, RoutedEventArgs e) {
                 if (group != null)
                 {
                     FriendWrapper.Children.Remove(group);
@@ -752,8 +744,7 @@ namespace Toxy
 
             MenuItem item = new MenuItem();
             item.Header = "Delete";
-            item.Click += delegate(object sender, RoutedEventArgs e)
-            {
+            item.Click += delegate(object sender, RoutedEventArgs e) {
                 if (friend != null)
                 {
                     FriendWrapper.Children.Remove(friend);
@@ -773,8 +764,7 @@ namespace Toxy
 
             MenuItem copyIDMenuitem = new MenuItem();
             copyIDMenuitem.Header = "Copy ID";
-            copyIDMenuitem.Click += delegate(object sender, RoutedEventArgs e)
-            {
+            copyIDMenuitem.Click += delegate(object sender, RoutedEventArgs e) {
                 if (friend != null)
                 {
                     Clipboard.Clear();
@@ -790,8 +780,7 @@ namespace Toxy
             friend.ContextMenu.Items.Add(item);
             friend.ContextMenu.Items.Add(item2);
             friend.ContextMenu.Items.Add(copyIDMenuitem);
-            friend.ContextMenuOpening += delegate(object sender, ContextMenuEventArgs e)
-            {
+            friend.ContextMenuOpening += delegate(object sender, ContextMenuEventArgs e) {
                 item2.Items.Clear();
                 GroupControl[] groupcontrols = FriendWrapper.FindChildren<GroupControl>().ToArray<GroupControl>();
                 if (groupcontrols.Length > 0)
@@ -801,8 +790,7 @@ namespace Toxy
                     {
                         MenuItem groupitem = new MenuItem();
                         groupitem.Header = control.GroupNameLabel.Content;
-                        groupitem.Click += delegate(object s, RoutedEventArgs e2)
-                        {
+                        groupitem.Click += delegate(object s, RoutedEventArgs e2) {
                             tox.InviteFriend(friendNumber, control.GroupNumber);
                         };
 
@@ -959,10 +947,10 @@ namespace Toxy
             friend.Selected = true;
             //grid.Background = new SolidColorBrush(Color.FromRgb(236, 236, 236));
 
-            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3"); 
+            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3");
 
             int friendNumber = friend.FriendNumber;
-            
+
             foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())
             {
                 if (friend != control)
@@ -1048,7 +1036,7 @@ namespace Toxy
             if (call != null)
                 call.Stop();
 
-            foreach(FileTransfer transfer in transfers)
+            foreach (FileTransfer transfer in transfers)
             {
                 if (transfer.Thread != null)
                 {
@@ -1438,8 +1426,7 @@ namespace Toxy
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;
 
-            ft.Control.OnDecline += delegate(int friendnum, int filenum)
-            {
+            ft.Control.OnDecline += delegate(int friendnum, int filenum) {
                 if (ft.Thread != null)
                 {
                     ft.Thread.Abort();

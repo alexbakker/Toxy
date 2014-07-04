@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -36,6 +37,7 @@ namespace Toxy.ViewModels
 
         public MainWindowViewModel()
         {
+            this.ChatCollection = new ObservableCollection<IChatObject>();
 
             // create accent color menu items for the demo
             this.AccentColors = ThemeManager.Accents
@@ -50,5 +52,20 @@ namespace Toxy.ViewModels
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
 
+        private IEnumerable<IChatObject> chatCollection;
+
+        public IEnumerable<IChatObject> ChatCollection
+        {
+            get { return this.chatCollection; }
+            set
+            {
+                if (Equals(value, this.chatCollection))
+                {
+                    return;
+                }
+                this.chatCollection = value;
+                this.OnPropertyChanged(() => this.ChatCollection);
+            }
+        }
     }
 }

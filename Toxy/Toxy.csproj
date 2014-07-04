@@ -68,6 +68,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModels\FriendControlModelView.cs" />
+    <Compile Include="ViewModels\GroupControlModelView.cs" />
+    <Compile Include="ViewModels\IChatObject.cs" />
     <Compile Include="Views\CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Toxy.MVVM;
+﻿using Toxy.MVVM;
 
 namespace Toxy.ViewModels
 {
-    public class FriendControlModelView : ViewModelBase
+    public class FriendControlModelView : ViewModelBase, IChatObject
     {
     }
 }

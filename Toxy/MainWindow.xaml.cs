@@ -46,6 +46,8 @@ namespace Toxy
         {
             InitializeComponent();
 
+            this.DataContext = new MainWindowViewModel();
+
             tox = new Tox(false);
             tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;

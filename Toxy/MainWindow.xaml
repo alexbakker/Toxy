@@ -693,7 +693,4 @@
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
     </controls:MetroWindow.TaskbarItemInfo>
-    <controls:MetroWindow.DataContext>
-        <ViewModels:MainWindowViewModel />
-    </controls:MetroWindow.DataContext>
 </controls:MetroWindow>

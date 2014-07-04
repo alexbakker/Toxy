@@ -14,6 +14,7 @@ using System.Threading;
 
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 using SharpTox.Core;
 using SharpTox.Av;
@@ -566,7 +567,8 @@ namespace Toxy
             ScrollViewer viewer = FindScrollViewer(ChatBox);
 
             if (viewer != null)
-                viewer.ScrollToBottom();
+                if (viewer.ScrollableHeight == viewer.VerticalOffset)
+                    viewer.ScrollToBottom();
         }
 
         private static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
@@ -1059,9 +1061,22 @@ namespace Toxy
 
         private void OpenSettings_Click(object sender, RoutedEventArgs e)
         {
-            SettingsUsername.Text = tox.GetSelfName();
-            SettingsStatus.Text = tox.GetSelfStatusMessage();
-            SettingsNospam.Text = tox.GetNospam().ToString();
+            if (!SettingsFlyout.IsOpen)
+            {
+                SettingsUsername.Text = tox.GetSelfName();
+                SettingsStatus.Text = tox.GetSelfStatusMessage();
+                SettingsNospam.Text = tox.GetNospam().ToString();
+
+                Tuple<AppTheme, Accent> style = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+                Accent accent = ThemeManager.GetAccent(style.Item2.Name);
+                if (accent != null)
+                    AccentComboBox.SelectedItem = AccentComboBox.Items.Cast<AccentColorMenuData>().Single(a => a.Name == style.Item2.Name);
+
+                AppTheme theme = ThemeManager.GetAppTheme(style.Item1.Name);
+                if (theme != null)
+                    AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
+            }
+
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
 
@@ -1094,9 +1109,14 @@ namespace Toxy
                 FriendFlyout.IsOpen = false;
                 AddFriendToView(friendnumber);
             }
-            catch (Exception ex)
+            catch (ToxAFException ex)
             {
-                MessageBox.Show(ex.ToString());
+                this.ShowMessageAsync("An error occurred", Tools.GetAFError(ex.Error));
+                return;
+            }
+            catch
+            {
+                this.ShowMessageAsync("An error occurred", "The ID you entered is not valid.");
                 return;
             }
 
@@ -1127,6 +1147,7 @@ namespace Toxy
                 var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
             }
+
             if (AppThemeComboBox.SelectedItem != null)
             {
                 var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);

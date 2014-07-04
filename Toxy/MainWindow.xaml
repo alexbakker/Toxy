@@ -396,6 +396,7 @@
                         </Rectangle>
                     </Button>
                     <Button Name="FileButton"
+                            Panel.ZIndex="1"
                             Click="FileButton_OnClick"
                             VerticalAlignment="Top"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
@@ -622,7 +623,7 @@
                               DisplayMemberPath="Name"
                               Margin="15,270,0,0"
                               VerticalAlignment="Top"
-                              HorizontalAlignment="Stretch"
+                              HorizontalAlignment="Left"
                               Width="275" />
                     <ComboBox x:Name="AppThemeComboBox"
                               ItemsSource="{Binding AppThemes}"

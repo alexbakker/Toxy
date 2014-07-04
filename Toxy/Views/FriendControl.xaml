@@ -10,9 +10,6 @@
                     {RelativeSource FindAncestor,
                     AncestorType={x:Type WrapPanel}},
                     Path=ActualWidth}">
-    <UserControl.Resources>
-        <ResourceDictionary Source="/Styles/Combobox.xaml" />
-    </UserControl.Resources>
     <Grid ZIndex="1">
         <!--Hacking the width above in order to keep the gray background on resize -->
         <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">

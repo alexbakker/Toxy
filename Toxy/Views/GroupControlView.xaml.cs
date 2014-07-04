@@ -8,19 +8,19 @@ namespace Toxy.Views
     /// <summary>
     /// Interaction logic for FriendControl.xaml
     /// </summary>
-    public partial class GroupControl : UserControl
+    public partial class GroupControlView : UserControl
     {
         public event RoutedEventHandler Click;
 
         public bool Selected = false;
         public readonly int GroupNumber;
 
-        public GroupControl()
+        public GroupControlView()
         {
             InitializeComponent();
         }
 
-        public GroupControl(int groupnumber)
+        public GroupControlView(int groupnumber)
             : this()
         {
             GroupNumber = groupnumber;

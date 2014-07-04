@@ -89,6 +89,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FriendControlView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GroupControlView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\GroupControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -110,6 +118,12 @@
       <DependentUpon>FileTransferControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormExtensions.cs" />
+    <Compile Include="Views\FriendControlView.xaml.cs">
+      <DependentUpon>FriendControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GroupControlView.xaml.cs">
+      <DependentUpon>GroupControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GroupControl.xaml.cs">
       <DependentUpon>GroupControl.xaml</DependentUpon>
     </Compile>

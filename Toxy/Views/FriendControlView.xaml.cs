@@ -9,9 +9,9 @@ namespace Toxy.Views
 {
 
     /// <summary>
-    /// Interaction logic for FriendControl.xaml
+    /// Interaction logic for FriendControlView.xaml
     /// </summary>
-    public partial class FriendControl : UserControl
+    public partial class FriendControlView : UserControl
     {
         public event RoutedEventHandler Click;
         public event RoutedEventHandler FocusTextBox;
@@ -20,12 +20,12 @@ namespace Toxy.Views
         public bool Selected = false;
         public readonly int FriendNumber;
 
-        public FriendControl()
+        public FriendControlView()
         {
             InitializeComponent();
         }
 
-        public FriendControl(int friendnumber = 0)
+        public FriendControlView(int friendnumber = 0)
             : this()
         {
             FriendNumber = friendnumber;
@@ -51,16 +51,6 @@ namespace Toxy.Views
                     StatusRectangle.Fill = new SolidColorBrush(Colors.Red);
                     break;
             }
-        }
-
-        public void SetStatusMessage(string newStatusMessage)
-        {
-            FriendStatusLabel.Text = newStatusMessage;
-        }
-
-        public void SetUsername(string newUsername)
-        {
-            FriendNameLabel.Text = newUsername;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

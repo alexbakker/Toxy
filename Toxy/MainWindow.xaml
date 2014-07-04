@@ -9,6 +9,7 @@
                       d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
                       xmlns:converter="clr-namespace:Toxy.Converter"
                       xmlns:viewModels="clr-namespace:Toxy.ViewModels"
+                      xmlns:views="clr-namespace:Toxy.Views"
                       x:Class="Toxy.MainWindow"
                       x:Name="mv"
                       Title="Toxy"
@@ -112,7 +113,16 @@
                         <!-- bind to collection if friends and groups -->
                         <ListBox x:Name="ChatsListBox"
                                  ItemsSource="{Binding ChatCollection, Mode=OneWay}"
-                                 Grid.Row="0" />
+                                 Grid.Row="0">
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
+                                    <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:GroupControlModelView}">
+                                    <views:GroupControlView DataContext="{Binding Mode=OneWay}" />
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
 
                         <ScrollViewer x:Name="ChatListViewer"
                                       Height="Auto"

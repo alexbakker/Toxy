@@ -52,9 +52,9 @@ namespace Toxy.ViewModels
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
 
-        private IEnumerable<IChatObject> chatCollection;
+        private ICollection<IChatObject> chatCollection;
 
-        public IEnumerable<IChatObject> ChatCollection
+        public ICollection<IChatObject> ChatCollection
         {
             get { return this.chatCollection; }
             set

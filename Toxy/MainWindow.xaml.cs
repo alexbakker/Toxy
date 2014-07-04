@@ -110,6 +110,11 @@ namespace Toxy
                 SelectFriendControl(GetFriendControlByNumber(0));
         }
 
+        public MainWindowViewModel ViewModel
+        {
+            get { return this.DataContext as MainWindowViewModel; }
+        }
+
         private void toxav_OnEnd(int call_index, IntPtr args)
         {
             if (call == null)
@@ -735,6 +740,14 @@ namespace Toxy
 
             if (string.IsNullOrEmpty(friendName))
                 friendName = tox.GetClientID(friendNumber);
+
+            var friendMV = new FriendControlModelView();
+            friendMV.FriendNumber = friendNumber;
+            friendMV.UserName = friendName;
+            friendMV.StatusMessage = friendStatus;
+            friendMV.UserStatus = ToxUserStatus.INVALID;
+
+            this.ViewModel.ChatCollection.Add(friendMV);
 
             FriendControl friend = new FriendControl(friendNumber);
             friend.FriendNameLabel.Text = friendName;

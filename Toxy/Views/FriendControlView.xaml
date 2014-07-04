@@ -1,10 +1,14 @@
-﻿<UserControl x:Class="Toxy.Views.FriendControl"
+﻿<UserControl x:Class="Toxy.Views.FriendControlView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Toxy.ViewModels"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
+             RenderOptions.ClearTypeHint="Enabled"
+             TextOptions.TextFormattingMode="Display"
+             Background="{DynamicResource WhiteBrush}"
              Height="60"
              BorderThickness="0">
 
@@ -13,8 +17,9 @@
         <Grid Name="MainGrid"
               Height="60"
               VerticalAlignment="Top">
-            <TextBlock Name="FriendNameLabel"
-                       Text="Friend Name"
+            <TextBlock Text="{Binding UserName, Mode=OneWay}"
+                       RenderOptions.ClearTypeHint="Enabled"
+                       TextOptions.TextFormattingMode="Display"
                        HorizontalAlignment="Left"
                        Margin="55,4,-1,0"
                        VerticalAlignment="Top"
@@ -156,8 +161,7 @@
                     </Rectangle>
                 </Button>
             </Grid>
-            <TextBlock Name="FriendStatusLabel"
-                       Text="Friend Status"
+            <TextBlock Text="{Binding StatusMessage, Mode=OneWay}"
                        HorizontalAlignment="Left"
                        Margin="55,30,0,0"
                        VerticalAlignment="Top"

@@ -4,177 +4,175 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Toxy.ViewModels"
+             xmlns:converter="clr-namespace:Toxy.Converter"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
              RenderOptions.ClearTypeHint="Enabled"
+             TextOptions.TextRenderingMode="ClearType"
              TextOptions.TextFormattingMode="Display"
-             Height="60"
+             MinHeight="60"
              BorderThickness="0">
 
     <Grid ZIndex="1">
+
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
+
+            <Style x:Key="ButtonRectangleStyle"
+                   TargetType="Rectangle">
+                <Setter Property="Fill"
+                        Value="{DynamicResource BlackBrush}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=IsMouseOver}"
+                                 Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                    To="White"
+                                                    Duration="0:0:0.3" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                    To="Black"
+                                                    Duration="0:0:0.3" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+
         <Grid Name="MainGrid">
-            <TextBlock Text="{Binding UserName, Mode=OneWay}"
-                       HorizontalAlignment="Left"
-                       Margin="55,4,-1,0"
-                       VerticalAlignment="Top"
-                       FontSize="18"
-                       Height="32"
-                       TextTrimming="CharacterEllipsis" />
-            <Grid x:Name="RequestButtonGrid"
-                  Visibility="Collapsed"
-                  HorizontalAlignment="Left"
-                  Margin="55,0,0,0">
-                <Button Name="AcceptButton"
-                        Height="30"
-                        Width="30"
-                        IsEnabled="True"
-                        Style="{DynamicResource MetroCircleButtonStyle}"
-                        HorizontalAlignment="Left"
-                        Margin="0,24,0,6">
-                    <Rectangle Width="10"
-                               Height="10"
-                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
-                                         Visual="{DynamicResource appbar_check}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-                <Button Height="30"
-                        Width="30"
-                        Name="DeclineButton"
-                        Style="{DynamicResource MetroCircleButtonStyle}"
-                        HorizontalAlignment="Left"
-                        Margin="25,24,0,6">
-                    <Rectangle Width="10"
-                               Height="10"
-                               Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
-                                         Visual="{DynamicResource appbar_close}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </Grid>
-            <Grid Name="CallButtonGrid"
-                  Visibility="Collapsed"
-                  HorizontalAlignment="Right"
-                  Width="80">
-                <Button Name="AcceptCallButton"
-                        Height="35"
-                        Width="35"
-                        Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                        HorizontalAlignment="Left"
-                        Margin="14,10,0,15">
+            <Grid.ColumnDefinitions>
+                <!-- the user icon -->
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-                    <Rectangle Height="18"
-                               Width="10"
-                               Fill="{StaticResource BlackBrush}">
-                        <Rectangle.Style>
-                            <Style TargetType="Rectangle">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=AcceptCallButton,Path=IsMouseOver}"
-                                                 Value="True">
-                                        <DataTrigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                    To="White"
-                                                                    Duration="0:0:0.3" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.EnterActions>
-                                        <DataTrigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                    To="Black"
-                                                                    Duration="0:0:0.3" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.ExitActions>
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </Rectangle.Style>
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
-                                         Visual="{DynamicResource appbar_phone}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-                <Button Name="DenyCallButton"
-                        Height="35"
-                        Width="35"
-                        Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                        HorizontalAlignment="Left"
-                        Margin="45,10,0,15">
-                    <Rectangle Width="15"
-                               Height="13"
-                               Name="OkRectangle"
-                               Fill="{StaticResource BlackBrush}">
-                        <Rectangle.Style>
-                            <Style TargetType="Rectangle">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=DenyCallButton,Path=IsMouseOver}"
-                                                 Value="True">
-                                        <DataTrigger.EnterActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                    To="White"
-                                                                    Duration="0:0:0.3" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.EnterActions>
-                                        <DataTrigger.ExitActions>
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                    To="Black"
-                                                                    Duration="0:0:0.3" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </DataTrigger.ExitActions>
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </Rectangle.Style>
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
-                                         Visual="{DynamicResource appbar_phone_hangup}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
+            <Grid Grid.Column="0"
+                  Height="40"
+                  Width="40"
+                  Margin="1"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Image Height="40"
+                       Width="40"
+                       Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
+                <Rectangle Name="StatusRectangle"
+                           Height="10"
+                           Width="10"
+                           Fill="{Binding UserStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Right" />
             </Grid>
 
-            <TextBlock Text="{Binding StatusMessage, Mode=OneWay}"
-                       HorizontalAlignment="Left"
-                       Margin="55,30,0,0"
-                       VerticalAlignment="Top"
-                       TextTrimming="CharacterEllipsis" />
+            <Grid Grid.Column="1"
+                  Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Image HorizontalAlignment="Left"
-                   Height="40"
-                   Source="pack://application:,,,/Resources/Icons/profilepicture.png"
-                   VerticalAlignment="Top"
-                   Width="40"
-                   Margin="10,10,0,0" />
+                <TextBlock Grid.Row="0"
+                           Text="{Binding UserName, Mode=OneWay}"
+                           FontSize="16"
+                           TextTrimming="CharacterEllipsis" />
 
-            <Rectangle Name="StatusRectangle"
-                       Height="11"
-                       VerticalAlignment="Top"
-                       Margin="39,39,0,0"
-                       HorizontalAlignment="Left"
-                       Width="11" />
+                <TextBlock Grid.Row="1"
+                           Text="{Binding StatusMessage, Mode=OneWay}"
+                           TextTrimming="CharacterEllipsis" />
+
+                <Grid Grid.Row="1"
+                      x:Name="RequestButtonGrid"
+                      Visibility="{Binding IsRequest, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button x:Name="AcceptButton"
+                                Command="{Binding AcceptCommand, Mode=OneWay}"
+                                Height="30"
+                                Width="30"
+                                Style="{DynamicResource MetroCircleButtonStyle}"
+                                Margin="1 2">
+                            <Rectangle Width="10"
+                                       Height="10"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_check}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button x:Name="DeclineButton"
+                                Command="{Binding DeclineCommand, Mode=OneWay}"
+                                Height="30"
+                                Width="30"
+                                Style="{DynamicResource MetroCircleButtonStyle}"
+                                Margin="1 2">
+                            <Rectangle Width="10"
+                                       Height="10"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_close}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1"
+                      x:Name="CallButtonGrid"
+                      Visibility="{Binding IsCalling, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button x:Name="AcceptCallButton"
+                                Command="{Binding AcceptCallCommand, Mode=OneWay}"
+                                Height="35"
+                                Width="35"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Margin="1 2">
+                            <Rectangle Width="10"
+                                       Height="17"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_phone}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button x:Name="DenyCallButton"
+                                Command="{Binding DenyCallCommand, Mode=OneWay}"
+                                Height="35"
+                                Width="35"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Margin="1 2">
+                            <Rectangle Width="15"
+                                       Height="13"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_phone_hangup}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
         </Grid>
 
-        <Rectangle Name="NewMessageIndicator"
-                   HorizontalAlignment="Left"
-                   Height="60"
-                   VerticalAlignment="Top"
+        <!-- new message indicator -->
+        <Rectangle HorizontalAlignment="Left"
+                   Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Fill="{DynamicResource AccentColorBrush}"
                    Width="4" />
 
     </Grid>

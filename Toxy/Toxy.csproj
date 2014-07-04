@@ -67,9 +67,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
     <Compile Include="ViewModels\FriendControlModelView.cs" />
     <Compile Include="ViewModels\GroupControlModelView.cs" />
     <Compile Include="ViewModels\IChatObject.cs" />
+    <Compile Include="ViewModels\IFriendObject.cs" />
+    <Compile Include="ViewModels\IGroupObject.cs" />
     <Compile Include="Views\CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>

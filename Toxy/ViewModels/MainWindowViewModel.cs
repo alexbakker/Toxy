@@ -38,6 +38,7 @@ namespace Toxy.ViewModels
         public MainWindowViewModel()
         {
             this.ChatCollection = new ObservableCollection<IChatObject>();
+            this.ChatRequestCollection = new ObservableCollection<IChatObject>();
 
             // create accent color menu items for the demo
             this.AccentColors = ThemeManager.Accents
@@ -66,6 +67,28 @@ namespace Toxy.ViewModels
                 this.chatCollection = value;
                 this.OnPropertyChanged(() => this.ChatCollection);
             }
+        }
+
+        private ICollection<IChatObject> chatRequestCollection;
+
+        public ICollection<IChatObject> ChatRequestCollection
+        {
+            get { return this.chatRequestCollection; }
+            set
+            {
+                if (Equals(value, this.chatRequestCollection))
+                {
+                    return;
+                }
+                this.chatRequestCollection = value;
+                this.OnPropertyChanged(() => this.ChatRequestCollection);
+            }
+        }
+
+        public IFriendObject GetFriendObjectByNumber(int friendnumber)
+        {
+            var fo = ChatCollection.OfType<IFriendObject>().FirstOrDefault(f => f.FriendNumber == friendnumber);
+            return fo;
         }
     }
 }

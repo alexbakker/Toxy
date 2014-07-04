@@ -103,17 +103,25 @@
                         SelectionChanged="ListViewTabControl_OnSelectionChanged"
                         Margin="0,70,0,56">
                 <TabItem Header="Chats">
-                    <Grid Name="ChatGrid"
-                          Margin="-4,0,0,0">
+                    <Grid Name="ChatGrid">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <!-- bind to collection if friends and groups -->
+                        <!-- bind to collection of friends and groups -->
                         <ListBox x:Name="ChatsListBox"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 HorizontalContentAlignment="Stretch"
                                  ItemsSource="{Binding ChatCollection, Mode=OneWay}"
                                  Grid.Row="0">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}"
+                                       BasedOn="{StaticResource ToxyMetroListBoxItem}">
+                                    <Setter Property="IsSelected"
+                                            Value="{Binding Selected}" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             <ListBox.Resources>
                                 <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
                                     <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
@@ -137,11 +145,42 @@
                 </TabItem>
                 <TabItem x:Name="RequestsTabItem"
                          Header="Requests">
-                    <ScrollViewer x:Name="NotificationViewer"
-                                  Margin="-8,0,0,0">
-                        <WrapPanel x:Name="NotificationWrapper"
-                                   HorizontalAlignment="Stretch" />
-                    </ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- bind to collection of friend requests -->
+                        <ListBox x:Name="ChatRequestsListBox"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 HorizontalContentAlignment="Stretch"
+                                 ItemsSource="{Binding ChatRequestCollection, Mode=OneWay}"
+                                 Grid.Row="0">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}"
+                                       BasedOn="{StaticResource ToxyMetroListBoxItem}">
+                                    <Setter Property="IsSelected"
+                                            Value="{Binding Selected}" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
+                                    <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
+
+                        <ScrollViewer x:Name="NotificationViewer"
+                                      Margin="-8,0,0,0"
+                                      Height="Auto"
+                                      VerticalAlignment="Stretch"
+                                      Grid.Row="1">
+                            <WrapPanel x:Name="NotificationWrapper"
+                                       HorizontalAlignment="Stretch" />
+                        </ScrollViewer>
+
+                    </Grid>
                 </TabItem>
             </TabControl>
             <Grid>

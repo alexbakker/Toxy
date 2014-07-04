@@ -2,7 +2,7 @@
 
 namespace Toxy.ViewModels
 {
-    public class GroupControlModelView : ViewModelBase, IChatObject
+    public class GroupControlModelView : ViewModelBase, IGroupObject
     {
         private bool selected;
 
@@ -11,12 +11,26 @@ namespace Toxy.ViewModels
             get { return this.selected; }
             set
             {
-                if (Equals(value, this.selected))
+                if (!Equals(value, this.Selected))
                 {
-                    return;
+                    this.selected = value;
+                    this.OnPropertyChanged(() => this.Selected);
                 }
-                this.selected = value;
-                this.OnPropertyChanged(() => this.Selected);
+            }
+        }
+
+        private bool hasNewMessage;
+
+        public bool HasNewMessage
+        {
+            get { return this.hasNewMessage; }
+            set
+            {
+                if (!Equals(value, this.HasNewMessage))
+                {
+                    this.hasNewMessage = value;
+                    this.OnPropertyChanged(() => this.HasNewMessage);
+                }
             }
         }
     }

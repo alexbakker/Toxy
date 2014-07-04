@@ -69,11 +69,7 @@
                         </Style.Triggers>
                     </Style>
                 </ResourceDictionary>
-                <ResourceDictionary>
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="/Resources/Icons.xaml" />
-                    </ResourceDictionary.MergedDictionaries>
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
@@ -184,7 +180,8 @@
                            VerticalAlignment="Top"
                            Margin="65,35,10,0"
                            FontStyle="Italic"
-                           TextTrimming="CharacterEllipsis" FontSize="14">
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="14">
                             <Run Text="User Message" />
                 </TextBlock>
 
@@ -621,19 +618,19 @@
                            HorizontalAlignment="Left"
                            Margin="10,239,0,0" />
                     <ComboBox x:Name="AccentComboBox"
-                             ItemsSource="{Binding AccentColors}"
-                             DisplayMemberPath="Name"
-                             Margin="15,270,0,0"
-                             VerticalAlignment="Top"
-                             HorizontalAlignment="Stretch"
-                             Width="275" />
+                              ItemsSource="{Binding AccentColors}"
+                              DisplayMemberPath="Name"
+                              Margin="15,270,0,0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Stretch"
+                              Width="275" />
                     <ComboBox x:Name="AppThemeComboBox"
-                             ItemsSource="{Binding AppThemes}"
-                             DisplayMemberPath="Name"
-                             Margin="15,300,0,0"
-                             VerticalAlignment="Top"
-                             HorizontalAlignment="Left"
-                             Width="275" />
+                              ItemsSource="{Binding AppThemes}"
+                              DisplayMemberPath="Name"
+                              Margin="15,300,0,0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Width="275" />
                     <Button x:Name="SaveSettingsButton"
                             Content="Save"
                             Margin="0,242,10,10"

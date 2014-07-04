@@ -1,19 +1,44 @@
 ﻿<UserControl x:Class="Toxy.Views.GroupControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:custom="clr-namespace:Toxy"
-             BorderThickness="0,0,0,0" 
-             Width="{Binding RelativeSource=
-                    {RelativeSource FindAncestor,
-                    AncestorType={x:Type WrapPanel}},
-                    Path=ActualWidth}">
-    <Grid Name="MainGrid" Height="60" VerticalAlignment="Top">
-        <Label Name="GroupNameLabel" Content="Group Name" HorizontalAlignment="Left" Margin="55,0,0,0" VerticalAlignment="Top" FontSize="18" Height="32" Width="245"/>
-        <Label Name="GroupStatusLabel" Content="Group Status" HorizontalAlignment="Left" Margin="55,24,0,0" VerticalAlignment="Top" Width="245"/>
-        <Image HorizontalAlignment="Left" Height="40" Source="pack://application:,,,/Resources/Icons/profilepicture.png"  VerticalAlignment="Top" Width="40" Margin="10,10,0,0"/>
-        <Button Name="HackButton" VerticalAlignment="Top" Height="60" Opacity="0" Click="Button_Click" Margin="0,0,-4,0" MouseEnter="HackButton_MouseEnter" MouseLeave="HackButton_MouseLeave"/>
-        <Rectangle Name="NewMessageIndicator" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="4"/>
+             BorderThickness="0"
+             Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
+
+    <Grid Name="MainGrid"
+          Height="60"
+          VerticalAlignment="Top">
+        <Label Name="GroupNameLabel"
+               Content="Group Name"
+               HorizontalAlignment="Left"
+               Margin="55,0,0,0"
+               VerticalAlignment="Top"
+               FontSize="18"
+               Height="32"
+               Width="245" />
+        <Label Name="GroupStatusLabel"
+               Content="Group Status"
+               HorizontalAlignment="Left"
+               Margin="55,24,0,0"
+               VerticalAlignment="Top"
+               Width="245" />
+        <Image HorizontalAlignment="Left"
+               Height="40"
+               Source="pack://application:,,,/Resources/Icons/profilepicture.png"
+               VerticalAlignment="Top"
+               Width="40"
+               Margin="10,10,0,0" />
+        <Button Name="HackButton"
+                VerticalAlignment="Top"
+                Height="60"
+                Opacity="0"
+                Click="Button_Click"
+                Margin="0,0,-4,0"
+                MouseEnter="HackButton_MouseEnter"
+                MouseLeave="HackButton_MouseLeave" />
+        <Rectangle Name="NewMessageIndicator"
+                   HorizontalAlignment="Left"
+                   Height="60"
+                   VerticalAlignment="Top"
+                   Width="4" />
     </Grid>
 </UserControl>

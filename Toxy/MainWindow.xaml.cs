@@ -479,7 +479,11 @@ namespace Toxy
             {
 
                 DateTime lastOnline = tox.GetLastOnline(friendnumber);
-                friend.StatusMessage = lastOnline == emptyLastOnline ? string.Empty : string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+                if (lastOnline == emptyLastOnline)
+                {
+                    lastOnline = DateTime.Now;
+                }
+                friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
                 friend.UserStatus = ToxUserStatus.INVALID; //not the proper way to do it, I know...
 
                 if (friend.Selected)
@@ -756,7 +760,11 @@ namespace Toxy
             else
             {
                 DateTime lastOnline = tox.GetLastOnline(friendNumber);
-                friendStatus = lastOnline == emptyLastOnline ? string.Empty : string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+                if (lastOnline == emptyLastOnline)
+                {
+                    lastOnline = DateTime.Now;
+                }
+                friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
             }
 
             string friendName = tox.GetName(friendNumber);

@@ -113,13 +113,13 @@ namespace Toxy.ViewModels
 
         public IFriendObject GetFriendObjectByNumber(int friendnumber)
         {
-            var fo = ChatCollection.OfType<IFriendObject>().FirstOrDefault(f => f.FriendNumber == friendnumber);
+            var fo = ChatCollection.OfType<IFriendObject>().FirstOrDefault(f => f.ChatNumber == friendnumber);
             return fo;
         }
 
         public IGroupObject GetGroupObjectByNumber(int groupnumber)
         {
-            var go = ChatCollection.OfType<IGroupObject>().FirstOrDefault(f => f.GroupNumber == groupnumber);
+            var go = ChatCollection.OfType<IGroupObject>().FirstOrDefault(f => f.ChatNumber == groupnumber);
             return go;
         }
     }

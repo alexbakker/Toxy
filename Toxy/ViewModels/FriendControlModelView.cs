@@ -71,17 +71,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private int friendNumber;
+        private int chatNumber;
 
-        public int FriendNumber
+        public int ChatNumber
         {
-            get { return this.friendNumber; }
+            get { return this.chatNumber; }
             set
             {
-                if (!Equals(value, this.FriendNumber))
+                if (!Equals(value, this.ChatNumber))
                 {
-                    this.friendNumber = value;
-                    this.OnPropertyChanged(() => this.FriendNumber);
+                    this.chatNumber = value;
+                    this.OnPropertyChanged(() => this.ChatNumber);
                 }
             }
         }

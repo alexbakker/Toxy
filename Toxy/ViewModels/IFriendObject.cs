@@ -17,7 +17,6 @@ namespace Toxy.ViewModels
         Action<IFriendObject> AcceptCallAction { get; set; }
         Action<IFriendObject> DenyCallAction { get; set; }
 
-        int FriendNumber { get; set; }
         string UserName { get; set; }
         ToxUserStatus UserStatus { get; set; }
         string StatusMessage { get; set; }

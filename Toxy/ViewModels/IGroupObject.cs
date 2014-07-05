@@ -7,7 +7,7 @@ namespace Toxy.ViewModels
     {
         Action<IGroupObject, bool> SelectedAction { get; set; }
 
-        int GroupNumber { get; set; }
+        int ChatNumber { get; set; }
         string GroupName { get; set; }
         ToxUserStatus GroupStatus { get; set; }
         string StatusMessage { get; set; }

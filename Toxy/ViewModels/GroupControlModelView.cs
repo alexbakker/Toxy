@@ -32,17 +32,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private int groupNumber;
+        private int chatNumber;
 
-        public int GroupNumber
+        public int ChatNumber
         {
-            get { return this.groupNumber; }
+            get { return this.chatNumber; }
             set
             {
-                if (!Equals(value, this.GroupNumber))
+                if (!Equals(value, this.ChatNumber))
                 {
-                    this.groupNumber = value;
-                    this.OnPropertyChanged(() => this.GroupNumber);
+                    this.chatNumber = value;
+                    this.OnPropertyChanged(() => this.ChatNumber);
                 }
             }
         }

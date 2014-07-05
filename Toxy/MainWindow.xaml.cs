@@ -168,13 +168,13 @@ namespace Toxy
             {
                 if (change == ToxChatChange.PEER_ADD || change == ToxChatChange.PEER_DEL)
                 {
-                    var status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
+                    var status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
                     group.StatusMessage = status;
                 }
                 if (group.Selected)
                 {
-                    Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
-                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));
+                    Friendname.Text = string.Format("Groupchat #{0}", group.ChatNumber);
+                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
                 }
             }
         }
@@ -253,11 +253,11 @@ namespace Toxy
             this.Flash();
         }
 
-        private void tox_OnGroupInvite(int friendnumber, string group_public_key)
+        private void tox_OnGroupInvite(int groupnumber, string group_public_key)
         {
             //auto join groupchats for now
-            int groupnumber = tox.JoinGroup(friendnumber, group_public_key);
-            if (groupnumber != -1)
+            int joinGroup = tox.JoinGroup(groupnumber, group_public_key);
+            if (joinGroup != -1)
             {
                 AddGroupToView(groupnumber);
             }
@@ -773,7 +773,7 @@ namespace Toxy
             }
 
             var friendMV = new FriendControlModelView();
-            friendMV.FriendNumber = friendNumber;
+            friendMV.ChatNumber = friendNumber;
             friendMV.UserName = friendName;
             friendMV.StatusMessage = friendStatus;
             friendMV.UserStatus = ToxUserStatus.INVALID;
@@ -833,7 +833,7 @@ namespace Toxy
             //                        MenuItem groupitem = new MenuItem();
             //                        groupitem.Header = control.GroupNameLabel.Content;
             //                        groupitem.Click += delegate(object s, RoutedEventArgs e2) {
-            //                            tox.InviteFriend(friendNumber, control.GroupNumber);
+            //                            tox.InviteFriend(friendNumber, control.ChatNumber);
             //                        };
             //
             //                        item2.Items.Add(groupitem);
@@ -850,10 +850,10 @@ namespace Toxy
         {
             friendObject.HasNewMessage = false;
 
-            if (!tox.GetIsTyping(friendObject.FriendNumber))
+            if (!tox.GetIsTyping(friendObject.ChatNumber))
                 TypingStatusLabel.Content = "";
             else
-                TypingStatusLabel.Content = tox.GetName(friendObject.FriendNumber) + " is typing...";
+                TypingStatusLabel.Content = tox.GetName(friendObject.ChatNumber) + " is typing...";
 
             if (isSelected)
             {
@@ -868,7 +868,7 @@ namespace Toxy
             if (call != null)
                 return;
 
-            call = new ToxCall(tox, toxav, friendObject.CallIndex, friendObject.FriendNumber);
+            call = new ToxCall(tox, toxav, friendObject.CallIndex, friendObject.ChatNumber);
             call.Answer();
         }
 
@@ -943,10 +943,10 @@ namespace Toxy
             CallButton.Visibility = Visibility.Hidden;
             FileButton.Visibility = Visibility.Hidden;
 
-            Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
-            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));
+            Friendname.Text = string.Format("Groupchat #{0}", group.ChatNumber);
+            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
 
-            current_number = group.GroupNumber;
+            current_number = group.ChatNumber;
 
             if (groupdic.ContainsKey(current_number))
             {
@@ -1003,7 +1003,7 @@ namespace Toxy
             {
                 return;
             }
-            int friendNumber = friend.FriendNumber;
+            int friendNumber = friend.ChatNumber;
 
             Friendname.Text = tox.GetName(friendNumber);
             Friendstatus.Text = tox.GetStatusMessage(friendNumber);
@@ -1028,7 +1028,7 @@ namespace Toxy
                 }
             }
 
-            current_number = friend.FriendNumber;
+            current_number = friend.ChatNumber;
 
             if (convdic.ContainsKey(current_number))
             {

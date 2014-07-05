@@ -21,7 +21,11 @@
                       Closing="MetroWindow_Closing"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       Icon="Resources/Icons/icon.ico"
-                      SizeChanged="MetroWindow_SizeChanged">
+                      SizeChanged="MetroWindow_SizeChanged"
+                      TitleTemplate="{DynamicResource WindowTitleDataTemplate}"
+                      RenderOptions.ClearTypeHint="Enabled"
+                      TextOptions.TextRenderingMode="ClearType"
+                      TextOptions.TextFormattingMode="Display">
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>

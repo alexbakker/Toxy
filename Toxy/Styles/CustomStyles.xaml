@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
+                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:converters="http://metro.mahapps.com/winfx/xaml/shared">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
@@ -9,6 +10,16 @@
     </ResourceDictionary.MergedDictionaries>
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <converters:ToUpperConverter x:Key="ToUpperConverter" />
+
+    <DataTemplate x:Key="WindowTitleDataTemplate">
+        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content, Converter={StaticResource ToUpperConverter}}"
+                   TextTrimming="CharacterEllipsis"
+                   VerticalAlignment="Center"
+                   Margin="8 -1 0 0"
+                   FontSize="{DynamicResource WindowTitleFontSize}"
+                   FontFamily="{DynamicResource DefaultFont}" />
+    </DataTemplate>
 
     <Style x:Key="ToxyMetroListBoxItem"
            TargetType="{x:Type ListBoxItem}"

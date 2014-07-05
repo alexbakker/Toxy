@@ -227,6 +227,7 @@
                     VerticalAlignment="Bottom">
                 <Grid Margin="5,0">
                     <Button Name="OpenAddFriendButton"
+                            BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenAddFriend_Click"
                             Margin="50,0,141,1"
@@ -234,36 +235,8 @@
                             Width="44"
                             VerticalAlignment="Top">
                         <Rectangle Width="20"
-                                   Fill="{StaticResource BlackBrush}"
-                                   Height="20">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=OpenAddFriendButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
+                                   Height="20"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_user_add}" />
@@ -274,40 +247,13 @@
                             Width="44"
                             Name="NewGroupButton"
                             VerticalAlignment="Top"
+                            BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="NewGroupButton_Click"
                             Margin="96,0,95,0">
                         <Rectangle Width="20"
-                                   Fill="{StaticResource BlackBrush}"
-                                   Height="20">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=NewGroupButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
+                                   Height="20"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_group_add}" />
@@ -317,40 +263,14 @@
                     <Button Height="44"
                             Name="OpenSettingsButton"
                             VerticalAlignment="Top"
+                            BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenSettings_Click"
                             Width="44"
                             Margin="142,0,49,0">
                         <Rectangle Width="20"
-                                   Fill="Black"
-                                   Height="20">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=OpenSettingsButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
+                                   Height="20"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_cog}" />
@@ -386,8 +306,8 @@
                         <Rectangle Width="15"
                                    Height="15"
                                    Margin="0,-1"
-                                   Fill="{StaticResource BlackBrush}"
-                                   RenderTransformOrigin="0.5,0.5">
+                                   RenderTransformOrigin="0.5,0.5"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform />
@@ -400,34 +320,6 @@
                                 <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_phone_alternative}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=CallButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                     <Button Name="FileButton"
@@ -442,40 +334,11 @@
                         <Rectangle Width="10"
                                    Height="17"
                                    Margin="0,-1"
-                                   Fill="{StaticResource BlackBrush}"
-                                   RenderTransformOrigin="0.5,0.5">
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_paperclip}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=FileButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                     <Button Name="HangupButton"
@@ -490,40 +353,11 @@
                         <Rectangle Width="15"
                                    Height="15"
                                    Margin="0,-1"
-                                   Fill="{StaticResource BlackBrush}"
-                                   RenderTransformOrigin="0.5,0.5">
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_phone_hangup}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=HangupButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                     <TextBlock x:Name="Friendstatus"

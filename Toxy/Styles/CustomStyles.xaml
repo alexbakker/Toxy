@@ -21,6 +21,37 @@
                    FontFamily="{DynamicResource DefaultFont}" />
     </DataTemplate>
 
+    <Style x:Key="ButtonRectangleStyle"
+           TargetType="Rectangle">
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="Fill"
+                Value="{DynamicResource BlackBrush}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=IsMouseOver}"
+                         Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                            To="White"
+                                            Duration="0:0:0.3" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                            To="Black"
+                                            Duration="0:0:0.3" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ToxyMetroListBoxItem"
            TargetType="{x:Type ListBoxItem}"
            BasedOn="{StaticResource MetroListBoxItem}">

@@ -36,7 +36,6 @@ namespace Toxy
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
 
-        private int current_number = 0;
         private bool resizing = false;
         private bool focusTextbox = false;
         private bool typing = false;
@@ -946,17 +945,15 @@ namespace Toxy
             Friendname.Text = string.Format("Groupchat #{0}", group.ChatNumber);
             Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
 
-            current_number = group.ChatNumber;
-
-            if (groupdic.ContainsKey(current_number))
+            if (groupdic.ContainsKey(group.ChatNumber))
             {
-                ChatBox.Document = groupdic[current_number];
+                ChatBox.Document = groupdic[group.ChatNumber];
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
-                groupdic.Add(current_number, document);
-                ChatBox.Document = groupdic[current_number];
+                groupdic.Add(group.ChatNumber, document);
+                ChatBox.Document = groupdic[group.ChatNumber];
             }
         }
 
@@ -1028,17 +1025,15 @@ namespace Toxy
                 }
             }
 
-            current_number = friend.ChatNumber;
-
-            if (convdic.ContainsKey(current_number))
+            if (convdic.ContainsKey(friend.ChatNumber))
             {
-                ChatBox.Document = convdic[current_number];
+                ChatBox.Document = convdic[friend.ChatNumber];
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
-                convdic.Add(current_number, document);
-                ChatBox.Document = convdic[current_number];
+                convdic.Add(friend.ChatNumber, document);
+                ChatBox.Document = convdic[friend.ChatNumber];
             }
         }
 
@@ -1184,7 +1179,8 @@ namespace Toxy
                 if (string.IsNullOrEmpty(text))
                     return;
 
-                if (tox.GetFriendConnectionStatus(current_number) == 0 && this.ViewModel.IsFriendSelected)
+                var selectedChatNumber = this.ViewModel.SelectedChatNumber;
+                if (tox.GetFriendConnectionStatus(selectedChatNumber) == 0 && this.ViewModel.IsFriendSelected)
                     return;
 
                 if (text.StartsWith("/me "))
@@ -1195,26 +1191,26 @@ namespace Toxy
 
                     if (this.ViewModel.IsFriendSelected)
                     {
-                        messageid = tox.SendAction(current_number, action);
+                        messageid = tox.SendAction(selectedChatNumber, action);
                     }
                     else if (this.ViewModel.IsGroupSelected)
                     {
-                        tox.SendGroupAction(current_number, action);
+                        tox.SendGroupAction(selectedChatNumber, action);
                     }
 
                     MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetSelfName(), action) };
 
                     if (this.ViewModel.IsFriendSelected)
                     {
-                        if (convdic.ContainsKey(current_number))
+                        if (convdic.ContainsKey(selectedChatNumber))
                         {
-                            convdic[current_number].AddNewMessageRow(tox, data);
+                            convdic[selectedChatNumber].AddNewMessageRow(tox, data);
                         }
                         else
                         {
                             FlowDocument document = GetNewFlowDocument();
-                            convdic.Add(current_number, document);
-                            convdic[current_number].AddNewMessageRow(tox, data);
+                            convdic.Add(selectedChatNumber, document);
+                            convdic[selectedChatNumber].AddNewMessageRow(tox, data);
                         }
                     }
                 }
@@ -1227,37 +1223,37 @@ namespace Toxy
 
                     if (this.ViewModel.IsFriendSelected)
                     {
-                        messageid = tox.SendMessage(current_number, message);
+                        messageid = tox.SendMessage(selectedChatNumber, message);
                     }
                     else if (this.ViewModel.IsGroupSelected)
                     {
-                        tox.SendGroupMessage(current_number, message);
+                        tox.SendGroupMessage(selectedChatNumber, message);
                     }
 
                     MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
 
                     if (this.ViewModel.IsFriendSelected)
                     {
-                        if (convdic.ContainsKey(current_number))
+                        if (convdic.ContainsKey(selectedChatNumber))
                         {
-                            Run run = GetLastMessageRun(convdic[current_number]);
+                            Run run = GetLastMessageRun(convdic[selectedChatNumber]);
                             if (run != null)
                             {
                                 if (run.Text == data.Username)
-                                    convdic[current_number].AppendMessage(data);
+                                    convdic[selectedChatNumber].AppendMessage(data);
                                 else
-                                    convdic[current_number].AddNewMessageRow(tox, data);
+                                    convdic[selectedChatNumber].AddNewMessageRow(tox, data);
                             }
                             else
                             {
-                                convdic[current_number].AddNewMessageRow(tox, data);
+                                convdic[selectedChatNumber].AddNewMessageRow(tox, data);
                             }
                         }
                         else
                         {
                             FlowDocument document = GetNewFlowDocument();
-                            convdic.Add(current_number, document);
-                            convdic[current_number].AddNewMessageRow(tox, data);
+                            convdic.Add(selectedChatNumber, document);
+                            convdic[selectedChatNumber].AddNewMessageRow(tox, data);
                         }
                     }
                 }
@@ -1269,7 +1265,7 @@ namespace Toxy
             }
             else if (e.Key == Key.Tab && this.ViewModel.IsGroupSelected)
             {
-                string[] names = tox.GetGroupNames(current_number);
+                string[] names = tox.GetGroupNames(this.ViewModel.SelectedChatNumber);
 
                 foreach (string name in names)
                 {
@@ -1301,7 +1297,7 @@ namespace Toxy
                 if (typing)
                 {
                     typing = false;
-                    tox.SetUserIsTyping(current_number, typing);
+                    tox.SetUserIsTyping(this.ViewModel.SelectedChatNumber, typing);
                 }
             }
             else
@@ -1309,7 +1305,7 @@ namespace Toxy
                 if (!typing)
                 {
                     typing = true;
-                    tox.SetUserIsTyping(current_number, typing);
+                    tox.SetUserIsTyping(this.ViewModel.SelectedChatNumber, typing);
                 }
             }
         }
@@ -1416,11 +1412,12 @@ namespace Toxy
             if (call != null)
                 return;
 
-            if (tox.GetFriendConnectionStatus(current_number) != 1)
+            var selectedChatNumber = this.ViewModel.SelectedChatNumber;
+            if (tox.GetFriendConnectionStatus(selectedChatNumber) != 1)
                 return;
 
             int call_index;
-            ToxAvError error = toxav.Call(current_number, ToxAvCallType.Audio, 30, out call_index);
+            ToxAvError error = toxav.Call(selectedChatNumber, ToxAvCallType.Audio, 30, out call_index);
             if (error != ToxAvError.None)
                 return;
 
@@ -1445,7 +1442,8 @@ namespace Toxy
             if (!this.ViewModel.IsFriendSelected)
                 return;
 
-            if (tox.GetFriendConnectionStatus(current_number) != 1)
+            var selectedChatNumber = this.ViewModel.SelectedChatNumber;
+            if (tox.GetFriendConnectionStatus(selectedChatNumber) != 1)
                 return;
 
             OpenFileDialog dialog = new OpenFileDialog();
@@ -1457,13 +1455,13 @@ namespace Toxy
 
             string filename = dialog.FileName;
             FileInfo info = new FileInfo(filename);
-            int filenumber = tox.NewFileSender(current_number, (ulong)info.Length, filename.Split('\\').Last<string>());
+            int filenumber = tox.NewFileSender(selectedChatNumber, (ulong)info.Length, filename.Split('\\').Last<string>());
 
             if (filenumber == -1)
                 return;
 
-            FileTransfer ft = convdic[current_number].AddNewFileTransfer(tox, current_number, filenumber, filename, (ulong)info.Length, true);
-            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(current_number)));
+            FileTransfer ft = convdic[selectedChatNumber].AddNewFileTransfer(tox, selectedChatNumber, filenumber, filename, (ulong)info.Length, true);
+            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(selectedChatNumber)));
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;
 

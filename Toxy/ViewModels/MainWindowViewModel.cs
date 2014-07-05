@@ -98,6 +98,9 @@ namespace Toxy.ViewModels
                 }
                 this.selectedChatObject = value;
                 this.OnPropertyChanged(() => this.SelectedChatObject);
+                this.OnPropertyChanged(() => this.IsFriendSelected);
+                this.OnPropertyChanged(() => this.IsGroupSelected);
+                this.OnPropertyChanged(() => this.SelectedChatNumber);
             }
         }
 
@@ -109,6 +112,15 @@ namespace Toxy.ViewModels
         public bool IsGroupSelected
         {
             get { return this.SelectedChatObject is IGroupObject; }
+        }
+
+        public int SelectedChatNumber
+        {
+            get
+            {
+                var chatObject = this.SelectedChatObject;
+                return chatObject != null ? chatObject.ChatNumber : -1;
+            }
         }
 
         public IFriendObject GetFriendObjectByNumber(int friendnumber)

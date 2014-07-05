@@ -37,7 +37,6 @@ namespace Toxy
         private List<FileTransfer> transfers = new List<FileTransfer>();
 
         private int current_number = 0;
-        private Type current_type = typeof(FriendControl);
         private bool resizing = false;
         private bool focusTextbox = false;
         private bool typing = false;
@@ -947,7 +946,6 @@ namespace Toxy
             Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
             Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));
 
-            current_type = typeof(GroupControl);
             current_number = group.GroupNumber;
 
             if (groupdic.ContainsKey(current_number))
@@ -1030,7 +1028,6 @@ namespace Toxy
                 }
             }
 
-            current_type = typeof(FriendControl);
             current_number = friend.FriendNumber;
 
             if (convdic.ContainsKey(current_number))
@@ -1187,7 +1184,7 @@ namespace Toxy
                 if (string.IsNullOrEmpty(text))
                     return;
 
-                if (tox.GetFriendConnectionStatus(current_number) == 0 && current_type == typeof(FriendControl))
+                if (tox.GetFriendConnectionStatus(current_number) == 0 && this.ViewModel.IsFriendSelected)
                     return;
 
                 if (text.StartsWith("/me "))
@@ -1196,14 +1193,18 @@ namespace Toxy
                     string action = text.Substring(4);
                     int messageid = -1;
 
-                    if (current_type == typeof(FriendControl))
+                    if (this.ViewModel.IsFriendSelected)
+                    {
                         messageid = tox.SendAction(current_number, action);
-                    else if (current_type == typeof(GroupControl))
+                    }
+                    else if (this.ViewModel.IsGroupSelected)
+                    {
                         tox.SendGroupAction(current_number, action);
+                    }
 
                     MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetSelfName(), action) };
 
-                    if (current_type == typeof(FriendControl))
+                    if (this.ViewModel.IsFriendSelected)
                     {
                         if (convdic.ContainsKey(current_number))
                         {
@@ -1224,14 +1225,18 @@ namespace Toxy
 
                     int messageid = -1;
 
-                    if (current_type == typeof(FriendControl))
+                    if (this.ViewModel.IsFriendSelected)
+                    {
                         messageid = tox.SendMessage(current_number, message);
-                    else if (current_type == typeof(GroupControl))
+                    }
+                    else if (this.ViewModel.IsGroupSelected)
+                    {
                         tox.SendGroupMessage(current_number, message);
+                    }
 
                     MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
 
-                    if (current_type == typeof(FriendControl))
+                    if (this.ViewModel.IsFriendSelected)
                     {
                         if (convdic.ContainsKey(current_number))
                         {
@@ -1262,7 +1267,7 @@ namespace Toxy
                 TextToSend.Text = "";
                 e.Handled = true;
             }
-            else if (e.Key == Key.Tab && current_type == typeof(GroupControl))
+            else if (e.Key == Key.Tab && this.ViewModel.IsGroupSelected)
             {
                 string[] names = tox.GetGroupNames(current_number);
 
@@ -1286,7 +1291,7 @@ namespace Toxy
 
         private void TextToSend_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (current_type != typeof(FriendControl))
+            if (!this.ViewModel.IsFriendSelected)
                 return;
 
             string text = TextToSend.Text;
@@ -1405,6 +1410,9 @@ namespace Toxy
 
         private void CallButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (!this.ViewModel.IsFriendSelected)
+                return;
+
             if (call != null)
                 return;
 
@@ -1434,7 +1442,7 @@ namespace Toxy
 
         private void FileButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (current_type != typeof(FriendControl))
+            if (!this.ViewModel.IsFriendSelected)
                 return;
 
             if (tox.GetFriendConnectionStatus(current_number) != 1)

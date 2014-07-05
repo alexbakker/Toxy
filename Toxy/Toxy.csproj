@@ -100,14 +100,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\GroupControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\FriendControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -126,12 +118,6 @@
     </Compile>
     <Compile Include="Views\GroupControlView.xaml.cs">
       <DependentUpon>GroupControlView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GroupControl.xaml.cs">
-      <DependentUpon>GroupControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\FriendControl.xaml.cs">
-      <DependentUpon>FriendControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

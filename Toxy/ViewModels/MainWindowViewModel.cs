@@ -85,6 +85,32 @@ namespace Toxy.ViewModels
             }
         }
 
+        private IChatObject selectedChatObject;
+
+        public IChatObject SelectedChatObject
+        {
+            get { return this.selectedChatObject; }
+            set
+            {
+                if (Equals(value, this.selectedChatObject))
+                {
+                    return;
+                }
+                this.selectedChatObject = value;
+                this.OnPropertyChanged(() => this.SelectedChatObject);
+            }
+        }
+
+        public bool IsFriendSelected
+        {
+            get { return this.SelectedChatObject is IFriendObject; }
+        }
+
+        public bool IsGroupSelected
+        {
+            get { return this.SelectedChatObject is IGroupObject; }
+        }
+
         public IFriendObject GetFriendObjectByNumber(int friendnumber)
         {
             var fo = ChatCollection.OfType<IFriendObject>().FirstOrDefault(f => f.FriendNumber == friendnumber);

@@ -37,8 +37,11 @@ namespace Toxy.ViewModels
 
         public MainWindowViewModel()
         {
-            this.ChatCollection = new ObservableCollection<IChatObject>();
-            this.ChatRequestCollection = new ObservableCollection<IChatObject>();
+            var chatObjects = new ObservableCollection<IChatObject>();
+            // notify the GroupChatCollection property to (used for menu items)
+            chatObjects.CollectionChanged += (sender, args) => this.OnPropertyChanged(() => this.GroupChatCollection);
+            this.ChatCollection = chatObjects;
+            this.ChatRequestCollection = chatObjects;
 
             // create accent color menu items for the demo
             this.AccentColors = ThemeManager.Accents
@@ -66,6 +69,16 @@ namespace Toxy.ViewModels
                 }
                 this.chatCollection = value;
                 this.OnPropertyChanged(() => this.ChatCollection);
+            }
+        }
+
+        public ICollection<IGroupObject> GroupChatCollection
+        {
+            get
+            {
+                return this.ChatCollection != null
+                    ? this.ChatCollection.OfType<IGroupObject>().ToList()
+                    : Enumerable.Empty<IGroupObject>().ToList();
             }
         }
 

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Toxy.ViewModels"
-             xmlns:converter="clr-namespace:Toxy.Converter"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
              RenderOptions.ClearTypeHint="Enabled"
@@ -12,6 +11,30 @@
              TextOptions.TextFormattingMode="Display"
              MinHeight="60"
              BorderThickness="0">
+
+    <UserControl.ContextMenu>
+        <!-- DataContext is FriendControlModelView -->
+        <ContextMenu DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Copy ID"
+                      Command="{Binding DataContext.CopyIDCommand, Mode=OneWay}" />
+            <MenuItem Header="Delete"
+                      Command="{Binding DataContext.DeleteCommand, Mode=OneWay}" />
+            <MenuItem Header="Invite"
+                      x:Name="InviteMenuItem"
+                      ItemsSource="{Binding DataContext.MainViewModel.GroupChatCollection, Mode=OneWay}">
+                <MenuItem.ItemContainerStyle>
+                    <!-- DataContext is GroupControlModelView -->
+                    <Style TargetType="MenuItem"
+                           BasedOn="{StaticResource MetroMenuItem}">
+                        <Setter Property="Command"
+                                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.DataContext.GroupInviteCommand, Mode=OneWay}" />
+                        <Setter Property="CommandParameter"
+                                Value="{Binding Mode=OneWay}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
     <Grid>
 

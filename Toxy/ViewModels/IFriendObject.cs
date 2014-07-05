@@ -6,10 +6,15 @@ namespace Toxy.ViewModels
 {
     public interface IFriendObject : IChatObject
     {
+        MainWindowViewModel MainViewModel { get; set; }
+
         MessageData RequestMessageData { get; set; }
         FlowDocument RequestFlowDocument { get; set; }
 
         Action<IFriendObject, bool> SelectedAction { get; set; }
+        Action<IFriendObject> DeleteAction { get; set; }
+        Action<IFriendObject> CopyIDAction { get; set; }
+        Action<IFriendObject, IGroupObject> GroupInviteAction { get; set; }
 
         Action<IFriendObject> AcceptAction { get; set; }
         Action<IFriendObject> DeclineAction { get; set; }

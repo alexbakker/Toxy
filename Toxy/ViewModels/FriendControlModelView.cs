@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using SharpTox.Core;
@@ -8,16 +9,40 @@ namespace Toxy.ViewModels
 {
     public class FriendControlModelView : ViewModelBase, IFriendObject
     {
+        public FriendControlModelView(MainWindowViewModel mainViewModel)
+        {
+            this.MainViewModel = mainViewModel;
+        }
+
+        public MainWindowViewModel MainViewModel { get; set; }
+
         public MessageData RequestMessageData { get; set; }
         public FlowDocument RequestFlowDocument { get; set; }
 
         public Action<IFriendObject, bool> SelectedAction { get; set; }
+        public Action<IFriendObject> DeleteAction { get; set; }
+        public Action<IFriendObject> CopyIDAction { get; set; }
+        public Action<IFriendObject, IGroupObject> GroupInviteAction { get; set; }
 
         public Action<IFriendObject> AcceptAction { get; set; }
         public Action<IFriendObject> DeclineAction { get; set; }
 
         public Action<IFriendObject> AcceptCallAction { get; set; }
         public Action<IFriendObject> DenyCallAction { get; set; }
+
+        private ICommand deleteCommand;
+
+        public ICommand DeleteCommand
+        {
+            get { return this.deleteCommand ?? (this.deleteCommand = new DelegateCommand(() => this.DeleteAction(this), () => DeleteAction != null)); }
+        }
+
+        private ICommand copyIDCommand;
+
+        public ICommand CopyIDCommand
+        {
+            get { return this.copyIDCommand ?? (this.copyIDCommand = new DelegateCommand(() => this.CopyIDAction(this), () => CopyIDAction != null)); }
+        }
 
         private ICommand acceptCommand;
 
@@ -45,6 +70,16 @@ namespace Toxy.ViewModels
         public ICommand DenyCallCommand
         {
             get { return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(() => this.DenyCallAction(this), () => IsCalling && this.DenyCallAction != null)); }
+        }
+
+        private ICommand groupInviteCommand;
+
+        public ICommand GroupInviteCommand
+        {
+            get
+            {
+                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => GroupInviteAction != null && go != null));
+            }
         }
 
         private bool selected;

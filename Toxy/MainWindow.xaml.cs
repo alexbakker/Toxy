@@ -766,7 +766,7 @@ namespace Toxy
                 friendName = tox.GetClientID(friendNumber);
             }
 
-            var friendMV = new FriendControlModelView();
+            var friendMV = new FriendControlModelView(this.ViewModel);
             friendMV.ChatNumber = friendNumber;
             friendMV.UserName = friendName;
             friendMV.StatusMessage = friendStatus;
@@ -774,70 +774,44 @@ namespace Toxy
             friendMV.SelectedAction = FriendSelectedAction;
             friendMV.DenyCallAction = FriendDenyCallAction;
             friendMV.AcceptCallAction = FriendAcceptCallAction;
+            friendMV.CopyIDAction = FriendCopyIdAction;
+            friendMV.DeleteAction = FriendDeleteAction;
+            friendMV.GroupInviteAction = GroupInviteAction;
 
             this.ViewModel.ChatCollection.Add(friendMV);
+        }
 
+        private void GroupInviteAction(IFriendObject friendObject, IGroupObject groupObject)
+        {
+            tox.InviteFriend(friendObject.ChatNumber, groupObject.ChatNumber);
+        }
 
-            //            MenuItem item = new MenuItem();
-            //            item.Header = "Delete";
-            //            item.Click += delegate(object sender, RoutedEventArgs e) {
-            //                if (friend != null)
-            //                {
-            //                    FriendWrapper.Children.Remove(friend);
-            //                    friend = null;
-            //
-            //                    if (convdic.ContainsKey(friendNumber))
-            //                    {
-            //                        convdic.Remove(friendNumber);
-            //
-            //                        if (current_number == friendNumber && current_type == typeof(FriendControl))
-            //                            ChatBox.Document = null;
-            //                    }
-            //
-            //                    tox.DeleteFriend(friendNumber);
-            //                }
-            //            };
-            //
-            //            MenuItem copyIDMenuitem = new MenuItem();
-            //            copyIDMenuitem.Header = "Copy ID";
-            //            copyIDMenuitem.Click += delegate(object sender, RoutedEventArgs e) {
-            //                if (friend != null)
-            //                {
-            //                    Clipboard.Clear();
-            //                    Clipboard.SetText(tox.GetClientID(friendNumber));
-            //                }
-            //            };
-            //
-            //            MenuItem item2 = new MenuItem();
-            //            item2.Header = "Invite";
-            //            item2.Visibility = Visibility.Collapsed;
-            //
-            //            friend.ContextMenu = new ContextMenu();
-            //            friend.ContextMenu.Items.Add(item);
-            //            friend.ContextMenu.Items.Add(item2);
-            //            friend.ContextMenu.Items.Add(copyIDMenuitem);
-            //            friend.ContextMenuOpening += delegate(object sender, ContextMenuEventArgs e) {
-            //                item2.Items.Clear();
-            //                GroupControl[] groupcontrols = FriendWrapper.FindChildren<GroupControl>().ToArray<GroupControl>();
-            //                if (groupcontrols.Length > 0)
-            //                {
-            //                    item2.Visibility = Visibility.Visible;
-            //                    foreach (GroupControl control in groupcontrols)
-            //                    {
-            //                        MenuItem groupitem = new MenuItem();
-            //                        groupitem.Header = control.GroupNameLabel.Content;
-            //                        groupitem.Click += delegate(object s, RoutedEventArgs e2) {
-            //                            tox.InviteFriend(friendNumber, control.ChatNumber);
-            //                        };
-            //
-            //                        item2.Items.Add(groupitem);
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    item2.Visibility = Visibility.Collapsed;
-            //                }
-            //            };
+        private void FriendDeleteAction(IFriendObject friendObject)
+        {
+            this.ViewModel.ChatCollection.Remove(friendObject);
+            var friendNumber = friendObject.ChatNumber;
+            if (convdic.ContainsKey(friendNumber))
+            {
+                convdic.Remove(friendNumber);
+                if (friendObject.Selected)
+                {
+                    ChatBox.Document = null;
+                }
+            }
+            tox.DeleteFriend(friendNumber);
+            friendObject.SelectedAction = null;
+            friendObject.DenyCallAction = null;
+            friendObject.AcceptCallAction = null;
+            friendObject.CopyIDAction = null;
+            friendObject.DeleteAction = null;
+            friendObject.GroupInviteAction = null;
+            friendObject.MainViewModel = null;
+        }
+
+        private void FriendCopyIdAction(IFriendObject friendObject)
+        {
+            Clipboard.Clear();
+            Clipboard.SetText(tox.GetClientID(friendObject.ChatNumber));
         }
 
         private void FriendSelectedAction(IFriendObject friendObject, bool isSelected)
@@ -882,7 +856,7 @@ namespace Toxy
 
         private void AddFriendRequestToView(string id, string message)
         {
-            var friendMV = new FriendControlModelView();
+            var friendMV = new FriendControlModelView(this.ViewModel);
             friendMV.IsRequest = true;
             friendMV.UserName = id;
             friendMV.UserStatus = ToxUserStatus.INVALID;
@@ -916,6 +890,7 @@ namespace Toxy
             friendObject.SelectedAction = null;
             friendObject.AcceptAction = null;
             friendObject.DeclineAction = null;
+            friendObject.MainViewModel = null;
         }
 
         private void FriendRequestDeclineAction(IFriendObject friendObject)

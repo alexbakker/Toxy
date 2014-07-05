@@ -3,6 +3,7 @@
                     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Tooltip.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -244,6 +245,17 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- own menu style -->
+    <Style TargetType="MenuItem"
+           BasedOn="{StaticResource MetroMenuItem}">
+        <Setter Property="RenderOptions.ClearTypeHint"
+                Value="Enabled" />
+        <Setter Property="TextOptions.TextRenderingMode"
+                Value="ClearType" />
+        <Setter Property="TextOptions.TextFormattingMode"
+                Value="Display" />
     </Style>
 
     <!-- own tooltip style -->

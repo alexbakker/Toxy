@@ -41,7 +41,7 @@ namespace Toxy.ViewModels
             // notify the GroupChatCollection property to (used for menu items)
             chatObjects.CollectionChanged += (sender, args) => this.OnPropertyChanged(() => this.GroupChatCollection);
             this.ChatCollection = chatObjects;
-            this.ChatRequestCollection = chatObjects;
+            this.ChatRequestCollection = new ObservableCollection<IChatObject>();
 
             // create accent color menu items for the demo
             this.AccentColors = ThemeManager.Accents

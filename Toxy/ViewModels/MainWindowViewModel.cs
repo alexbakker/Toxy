@@ -39,7 +39,10 @@ namespace Toxy.ViewModels
         {
             var chatObjects = new ObservableCollection<IChatObject>();
             // notify the GroupChatCollection property to (used for menu items)
-            chatObjects.CollectionChanged += (sender, args) => this.OnPropertyChanged(() => this.GroupChatCollection);
+            chatObjects.CollectionChanged += (sender, args) => {
+                this.OnPropertyChanged(() => this.GroupChatCollection);
+                this.OnPropertyChanged(() => this.AnyGroupsExists);
+            };
             this.ChatCollection = chatObjects;
             this.ChatRequestCollection = new ObservableCollection<IChatObject>();
 
@@ -80,6 +83,11 @@ namespace Toxy.ViewModels
                     ? this.ChatCollection.OfType<IGroupObject>().ToList()
                     : Enumerable.Empty<IGroupObject>().ToList();
             }
+        }
+
+        public bool AnyGroupsExists
+        {
+            get { return GroupChatCollection.Any(); }
         }
 
         private ICollection<IChatObject> chatRequestCollection;

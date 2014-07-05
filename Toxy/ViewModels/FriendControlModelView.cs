@@ -78,7 +78,7 @@ namespace Toxy.ViewModels
         {
             get
             {
-                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => GroupInviteAction != null && go != null));
+                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => this.UserStatus == ToxUserStatus.NONE && GroupInviteAction != null && go != null));
             }
         }
 

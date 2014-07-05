@@ -22,6 +22,7 @@
                       Command="{Binding DataContext.DeleteCommand, Mode=OneWay}" />
             <MenuItem Header="Invite"
                       x:Name="InviteMenuItem"
+                      Visibility="{Binding DataContext.MainViewModel.AnyGroupsExists, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                       ItemsSource="{Binding DataContext.MainViewModel.GroupChatCollection, Mode=OneWay}">
                 <MenuItem.ItemContainerStyle>
                     <!-- DataContext is GroupControlModelView -->
@@ -40,7 +41,6 @@
     <Grid>
 
         <Grid.Resources>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
         </Grid.Resources>
 

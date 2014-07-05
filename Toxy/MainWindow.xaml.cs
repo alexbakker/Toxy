@@ -1282,7 +1282,7 @@ namespace Toxy
 
         private void CopyIDButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(tox.GetAddress());
+            Clipboard.SetDataObject(tox.GetAddress());
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)

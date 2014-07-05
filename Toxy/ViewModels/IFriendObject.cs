@@ -23,5 +23,6 @@ namespace Toxy.ViewModels
         string StatusMessage { get; set; }
         bool IsRequest { get; set; }
         bool IsCalling { get; set; }
+        int CallIndex { get; set; }
     }
 }

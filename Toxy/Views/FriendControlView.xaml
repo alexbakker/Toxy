@@ -13,7 +13,7 @@
              MinHeight="60"
              BorderThickness="0">
 
-    <Grid ZIndex="1">
+    <Grid>
 
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -60,7 +60,7 @@
             <Grid Grid.Column="0"
                   Height="40"
                   Width="40"
-                  Margin="1"
+                  Margin="4"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
                 <Image Height="40"
@@ -78,7 +78,7 @@
                   Margin="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
@@ -91,6 +91,7 @@
                            TextTrimming="CharacterEllipsis" />
 
                 <Grid Grid.Row="1"
+                      ZIndex="1"
                       x:Name="RequestButtonGrid"
                       Visibility="{Binding IsRequest, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal"
@@ -99,7 +100,8 @@
                                 Command="{Binding AcceptCommand, Mode=OneWay}"
                                 Height="30"
                                 Width="30"
-                                Style="{DynamicResource MetroCircleButtonStyle}"
+                                BorderBrush="{DynamicResource AccentColorBrush}"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                                 Margin="1 2">
                             <Rectangle Width="10"
                                        Height="10"
@@ -114,7 +116,8 @@
                                 Command="{Binding DeclineCommand, Mode=OneWay}"
                                 Height="30"
                                 Width="30"
-                                Style="{DynamicResource MetroCircleButtonStyle}"
+                                BorderBrush="{DynamicResource AccentColorBrush}"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                                 Margin="1 2">
                             <Rectangle Width="10"
                                        Height="10"
@@ -129,6 +132,7 @@
                 </Grid>
 
                 <Grid Grid.Row="1"
+                      ZIndex="2"
                       x:Name="CallButtonGrid"
                       Visibility="{Binding IsCalling, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal"
@@ -137,8 +141,9 @@
                                 Command="{Binding AcceptCallCommand, Mode=OneWay}"
                                 Height="35"
                                 Width="35"
+                                BorderBrush="{DynamicResource AccentColorBrush}"
                                 Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                                Margin="1 2">
+                                Margin="0">
                             <Rectangle Width="10"
                                        Height="17"
                                        Style="{StaticResource ButtonRectangleStyle}">
@@ -152,8 +157,9 @@
                                 Command="{Binding DenyCallCommand, Mode=OneWay}"
                                 Height="35"
                                 Width="35"
+                                BorderBrush="{DynamicResource AccentColorBrush}"
                                 Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                                Margin="1 2">
+                                Margin="0">
                             <Rectangle Width="15"
                                        Height="13"
                                        Style="{StaticResource ButtonRectangleStyle}">

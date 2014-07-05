@@ -175,5 +175,7 @@ namespace Toxy.ViewModels
                 }
             }
         }
+
+        public int CallIndex { get; set; }
     }
 }

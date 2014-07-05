@@ -79,6 +79,7 @@ namespace Toxy
             toxav.OnPeerTimeout += toxav_OnEnd;
             toxav.OnRequestTimeout += toxav_OnEnd;
             toxav.OnReject += toxav_OnEnd;
+            toxav.OnCancel += toxav_OnEnd;
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -134,13 +135,16 @@ namespace Toxy
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
             var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-            callingFriend.IsCalling = false;
-
-            CallButton.Visibility = Visibility.Hidden;
-            if (current_number == friendnumber)
-                HangupButton.Visibility = Visibility.Visible;
-
-            AddCallControl(friendnumber, "{0}");
+            if (callingFriend != null)
+            {
+                callingFriend.IsCalling = false;
+                CallButton.Visibility = Visibility.Hidden;
+                if (callingFriend.Selected)
+                {
+                    HangupButton.Visibility = Visibility.Visible;
+                }
+                AddCallControl(friendnumber, "{0}");
+            }
         }
 
         private void toxav_OnInvite(int call_index, IntPtr args)
@@ -155,6 +159,7 @@ namespace Toxy
             if (friend == null)
                 return;
 
+            friend.CallIndex = call_index;
             friend.IsCalling = true;
         }
 
@@ -443,18 +448,18 @@ namespace Toxy
 
         private void tox_OnConnectionStatusChanged(int friendnumber, int status)
         {
+            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            if (friend == null)
+                return;
+
             if (status == 0)
             {
-                var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-
-                if (friend == null)
-                    return;
 
                 DateTime lastOnline = tox.GetLastOnline(friendnumber);
                 friend.StatusMessage = lastOnline == emptyLastOnline ? string.Empty : string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
                 friend.UserStatus = ToxUserStatus.INVALID; //not the proper way to do it, I know...
 
-                if (current_number == friendnumber && current_type == typeof(FriendControl))
+                if (friend.Selected)
                 {
                     CallButton.Visibility = Visibility.Hidden;
                     FileButton.Visibility = Visibility.Hidden;
@@ -462,7 +467,7 @@ namespace Toxy
             }
             else
             {
-                if (current_number == friendnumber && current_type == typeof(FriendControl))
+                if (friend.Selected)
                 {
                     CallButton.Visibility = Visibility.Visible;
                     FileButton.Visibility = Visibility.Visible;
@@ -472,7 +477,11 @@ namespace Toxy
 
         private void tox_OnTypingChange(int friendnumber, bool is_typing)
         {
-            if (current_number == friendnumber && current_type == typeof(FriendControl))
+            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            if (friend == null)
+                return;
+
+            if (friend.Selected)
             {
                 if (is_typing)
                     TypingStatusLabel.Content = tox.GetName(friendnumber) + " is typing...";
@@ -486,7 +495,9 @@ namespace Toxy
             MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetName(friendnumber), action) };
 
             if (convdic.ContainsKey(friendnumber))
+            {
                 convdic[friendnumber].AddNewMessageRow(tox, data);
+            }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
@@ -495,11 +506,17 @@ namespace Toxy
             }
 
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-            if (friend != null && !friend.Selected)
-                friend.HasNewMessage = true;
-
-            if (current_number == friendnumber && current_type == typeof(FriendControl))
-                ScrollChatBox();
+            if (friend != null)
+            {
+                if (!friend.Selected)
+                {
+                    friend.HasNewMessage = true;
+                }
+                else
+                {
+                    ScrollChatBox();
+                }
+            }
 
             this.Flash();
         }
@@ -541,11 +558,17 @@ namespace Toxy
             }
 
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-            if (friend != null && !friend.Selected)
-                friend.HasNewMessage = true;
-
-            if (current_number == friendnumber && current_type == typeof(FriendControl))
-                ScrollChatBox();
+            if (friend != null)
+            {
+                if (!friend.Selected)
+                {
+                    friend.HasNewMessage = true;
+                }
+                else
+                {
+                    ScrollChatBox();
+                }
+            }
 
             this.Flash();
         }
@@ -614,25 +637,36 @@ namespace Toxy
         private void tox_OnUserStatus(int friendnumber, ToxUserStatus status)
         {
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-            friend.UserStatus = status;
+            if (friend != null)
+            {
+                friend.UserStatus = status;
+            }
         }
 
         private void tox_OnStatusMessage(int friendnumber, string newstatus)
         {
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-            friend.StatusMessage = newstatus;
-
-            if (current_number == friendnumber && current_type == typeof(FriendControl))
-                Friendstatus.Text = newstatus;
+            if (friend != null)
+            {
+                friend.StatusMessage = newstatus;
+                if (friend.Selected)
+                {
+                    Friendstatus.Text = newstatus;
+                }
+            }
         }
 
         private void tox_OnNameChange(int friendnumber, string newname)
         {
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-            friend.UserName = newname;
-
-            if (current_number == friendnumber && current_type == typeof(FriendControl))
-                Friendname.Text = newname;
+            if (friend != null)
+            {
+                friend.UserName = newname;
+                if (friend.Selected)
+                {
+                    Friendname.Text = newname;
+                }
+            }
         }
 
         private ToxNode[] nodes = new ToxNode[] 
@@ -645,8 +679,10 @@ namespace Toxy
         private void InitFriends()
         {
             //Creates a new FriendControl for every friend
-            foreach (int FriendNumber in tox.GetFriendlist())
-                AddFriendToView(FriendNumber);
+            foreach (var friendNumber in tox.GetFriendlist())
+            {
+                AddFriendToView(friendNumber);
+            }
         }
 
         private void AddGroupToView(int groupnumber)
@@ -699,8 +735,6 @@ namespace Toxy
 
         private void AddFriendToView(int friendNumber)
         {
-            string friendName = tox.GetName(friendNumber);
-
             string friendStatus;
             if (tox.GetFriendConnectionStatus(friendNumber) != 0)
             {
@@ -712,8 +746,11 @@ namespace Toxy
                 friendStatus = lastOnline == emptyLastOnline ? string.Empty : string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
             }
 
+            string friendName = tox.GetName(friendNumber);
             if (string.IsNullOrEmpty(friendName))
+            {
                 friendName = tox.GetClientID(friendNumber);
+            }
 
             var friendMV = new FriendControlModelView();
             friendMV.FriendNumber = friendNumber;
@@ -721,32 +758,11 @@ namespace Toxy
             friendMV.StatusMessage = friendStatus;
             friendMV.UserStatus = ToxUserStatus.INVALID;
             friendMV.SelectedAction = FriendSelectedAction;
+            friendMV.DenyCallAction = FriendDenyCallAction;
+            friendMV.AcceptCallAction = FriendAcceptCallAction;
 
             this.ViewModel.ChatCollection.Add(friendMV);
 
-            //            friend.AcceptCallButton.Click += delegate(object sender, RoutedEventArgs e) {
-            //                if (call != null)
-            //                    return;
-            //
-            //                call = new ToxCall(tox, toxav, call_index, friendnumber);
-            //                call.Answer();
-            //            };
-
-            //            friend.DenyCallButton.Click += delegate(object sender, RoutedEventArgs e) {
-            //                if (call == null)
-            //                {
-            //                    toxav.Reject(call_index, "I'm busy...");
-            //                    friend.CallButtonGrid.Visibility = Visibility.Collapsed;
-            //                }
-            //                else
-            //                {
-            //                    call.Stop();
-            //                    call = null;
-            //                }
-            //            };
-
-
-            //            friend.FocusTextBox += friend_FocusTextBox;
 
             //            MenuItem item = new MenuItem();
             //            item.Header = "Delete";
@@ -822,6 +838,29 @@ namespace Toxy
             SelectFriendControl(friendObject);
             ScrollChatBox();
             TextToSend.Focus();
+        }
+
+        private void FriendAcceptCallAction(IFriendObject friendObject)
+        {
+            if (call != null)
+                return;
+
+            call = new ToxCall(tox, toxav, friendObject.CallIndex, friendObject.FriendNumber);
+            call.Answer();
+        }
+
+        private void FriendDenyCallAction(IFriendObject friendObject)
+        {
+            if (call == null)
+            {
+                toxav.Reject(friendObject.CallIndex, "I'm busy...");
+                friendObject.IsCalling = false;
+            }
+            else
+            {
+                call.Stop();
+                call = null;
+            }
         }
 
         private void AddFriendRequestToView(string id, string message)
@@ -953,9 +992,10 @@ namespace Toxy
 
             int friendnumber = toxav.GetPeerID(call.CallIndex, 0);
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-
             if (friend != null)
+            {
                 friend.IsCalling = false;
+            }
 
             call = null;
             ChatGrid.Children.RemoveAt(0);

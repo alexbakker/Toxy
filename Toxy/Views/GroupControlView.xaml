@@ -12,6 +12,12 @@
              TextOptions.TextFormattingMode="Display"
              MinHeight="60"
              BorderThickness="0">
+    
+    <UserControl.ContextMenu>
+        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Delete" Command="{Binding DeleteCommand, Mode=OneWay}" />
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
     <Grid>
 

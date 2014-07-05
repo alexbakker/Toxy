@@ -707,34 +707,29 @@ namespace Toxy
             string groupname = string.Format("Groupchat #{0}", groupnumber);
 
             var groupMV = new GroupControlModelView();
+            groupMV.ChatNumber = groupnumber;
             groupMV.GroupName = groupname;
             groupMV.StatusMessage = string.Join(", ", tox.GetGroupNames(groupnumber));
             groupMV.SelectedAction = GroupSelectedAction;
+            groupMV.DeleteAction = GroupDeleteAction;
 
             this.ViewModel.ChatCollection.Add(groupMV);
+        }
 
-            //            MenuItem item = new MenuItem();
-            //            item.Header = "Delete";
-            //            item.Click += delegate(object sender, RoutedEventArgs e) {
-            //                if (group != null)
-            //                {
-            //                    FriendWrapper.Children.Remove(group);
-            //                    group = null;
-            //
-            //                    if (groupdic.ContainsKey(groupnumber))
-            //                    {
-            //                        groupdic.Remove(groupnumber);
-            //
-            //                        if (current_number == groupnumber && current_type == typeof(GroupControl))
-            //                            ChatBox.Document = null;
-            //                    }
-            //
-            //                    tox.DeleteGroupChat(groupnumber);
-            //                }
-            //            };
-            //
-            //            group.ContextMenu = new ContextMenu();
-            //            group.ContextMenu.Items.Add(item);
+        private void GroupDeleteAction(IGroupObject groupObject)
+        {
+            this.ViewModel.ChatCollection.Remove(groupObject);
+            int groupNumber = groupObject.ChatNumber;
+            if (groupdic.ContainsKey(groupNumber))
+            {
+                groupdic.Remove(groupNumber);
+
+                if (groupObject.Selected)
+                    ChatBox.Document = null;
+            }
+            tox.DeleteGroupChat(groupNumber);
+            groupObject.SelectedAction = null;
+            groupObject.DeleteAction = null;
         }
 
         private void GroupSelectedAction(IGroupObject groupObject, bool isSelected)

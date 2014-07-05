@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 using SharpTox.Core;
 using Toxy.MVVM;
 
@@ -7,6 +8,14 @@ namespace Toxy.ViewModels
     public class GroupControlModelView : ViewModelBase, IGroupObject
     {
         public Action<IGroupObject, bool> SelectedAction { get; set; }
+        public Action<IGroupObject> DeleteAction { get; set; }
+
+        private ICommand deleteCommand;
+
+        public ICommand DeleteCommand
+        {
+            get { return this.deleteCommand ?? (this.deleteCommand = new DelegateCommand(() => this.DeleteAction(this), () => DeleteAction != null)); }
+        }
 
         private bool selected;
 

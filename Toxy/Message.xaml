@@ -1,14 +1,22 @@
 ﻿<FlowDocument  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              ColumnWidth="400" PagePadding="0" FontSize="10pt" FontFamily="Segoe UI">
-    <Table Padding="0,0,10,0" Margin="0" >
+               RenderOptions.ClearTypeHint="Enabled"
+               TextOptions.TextRenderingMode="ClearType"
+               TextOptions.TextFormattingMode="Display"
+               Background="{DynamicResource ControlBackgroundBrush}"
+               ColumnWidth="400"
+               PagePadding="0"
+               FontSize="10pt"
+               FontFamily="Segoe UI">
+    <Table Padding="0,0,10,0"
+           Margin="0">
         <Table.Columns>
             <TableColumn Width="100" />
-            <TableColumn/>
-            <TableColumn Width="75"/>
+            <TableColumn />
+            <TableColumn Width="75" />
         </Table.Columns>
 
-        <TableRowGroup Name="MessageRows" >
-            
+        <TableRowGroup Name="MessageRows">
+
         </TableRowGroup>
     </Table>
 </FlowDocument>

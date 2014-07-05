@@ -11,6 +11,7 @@ using SharpTox.Core;
 
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using Toxy.Views;
 
 namespace Toxy
 {

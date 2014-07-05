@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro;
+using Toxy.MVVM;
 
 namespace Toxy.ViewModels
 {
@@ -33,11 +32,19 @@ namespace Toxy.ViewModels
         }
     }
 
-    public class MainWindowViewModel
+    public class MainWindowViewModel : ViewModelBase
     {
 
         public MainWindowViewModel()
         {
+            var chatObjects = new ObservableCollection<IChatObject>();
+            // notify the GroupChatCollection property to (used for menu items)
+            chatObjects.CollectionChanged += (sender, args) => {
+                this.OnPropertyChanged(() => this.GroupChatCollection);
+                this.OnPropertyChanged(() => this.AnyGroupsExists);
+            };
+            this.ChatCollection = chatObjects;
+            this.ChatRequestCollection = new ObservableCollection<IChatObject>();
 
             // create accent color menu items for the demo
             this.AccentColors = ThemeManager.Accents
@@ -52,5 +59,101 @@ namespace Toxy.ViewModels
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
 
+        private ICollection<IChatObject> chatCollection;
+
+        public ICollection<IChatObject> ChatCollection
+        {
+            get { return this.chatCollection; }
+            set
+            {
+                if (Equals(value, this.chatCollection))
+                {
+                    return;
+                }
+                this.chatCollection = value;
+                this.OnPropertyChanged(() => this.ChatCollection);
+            }
+        }
+
+        public ICollection<IGroupObject> GroupChatCollection
+        {
+            get
+            {
+                return this.ChatCollection != null
+                    ? this.ChatCollection.OfType<IGroupObject>().ToList()
+                    : Enumerable.Empty<IGroupObject>().ToList();
+            }
+        }
+
+        public bool AnyGroupsExists
+        {
+            get { return GroupChatCollection.Any(); }
+        }
+
+        private ICollection<IChatObject> chatRequestCollection;
+
+        public ICollection<IChatObject> ChatRequestCollection
+        {
+            get { return this.chatRequestCollection; }
+            set
+            {
+                if (Equals(value, this.chatRequestCollection))
+                {
+                    return;
+                }
+                this.chatRequestCollection = value;
+                this.OnPropertyChanged(() => this.ChatRequestCollection);
+            }
+        }
+
+        private IChatObject selectedChatObject;
+
+        public IChatObject SelectedChatObject
+        {
+            get { return this.selectedChatObject; }
+            set
+            {
+                if (Equals(value, this.selectedChatObject))
+                {
+                    return;
+                }
+                this.selectedChatObject = value;
+                this.OnPropertyChanged(() => this.SelectedChatObject);
+                this.OnPropertyChanged(() => this.IsFriendSelected);
+                this.OnPropertyChanged(() => this.IsGroupSelected);
+                this.OnPropertyChanged(() => this.SelectedChatNumber);
+            }
+        }
+
+        public bool IsFriendSelected
+        {
+            get { return this.SelectedChatObject is IFriendObject; }
+        }
+
+        public bool IsGroupSelected
+        {
+            get { return this.SelectedChatObject is IGroupObject; }
+        }
+
+        public int SelectedChatNumber
+        {
+            get
+            {
+                var chatObject = this.SelectedChatObject;
+                return chatObject != null ? chatObject.ChatNumber : -1;
+            }
+        }
+
+        public IFriendObject GetFriendObjectByNumber(int friendnumber)
+        {
+            var fo = ChatCollection.OfType<IFriendObject>().FirstOrDefault(f => f.ChatNumber == friendnumber);
+            return fo;
+        }
+
+        public IGroupObject GetGroupObjectByNumber(int groupnumber)
+        {
+            var go = ChatCollection.OfType<IGroupObject>().FirstOrDefault(f => f.ChatNumber == groupnumber);
+            return go;
+        }
     }
 }

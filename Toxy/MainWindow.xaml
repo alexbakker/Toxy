@@ -1,20 +1,31 @@
 ﻿<controls:MetroWindow xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:custom="clr-namespace:Toxy"
-                      xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      mc:Ignorable="d"
+                      d:DesignHeight="400"
+                      d:DesignWidth="600"
+                      d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
                       xmlns:converter="clr-namespace:Toxy.Converter"
+                      xmlns:viewModels="clr-namespace:Toxy.ViewModels"
+                      xmlns:views="clr-namespace:Toxy.Views"
                       x:Class="Toxy.MainWindow"
+                      x:Name="mv"
                       Title="Toxy"
-                      MinWidth="717"
-                      MinHeight="513"
-                      Height="513"
-                      Width="717"
+                      MinWidth="700"
+                      MinHeight="500"
+                      Height="500"
+                      Width="700"
                       ResizeMode="CanResizeWithGrip"
                       Closing="MetroWindow_Closing"
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       Icon="Resources/Icons/icon.ico"
-                      SizeChanged="MetroWindow_SizeChanged">
+                      SizeChanged="MetroWindow_SizeChanged"
+                      TitleTemplate="{DynamicResource WindowTitleDataTemplate}"
+                      RenderOptions.ClearTypeHint="Enabled"
+                      TextOptions.TextRenderingMode="ClearType"
+                      TextOptions.TextFormattingMode="Display">
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -69,12 +80,7 @@
                         </Style.Triggers>
                     </Style>
                 </ResourceDictionary>
-                <ResourceDictionary>
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="/Resources/Icons.xaml" />
-                    </ResourceDictionary.MergedDictionaries>
-                </ResourceDictionary>
-                <ResourceDictionary Source="Styles/Combobox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
@@ -101,31 +107,55 @@
                         SelectionChanged="ListViewTabControl_OnSelectionChanged"
                         Margin="0,70,0,56">
                 <TabItem Header="Chats">
-                    <Grid Name="ChatGrid"
-                          Margin="-4,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                    <Grid Name="ChatGrid">
 
-                        <ScrollViewer x:Name="ChatListViewer"
-                                      Height="Auto"
-                                      VerticalAlignment="Stretch"
-                                      Grid.Row="1">
-
-                            <WrapPanel x:Name="FriendWrapper"
-                                       HorizontalAlignment="Stretch" />
-                        </ScrollViewer>
+                        <!-- bind to collection of friends and groups -->
+                        <ListBox x:Name="ChatsListBox"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 HorizontalContentAlignment="Stretch"
+                                 ItemsSource="{Binding ChatCollection, Mode=OneWay}"
+                                 SelectedItem="{Binding SelectedChatObject}">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}"
+                                       BasedOn="{StaticResource ToxyMetroListBoxItem}">
+                                    <Setter Property="IsSelected"
+                                            Value="{Binding Selected}" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
+                                    <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type viewModels:GroupControlModelView}">
+                                    <views:GroupControlView DataContext="{Binding Mode=OneWay}" />
+                                </DataTemplate>
+                            </ListBox.Resources>
+                        </ListBox>
 
                     </Grid>
                 </TabItem>
                 <TabItem x:Name="RequestsTabItem"
                          Header="Requests">
-                    <ScrollViewer x:Name="NotificationViewer"
-                                  Margin="-8,0,0,0">
-                        <WrapPanel x:Name="NotificationWrapper"
-                                   HorizontalAlignment="Stretch" />
-                    </ScrollViewer>
+
+                    <!-- bind to collection of friend requests -->
+                    <ListBox x:Name="ChatRequestsListBox"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             HorizontalContentAlignment="Stretch"
+                             ItemsSource="{Binding ChatRequestCollection, Mode=OneWay}">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}"
+                                   BasedOn="{StaticResource ToxyMetroListBoxItem}">
+                                <Setter Property="IsSelected"
+                                        Value="{Binding Selected}" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
+                                <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
+
                 </TabItem>
             </TabControl>
             <Grid>
@@ -185,7 +215,8 @@
                            VerticalAlignment="Top"
                            Margin="65,35,10,0"
                            FontStyle="Italic"
-                           TextTrimming="CharacterEllipsis" FontSize="14">
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="14">
                             <Run Text="User Message" />
                 </TextBlock>
 
@@ -196,6 +227,7 @@
                     VerticalAlignment="Bottom">
                 <Grid Margin="5,0">
                     <Button Name="OpenAddFriendButton"
+                            BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenAddFriend_Click"
                             Margin="50,0,141,1"
@@ -203,36 +235,8 @@
                             Width="44"
                             VerticalAlignment="Top">
                         <Rectangle Width="20"
-                                   Fill="{StaticResource BlackBrush}"
-                                   Height="20">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=OpenAddFriendButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
+                                   Height="20"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_user_add}" />
@@ -243,40 +247,13 @@
                             Width="44"
                             Name="NewGroupButton"
                             VerticalAlignment="Top"
+                            BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="NewGroupButton_Click"
                             Margin="96,0,95,0">
                         <Rectangle Width="20"
-                                   Fill="{StaticResource BlackBrush}"
-                                   Height="20">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=NewGroupButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
+                                   Height="20"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_group_add}" />
@@ -286,40 +263,14 @@
                     <Button Height="44"
                             Name="OpenSettingsButton"
                             VerticalAlignment="Top"
+                            BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenSettings_Click"
                             Width="44"
                             Margin="142,0,49,0">
                         <Rectangle Width="20"
-                                   Fill="Black"
-                                   Height="20">
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=OpenSettingsButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
+                                   Height="20"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{StaticResource appbar_cog}" />
@@ -355,8 +306,8 @@
                         <Rectangle Width="15"
                                    Height="15"
                                    Margin="0,-1"
-                                   Fill="{StaticResource BlackBrush}"
-                                   RenderTransformOrigin="0.5,0.5">
+                                   RenderTransformOrigin="0.5,0.5"
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.RenderTransform>
                                 <TransformGroup>
                                     <ScaleTransform />
@@ -369,34 +320,6 @@
                                 <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_phone_alternative}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=CallButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                     <Button Name="FileButton"
@@ -411,40 +334,11 @@
                         <Rectangle Width="10"
                                    Height="17"
                                    Margin="0,-1"
-                                   Fill="{StaticResource BlackBrush}"
-                                   RenderTransformOrigin="0.5,0.5">
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_paperclip}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=FileButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                     <Button Name="HangupButton"
@@ -459,40 +353,11 @@
                         <Rectangle Width="15"
                                    Height="15"
                                    Margin="0,-1"
-                                   Fill="{StaticResource BlackBrush}"
-                                   RenderTransformOrigin="0.5,0.5">
+                                   Style="{StaticResource ButtonRectangleStyle}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_phone_hangup}" />
                             </Rectangle.OpacityMask>
-                            <Rectangle.Style>
-                                <Style TargetType="Rectangle">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=HangupButton,Path=IsMouseOver}"
-                                                     Value="True">
-                                            <DataTrigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="White"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.EnterActions>
-                                            <DataTrigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                                        To="Black"
-                                                                        Duration="0:0:0.3" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </DataTrigger.ExitActions>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                     <TextBlock x:Name="Friendstatus"
@@ -623,19 +488,19 @@
                            HorizontalAlignment="Left"
                            Margin="10,239,0,0" />
                     <ComboBox x:Name="AccentComboBox"
-                             ItemsSource="{Binding AccentColors}"
-                             DisplayMemberPath="Name"
-                             Margin="15,270,0,0"
-                             VerticalAlignment="Top"
-                             HorizontalAlignment="Left"
-                             Width="275" />
+                              ItemsSource="{Binding AccentColors}"
+                              DisplayMemberPath="Name"
+                              Margin="15,270,0,0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Width="275" />
                     <ComboBox x:Name="AppThemeComboBox"
-                             ItemsSource="{Binding AppThemes}"
-                             DisplayMemberPath="Name"
-                             Margin="15,300,0,0"
-                             VerticalAlignment="Top"
-                             HorizontalAlignment="Left"
-                             Width="275" />
+                              ItemsSource="{Binding AppThemes}"
+                              DisplayMemberPath="Name"
+                              Margin="15,300,0,0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Width="275" />
                     <Button x:Name="SaveSettingsButton"
                             Content="Save"
                             Margin="0,242,10,10"
@@ -694,7 +559,4 @@
             </TaskbarItemInfo.ThumbButtonInfos>
         </TaskbarItemInfo>
     </controls:MetroWindow.TaskbarItemInfo>
-    <controls:MetroWindow.DataContext>
-        <ViewModels:MainWindowViewModel />
-    </controls:MetroWindow.DataContext>
 </controls:MetroWindow>

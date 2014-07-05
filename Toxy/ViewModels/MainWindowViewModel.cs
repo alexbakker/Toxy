@@ -90,5 +90,11 @@ namespace Toxy.ViewModels
             var fo = ChatCollection.OfType<IFriendObject>().FirstOrDefault(f => f.FriendNumber == friendnumber);
             return fo;
         }
+
+        public IGroupObject GetGroupObjectByNumber(int groupnumber)
+        {
+            var go = ChatCollection.OfType<IGroupObject>().FirstOrDefault(f => f.GroupNumber == groupnumber);
+            return go;
+        }
     }
 }

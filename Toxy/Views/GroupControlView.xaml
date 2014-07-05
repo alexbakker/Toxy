@@ -4,46 +4,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Toxy.ViewModels"
+             xmlns:converter="clr-namespace:Toxy.Converter"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:GroupControlModelView}"
-             Height="60"
+             RenderOptions.ClearTypeHint="Enabled"
+             TextOptions.TextRenderingMode="ClearType"
+             TextOptions.TextFormattingMode="Display"
+             MinHeight="60"
              BorderThickness="0">
 
-    <Grid Name="MainGrid"
-          Height="60"
-          VerticalAlignment="Top">
-        <Label Name="GroupNameLabel"
-               Content="Group Name"
-               HorizontalAlignment="Left"
-               Margin="55,0,0,0"
-               VerticalAlignment="Top"
-               FontSize="18"
-               Height="32"
-               Width="245" />
-        <Label Name="GroupStatusLabel"
-               Content="Group Status"
-               HorizontalAlignment="Left"
-               Margin="55,24,0,0"
-               VerticalAlignment="Top"
-               Width="245" />
-        <Image HorizontalAlignment="Left"
-               Height="40"
-               Source="pack://application:,,,/Resources/Icons/profilepicture.png"
-               VerticalAlignment="Top"
-               Width="40"
-               Margin="10,10,0,0" />
-        <Button Name="HackButton"
-                VerticalAlignment="Top"
-                Height="60"
-                Opacity="0"
-                Click="Button_Click"
-                Margin="0,0,-4,0"
-                MouseEnter="HackButton_MouseEnter"
-                MouseLeave="HackButton_MouseLeave" />
-        <Rectangle Name="NewMessageIndicator"
-                   HorizontalAlignment="Left"
-                   Height="60"
-                   VerticalAlignment="Top"
+    <Grid>
+
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
+        </Grid.Resources>
+
+        <Grid Name="MainGrid">
+
+            <Grid.ColumnDefinitions>
+                <!-- the user icon -->
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0"
+                  Height="40"
+                  Width="40"
+                  Margin="4"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Image Height="40"
+                       Width="40"
+                       Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
+                <Rectangle Name="StatusRectangle"
+                           Height="10"
+                           Width="10"
+                           Fill="{Binding GroupStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Right" />
+            </Grid>
+
+            <Grid Grid.Column="1"
+                  Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="{Binding GroupName, Mode=OneWay}"
+                           FontSize="16"
+                           TextTrimming="CharacterEllipsis" />
+
+                <TextBlock Grid.Row="1"
+                           Text="{Binding StatusMessage, Mode=OneWay}"
+                           TextTrimming="CharacterEllipsis" />
+
+            </Grid>
+        </Grid>
+
+        <!-- new message indicator -->
+        <Rectangle HorizontalAlignment="Left"
+                   Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                   Fill="{DynamicResource AccentColorBrush}"
                    Width="4" />
+
     </Grid>
 </UserControl>

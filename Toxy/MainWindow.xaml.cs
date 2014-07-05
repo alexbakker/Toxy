@@ -155,28 +155,29 @@ namespace Toxy
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-
-            if (friend == null)
-                return;
-
-            friend.CallIndex = call_index;
-            friend.IsCalling = true;
+            if (friend != null)
+            {
+                friend.CallIndex = call_index;
+                friend.IsCalling = true;
+            }
         }
 
         private void tox_OnGroupNamelistChange(int groupnumber, int peernumber, ToxChatChange change)
         {
-            GroupControl control = GetGroupControlByNumber(groupnumber);
-            if (control == null)
-                return;
-
-            if (change == ToxChatChange.PEER_ADD || change == ToxChatChange.PEER_DEL)
+            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            if (group != null)
             {
-                string status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
-                control.SetStatusMessage(status);
+                if (change == ToxChatChange.PEER_ADD || change == ToxChatChange.PEER_DEL)
+                {
+                    var status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
+                    group.StatusMessage = status;
+                }
+                if (group.Selected)
+                {
+                    Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
+                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));
+                }
             }
-
-            if (current_number == groupnumber && current_type == typeof(GroupControl))
-                Friendstatus.Text = string.Join(", ", tox.GetGroupNames(groupnumber));//Friendstatus.Text = status;
         }
 
         private void tox_OnGroupAction(int groupnumber, int friendgroupnumber, string action)
@@ -184,7 +185,9 @@ namespace Toxy
             MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetGroupMemberName(groupnumber, friendgroupnumber), action) };
 
             if (groupdic.ContainsKey(groupnumber))
+            {
                 groupdic[groupnumber].AddNewMessageRow(tox, data);
+            }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
@@ -192,11 +195,18 @@ namespace Toxy
                 groupdic[groupnumber].AddNewMessageRow(tox, data);
             }
 
-            if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
-                GetGroupControlByNumber(groupnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
-
-            if (current_number == groupnumber && current_type == typeof(GroupControl))
-                ScrollChatBox();
+            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            if (group != null)
+            {
+                if (!group.Selected)
+                {
+                    group.HasNewMessage = true;
+                }
+                else
+                {
+                    ScrollChatBox();
+                }
+            }
 
             this.Flash();
         }
@@ -228,11 +238,18 @@ namespace Toxy
                 groupdic[groupnumber].AddNewMessageRow(tox, data);
             }
 
-            if (!(current_number == groupnumber && current_type == typeof(GroupControl)))
-                GetGroupControlByNumber(groupnumber).NewMessageIndicator.Fill = (Brush)FindResource("AccentColorBrush");
-
-            if (current_number == groupnumber && current_type == typeof(GroupControl))
-                ScrollChatBox();
+            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            if (group != null)
+            {
+                if (!group.Selected)
+                {
+                    group.HasNewMessage = true;
+                }
+                else
+                {
+                    ScrollChatBox();
+                }
+            }
 
             this.Flash();
         }
@@ -240,17 +257,23 @@ namespace Toxy
         private void tox_OnGroupInvite(int friendnumber, string group_public_key)
         {
             //auto join groupchats for now
-
             int groupnumber = tox.JoinGroup(friendnumber, group_public_key);
-
             if (groupnumber != -1)
+            {
                 AddGroupToView(groupnumber);
+            }
         }
 
         private void tox_OnFriendRequest(string id, string message)
         {
-            try { AddFriendRequestToView(id, message); }
-            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+            try
+            {
+                AddFriendRequestToView(id, message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
@@ -620,18 +643,10 @@ namespace Toxy
         private void NewGroupButton_Click(object sender, RoutedEventArgs e)
         {
             int groupnumber = tox.NewGroup();
-
             if (groupnumber != -1)
+            {
                 AddGroupToView(groupnumber);
-        }
-
-        private GroupControl GetGroupControlByNumber(int groupnumber)
-        {
-            foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
-                if (control.GroupNumber == groupnumber)
-                    return control;
-
-            return null;
+            }
         }
 
         private void tox_OnUserStatus(int friendnumber, ToxUserStatus status)
@@ -688,48 +703,46 @@ namespace Toxy
         private void AddGroupToView(int groupnumber)
         {
             string groupname = string.Format("Groupchat #{0}", groupnumber);
-            //string groupstatus = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));
 
-            GroupControl group = new GroupControl(groupnumber);
-            group.GroupNameLabel.Content = groupname;
-            group.GroupStatusLabel.Content = string.Join(", ", tox.GetGroupNames(groupnumber));
-            group.Click += group_Click;
-            FriendWrapper.Children.Add(group);
+            var groupMV = new GroupControlModelView();
+            groupMV.GroupName = groupname;
+            groupMV.StatusMessage = string.Join(", ", tox.GetGroupNames(groupnumber));
+            groupMV.SelectedAction = GroupSelectedAction;
 
-            MenuItem item = new MenuItem();
-            item.Header = "Delete";
-            item.Click += delegate(object sender, RoutedEventArgs e) {
-                if (group != null)
-                {
-                    FriendWrapper.Children.Remove(group);
-                    group = null;
+            this.ViewModel.ChatCollection.Add(groupMV);
 
-                    if (groupdic.ContainsKey(groupnumber))
-                    {
-                        groupdic.Remove(groupnumber);
-
-                        if (current_number == groupnumber && current_type == typeof(GroupControl))
-                            ChatBox.Document = null;
-                    }
-
-                    tox.DeleteGroupChat(groupnumber);
-                }
-            };
-
-            group.ContextMenu = new ContextMenu();
-            group.ContextMenu.Items.Add(item);
+            //            MenuItem item = new MenuItem();
+            //            item.Header = "Delete";
+            //            item.Click += delegate(object sender, RoutedEventArgs e) {
+            //                if (group != null)
+            //                {
+            //                    FriendWrapper.Children.Remove(group);
+            //                    group = null;
+            //
+            //                    if (groupdic.ContainsKey(groupnumber))
+            //                    {
+            //                        groupdic.Remove(groupnumber);
+            //
+            //                        if (current_number == groupnumber && current_type == typeof(GroupControl))
+            //                            ChatBox.Document = null;
+            //                    }
+            //
+            //                    tox.DeleteGroupChat(groupnumber);
+            //                }
+            //            };
+            //
+            //            group.ContextMenu = new ContextMenu();
+            //            group.ContextMenu.Items.Add(item);
         }
 
-        private void group_Click(object sender, RoutedEventArgs e)
+        private void GroupSelectedAction(IGroupObject groupObject, bool isSelected)
         {
-            GroupControl control = (GroupControl)sender;
-
             TypingStatusLabel.Content = "";
-
-            if (!control.Selected)
+            if (isSelected)
             {
-                SelectGroupControl(control);
+                SelectGroupControl(groupObject);
                 ScrollChatBox();
+                TextToSend.Focus();
             }
         }
 
@@ -835,9 +848,12 @@ namespace Toxy
             else
                 TypingStatusLabel.Content = tox.GetName(friendObject.FriendNumber) + " is typing...";
 
-            SelectFriendControl(friendObject);
-            ScrollChatBox();
-            TextToSend.Focus();
+            if (isSelected)
+            {
+                SelectFriendControl(friendObject);
+                ScrollChatBox();
+                TextToSend.Focus();
+            }
         }
 
         private void FriendAcceptCallAction(IFriendObject friendObject)
@@ -910,47 +926,18 @@ namespace Toxy
             friendObject.DeclineAction = null;
         }
 
-        private void SelectGroupControl(GroupControl group)
+        private void SelectGroupControl(IGroupObject group)
         {
-            Grid grid = (Grid)group.FindName("MainGrid");
-            group.Selected = true;
-            grid.SetResourceReference(Grid.BackgroundProperty, "AccentColorBrush3");
-
-            int friendNumber = group.GroupNumber;
-
-            foreach (FriendControl control in FriendWrapper.FindChildren<FriendControl>())
+            if (group == null)
             {
-                Grid grid1 = (Grid)control.FindName("MainGrid");
-                control.Selected = false;
-
-                grid1.Background = new SolidColorBrush(Colors.Transparent);
-
-                control.FriendNameLabel.Foreground = new SolidColorBrush(Colors.Black);
-                control.FriendStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
-            }
-
-            foreach (GroupControl control in FriendWrapper.FindChildren<GroupControl>())
-            {
-                if (group != control)
-                {
-                    Grid grid1 = (Grid)control.FindName("MainGrid");
-                    control.Selected = false;
-                    grid1.Background = new SolidColorBrush(Colors.Transparent);
-                    control.GroupNameLabel.Foreground = new SolidColorBrush(Colors.Black);
-                    control.GroupStatusLabel.Foreground = new SolidColorBrush(Colors.Black);
-                }
-                else
-                {
-                    control.GroupNameLabel.Foreground = new SolidColorBrush(Colors.White);
-                    control.GroupStatusLabel.Foreground = new SolidColorBrush(Colors.White);
-                }
+                return;
             }
 
             CallButton.Visibility = Visibility.Hidden;
             FileButton.Visibility = Visibility.Hidden;
 
             Friendname.Text = string.Format("Groupchat #{0}", group.GroupNumber);
-            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));//string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.GroupNumber));
+            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.GroupNumber));
 
             current_type = typeof(GroupControl);
             current_number = group.GroupNumber;

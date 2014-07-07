@@ -67,6 +67,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
+    <Compile Include="Common\VisualExtensions.cs" />
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />

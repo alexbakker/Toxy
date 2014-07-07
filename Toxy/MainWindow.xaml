@@ -10,6 +10,7 @@
                       xmlns:converter="clr-namespace:Toxy.Converter"
                       xmlns:viewModels="clr-namespace:Toxy.ViewModels"
                       xmlns:views="clr-namespace:Toxy.Views"
+                      xmlns:common="clr-namespace:Toxy.Common"
                       x:Class="Toxy.MainWindow"
                       x:Name="mv"
                       Title="Toxy"
@@ -121,6 +122,7 @@
                         <!-- bind to collection of friends and groups -->
                         <ListBox x:Name="ChatsListBox"
                                  Grid.Row="1"
+                                 common:ListBoxScrollViewerAttachedBehavior.ScrollingLines="1"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  HorizontalContentAlignment="Stretch"
                                  ItemsSource="{Binding ChatCollection, Mode=OneWay}"
@@ -149,6 +151,7 @@
 
                     <!-- bind to collection of friend requests -->
                     <ListBox x:Name="ChatRequestsListBox"
+                             common:ListBoxScrollViewerAttachedBehavior.ScrollingLines="1"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                              HorizontalContentAlignment="Stretch"
                              ItemsSource="{Binding ChatRequestCollection, Mode=OneWay}">

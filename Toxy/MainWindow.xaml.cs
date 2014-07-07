@@ -958,6 +958,8 @@ namespace Toxy
         {
             if (friend != null)
             {
+                toxav.Cancel(friend.CallIndex, friend.ChatNumber, "I'm busy...");
+
                 friend.IsCalling = false;
                 friend.IsCallingToFriend = false;
             }
@@ -967,6 +969,7 @@ namespace Toxy
                 call.Stop();
                 call = null;
             }
+
             this.ViewModel.CallingFriend = null;
 
             HangupButton.Visibility = Visibility.Collapsed;

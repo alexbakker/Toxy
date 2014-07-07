@@ -134,7 +134,7 @@ namespace Toxy
             if (thread != null)
             {
                 thread.Abort();
-                thread.Join();             
+                thread.Join();
             }
 
             toxav.KillTransmission(CallIndex);

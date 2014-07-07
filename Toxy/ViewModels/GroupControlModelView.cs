@@ -71,17 +71,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private ToxUserStatus groupStatus;
+        private ToxUserStatus toxStatus;
 
-        public ToxUserStatus GroupStatus
+        public ToxUserStatus ToxStatus
         {
-            get { return this.groupStatus; }
+            get { return this.toxStatus; }
             set
             {
-                if (!Equals(value, this.GroupStatus))
+                if (!Equals(value, this.ToxStatus))
                 {
-                    this.groupStatus = value;
-                    this.OnPropertyChanged(() => this.GroupStatus);
+                    this.toxStatus = value;
+                    this.OnPropertyChanged(() => this.ToxStatus);
                 }
             }
         }

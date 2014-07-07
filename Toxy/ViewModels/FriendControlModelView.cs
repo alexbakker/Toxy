@@ -80,7 +80,7 @@ namespace Toxy.ViewModels
         {
             get
             {
-                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => this.UserStatus == ToxUserStatus.NONE && GroupInviteAction != null && go != null));
+                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => this.ToxStatus == ToxUserStatus.NONE && GroupInviteAction != null && go != null));
             }
         }
 
@@ -130,17 +130,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private ToxUserStatus userStatus;
+        private ToxUserStatus toxStatus;
 
-        public ToxUserStatus UserStatus
+        public ToxUserStatus ToxStatus
         {
-            get { return this.userStatus; }
+            get { return this.toxStatus; }
             set
             {
-                if (!Equals(value, this.UserStatus))
+                if (!Equals(value, this.ToxStatus))
                 {
-                    this.userStatus = value;
-                    this.OnPropertyChanged(() => this.UserStatus);
+                    this.toxStatus = value;
+                    this.OnPropertyChanged(() => this.ToxStatus);
                 }
             }
         }

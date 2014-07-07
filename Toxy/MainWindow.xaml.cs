@@ -495,7 +495,7 @@ namespace Toxy
                     lastOnline = DateTime.Now;
                 }
                 friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
-                friend.UserStatus = ToxUserStatus.INVALID; //not the proper way to do it, I know...
+                friend.ToxStatus = ToxUserStatus.INVALID; //not the proper way to do it, I know...
 
                 if (friend.Selected)
                 {
@@ -669,7 +669,7 @@ namespace Toxy
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
-                friend.UserStatus = status;
+                friend.ToxStatus = status;
             }
         }
 
@@ -786,7 +786,7 @@ namespace Toxy
             friendMV.ChatNumber = friendNumber;
             friendMV.Name = friendName;
             friendMV.StatusMessage = friendStatus;
-            friendMV.UserStatus = ToxUserStatus.INVALID;
+            friendMV.ToxStatus = ToxUserStatus.INVALID;
             friendMV.SelectedAction = FriendSelectedAction;
             friendMV.DenyCallAction = FriendDenyCallAction;
             friendMV.AcceptCallAction = FriendAcceptCallAction;
@@ -881,7 +881,7 @@ namespace Toxy
             var friendMV = new FriendControlModelView(this.ViewModel);
             friendMV.IsRequest = true;
             friendMV.Name = id;
-            friendMV.UserStatus = ToxUserStatus.INVALID;
+            friendMV.ToxStatus = ToxUserStatus.INVALID;
             friendMV.RequestMessageData = new MessageData() { Message = message, Username = "Request Message" };
             friendMV.RequestFlowDocument = GetNewFlowDocument();
             friendMV.SelectedAction = FriendRequestSelectedAction;

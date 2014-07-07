@@ -63,7 +63,7 @@
                 <Rectangle Name="StatusRectangle"
                            Height="10"
                            Width="10"
-                           Fill="{Binding UserStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
+                           Fill="{Binding ToxStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Right" />
             </Grid>

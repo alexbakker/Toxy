@@ -1,4 +1,6 @@
-﻿namespace Toxy.ViewModels
+﻿using SharpTox.Core;
+
+namespace Toxy.ViewModels
 {
     public interface IChatObject
     {
@@ -7,5 +9,6 @@
         bool Selected { get; set; }
         bool HasNewMessage { get; set; }
         string StatusMessage { get; set; }
+        ToxUserStatus ToxStatus { get; set; }
     }
 }

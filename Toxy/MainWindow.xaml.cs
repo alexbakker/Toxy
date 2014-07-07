@@ -203,6 +203,7 @@ namespace Toxy
                 if (!group.Selected)
                 {
                     group.HasNewMessage = true;
+                    group.NewMessageCount++;
                 }
                 else
                 {
@@ -246,6 +247,7 @@ namespace Toxy
                 if (!group.Selected)
                 {
                     group.HasNewMessage = true;
+                    group.NewMessageCount++;
                 }
                 else
                 {
@@ -429,7 +431,10 @@ namespace Toxy
 
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null && !friend.Selected)
+            {
                 friend.HasNewMessage = true;
+                friend.NewMessageCount++;
+            }
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum) {
                 if (transfer.Stream != null)
@@ -546,6 +551,7 @@ namespace Toxy
                 if (!friend.Selected)
                 {
                     friend.HasNewMessage = true;
+                    friend.NewMessageCount++;
                 }
                 else
                 {
@@ -598,6 +604,7 @@ namespace Toxy
                 if (!friend.Selected)
                 {
                     friend.HasNewMessage = true;
+                    friend.NewMessageCount++;
                 }
                 else
                 {
@@ -745,6 +752,7 @@ namespace Toxy
         private void GroupSelectedAction(IGroupObject groupObject, bool isSelected)
         {
             groupObject.HasNewMessage = false;
+            groupObject.NewMessageCount = 0;
 
             TypingStatusLabel.Content = "";
 
@@ -836,6 +844,7 @@ namespace Toxy
         private void FriendSelectedAction(IFriendObject friendObject, bool isSelected)
         {
             friendObject.HasNewMessage = false;
+            friendObject.NewMessageCount = 0;
 
             if (!tox.GetIsTyping(friendObject.ChatNumber))
                 TypingStatusLabel.Content = "";

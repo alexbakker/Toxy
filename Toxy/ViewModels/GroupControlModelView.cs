@@ -115,5 +115,21 @@ namespace Toxy.ViewModels
                 }
             }
         }
+
+        private int newMessageCount;
+
+        public int NewMessageCount
+        {
+            get { return this.newMessageCount; }
+            set
+            {
+                if (!Equals(value, this.NewMessageCount))
+                {
+                    this.newMessageCount = value;
+                    this.OnPropertyChanged(() => this.NewMessageCount);
+                }
+            }
+        }
+
     }
 }

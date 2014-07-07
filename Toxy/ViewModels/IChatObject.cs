@@ -8,6 +8,7 @@ namespace Toxy.ViewModels
         int ChatNumber { get; set; }
         bool Selected { get; set; }
         bool HasNewMessage { get; set; }
+        int NewMessageCount { get; set; }
         string StatusMessage { get; set; }
         ToxUserStatus ToxStatus { get; set; }
     }

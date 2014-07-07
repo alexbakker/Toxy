@@ -125,6 +125,22 @@ namespace Toxy.ViewModels
             }
         }
 
+        private IFriendObject callingFriend;
+
+        public IFriendObject CallingFriend
+        {
+            get { return this.callingFriend; }
+            set
+            {
+                if (Equals(value, this.callingFriend))
+                {
+                    return;
+                }
+                this.callingFriend = value;
+                this.OnPropertyChanged(() => this.CallingFriend);
+            }
+        }
+
         public bool IsFriendSelected
         {
             get { return this.SelectedChatObject is IFriendObject; }

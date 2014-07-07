@@ -30,6 +30,8 @@ namespace Toxy.ViewModels
         public Action<IFriendObject> AcceptCallAction { get; set; }
         public Action<IFriendObject> DenyCallAction { get; set; }
 
+        public Action<IFriendObject> HangupAction { get; set; }
+
         private ICommand deleteCommand;
 
         public ICommand DeleteCommand
@@ -80,6 +82,13 @@ namespace Toxy.ViewModels
             {
                 return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => this.UserStatus == ToxUserStatus.NONE && GroupInviteAction != null && go != null));
             }
+        }
+
+        private ICommand hangupCommand;
+
+        public ICommand HangupCommand
+        {
+            get { return this.hangupCommand ?? (this.hangupCommand = new DelegateCommand(() => this.HangupAction(this), () => this.HangupAction != null)); }
         }
 
         private bool selected;
@@ -207,6 +216,21 @@ namespace Toxy.ViewModels
                 {
                     this.isCalling = value;
                     this.OnPropertyChanged(() => this.IsCalling);
+                }
+            }
+        }
+
+        private bool isCallingToFriend;
+
+        public bool IsCallingToFriend
+        {
+            get { return this.isCallingToFriend; }
+            set
+            {
+                if (!Equals(value, this.IsCallingToFriend))
+                {
+                    this.isCallingToFriend = value;
+                    this.OnPropertyChanged(() => this.IsCallingToFriend);
                 }
             }
         }

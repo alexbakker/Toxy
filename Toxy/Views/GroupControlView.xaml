@@ -22,7 +22,6 @@
     <Grid>
 
         <Grid.Resources>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
         </Grid.Resources>
 

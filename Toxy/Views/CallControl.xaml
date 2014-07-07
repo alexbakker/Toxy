@@ -3,11 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:Toxy.ViewModels"
+             xmlns:converter="clr-namespace:Toxy.Converter"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             Height="25"
-             MinWidth="250">
-    
+             d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
+             RenderOptions.ClearTypeHint="Enabled"
+             TextOptions.TextRenderingMode="ClearType"
+             TextOptions.TextFormattingMode="Display">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,13 +19,23 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid>
-        <Rectangle Fill="Black"
-                   HorizontalAlignment="Left"
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Column="0"
+                   Margin="2"
+                   Fill="Black"
                    Width="12"
                    Height="12"
                    RenderTransformOrigin="0.5,0.5"
-                   Margin="11,3,0,10">
+                   VerticalAlignment="Center">
             <Rectangle.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform />
@@ -30,72 +44,50 @@
                     <TranslateTransform />
                 </TransformGroup>
             </Rectangle.RenderTransform>
-
-
             <Rectangle.OpacityMask>
                 <VisualBrush Stretch="Fill"
                              Visual="{DynamicResource appbar_phone_alternative}" />
             </Rectangle.OpacityMask>
         </Rectangle>
-        <Label  Name="PartnerLabel"
-                TextOptions.TextRenderingMode="Grayscale"
-                FontSize="16"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Margin="24,-8,0,0" />
-        <Label  TextOptions.TextRenderingMode="Grayscale"
-                Content="37:50"
-                VerticalAlignment="Top"
-                Margin="0,-6,26,0"
-                FontSize="14"
-                Foreground="#FF404040"
-                HorizontalAlignment="Right"
-                Width="43" />
-        <Button Name="HangupButton"
-                VerticalAlignment="Top"
+
+        <TextBlock Grid.Column="1"
+                   Text="{Binding UserName, Mode=OneWay}"
+                   TextTrimming="CharacterEllipsis"
+                   Visibility="{Binding IsCallingToFriend, Mode=OneWay, Converter={StaticResource FalseToVisibilityConverter}}"
+                   Margin="2"
+                   FontSize="16"
+                   VerticalAlignment="Center" />
+        <TextBlock Grid.Column="1"
+                   Text="{Binding UserName, Mode=OneWay, StringFormat='{}Calling {0}'}"
+                   TextTrimming="CharacterEllipsis"
+                   Visibility="{Binding IsCallingToFriend, Mode=OneWay, Converter={StaticResource TrueToVisibilityConverter}}"
+                   Margin="2"
+                   FontSize="16"
+                   VerticalAlignment="Center" />
+
+        <Label Grid.Column="2"
+               Margin="2"
+               Content="37:50"
+               VerticalAlignment="Center"
+               FontSize="14"
+               Foreground="#FF404040" />
+
+        <Button Grid.Column="3"
+                Margin="2"
+                x:Name="HangupButton"
+                Command="{Binding HangupCommand, Mode=OneWay}"
+                VerticalAlignment="Center"
                 Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                Margin="0,-4,4,0"
-                Height="27"
-                HorizontalAlignment="Right"
-                Width="27"
-                Background="{DynamicResource AccentColorBrush}"
-                Click="HangupButton_Click">
+                Height="28"
+                Width="28"
+                Background="{DynamicResource AccentColorBrush}">
             <Rectangle Width="10"
                        Height="10"
-                       Margin="0,-1"
-                       Fill="{StaticResource BlackBrush}">
+                       Style="{StaticResource ButtonRectangleStyle}">
                 <Rectangle.OpacityMask>
                     <VisualBrush Stretch="Fill"
                                  Visual="{DynamicResource appbar_phone_hangup}" />
                 </Rectangle.OpacityMask>
-                <Rectangle.Style>
-                    <Style TargetType="Rectangle">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=HangupButton,Path=IsMouseOver}"
-                                         Value="True">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                            To="White"
-                                                            Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
-                                <DataTrigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                                            To="Black"
-                                                            Duration="0:0:0.3" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.ExitActions>
-                            </DataTrigger>
-
-                        </Style.Triggers>
-                    </Style>
-                </Rectangle.Style>
             </Rectangle>
         </Button>
 

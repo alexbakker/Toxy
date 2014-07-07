@@ -41,6 +41,7 @@ namespace Toxy
             //Make a new cell and create a paragraph in it
             TableCell messageTableCell = new TableCell();
             Paragraph messageParagraph = new Paragraph();
+            messageParagraph.TextAlignment = TextAlignment.Left;
 
             ProcessMessage(data, messageParagraph, false);
 

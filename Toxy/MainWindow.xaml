@@ -31,56 +31,6 @@
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <Style x:Key="UsernameCellStyle"
-                           TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Padding"
-                                Value="20" />
-                        <Setter Property="Margin"
-                                Value="0, 20, 0, 0" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Grid Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Right"
-                                                          VerticalAlignment="Top" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style x:Key="MessageCellStyle"
-                           TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Grid>
-                                        <ContentPresenter VerticalAlignment="Top" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ResourceDictionary>
-                <ResourceDictionary>
-                    <Style x:Key="ChangeOnHover"
-                           TargetType="{x:Type Rectangle}">
-                        <Setter Property="Fill"
-                                Value="Gray" />
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Fill"
-                                        Value="Green" />
-                            </Trigger>
-                            <Trigger Property="ButtonBase.IsPressed"
-                                     Value="True">
-                                <Setter Property="Fill"
-                                        Value="Red" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

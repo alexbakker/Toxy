@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Documents;
 using SharpTox.Core;
+using Toxy.Common;
 
 namespace Toxy.ViewModels
 {

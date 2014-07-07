@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using SharpTox.Core;
+using Toxy.Common;
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels

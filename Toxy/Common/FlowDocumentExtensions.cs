@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-
-using SharpTox.Core;
-
-using MahApps.Metro;
 using MahApps.Metro.Controls;
+using SharpTox.Core;
 using Toxy.Views;
 
-namespace Toxy
+namespace Toxy.Common
 {
     static class FlowDocumentExtensions
     {

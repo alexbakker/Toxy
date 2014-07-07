@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Net;
-using System.ComponentModel;
 using System.Collections;
+using System.ComponentModel;
+using System.Net;
 using System.Runtime.InteropServices;
-
 using SharpTox.Dns;
 
-namespace Toxy
+namespace Toxy.ToxHelpers
 {
     static class DnsTools
     {

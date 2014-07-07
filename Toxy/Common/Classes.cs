@@ -2,7 +2,7 @@
 using System.Threading;
 using Toxy.Views;
 
-namespace Toxy
+namespace Toxy.Common
 {
     public class MessageData
     {

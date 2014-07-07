@@ -18,7 +18,8 @@ using MahApps.Metro.Controls.Dialogs;
 
 using SharpTox.Core;
 using SharpTox.Av;
-
+using Toxy.Common;
+using Toxy.ToxHelpers;
 using Toxy.ViewModels;
 using Path = System.IO.Path;
 using Microsoft.Win32;

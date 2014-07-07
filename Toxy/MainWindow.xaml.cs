@@ -253,9 +253,15 @@ namespace Toxy
         {
             //auto join groupchats for now
             int joinGroup = tox.JoinGroup(groupnumber, group_public_key);
+
             if (joinGroup != -1)
             {
-                AddGroupToView(groupnumber);
+                var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+
+                if (group == null)
+                    AddGroupToView(groupnumber);
+                else
+                    SelectGroupControl(group);
             }
         }
 
@@ -706,7 +712,7 @@ namespace Toxy
             var groupMV = new GroupControlModelView();
             groupMV.ChatNumber = groupnumber;
             groupMV.GroupName = groupname;
-            groupMV.StatusMessage = string.Join(", ", tox.GetGroupNames(groupnumber));
+            groupMV.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));//string.Join(", ", tox.GetGroupNames(groupnumber));
             groupMV.SelectedAction = GroupSelectedAction;
             groupMV.DeleteAction = GroupDeleteAction;
 
@@ -731,7 +737,10 @@ namespace Toxy
 
         private void GroupSelectedAction(IGroupObject groupObject, bool isSelected)
         {
+            groupObject.HasNewMessage = false;
+
             TypingStatusLabel.Content = "";
+
             if (isSelected)
             {
                 SelectGroupControl(groupObject);

@@ -10,6 +10,7 @@ namespace Toxy.ViewModels
         bool HasNewMessage { get; set; }
         int NewMessageCount { get; set; }
         string StatusMessage { get; set; }
+        string AdditionalInfo { get; set; }
         ToxUserStatus ToxStatus { get; set; }
     }
 }

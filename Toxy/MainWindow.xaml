@@ -270,120 +270,129 @@
                       BorderBrush="#8E8E8E" />
 
         <Grid Grid.Column="2">
-            <Border BorderBrush="#FFDADADA"
-                    BorderThickness="0,0,0,1"
-                    Height="67"
-                    VerticalAlignment="Top">
-                <Grid Height="67"
-                      VerticalAlignment="Top"
-                      Margin="0,0,10,-1">
-                    <Button Name="CallButton"
-                            Click="CallButton_OnClick"
-                            VerticalAlignment="Top"
-                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,14,0,0"
-                            Height="37"
-                            HorizontalAlignment="Right"
-                            Width="37">
-                        <Rectangle Width="15"
-                                   Height="15"
-                                   Margin="0,-1"
-                                   RenderTransformOrigin="0.5,0.5"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-259.861" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Rectangle.RenderTransform>
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_phone_alternative}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <Button Name="FileButton"
-                            Panel.ZIndex="1"
-                            Click="FileButton_OnClick"
-                            VerticalAlignment="Top"
-                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,14,42,0"
-                            Height="37"
-                            HorizontalAlignment="Right"
-                            Width="37">
-                        <Rectangle Width="10"
-                                   Height="17"
-                                   Margin="0,-1"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_paperclip}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <Button Name="HangupButton"
-                            Visibility="Hidden"
-                            VerticalAlignment="Top"
-                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,4,10,0"
-                            Height="32"
-                            HorizontalAlignment="Right"
-                            Width="32"
-                            Click="MainHangupButton_OnClick">
-                        <Rectangle Width="15"
-                                   Height="15"
-                                   Margin="0,-1"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_phone_hangup}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <TextBlock x:Name="Friendstatus"
-                               VerticalAlignment="Top"
-                               FontStyle="Italic"
-                               TextTrimming="CharacterEllipsis"
-                               Margin="10,35,47,0"><Run Text="User Message" /></TextBlock>
-                    <TextBlock x:Name="Friendname"
-                               VerticalAlignment="Top"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    BorderBrush="#FFDADADA"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+
+                    <TextBlock Grid.Row="0"
                                FontSize="25"
-                               TextTrimming="CharacterEllipsis"
-                               Margin="10,3,47,0"><Run Text="Friendname" /></TextBlock>
+                               Text="{Binding SelectedChatObject.Name, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Row="1"
+                               FontStyle="Italic"
+                               Text="{Binding SelectedChatObject.StatusMessage, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Row="2"
+                               FontStyle="Italic"
+                               Text="{Binding SelectedChatObject.AdditionalInfo, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+
+                    <StackPanel Grid.Row="0"
+                                MinHeight="40"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Name="FileButton"
+                                Click="FileButton_OnClick"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37">
+                            <Rectangle Width="10"
+                                       Height="17"
+                                       Margin="0,-1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_paperclip}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Name="CallButton"
+                                Click="CallButton_OnClick"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37">
+                            <Rectangle Width="15"
+                                       Height="15"
+                                       Margin="0,-1"
+                                       RenderTransformOrigin="0.5,0.5"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="-259.861" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Rectangle.RenderTransform>
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_phone_alternative}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Name="HangupButton"
+                                Visibility="Collapsed"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37"
+                                Click="MainHangupButton_OnClick">
+                            <Rectangle Width="15"
+                                       Height="15"
+                                       Margin="0,-1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_phone_hangup}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </StackPanel>
 
                 </Grid>
             </Border>
-            <TextBox x:Name="TextToSend"
-                     Height="57"
-                     VerticalAlignment="Bottom"
+
+            <FlowDocumentScrollViewer Grid.Row="1"
+                                      Margin="5,5,10,0"
+                                      IsEnabled="True"
+                                      x:Name="ChatBox"
+                                      BorderThickness="0"
+                                      IsHitTestVisible="True"
+                                      ClipToBounds="True"
+                                      MaxZoom="100"
+                                      MinZoom="100" />
+            <Label Grid.Row="2"
+                   x:Name="TypingStatusLabel"
+                   Margin="5,1,5,1"
+                   Content=""
+                   Height="26" />
+
+            <TextBox Grid.Row="3"
+                     Margin="10,0,15,10"
+                     x:Name="TextToSend"
+                     Height="60"
                      TextWrapping="Wrap"
                      KeyDown="TextToSend_KeyDown"
                      LostFocus="TextToSend_OnLostFocus"
                      GotFocus="TextToSend_OnGotFocus"
                      TextChanged="TextToSend_TextChanged"
                      AcceptsReturn="False"
-                     SelectionBrush="{DynamicResource AccentColorBrush}"
-                     Margin="10,0,26,10" />
-            <FlowDocumentScrollViewer IsEnabled="True"
-                                      HorizontalAlignment="Stretch"
-                                      x:Name="ChatBox"
-                                      Margin="0,72,10,93"
-                                      BorderThickness="0,0,0,0"
-                                      BorderBrush="#FFDADADA"
-                                      IsHitTestVisible="True"
-                                      ClipToBounds="True"
-                                      MaxZoom="100"
-                                      MinZoom="100" />
+                     SelectionBrush="{DynamicResource AccentColorBrush}" />
+
         </Grid>
-        <Label x:Name="TypingStatusLabel"
-               Content=""
-               HorizontalAlignment="Left"
-               Grid.Column="1"
-               Margin="10,0,0,68"
-               Height="26"
-               VerticalAlignment="Bottom" />
     </Grid>
 
     <controls:MetroWindow.Flyouts>

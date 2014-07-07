@@ -105,7 +105,9 @@ namespace Toxy
             SetStatus(null);
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
-                SelectFriendControl(this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault());
+            {
+                this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+            }
         }
 
         public MainWindowViewModel ViewModel
@@ -117,7 +119,7 @@ namespace Toxy
         {
             EndCall();
             CallButton.Visibility = Visibility.Visible;
-            HangupButton.Visibility = Visibility.Hidden;
+            HangupButton.Visibility = Visibility.Collapsed;
         }
 
         private void toxav_OnStart(int call_index, IntPtr args)
@@ -131,7 +133,7 @@ namespace Toxy
             {
                 callingFriend.IsCalling = false;
                 callingFriend.IsCallingToFriend = false;
-                CallButton.Visibility = Visibility.Hidden;
+                CallButton.Visibility = Visibility.Collapsed;
                 if (callingFriend.Selected)
                 {
                     HangupButton.Visibility = Visibility.Visible;
@@ -176,8 +178,7 @@ namespace Toxy
                 }
                 if (group.Selected)
                 {
-                    Friendname.Text = string.Format("Groupchat #{0}", group.ChatNumber);
-                    Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
+                    group.AdditionalInfo = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
                 }
             }
         }
@@ -501,8 +502,8 @@ namespace Toxy
 
                 if (friend.Selected)
                 {
-                    CallButton.Visibility = Visibility.Hidden;
-                    FileButton.Visibility = Visibility.Hidden;
+                    CallButton.Visibility = Visibility.Collapsed;
+                    FileButton.Visibility = Visibility.Collapsed;
                 }
             }
             else
@@ -683,10 +684,6 @@ namespace Toxy
             if (friend != null)
             {
                 friend.StatusMessage = newstatus;
-                if (friend.Selected)
-                {
-                    Friendstatus.Text = newstatus;
-                }
             }
         }
 
@@ -696,10 +693,6 @@ namespace Toxy
             if (friend != null)
             {
                 friend.Name = newname;
-                if (friend.Selected)
-                {
-                    Friendname.Text = newname;
-                }
             }
         }
 
@@ -937,11 +930,10 @@ namespace Toxy
                 return;
             }
 
-            CallButton.Visibility = Visibility.Hidden;
-            FileButton.Visibility = Visibility.Hidden;
+            CallButton.Visibility = Visibility.Collapsed;
+            FileButton.Visibility = Visibility.Collapsed;
 
-            Friendname.Text = string.Format("Groupchat #{0}", group.ChatNumber);
-            Friendstatus.Text = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
+            group.AdditionalInfo = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
 
             if (groupdic.ContainsKey(group.ChatNumber))
             {
@@ -1000,12 +992,10 @@ namespace Toxy
             }
             int friendNumber = friend.ChatNumber;
 
-            Friendname.Text = tox.GetName(friendNumber);
-            Friendstatus.Text = tox.GetStatusMessage(friendNumber);
             if (call != null)
             {
                 if (call.FriendNumber != friendNumber)
-                    HangupButton.Visibility = Visibility.Hidden;
+                    HangupButton.Visibility = Visibility.Collapsed;
                 else
                     HangupButton.Visibility = Visibility.Visible;
             }
@@ -1013,8 +1003,8 @@ namespace Toxy
             {
                 if (tox.GetFriendConnectionStatus(friendNumber) != 1)
                 {
-                    CallButton.Visibility = Visibility.Hidden;
-                    FileButton.Visibility = Visibility.Hidden;
+                    CallButton.Visibility = Visibility.Collapsed;
+                    FileButton.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
@@ -1405,7 +1395,7 @@ namespace Toxy
             int friendnumber = toxav.GetPeerID(call_index, 0);
             call = new ToxCall(tox, toxav, call_index, friendnumber);
 
-            CallButton.Visibility = Visibility.Hidden;
+            CallButton.Visibility = Visibility.Collapsed;
             HangupButton.Visibility = Visibility.Visible;
             var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
             if (callingFriend != null)

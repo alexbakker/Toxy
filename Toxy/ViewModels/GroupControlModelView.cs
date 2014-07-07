@@ -101,6 +101,21 @@ namespace Toxy.ViewModels
             }
         }
 
+        private string additionalInfo;
+
+        public string AdditionalInfo
+        {
+            get { return this.additionalInfo; }
+            set
+            {
+                if (!Equals(value, this.AdditionalInfo))
+                {
+                    this.additionalInfo = value;
+                    this.OnPropertyChanged(() => this.AdditionalInfo);
+                }
+            }
+        }
+
         private bool hasNewMessage;
 
         public bool HasNewMessage

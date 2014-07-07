@@ -77,6 +77,8 @@
     <Compile Include="ViewModels\IChatObject.cs" />
     <Compile Include="ViewModels\IFriendObject.cs" />
     <Compile Include="ViewModels\IGroupObject.cs" />
+    <Compile Include="ViewModels\IUserObject.cs" />
+    <Compile Include="ViewModels\UserModel.cs" />
     <Compile Include="Views\CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>

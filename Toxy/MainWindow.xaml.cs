@@ -100,11 +100,8 @@ namespace Toxy
             if (string.IsNullOrEmpty(tox.GetSelfName()))
                 tox.SetName("Toxy User");
 
-            Username.Text = tox.GetSelfName();
-
-            Userstatus.Text = tox.GetSelfStatusMessage();
-            StatusRectangle.Fill = new SolidColorBrush(Colors.LimeGreen);
-
+            this.ViewModel.MainToxyUser.Name = tox.GetSelfName();
+            this.ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
             SetStatus(null);
             InitFriends();
             if (tox.GetFriendlistCount() > 0)
@@ -1132,8 +1129,8 @@ namespace Toxy
             if (uint.TryParse(SettingsNospam.Text, out nospam))
                 tox.SetNospam(nospam);
 
-            Username.Text = SettingsUsername.Text;
-            Userstatus.Text = SettingsStatus.Text;
+            this.ViewModel.MainToxyUser.Name = SettingsUsername.Text;
+            this.ViewModel.MainToxyUser.StatusMessage = SettingsStatus.Text;
 
             SettingsFlyout.IsOpen = false;
 
@@ -1376,24 +1373,7 @@ namespace Toxy
             else
                 tox.SetUserStatus(newStatus.GetValueOrDefault());
 
-            switch (newStatus)
-            {
-                case ToxUserStatus.NONE:
-                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(6, 225, 1));
-                    break;
-
-                case ToxUserStatus.BUSY:
-                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(214, 43, 79));
-                    break;
-
-                case ToxUserStatus.AWAY:
-                    StatusRectangle.Fill = new SolidColorBrush(Color.FromRgb(229, 222, 31));
-                    break;
-
-                case ToxUserStatus.INVALID:
-                    StatusRectangle.Fill = new SolidColorBrush(Colors.Red);
-                    break;
-            }
+            this.ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();
         }
 
         private void CallButton_OnClick(object sender, RoutedEventArgs e)

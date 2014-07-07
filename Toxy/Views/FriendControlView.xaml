@@ -39,11 +39,6 @@
     </UserControl.ContextMenu>
 
     <Grid>
-
-        <Grid.Resources>
-            <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
-        </Grid.Resources>
-
         <Grid Name="MainGrid">
             <Grid.ColumnDefinitions>
                 <!-- the user icon -->

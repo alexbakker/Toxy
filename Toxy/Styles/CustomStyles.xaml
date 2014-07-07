@@ -17,6 +17,7 @@
     <converter:BoolToVisibilityConverter x:Key="FalseToVisibilityConverter"
                                          TrueValue="Collapsed"
                                          FalseValue="Visible" />
+    <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
 
     <DataTemplate x:Key="WindowTitleDataTemplate">
         <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content, Converter={StaticResource ToUpperConverter}}"

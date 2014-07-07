@@ -42,6 +42,7 @@
             <!-- the user icon -->
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0"
@@ -53,23 +54,7 @@
             <Image Height="40"
                    Width="40"
                    Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
-            <!-- new message indicator -->
-            <Grid MinWidth="18"
-                  MinHeight="18"
-                  Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                  Margin="0,-5,-5,0"
-                  VerticalAlignment="Top"
-                  HorizontalAlignment="Right">
-                <Ellipse Fill="Red"
-                         Stroke="White"
-                         StrokeThickness=".5" />
-                <TextBlock Text="{Binding NewMessageCount, Mode=OneWay}"
-                           TextAlignment="Center"
-                           Foreground="White"
-                           VerticalAlignment="Center"
-                           FontSize="10"
-                           FontWeight="Bold" />
-            </Grid>
+
             <Rectangle Name="StatusRectangle"
                        Height="10"
                        Width="10"
@@ -86,6 +71,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
+                       Margin="0,2,0,0"
                        Text="{Binding Name, Mode=OneWay}"
                        FontSize="16"
                        TextTrimming="CharacterEllipsis" />
@@ -93,7 +79,7 @@
             <TextBlock Grid.Row="1"
                        Text="{Binding StatusMessage, Mode=OneWay}"
                        TextTrimming="CharacterEllipsis" />
-
+           
             <Grid Grid.Row="1"
                   ZIndex="1"
                   x:Name="RequestButtonGrid"
@@ -175,7 +161,25 @@
                     </Button>
                 </StackPanel>
             </Grid>
+            <!-- new message indicator -->
+            
+            
         </Grid>
-
+        <Grid Grid.Column="3"
+                MinWidth="18"
+                  MinHeight="18"
+                  Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Margin="5,10,5,10"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Right" Grid.RowSpan="2">
+            <Ellipse Fill="{DynamicResource AccentColorBrush}"
+                         StrokeThickness=".5" />
+            <TextBlock Text="{Binding NewMessageCount, Mode=OneWay}"
+                           TextAlignment="Center"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           FontSize="12"
+                           FontWeight="normal" />
+        </Grid>
     </Grid>
 </UserControl>

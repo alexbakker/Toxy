@@ -20,7 +20,6 @@ using SharpTox.Core;
 using SharpTox.Av;
 
 using Toxy.ViewModels;
-using Toxy.Views;
 using Path = System.IO.Path;
 using Microsoft.Win32;
 
@@ -118,9 +117,6 @@ namespace Toxy
 
         private void toxav_OnEnd(int call_index, IntPtr args)
         {
-            if (call == null)
-                return;
-
             EndCall();
             CallButton.Visibility = Visibility.Visible;
             HangupButton.Visibility = Visibility.Hidden;
@@ -136,12 +132,13 @@ namespace Toxy
             if (callingFriend != null)
             {
                 callingFriend.IsCalling = false;
+                callingFriend.IsCallingToFriend = false;
                 CallButton.Visibility = Visibility.Hidden;
                 if (callingFriend.Selected)
                 {
                     HangupButton.Visibility = Visibility.Visible;
                 }
-                AddCallControl(friendnumber, "{0}");
+                this.ViewModel.CallingFriend = callingFriend;
             }
         }
 
@@ -777,8 +774,14 @@ namespace Toxy
             friendMV.CopyIDAction = FriendCopyIdAction;
             friendMV.DeleteAction = FriendDeleteAction;
             friendMV.GroupInviteAction = GroupInviteAction;
+            friendMV.HangupAction = FriendHangupAction;
 
             this.ViewModel.ChatCollection.Add(friendMV);
+        }
+
+        private void FriendHangupAction(IFriendObject friendObject)
+        {
+            EndCall(friendObject);
         }
 
         private void GroupInviteAction(IFriendObject friendObject, IGroupObject groupObject)
@@ -927,38 +930,35 @@ namespace Toxy
             }
         }
 
-        private void AddCallControl(int friendnumber, string status)
-        {
-            if (ChatGrid.Children[0].GetType() == typeof(CallControl))
-                ChatGrid.Children.RemoveAt(0);
-
-            CallControl callControl = new CallControl();
-            callControl.SetLabel(string.Format(status, tox.GetName(friendnumber)));
-            callControl.HangupButton.Click += (sender, e) => HangupButton_Click();
-            ChatGrid.Children.Insert(0, callControl);
-        }
-
-        private void HangupButton_Click()
-        {
-            if (call == null)
-                return;
-
-            EndCall();
-        }
-
         private void EndCall()
         {
-            call.Stop();
+            if (call != null)
+            {
+                var friendnumber = toxav.GetPeerID(call.CallIndex, 0);
+                var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
 
-            int friendnumber = toxav.GetPeerID(call.CallIndex, 0);
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+                this.EndCall(friend);
+            }
+            else
+            {
+                this.EndCall(null);
+            }
+        }
+
+        private void EndCall(IFriendObject friend)
+        {
             if (friend != null)
             {
                 friend.IsCalling = false;
+                friend.IsCallingToFriend = false;
             }
 
-            call = null;
-            ChatGrid.Children.RemoveAt(0);
+            if (call != null)
+            {
+                call.Stop();
+                call = null;
+            }
+            this.ViewModel.CallingFriend = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
             CallButton.Visibility = Visibility.Visible;
@@ -1396,14 +1396,16 @@ namespace Toxy
 
             CallButton.Visibility = Visibility.Hidden;
             HangupButton.Visibility = Visibility.Visible;
-            AddCallControl(friendnumber, "Calling {0}...");
+            var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            if (callingFriend != null)
+            {
+                this.ViewModel.CallingFriend = callingFriend;
+                callingFriend.IsCallingToFriend = true;
+            }
         }
 
         private void MainHangupButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (call == null)
-                return;
-
             EndCall();
         }
 

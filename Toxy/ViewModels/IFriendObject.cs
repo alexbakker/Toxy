@@ -22,11 +22,14 @@ namespace Toxy.ViewModels
         Action<IFriendObject> AcceptCallAction { get; set; }
         Action<IFriendObject> DenyCallAction { get; set; }
 
+        Action<IFriendObject> HangupAction { get; set; }
+
         string UserName { get; set; }
         ToxUserStatus UserStatus { get; set; }
         string StatusMessage { get; set; }
         bool IsRequest { get; set; }
         bool IsCalling { get; set; }
+        bool IsCallingToFriend { get; set; }
         int CallIndex { get; set; }
     }
 }

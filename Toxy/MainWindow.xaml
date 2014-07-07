@@ -107,10 +107,20 @@
                         SelectionChanged="ListViewTabControl_OnSelectionChanged"
                         Margin="0,70,0,56">
                 <TabItem Header="Chats">
-                    <Grid Name="ChatGrid">
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <views:CallControl Grid.Row="0"
+                                           DataContext="{Binding CallingFriend, Mode=OneWay}"
+                                           Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
 
                         <!-- bind to collection of friends and groups -->
                         <ListBox x:Name="ChatsListBox"
+                                 Grid.Row="1"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  HorizontalContentAlignment="Stretch"
                                  ItemsSource="{Binding ChatCollection, Mode=OneWay}"

@@ -58,7 +58,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                           Text="{Binding GroupName, Mode=OneWay}"
+                           Text="{Binding Name, Mode=OneWay}"
                            FontSize="16"
                            TextTrimming="CharacterEllipsis" />
 

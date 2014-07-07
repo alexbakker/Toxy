@@ -9,8 +9,6 @@ namespace Toxy.ViewModels
         Action<IGroupObject> DeleteAction { get; set; }
 
         int ChatNumber { get; set; }
-        string GroupName { get; set; }
         ToxUserStatus GroupStatus { get; set; }
-        string StatusMessage { get; set; }
     }
 }

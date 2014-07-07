@@ -691,7 +691,7 @@ namespace Toxy
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
-                friend.UserName = newname;
+                friend.Name = newname;
                 if (friend.Selected)
                 {
                     Friendname.Text = newname;
@@ -721,7 +721,7 @@ namespace Toxy
 
             var groupMV = new GroupControlModelView();
             groupMV.ChatNumber = groupnumber;
-            groupMV.GroupName = groupname;
+            groupMV.Name = groupname;
             groupMV.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));//string.Join(", ", tox.GetGroupNames(groupnumber));
             groupMV.SelectedAction = GroupSelectedAction;
             groupMV.DeleteAction = GroupDeleteAction;
@@ -784,7 +784,7 @@ namespace Toxy
 
             var friendMV = new FriendControlModelView(this.ViewModel);
             friendMV.ChatNumber = friendNumber;
-            friendMV.UserName = friendName;
+            friendMV.Name = friendName;
             friendMV.StatusMessage = friendStatus;
             friendMV.UserStatus = ToxUserStatus.INVALID;
             friendMV.SelectedAction = FriendSelectedAction;
@@ -880,7 +880,7 @@ namespace Toxy
         {
             var friendMV = new FriendControlModelView(this.ViewModel);
             friendMV.IsRequest = true;
-            friendMV.UserName = id;
+            friendMV.Name = id;
             friendMV.UserStatus = ToxUserStatus.INVALID;
             friendMV.RequestMessageData = new MessageData() { Message = message, Username = "Request Message" };
             friendMV.RequestFlowDocument = GetNewFlowDocument();
@@ -903,7 +903,7 @@ namespace Toxy
 
         private void FriendRequestAcceptAction(IFriendObject friendObject)
         {
-            int friendnumber = tox.AddFriendNoRequest(friendObject.UserName);
+            int friendnumber = tox.AddFriendNoRequest(friendObject.Name);
             tox.SetSendsReceipts(friendnumber, true);
             AddFriendToView(friendnumber);
 

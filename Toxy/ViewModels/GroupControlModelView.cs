@@ -56,17 +56,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private string groupName;
+        private string name;
 
-        public string GroupName
+        public string Name
         {
-            get { return this.groupName; }
+            get { return this.name; }
             set
             {
-                if (!Equals(value, this.GroupName))
+                if (!Equals(value, this.Name))
                 {
-                    this.groupName = value;
-                    this.OnPropertyChanged(() => this.GroupName);
+                    this.name = value;
+                    this.OnPropertyChanged(() => this.Name);
                 }
             }
         }

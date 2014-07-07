@@ -160,17 +160,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private string userName;
+        private string name;
 
-        public string UserName
+        public string Name
         {
-            get { return this.userName; }
+            get { return this.name; }
             set
             {
-                if (!Equals(value, this.UserName))
+                if (!Equals(value, this.Name))
                 {
-                    this.userName = value;
-                    this.OnPropertyChanged(() => this.UserName);
+                    this.name = value;
+                    this.OnPropertyChanged(() => this.Name);
                 }
             }
         }

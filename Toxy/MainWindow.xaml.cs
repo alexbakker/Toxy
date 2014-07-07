@@ -149,6 +149,15 @@ namespace Toxy
                 return;
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
+
+            ToxAvCallType type = toxav.GetPeerTransmissionType(call_index, 0);
+            if (type == ToxAvCallType.Video)
+            {
+                //we don't support video calls, just reject this and return.
+                toxav.Reject(call_index, "Toxy does not support video calls.");
+                return;
+            }
+
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {

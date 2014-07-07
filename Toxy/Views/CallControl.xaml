@@ -51,14 +51,14 @@
         </Rectangle>
 
         <TextBlock Grid.Column="1"
-                   Text="{Binding UserName, Mode=OneWay}"
+                   Text="{Binding Name, Mode=OneWay}"
                    TextTrimming="CharacterEllipsis"
                    Visibility="{Binding IsCallingToFriend, Mode=OneWay, Converter={StaticResource FalseToVisibilityConverter}}"
                    Margin="2"
                    FontSize="16"
                    VerticalAlignment="Center" />
         <TextBlock Grid.Column="1"
-                   Text="{Binding UserName, Mode=OneWay, StringFormat='{}Calling {0}'}"
+                   Text="{Binding Name, Mode=OneWay, StringFormat='{}Calling {0}'}"
                    TextTrimming="CharacterEllipsis"
                    Visibility="{Binding IsCallingToFriend, Mode=OneWay, Converter={StaticResource TrueToVisibilityConverter}}"
                    Margin="2"

@@ -31,56 +31,6 @@
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <Style x:Key="UsernameCellStyle"
-                           TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Padding"
-                                Value="20" />
-                        <Setter Property="Margin"
-                                Value="0, 20, 0, 0" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Grid Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Right"
-                                                          VerticalAlignment="Top" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style x:Key="MessageCellStyle"
-                           TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Grid>
-                                        <ContentPresenter VerticalAlignment="Top" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ResourceDictionary>
-                <ResourceDictionary>
-                    <Style x:Key="ChangeOnHover"
-                           TargetType="{x:Type Rectangle}">
-                        <Setter Property="Fill"
-                                Value="Gray" />
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Fill"
-                                        Value="Green" />
-                            </Trigger>
-                            <Trigger Property="ButtonBase.IsPressed"
-                                     Value="True">
-                                <Setter Property="Fill"
-                                        Value="Red" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -104,9 +54,93 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
-            <TabControl x:Name="ListViewTabControl"
-                        SelectionChanged="ListViewTabControl_OnSelectionChanged"
-                        Margin="0,70,0,56">
+            <Grid.RowDefinitions>
+                <!-- toxy user info -->
+                <RowDefinition Height="Auto" />
+                <!-- friends, groups and requests -->
+                <RowDefinition Height="*" />
+                <!-- add friend, create group, settings -->
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- toxy user info -->
+            <Grid Grid.Row="0"
+                  Margin="5">
+                <Grid.ColumnDefinitions>
+                    <!-- the user icon -->
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0"
+                      Height="50"
+                      Width="50"
+                      Margin="4"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      MouseLeftButtonDown="StatusRectangle_MouseLeftButtonDown">
+                    <Image Height="50"
+                           Width="50"
+                           Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
+                    <Rectangle Height="10"
+                               Width="10"
+                               Fill="{Binding MainToxyUser.ToxStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right" />
+                    <Grid.ContextMenu>
+                        <ContextMenu Name="StatusContextMenu"
+                                     MenuItem.Click="MenuItem_MouseLeftButtonDown">
+                            <MenuItem Header="Online"
+                                      Tag="0">
+                                <MenuItem.Icon>
+                                    <Image Width="15"
+                                           Height="15"
+                                           Source="Resources/Icons/Online.png"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Away"
+                                      Tag="1">
+                                <MenuItem.Icon>
+                                    <Image Width="15"
+                                           Height="15"
+                                           Source="Resources/Icons/Away.png"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Busy"
+                                      Tag="2">
+                                <MenuItem.Icon>
+                                    <Image Width="15"
+                                           Height="15"
+                                           Source="Resources/Icons/Busy.png"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+                </Grid>
+
+                <Grid Grid.Column="1"
+                      Margin="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding MainToxyUser.Name, Mode=OneWay}"
+                               FontSize="25"
+                               TextTrimming="CharacterEllipsis" />
+
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding MainToxyUser.StatusMessage, Mode=OneWay}"
+                               FontSize="14"
+                               TextTrimming="CharacterEllipsis" />
+                </Grid>
+            </Grid>
+
+            <!-- friends, groups and requests -->
+            <TabControl Grid.Row="1"
+                        x:Name="ListViewTabControl"
+                        SelectionChanged="ListViewTabControl_OnSelectionChanged">
                 <TabItem Header="Chats">
                     <Grid>
 
@@ -171,82 +205,21 @@
 
                 </TabItem>
             </TabControl>
-            <Grid>
-                <TextBlock x:Name="Username"
-                           Margin="65,3,10,0"
-                           VerticalAlignment="Top"
-                           FontSize="25"
-                           TextTrimming="CharacterEllipsis"
-                           Height="35">
-                            <Run Text="Username" />
-                </TextBlock>
-                <Image HorizontalAlignment="Left"
-                       Height="50"
-                       Source="pack://application:,,,/Resources/Icons/profilepictureNormal.png"
-                       VerticalAlignment="Top"
-                       Width="50"
-                       Margin="10,10,0,0" />
-                <Rectangle Name="StatusRectangle"
-                           Height="11"
-                           VerticalAlignment="Top"
-                           Margin="49,49,0,0"
-                           HorizontalAlignment="Left"
-                           Width="11"
-                           MouseLeftButtonDown="StatusRectangle_MouseLeftButtonDown">
-                    <Rectangle.ContextMenu>
-                        <ContextMenu Name="StatusContextMenu"
-                                     MenuItem.Click="MenuItem_MouseLeftButtonDown">
-                            <MenuItem Header="Online"
-                                      Tag="0">
-                                <MenuItem.Icon>
-                                    <Image Width="15"
-                                           Height="15"
-                                           Source="Resources/Icons/Online.png"></Image>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="Away"
-                                      Tag="1">
-                                <MenuItem.Icon>
-                                    <Image Width="15"
-                                           Height="15"
-                                           Source="Resources/Icons/Away.png"></Image>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="Busy"
-                                      Tag="2">
-                                <MenuItem.Icon>
-                                    <Image Width="15"
-                                           Height="15"
-                                           Source="Resources/Icons/Busy.png"></Image>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </ContextMenu>
-                    </Rectangle.ContextMenu>
 
-                </Rectangle>
-                <TextBlock x:Name="Userstatus"
-                           VerticalAlignment="Top"
-                           Margin="65,35,10,0"
-                           FontStyle="Italic"
-                           TextTrimming="CharacterEllipsis"
-                           FontSize="14">
-                            <Run Text="User Message" />
-                </TextBlock>
-
-            </Grid>
-            <Border BorderThickness="0,1,0,0"
-                    Margin="0,0,5,10"
-                    Height="46"
-                    VerticalAlignment="Bottom">
-                <Grid Margin="5,0">
+            <!-- add friend, create group, settings -->
+            <Border Grid.Row="2"
+                    BorderBrush="#FFDADADA"
+                    BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0 10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
                     <Button Name="OpenAddFriendButton"
                             BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenAddFriend_Click"
-                            Margin="50,0,141,1"
                             Height="44"
-                            Width="44"
-                            VerticalAlignment="Top">
+                            Width="44">
                         <Rectangle Width="20"
                                    Height="20"
                                    Style="{StaticResource ButtonRectangleStyle}">
@@ -259,11 +232,9 @@
                     <Button Height="44"
                             Width="44"
                             Name="NewGroupButton"
-                            VerticalAlignment="Top"
                             BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Click="NewGroupButton_Click"
-                            Margin="96,0,95,0">
+                            Click="NewGroupButton_Click">
                         <Rectangle Width="20"
                                    Height="20"
                                    Style="{StaticResource ButtonRectangleStyle}">
@@ -275,12 +246,10 @@
                     </Button>
                     <Button Height="44"
                             Name="OpenSettingsButton"
-                            VerticalAlignment="Top"
                             BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenSettings_Click"
-                            Width="44"
-                            Margin="142,0,49,0">
+                            Width="44">
                         <Rectangle Width="20"
                                    Height="20"
                                    Style="{StaticResource ButtonRectangleStyle}">
@@ -290,7 +259,7 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
-                </Grid>
+                </StackPanel>
             </Border>
         </Grid>
 
@@ -301,120 +270,129 @@
                       BorderBrush="#8E8E8E" />
 
         <Grid Grid.Column="2">
-            <Border BorderBrush="#FFDADADA"
-                    BorderThickness="0,0,0,1"
-                    Height="67"
-                    VerticalAlignment="Top">
-                <Grid Height="67"
-                      VerticalAlignment="Top"
-                      Margin="0,0,10,-1">
-                    <Button Name="CallButton"
-                            Click="CallButton_OnClick"
-                            VerticalAlignment="Top"
-                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,14,0,0"
-                            Height="37"
-                            HorizontalAlignment="Right"
-                            Width="37">
-                        <Rectangle Width="15"
-                                   Height="15"
-                                   Margin="0,-1"
-                                   RenderTransformOrigin="0.5,0.5"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-259.861" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Rectangle.RenderTransform>
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_phone_alternative}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <Button Name="FileButton"
-                            Panel.ZIndex="1"
-                            Click="FileButton_OnClick"
-                            VerticalAlignment="Top"
-                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,14,42,0"
-                            Height="37"
-                            HorizontalAlignment="Right"
-                            Width="37">
-                        <Rectangle Width="10"
-                                   Height="17"
-                                   Margin="0,-1"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_paperclip}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <Button Name="HangupButton"
-                            Visibility="Hidden"
-                            VerticalAlignment="Top"
-                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                            Margin="0,4,10,0"
-                            Height="32"
-                            HorizontalAlignment="Right"
-                            Width="32"
-                            Click="MainHangupButton_OnClick">
-                        <Rectangle Width="15"
-                                   Height="15"
-                                   Margin="0,-1"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{DynamicResource appbar_phone_hangup}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <TextBlock x:Name="Friendstatus"
-                               VerticalAlignment="Top"
-                               FontStyle="Italic"
-                               TextTrimming="CharacterEllipsis"
-                               Margin="10,35,47,0"><Run Text="User Message" /></TextBlock>
-                    <TextBlock x:Name="Friendname"
-                               VerticalAlignment="Top"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    BorderBrush="#FFDADADA"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+
+                    <TextBlock Grid.Row="0"
                                FontSize="25"
-                               TextTrimming="CharacterEllipsis"
-                               Margin="10,3,47,0"><Run Text="Friendname" /></TextBlock>
+                               Text="{Binding SelectedChatObject.Name, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Row="1"
+                               FontStyle="Italic"
+                               Text="{Binding SelectedChatObject.StatusMessage, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Grid.Row="2"
+                               FontStyle="Italic"
+                               Text="{Binding SelectedChatObject.AdditionalInfo, Mode=OneWay}"
+                               TextTrimming="CharacterEllipsis" />
+
+                    <StackPanel Grid.Row="0"
+                                MinHeight="40"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Name="FileButton"
+                                Click="FileButton_OnClick"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37">
+                            <Rectangle Width="10"
+                                       Height="17"
+                                       Margin="0,-1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_paperclip}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Name="CallButton"
+                                Click="CallButton_OnClick"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37">
+                            <Rectangle Width="15"
+                                       Height="15"
+                                       Margin="0,-1"
+                                       RenderTransformOrigin="0.5,0.5"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform Angle="-259.861" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </Rectangle.RenderTransform>
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_phone_alternative}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Name="HangupButton"
+                                Visibility="Collapsed"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37"
+                                Click="MainHangupButton_OnClick">
+                            <Rectangle Width="15"
+                                       Height="15"
+                                       Margin="0,-1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_phone_hangup}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </StackPanel>
 
                 </Grid>
             </Border>
-            <TextBox x:Name="TextToSend"
-                     Height="57"
-                     VerticalAlignment="Bottom"
+
+            <FlowDocumentScrollViewer Grid.Row="1"
+                                      Margin="5,5,10,0"
+                                      IsEnabled="True"
+                                      x:Name="ChatBox"
+                                      BorderThickness="0"
+                                      IsHitTestVisible="True"
+                                      ClipToBounds="True"
+                                      MaxZoom="100"
+                                      MinZoom="100" />
+            <Label Grid.Row="2"
+                   x:Name="TypingStatusLabel"
+                   Margin="5,1,5,1"
+                   Content=""
+                   Height="26" />
+
+            <TextBox Grid.Row="3"
+                     Margin="10,0,15,10"
+                     x:Name="TextToSend"
+                     Height="60"
                      TextWrapping="Wrap"
                      KeyDown="TextToSend_KeyDown"
                      LostFocus="TextToSend_OnLostFocus"
                      GotFocus="TextToSend_OnGotFocus"
                      TextChanged="TextToSend_TextChanged"
                      AcceptsReturn="False"
-                     SelectionBrush="{DynamicResource AccentColorBrush}"
-                     Margin="10,0,26,10" />
-            <FlowDocumentScrollViewer IsEnabled="True"
-                                      HorizontalAlignment="Stretch"
-                                      x:Name="ChatBox"
-                                      Margin="0,72,10,93"
-                                      BorderThickness="0,0,0,0"
-                                      BorderBrush="#FFDADADA"
-                                      IsHitTestVisible="True"
-                                      ClipToBounds="True"
-                                      MaxZoom="100"
-                                      MinZoom="100" />
+                     SelectionBrush="{DynamicResource AccentColorBrush}" />
+
         </Grid>
-        <Label x:Name="TypingStatusLabel"
-               Content=""
-               HorizontalAlignment="Left"
-               Grid.Column="1"
-               Margin="10,0,0,68"
-               Height="26"
-               VerticalAlignment="Bottom" />
     </Grid>
 
     <controls:MetroWindow.Flyouts>

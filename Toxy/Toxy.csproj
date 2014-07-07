@@ -77,16 +77,18 @@
     <Compile Include="ViewModels\IChatObject.cs" />
     <Compile Include="ViewModels\IFriendObject.cs" />
     <Compile Include="ViewModels\IGroupObject.cs" />
+    <Compile Include="ViewModels\IUserObject.cs" />
+    <Compile Include="ViewModels\UserModel.cs" />
     <Compile Include="Views\CallControl.xaml.cs">
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
-    <Compile Include="FlowDocumentExtensions.cs" />
-    <Compile Include="Classes.cs" />
+    <Compile Include="Common\FlowDocumentExtensions.cs" />
+    <Compile Include="Common\Classes.cs" />
     <Compile Include="MVVM\DelegateCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
-    <Compile Include="Tools.cs" />
-    <Compile Include="ToxCall.cs" />
+    <Compile Include="ToxHelpers\Tools.cs" />
+    <Compile Include="ToxHelpers\ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="Views\CallControl.xaml">
       <SubType>Designer</SubType>
@@ -112,11 +114,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DnsTools.cs" />
+    <Compile Include="ToxHelpers\DnsTools.cs" />
     <Compile Include="Views\FileTransferControl.xaml.cs">
       <DependentUpon>FileTransferControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FormExtensions.cs" />
+    <Compile Include="Common\FormExtensions.cs" />
     <Compile Include="Views\FriendControlView.xaml.cs">
       <DependentUpon>FriendControlView.xaml</DependentUpon>
     </Compile>

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Toxy.ViewModels"
-             xmlns:converter="clr-namespace:Toxy.Converter"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
              RenderOptions.ClearTypeHint="Enabled"
@@ -38,142 +37,145 @@
         </ContextMenu>
     </UserControl.ContextMenu>
 
-    <Grid>
+    <Grid Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <!-- the user icon -->
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <Grid.Resources>
-            <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
-        </Grid.Resources>
-
-        <Grid Name="MainGrid">
-            <Grid.ColumnDefinitions>
-                <!-- the user icon -->
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <Grid Grid.Column="0"
-                  Height="40"
-                  Width="40"
-                  Margin="4"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
-                <Image Height="40"
-                       Width="40"
-                       Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
-                <Rectangle Name="StatusRectangle"
-                           Height="10"
-                           Width="10"
-                           Fill="{Binding UserStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Right" />
+        <Grid Grid.Column="0"
+              Height="40"
+              Width="40"
+              Margin="4"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <Image Height="40"
+                   Width="40"
+                   Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
+            <!-- new message indicator -->
+            <Grid MinWidth="18"
+                  MinHeight="18"
+                  Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Margin="0,-5,-5,0"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Right">
+                <Ellipse Fill="Red"
+                         Stroke="White"
+                         StrokeThickness=".5" />
+                <TextBlock Text="{Binding NewMessageCount, Mode=OneWay}"
+                           TextAlignment="Center"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           FontSize="10"
+                           FontWeight="Bold" />
             </Grid>
-
-            <Grid Grid.Column="1"
-                  Margin="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Text="{Binding UserName, Mode=OneWay}"
-                           FontSize="16"
-                           TextTrimming="CharacterEllipsis" />
-
-                <TextBlock Grid.Row="1"
-                           Text="{Binding StatusMessage, Mode=OneWay}"
-                           TextTrimming="CharacterEllipsis" />
-
-                <Grid Grid.Row="1"
-                      ZIndex="1"
-                      x:Name="RequestButtonGrid"
-                      Visibility="{Binding IsRequest, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <Button x:Name="AcceptButton"
-                                Command="{Binding AcceptCommand, Mode=OneWay}"
-                                Height="30"
-                                Width="30"
-                                BorderBrush="{DynamicResource AccentColorBrush}"
-                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                                Margin="1">
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Style="{StaticResource ButtonRectangleStyle}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill"
-                                                 Visual="{DynamicResource appbar_check}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Button x:Name="DeclineButton"
-                                Command="{Binding DeclineCommand, Mode=OneWay}"
-                                Height="30"
-                                Width="30"
-                                BorderBrush="{DynamicResource AccentColorBrush}"
-                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                                Margin="1">
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Style="{StaticResource ButtonRectangleStyle}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill"
-                                                 Visual="{DynamicResource appbar_close}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Row="1"
-                      ZIndex="2"
-                      x:Name="CallButtonGrid"
-                      Visibility="{Binding IsCalling, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <Button x:Name="AcceptCallButton"
-                                Command="{Binding AcceptCallCommand, Mode=OneWay}"
-                                Height="35"
-                                Width="35"
-                                BorderBrush="{DynamicResource AccentColorBrush}"
-                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                                Margin="0">
-                            <Rectangle Width="10"
-                                       Height="17"
-                                       Style="{StaticResource ButtonRectangleStyle}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill"
-                                                 Visual="{DynamicResource appbar_phone}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                        <Button x:Name="DenyCallButton"
-                                Command="{Binding DenyCallCommand, Mode=OneWay}"
-                                Height="35"
-                                Width="35"
-                                BorderBrush="{DynamicResource AccentColorBrush}"
-                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
-                                Margin="0">
-                            <Rectangle Width="15"
-                                       Height="13"
-                                       Style="{StaticResource ButtonRectangleStyle}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill"
-                                                 Visual="{DynamicResource appbar_phone_hangup}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-
+            <Rectangle Name="StatusRectangle"
+                       Height="10"
+                       Width="10"
+                       Fill="{Binding ToxStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Right" />
         </Grid>
 
-        <!-- new message indicator -->
-        <Rectangle HorizontalAlignment="Left"
-                   Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                   Fill="{DynamicResource AccentColorBrush}"
-                   Width="4" />
+        <Grid Grid.Column="1"
+              Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="{Binding Name, Mode=OneWay}"
+                       FontSize="16"
+                       TextTrimming="CharacterEllipsis" />
+
+            <TextBlock Grid.Row="1"
+                       Text="{Binding StatusMessage, Mode=OneWay}"
+                       TextTrimming="CharacterEllipsis" />
+
+            <Grid Grid.Row="1"
+                  ZIndex="1"
+                  x:Name="RequestButtonGrid"
+                  Visibility="{Binding IsRequest, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button x:Name="AcceptButton"
+                            Command="{Binding AcceptCommand, Mode=OneWay}"
+                            Height="30"
+                            Width="30"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
+                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                            Margin="1">
+                        <Rectangle Width="10"
+                                   Height="10"
+                                   Style="{StaticResource ButtonRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_check}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                    <Button x:Name="DeclineButton"
+                            Command="{Binding DeclineCommand, Mode=OneWay}"
+                            Height="30"
+                            Width="30"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
+                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                            Margin="1">
+                        <Rectangle Width="10"
+                                   Height="10"
+                                   Style="{StaticResource ButtonRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_close}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  ZIndex="2"
+                  x:Name="CallButtonGrid"
+                  Visibility="{Binding IsCalling, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button x:Name="AcceptCallButton"
+                            Command="{Binding AcceptCallCommand, Mode=OneWay}"
+                            Height="35"
+                            Width="35"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
+                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                            Margin="0">
+                        <Rectangle Width="10"
+                                   Height="17"
+                                   Style="{StaticResource ButtonRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_phone}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                    <Button x:Name="DenyCallButton"
+                            Command="{Binding DenyCallCommand, Mode=OneWay}"
+                            Height="35"
+                            Width="35"
+                            BorderBrush="{DynamicResource AccentColorBrush}"
+                            Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                            Margin="0">
+                        <Rectangle Width="15"
+                                   Height="13"
+                                   Style="{StaticResource ButtonRectangleStyle}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_phone_hangup}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
     </Grid>
 </UserControl>

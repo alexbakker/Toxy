@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
-
 using NAudio.Wave;
-using SharpTox.Core;
 using SharpTox.Av;
+using SharpTox.Core;
 
-namespace Toxy
+namespace Toxy.ToxHelpers
 {
     class ToxCall
     {

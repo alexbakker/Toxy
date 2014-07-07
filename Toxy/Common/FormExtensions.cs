@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Windows.Interop;
 using System.Runtime.InteropServices;
-
+using System.Windows.Interop;
 using MahApps.Metro.Controls;
 
-namespace Toxy
+namespace Toxy.Common
 {
     static class FormExtensions
     {

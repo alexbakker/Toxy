@@ -56,32 +56,32 @@ namespace Toxy.ViewModels
             }
         }
 
-        private string groupName;
+        private string name;
 
-        public string GroupName
+        public string Name
         {
-            get { return this.groupName; }
+            get { return this.name; }
             set
             {
-                if (!Equals(value, this.GroupName))
+                if (!Equals(value, this.Name))
                 {
-                    this.groupName = value;
-                    this.OnPropertyChanged(() => this.GroupName);
+                    this.name = value;
+                    this.OnPropertyChanged(() => this.Name);
                 }
             }
         }
 
-        private ToxUserStatus groupStatus;
+        private ToxUserStatus toxStatus;
 
-        public ToxUserStatus GroupStatus
+        public ToxUserStatus ToxStatus
         {
-            get { return this.groupStatus; }
+            get { return this.toxStatus; }
             set
             {
-                if (!Equals(value, this.GroupStatus))
+                if (!Equals(value, this.ToxStatus))
                 {
-                    this.groupStatus = value;
-                    this.OnPropertyChanged(() => this.GroupStatus);
+                    this.toxStatus = value;
+                    this.OnPropertyChanged(() => this.ToxStatus);
                 }
             }
         }
@@ -101,6 +101,21 @@ namespace Toxy.ViewModels
             }
         }
 
+        private string additionalInfo;
+
+        public string AdditionalInfo
+        {
+            get { return this.additionalInfo; }
+            set
+            {
+                if (!Equals(value, this.AdditionalInfo))
+                {
+                    this.additionalInfo = value;
+                    this.OnPropertyChanged(() => this.AdditionalInfo);
+                }
+            }
+        }
+
         private bool hasNewMessage;
 
         public bool HasNewMessage
@@ -115,5 +130,21 @@ namespace Toxy.ViewModels
                 }
             }
         }
+
+        private int newMessageCount;
+
+        public int NewMessageCount
+        {
+            get { return this.newMessageCount; }
+            set
+            {
+                if (!Equals(value, this.NewMessageCount))
+                {
+                    this.newMessageCount = value;
+                    this.OnPropertyChanged(() => this.NewMessageCount);
+                }
+            }
+        }
+
     }
 }

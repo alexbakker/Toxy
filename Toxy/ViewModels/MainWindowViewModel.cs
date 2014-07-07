@@ -37,6 +37,8 @@ namespace Toxy.ViewModels
 
         public MainWindowViewModel()
         {
+            this.MainToxyUser = new UserModel();
+
             var chatObjects = new ObservableCollection<IChatObject>();
             // notify the GroupChatCollection property to (used for menu items)
             chatObjects.CollectionChanged += (sender, args) => {
@@ -58,6 +60,22 @@ namespace Toxy.ViewModels
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
+
+        private UserModel mainToxyUser;
+
+        public UserModel MainToxyUser
+        {
+            get { return this.mainToxyUser; }
+            set
+            {
+                if (Equals(value, this.mainToxyUser))
+                {
+                    return;
+                }
+                this.mainToxyUser = value;
+                this.OnPropertyChanged(() => this.MainToxyUser);
+            }
+        }
 
         private ICollection<IChatObject> chatCollection;
 

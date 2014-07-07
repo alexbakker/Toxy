@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using SharpTox.Core;
+using Toxy.Common;
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels
@@ -80,7 +80,7 @@ namespace Toxy.ViewModels
         {
             get
             {
-                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => this.UserStatus == ToxUserStatus.NONE && GroupInviteAction != null && go != null));
+                return this.groupInviteCommand ?? (this.groupInviteCommand = new DelegateCommand<IGroupObject>((go) => this.GroupInviteAction(this, go), (go) => this.ToxStatus == ToxUserStatus.NONE && GroupInviteAction != null && go != null));
             }
         }
 
@@ -130,17 +130,17 @@ namespace Toxy.ViewModels
             }
         }
 
-        private ToxUserStatus userStatus;
+        private ToxUserStatus toxStatus;
 
-        public ToxUserStatus UserStatus
+        public ToxUserStatus ToxStatus
         {
-            get { return this.userStatus; }
+            get { return this.toxStatus; }
             set
             {
-                if (!Equals(value, this.UserStatus))
+                if (!Equals(value, this.ToxStatus))
                 {
-                    this.userStatus = value;
-                    this.OnPropertyChanged(() => this.UserStatus);
+                    this.toxStatus = value;
+                    this.OnPropertyChanged(() => this.ToxStatus);
                 }
             }
         }
@@ -160,17 +160,32 @@ namespace Toxy.ViewModels
             }
         }
 
-        private string userName;
+        private string additionalInfo;
 
-        public string UserName
+        public string AdditionalInfo
         {
-            get { return this.userName; }
+            get { return this.additionalInfo; }
             set
             {
-                if (!Equals(value, this.UserName))
+                if (!Equals(value, this.AdditionalInfo))
                 {
-                    this.userName = value;
-                    this.OnPropertyChanged(() => this.UserName);
+                    this.additionalInfo = value;
+                    this.OnPropertyChanged(() => this.AdditionalInfo);
+                }
+            }
+        }
+
+        private string name;
+
+        public string Name
+        {
+            get { return this.name; }
+            set
+            {
+                if (!Equals(value, this.Name))
+                {
+                    this.name = value;
+                    this.OnPropertyChanged(() => this.Name);
                 }
             }
         }
@@ -186,6 +201,21 @@ namespace Toxy.ViewModels
                 {
                     this.hasNewMessage = value;
                     this.OnPropertyChanged(() => this.HasNewMessage);
+                }
+            }
+        }
+
+        private int newMessageCount;
+
+        public int NewMessageCount
+        {
+            get { return this.newMessageCount; }
+            set
+            {
+                if (!Equals(value, this.NewMessageCount))
+                {
+                    this.newMessageCount = value;
+                    this.OnPropertyChanged(() => this.NewMessageCount);
                 }
             }
         }

@@ -1,8 +1,6 @@
-﻿using System;
+﻿using SharpTox.Core;
 
-using SharpTox.Core;
-
-namespace Toxy
+namespace Toxy.ToxHelpers
 {
     static class Tools
     {

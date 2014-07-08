@@ -78,6 +78,7 @@ namespace Toxy
             toxav.OnRequestTimeout += toxav_OnEnd;
             toxav.OnReject += toxav_OnEnd;
             toxav.OnCancel += toxav_OnEnd;
+            toxav.OnReceivedAudio += toxav_OnReceivedAudio;
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -108,6 +109,14 @@ namespace Toxy
             {
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
             }
+        }
+
+        private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size)
+        {
+            if (call == null)
+                return;
+
+            call.ProcessAudioFrame(frame, frame_size);
         }
 
         public MainWindowViewModel ViewModel

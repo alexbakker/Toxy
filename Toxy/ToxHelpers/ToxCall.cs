@@ -59,8 +59,7 @@ namespace Toxy.ToxHelpers
             wave_source.BufferMilliseconds = (int)toxav.CodecSettings.audio_frame_duration;
             wave_source.StartRecording();
 
-            thread = new Thread(receive);
-            thread.Start();
+            wave_out.Play();
         }
 
         private void wave_source_RecordingStopped(object sender, StoppedEventArgs e)
@@ -68,25 +67,10 @@ namespace Toxy.ToxHelpers
             Console.WriteLine("Recording stopped");
         }
 
-        private void receive()
+        public void ProcessAudioFrame(short[] frame, int frame_size)
         {
-            wave_out.Play();
-
-            while (true)
-            {
-                short[] pcm = new short[frame_size];
-
-                int received = toxav.ReceiveAudio(CallIndex, (int)frame_size, pcm);
-                if (received > 0)
-                {
-                    byte[] bytes = ShortArrayToByteArray(pcm);
-                    wave_provider.AddSamples(bytes, 0, bytes.Length);
-                }
-                else if (received != (int)ToxAvError.None)
-                {
-                    Console.WriteLine("Could not receive data: {0}", (ToxAvError)received);
-                }
-            }
+            byte[] bytes = ShortArrayToByteArray(frame);
+            wave_provider.AddSamples(bytes, 0, bytes.Length);
         }
 
         private byte[] ShortArrayToByteArray(short[] shorts)

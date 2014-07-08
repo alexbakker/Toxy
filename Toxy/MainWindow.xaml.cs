@@ -211,8 +211,8 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-
-            this.Flash();
+            if(this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                this.Flash();
         }
 
         private void tox_OnGroupMessage(int groupnumber, int friendgroupnumber, string message)
@@ -255,8 +255,8 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-
-            this.Flash();
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                this.Flash();
         }
 
         private void tox_OnGroupInvite(int groupnumber, string group_public_key)
@@ -479,8 +479,8 @@ namespace Toxy
             };
 
             transfers.Add(transfer);
-
-            this.Flash();
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                this.Flash();
         }
 
         private void tox_OnConnectionStatusChanged(int friendnumber, int status)
@@ -559,8 +559,8 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-
-            this.Flash();
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                this.Flash();
         }
 
         private FlowDocument GetNewFlowDocument()
@@ -612,8 +612,8 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-
-            this.Flash();
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                this.Flash();
         }
 
         private void ScrollChatBox()

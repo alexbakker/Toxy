@@ -280,6 +280,8 @@ namespace Toxy
             try
             {
                 AddFriendRequestToView(id, message);
+                if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                    this.Flash();
             }
             catch (Exception ex)
             {

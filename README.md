@@ -37,3 +37,8 @@ Things you'll need to compile
 * The [SharpTox library](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies. Once you have obtained those, place libtoxav.dll and SharpTox.dll in the libs folder.
 
 All other dependencies can be found in the packages.config file and should be downloaded by Visual Studio automatically
+
+===
+### Special Thanks
+
+* Punker

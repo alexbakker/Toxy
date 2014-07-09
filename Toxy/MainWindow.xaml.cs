@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -22,7 +24,12 @@ using Toxy.Common;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
 using Path = System.IO.Path;
-using Microsoft.Win32;
+using Clipboard = System.Windows.Clipboard;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MenuItem = System.Windows.Controls.MenuItem;
+using MessageBox = System.Windows.MessageBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace Toxy
 {
@@ -41,6 +48,7 @@ namespace Toxy
         private bool typing = false;
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
+        NotifyIcon nIcon = new NotifyIcon();
 
         public MainWindow()
         {
@@ -103,6 +111,12 @@ namespace Toxy
 
             this.ViewModel.MainToxyUser.Name = tox.GetSelfName();
             this.ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
+
+            this.WindowState = System.Windows.WindowState.Minimized;
+            Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
+            this.nIcon.Icon = new Icon(iconStream);
+            nIcon.Visible = true;
+
             SetStatus(null);
             InitFriends();
             if (tox.GetFriendlistCount() > 0)

@@ -47,6 +47,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.0.13.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -184,9 +186,6 @@
     <Resource Include="Resources\Icons\profilepictureNormal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons\icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Divider.png" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +201,7 @@
       <Link>libtoxav.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Icons\icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

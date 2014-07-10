@@ -26,7 +26,8 @@
                       TitleTemplate="{DynamicResource WindowTitleDataTemplate}"
                       RenderOptions.ClearTypeHint="Enabled"
                       TextOptions.TextRenderingMode="ClearType"
-                      TextOptions.TextFormattingMode="Display" Activated="mv_Activated" >
+                      TextOptions.TextFormattingMode="Display"
+                      Activated="mv_Activated" >
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
@@ -383,7 +384,7 @@
             <TextBox Grid.Row="3"
                      Margin="10,0,15,10"
                      x:Name="TextToSend"
-                     Height="60"
+                     Height="55"
                      TextWrapping="Wrap"
                      KeyDown="TextToSend_KeyDown"
                      LostFocus="TextToSend_OnLostFocus"
@@ -494,7 +495,9 @@
                               Width="275" />
                     <CheckBox x:Name="HideInTrayCheckBox"
                               IsChecked="{Binding HideInTray}"
-                              Margin="15,280,0,0"
+                              Margin="15,335,0,0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
                               Content="Hide in tray"
                               />
                     <Button x:Name="SaveSettingsButton"

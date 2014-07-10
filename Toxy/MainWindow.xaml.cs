@@ -55,7 +55,6 @@ namespace Toxy
             InitializeComponent();
 
             this.DataContext = new MainWindowViewModel();
-
             tox = new Tox(false);
             tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;
@@ -112,10 +111,7 @@ namespace Toxy
             this.ViewModel.MainToxyUser.Name = tox.GetSelfName();
             this.ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
 
-            this.WindowState = System.Windows.WindowState.Minimized;
-            Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
-            this.nIcon.Icon = new Icon(iconStream);
-            nIcon.Visible = true;
+            
 
             SetStatus(null);
             InitFriends();
@@ -123,6 +119,23 @@ namespace Toxy
             {
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
             }
+        }
+
+        private void InitializeNotifyIcon()
+        {
+            Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
+            this.nIcon.Icon = new Icon(iconStream);
+            nIcon.Visible = true;
+
+            nIcon.BalloonTipTitle = "HI!";
+            nIcon.BalloonTipText = "I am here!!!";
+            nIcon.ShowBalloonTip(4000);
+            nIcon.Click += nIcon_Click;
+        }
+
+        void nIcon_Click(object sender, EventArgs e)
+        {
+            this.WindowState = WindowState.Normal;
         }
 
         private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size)
@@ -1052,23 +1065,34 @@ namespace Toxy
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (call != null)
-                call.Stop();
-
-            foreach (FileTransfer transfer in transfers)
+            if (HideInTrayCheckBox.IsChecked == true)
             {
-                if (transfer.Thread != null)
-                {
-                    //TODO: show a message warning the users that there are still file transfers in progress
-                    transfer.Thread.Abort();
-                    transfer.Thread.Join();
-                }
+                e.Cancel = true;
+                this.ShowInTaskbar = false;
+                this.WindowState = WindowState.Minimized;
+                return;
             }
+            else
+            {
 
-            toxav.Kill();
+                if (call != null)
+                    call.Stop();
 
-            tox.Save("data");
-            tox.Kill();
+                foreach (FileTransfer transfer in transfers)
+                {
+                    if (transfer.Thread != null)
+                    {
+                        //TODO: show a message warning the users that there are still file transfers in progress
+                        transfer.Thread.Abort();
+                        transfer.Thread.Join();
+                    }
+                }
+
+                toxav.Kill();
+
+                tox.Save("data");
+                tox.Kill();
+            }
         }
 
         private void OpenAddFriend_Click(object sender, RoutedEventArgs e)
@@ -1171,6 +1195,10 @@ namespace Toxy
                 var appTheme = ThemeManager.GetAppTheme(((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
             }
+
+
+            ExecuteActionsOnNotifyIcon();
+            //MessageBox.Show(HideInTrayCheckBox.IsChecked.ToString());
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)
@@ -1480,6 +1508,18 @@ namespace Toxy
             };
 
             transfers.Add(ft);
+        }
+
+        private void ExecuteActionsOnNotifyIcon()
+        {
+            if (HideInTrayCheckBox.IsChecked == true)
+            {
+                InitializeNotifyIcon();
+            }
+            else
+            {
+                nIcon.Visible = false;
+            }
         }
     }
 }

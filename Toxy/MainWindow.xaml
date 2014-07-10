@@ -492,6 +492,9 @@
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
                               Width="275" />
+                    <CheckBox x:Name="HideInTrayCheckBox"
+                              IsChecked="{Binding HideInTray}"
+                              />
                     <Button x:Name="SaveSettingsButton"
                             Content="Save"
                             Margin="0,242,10,10"

@@ -34,7 +34,7 @@ namespace Toxy.ViewModels
 
     public class MainWindowViewModel : ViewModelBase
     {
-
+        public bool HideInTray { get; set; }
         public MainWindowViewModel()
         {
             this.MainToxyUser = new UserModel();
@@ -177,6 +177,8 @@ namespace Toxy.ViewModels
                 return chatObject != null ? chatObject.ChatNumber : -1;
             }
         }
+
+        
 
         public IFriendObject GetFriendObjectByNumber(int friendnumber)
         {

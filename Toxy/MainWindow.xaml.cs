@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -48,7 +47,7 @@ namespace Toxy
         private bool typing = false;
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
-        NotifyIcon nIcon = new NotifyIcon();
+        System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
 
         public MainWindow()
         {
@@ -131,6 +130,44 @@ namespace Toxy
             nIcon.BalloonTipText = "I am here!!!";
             nIcon.ShowBalloonTip(4000);
             nIcon.Click += nIcon_Click;
+
+            var trayIconContextMenu = new System.Windows.Forms.ContextMenu();
+            var closeMenuItem = new System.Windows.Forms.MenuItem("Exit", closeMenuItem_Click);
+            var openMenuItem = new System.Windows.Forms.MenuItem("Open", openMenuItem_Click);
+
+            var statusMenuItem = new System.Windows.Forms.MenuItem("Status");
+            var setOnlineMenuItem = new System.Windows.Forms.MenuItem("Online", setStatusMenuItem_Click);
+            var setAwayMenuItem = new System.Windows.Forms.MenuItem("Away", setStatusMenuItem_Click);
+            var setBusyMenuItem = new System.Windows.Forms.MenuItem("Busy", setStatusMenuItem_Click);
+
+            setOnlineMenuItem.Tag = 0; // Online
+            setAwayMenuItem.Tag = 1; // Away
+            setBusyMenuItem.Tag = 2; // Busy
+
+            statusMenuItem.MenuItems.Add(setOnlineMenuItem);
+            statusMenuItem.MenuItems.Add(setAwayMenuItem);
+            statusMenuItem.MenuItems.Add(setBusyMenuItem);
+
+            trayIconContextMenu.MenuItems.Add(openMenuItem);
+            trayIconContextMenu.MenuItems.Add(statusMenuItem);
+            trayIconContextMenu.MenuItems.Add(closeMenuItem);
+            nIcon.ContextMenu = trayIconContextMenu;
+        }
+
+        private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)
+        {
+            SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag);
+        }
+
+        void openMenuItem_Click(object sender, EventArgs e)
+        {
+            this.WindowState = WindowState.Normal;
+        }
+
+        private void closeMenuItem_Click(object sender, EventArgs eventArgs)
+        {
+            HideInTrayCheckBox.IsChecked = false;
+            this.Close();
         }
 
         void nIcon_Click(object sender, EventArgs e)

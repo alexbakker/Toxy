@@ -494,6 +494,8 @@
                               Width="275" />
                     <CheckBox x:Name="HideInTrayCheckBox"
                               IsChecked="{Binding HideInTray}"
+                              Margin="15,280,0,0"
+                              Content="Hide in tray"
                               />
                     <Button x:Name="SaveSettingsButton"
                             Content="Save"

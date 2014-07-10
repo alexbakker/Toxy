@@ -178,7 +178,7 @@ namespace Toxy.ViewModels
             }
         }
 
-        
+        public bool HasNewMessage { get; set; }
 
         public IFriendObject GetFriendObjectByNumber(int friendnumber)
         {

@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Threading;
-
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -48,9 +47,14 @@ namespace Toxy
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
+        Stream newMessageIconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon2.ico")).Stream;
+        Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
+        private Icon notifyIcon;
+        private Icon newMessageNotifyIcon;
 
         public MainWindow()
         {
+           
             InitializeComponent();
 
             this.DataContext = new MainWindowViewModel();
@@ -122,9 +126,13 @@ namespace Toxy
 
         private void InitializeNotifyIcon()
         {
+            Stream newMessageIconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon2.ico")).Stream;
             Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
-            this.nIcon.Icon = new Icon(iconStream);
 
+            notifyIcon = new Icon(iconStream);
+            newMessageNotifyIcon = new Icon(newMessageIconStream);
+
+            this.nIcon.Icon = notifyIcon;
             nIcon.Click += nIcon_Click;
 
             var trayIconContextMenu = new System.Windows.Forms.ContextMenu();
@@ -148,6 +156,7 @@ namespace Toxy
             trayIconContextMenu.MenuItems.Add(statusMenuItem);
             trayIconContextMenu.MenuItems.Add(closeMenuItem);
             nIcon.ContextMenu = trayIconContextMenu;
+
         }
 
         private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)
@@ -326,6 +335,9 @@ namespace Toxy
             }
             if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
                 this.Flash();
+
+            this.nIcon.Icon = newMessageNotifyIcon;
+            this.ViewModel.HasNewMessage = true;
         }
 
         private void tox_OnGroupInvite(int groupnumber, string group_public_key)
@@ -356,6 +368,9 @@ namespace Toxy
             {
                 MessageBox.Show(ex.ToString());
             }
+
+            this.nIcon.Icon = newMessageNotifyIcon;
+            this.ViewModel.HasNewMessage = true;
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
@@ -632,6 +647,9 @@ namespace Toxy
             }
             if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
                 this.Flash();
+
+            this.nIcon.Icon = newMessageNotifyIcon;
+            this.ViewModel.HasNewMessage = true;
         }
 
         private FlowDocument GetNewFlowDocument()
@@ -685,6 +703,9 @@ namespace Toxy
             }
             if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
                 this.Flash();
+
+            this.nIcon.Icon = newMessageNotifyIcon;
+            this.ViewModel.HasNewMessage = true;
         }
 
         private void ScrollChatBox()
@@ -1230,7 +1251,6 @@ namespace Toxy
 
 
             ExecuteActionsOnNotifyIcon();
-            //MessageBox.Show(HideInTrayCheckBox.IsChecked.ToString());
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)
@@ -1545,6 +1565,12 @@ namespace Toxy
         private void ExecuteActionsOnNotifyIcon()
         {
             nIcon.Visible = this.ViewModel.HideInTray;
+        }
+
+        private void mv_Activated(object sender, EventArgs e)
+        {
+            this.nIcon.Icon = notifyIcon;
+            this.ViewModel.HasNewMessage = false;
         }
     }
 }

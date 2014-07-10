@@ -110,7 +110,7 @@ namespace Toxy
             this.ViewModel.MainToxyUser.Name = tox.GetSelfName();
             this.ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
 
-            
+            InitializeNotifyIcon();
 
             SetStatus(null);
             InitFriends();
@@ -124,11 +124,7 @@ namespace Toxy
         {
             Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
             this.nIcon.Icon = new Icon(iconStream);
-            nIcon.Visible = true;
 
-            nIcon.BalloonTipTitle = "HI!";
-            nIcon.BalloonTipText = "I am here!!!";
-            nIcon.ShowBalloonTip(4000);
             nIcon.Click += nIcon_Click;
 
             var trayIconContextMenu = new System.Windows.Forms.ContextMenu();
@@ -166,7 +162,7 @@ namespace Toxy
 
         private void closeMenuItem_Click(object sender, EventArgs eventArgs)
         {
-            HideInTrayCheckBox.IsChecked = false;
+            this.ViewModel.HideInTray = false;
             this.Close();
         }
 
@@ -1102,12 +1098,11 @@ namespace Toxy
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (HideInTrayCheckBox.IsChecked == true)
+            if (this.ViewModel.HideInTray)
             {
                 e.Cancel = true;
                 this.ShowInTaskbar = false;
                 this.WindowState = WindowState.Minimized;
-                return;
             }
             else
             {
@@ -1549,14 +1544,7 @@ namespace Toxy
 
         private void ExecuteActionsOnNotifyIcon()
         {
-            if (HideInTrayCheckBox.IsChecked == true)
-            {
-                InitializeNotifyIcon();
-            }
-            else
-            {
-                nIcon.Visible = false;
-            }
+            nIcon.Visible = this.ViewModel.HideInTray;
         }
     }
 }

@@ -175,9 +175,10 @@ namespace Toxy
             this.Close();
         }
 
-        void nIcon_Click(object sender, EventArgs e)
+        private void nIcon_Click(object sender, EventArgs e)
         {
             this.WindowState = WindowState.Normal;
+            this.Activate();
         }
 
         private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size)

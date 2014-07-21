@@ -197,8 +197,8 @@
     <Resource Include="Resources\Icons\Online.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\libs\libtoxav.dll">
-      <Link>libtoxav.dll</Link>
+    <Content Include="..\libs\libtox.dll">
+      <Link>libtox.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\Icons\icon2.ico" />

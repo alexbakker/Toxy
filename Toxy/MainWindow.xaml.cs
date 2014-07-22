@@ -89,6 +89,7 @@ namespace Toxy
             toxav.OnReject += toxav_OnEnd;
             toxav.OnCancel += toxav_OnEnd;
             toxav.OnReceivedAudio += toxav_OnReceivedAudio;
+            toxav.OnMediaChange += toxav_OnMediaChange;
 
             bool bootstrap_success = false;
             foreach (ToxNode node in nodes)
@@ -118,10 +119,20 @@ namespace Toxy
 
             SetStatus(null);
             InitFriends();
+
             if (tox.GetFriendlistCount() > 0)
-            {
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
-            }
+        }
+
+        //this still needs testing
+        private void toxav_OnMediaChange(int call_index, IntPtr args)
+        {
+            if (call == null)
+                return;
+
+            //can't change the call type, we don't support video calls
+            if (call.CallIndex == call_index)
+                EndCall();
         }
 
         private void InitializeNotifyIcon()
@@ -156,7 +167,6 @@ namespace Toxy
             trayIconContextMenu.MenuItems.Add(statusMenuItem);
             trayIconContextMenu.MenuItems.Add(closeMenuItem);
             nIcon.ContextMenu = trayIconContextMenu;
-
         }
 
         private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)

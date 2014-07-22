@@ -54,7 +54,6 @@ namespace Toxy
 
         public MainWindow()
         {
-           
             InitializeComponent();
 
             this.DataContext = new MainWindowViewModel();
@@ -1152,9 +1151,9 @@ namespace Toxy
                     }
                 }
 
-                toxav.Kill();
-
                 tox.Save("data");
+
+                toxav.Kill();
                 tox.Kill();
             }
         }

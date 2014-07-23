@@ -543,6 +543,7 @@ namespace Toxy
                 if (dialog.ShowDialog() == true) //guess what, this bool is nullable
                 {
                     transfer.Stream = new FileStream(dialog.FileName, FileMode.Create);
+                    transfer.FileName = dialog.FileName;
                     tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]);
                 }
             };
@@ -570,8 +571,7 @@ namespace Toxy
             };
 
             transfer.Control.OnFolderOpen += delegate() {
-                string filePath = Path.Combine(Environment.CurrentDirectory, filename);
-                Process.Start("explorer.exe", @"/select, " + filePath);
+                Process.Start("explorer.exe", @"/select, " + transfer.FileName);
             };
 
             transfers.Add(transfer);

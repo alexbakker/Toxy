@@ -1137,7 +1137,6 @@ namespace Toxy
             }
             else
             {
-
                 if (call != null)
                     call.Stop();
 

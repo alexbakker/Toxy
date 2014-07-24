@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro;
 using Toxy.MVVM;
+using NAudio.Wave;
 
 namespace Toxy.ViewModels
 {
@@ -31,6 +32,14 @@ namespace Toxy.ViewModels
             ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme);
         }
     }
+
+    public class AudioDeviceMenuData
+    {
+        public string Name { get; set; }
+    }
+
+    public class OutputDeviceMenuData : AudioDeviceMenuData { }
+    public class InputDeviceMenuData : AudioDeviceMenuData { }
 
     public class MainWindowViewModel : ViewModelBase
     {
@@ -60,6 +69,30 @@ namespace Toxy.ViewModels
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
+
+        public List<OutputDeviceMenuData> OutputDevices 
+        {
+            get
+            {
+                List<OutputDeviceMenuData> list = new List<OutputDeviceMenuData>();
+                for (int i = 0; i < WaveOut.DeviceCount; i++)
+                    list.Add(new OutputDeviceMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
+
+                return list;
+            }
+        }
+
+        public List<InputDeviceMenuData> InputDevices
+        {
+            get
+            {
+                List<InputDeviceMenuData> list = new List<InputDeviceMenuData>();
+                for (int i = 0; i < WaveIn.DeviceCount; i++)
+                    list.Add(new InputDeviceMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
+
+                return list;
+            }
+        }
 
         private UserModel mainToxyUser;
 

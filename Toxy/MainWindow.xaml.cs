@@ -299,7 +299,7 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if(this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
                 this.Flash();
         }
 
@@ -533,7 +533,8 @@ namespace Toxy
                 friend.NewMessageCount++;
             }
 
-            transfer.Control.OnAccept += delegate(int friendnum, int filenum) {
+            transfer.Control.OnAccept += delegate(int friendnum, int filenum)
+            {
                 if (transfer.Stream != null)
                     return;
 
@@ -548,7 +549,8 @@ namespace Toxy
                 }
             };
 
-            transfer.Control.OnDecline += delegate(int friendnum, int filenum) {
+            transfer.Control.OnDecline += delegate(int friendnum, int filenum)
+            {
                 if (!transfer.IsSender)
                     tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
                 else
@@ -565,12 +567,14 @@ namespace Toxy
 
             };
 
-            transfer.Control.OnFileOpen += delegate() {
+            transfer.Control.OnFileOpen += delegate()
+            {
                 try { Process.Start(transfer.FileName); }
                 catch { /*want to open a "choose program dialog" here*/ }
             };
 
-            transfer.Control.OnFolderOpen += delegate() {
+            transfer.Control.OnFolderOpen += delegate()
+            {
                 Process.Start("explorer.exe", @"/select, " + transfer.FileName);
             };
 
@@ -1544,7 +1548,8 @@ namespace Toxy
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;
 
-            ft.Control.OnDecline += delegate(int friendnum, int filenum) {
+            ft.Control.OnDecline += delegate(int friendnum, int filenum)
+            {
                 if (ft.Thread != null)
                 {
                     ft.Thread.Abort();

@@ -273,7 +273,7 @@ namespace Toxy
 
         private void tox_OnGroupAction(int groupnumber, int friendgroupnumber, string action)
         {
-            MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetGroupMemberName(groupnumber, friendgroupnumber), action) };
+            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(groupnumber, friendgroupnumber), action), IsAction = true };
 
             if (groupdic.ContainsKey(groupnumber))
             {
@@ -629,7 +629,7 @@ namespace Toxy
 
         private void tox_OnFriendAction(int friendnumber, string action)
         {
-            MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetName(friendnumber), action) };
+            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetName(friendnumber), action), IsAction = true };
 
             if (convdic.ContainsKey(friendnumber))
             {
@@ -1292,15 +1292,11 @@ namespace Toxy
                     int messageid = -1;
 
                     if (this.ViewModel.IsFriendSelected)
-                    {
                         messageid = tox.SendAction(selectedChatNumber, action);
-                    }
                     else if (this.ViewModel.IsGroupSelected)
-                    {
                         tox.SendGroupAction(selectedChatNumber, action);
-                    }
 
-                    MessageData data = new MessageData() { Username = "*", Message = string.Format("{0} {1}", tox.GetSelfName(), action) };
+                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetSelfName(), action), IsAction = true };
 
                     if (this.ViewModel.IsFriendSelected)
                     {
@@ -1324,13 +1320,9 @@ namespace Toxy
                     int messageid = -1;
 
                     if (this.ViewModel.IsFriendSelected)
-                    {
                         messageid = tox.SendMessage(selectedChatNumber, message);
-                    }
                     else if (this.ViewModel.IsGroupSelected)
-                    {
                         tox.SendGroupMessage(selectedChatNumber, message);
-                    }
 
                     MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
 

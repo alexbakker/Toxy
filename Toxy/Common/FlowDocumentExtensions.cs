@@ -27,11 +27,12 @@ namespace Toxy.Common
             usernameTableCell.Padding = new Thickness(10, 0, 0, 0);
 
             Paragraph usernameParagraph = new Paragraph();
+            usernameParagraph.TextAlignment = data.IsAction ? TextAlignment.Right : TextAlignment.Left;
             usernameParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
+
             if (data.Username != tox.GetSelfName())
-            {
                 usernameParagraph.SetResourceReference(Paragraph.ForegroundProperty, "AccentColorBrush");
-            }
+
             usernameParagraph.Inlines.Add(data.Username);
             usernameTableCell.Blocks.Add(usernameParagraph);
 

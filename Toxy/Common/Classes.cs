@@ -8,6 +8,7 @@ namespace Toxy.Common
     {
         public string Username { get; set; }
         public string Message { get; set; }
+        public bool IsAction { get; set; }
     }
 
     public class FileTransfer

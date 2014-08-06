@@ -439,7 +439,7 @@
             <controls:Flyout x:Name="SettingsFlyout"
                              Header="Settings"
                              Position="Right"
-                             Width="325">
+                             Width="325" IsOpenChanged="SettingsFlyout_IsOpenChanged">
                 <Grid>
                     <Label Content="Enter your desired username"
                            HorizontalAlignment="Left"
@@ -485,14 +485,14 @@
                               Margin="15,270,0,0"
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Width="275" />
+                              Width="275" SelectionChanged="AccentComboBox_SelectionChanged" />
                     <ComboBox x:Name="AppThemeComboBox"
                               ItemsSource="{Binding AppThemes}"
                               DisplayMemberPath="Name"
                               Margin="15,300,0,0"
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"
-                              Width="275" />
+                              Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
                     <Label Content="Choose which devices should be used"
                            HorizontalAlignment="Left"
                            Margin="10,339,0,0" />
@@ -524,6 +524,7 @@
                             HorizontalAlignment="Right"
                             Width="75"
                             Click="SaveSettingsButton_OnClick" />
+                    
                     <Button x:Name="CopyIDButton"
                             Content="Copy ID"
                             HorizontalAlignment="Left"

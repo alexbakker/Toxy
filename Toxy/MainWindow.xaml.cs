@@ -44,6 +44,10 @@ namespace Toxy
         private bool resizing = false;
         private bool focusTextbox = false;
         private bool typing = false;
+        public bool userPressedSave = false;
+
+        private Accent oldAccent;
+        private AppTheme oldAppTheme;
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
@@ -1168,6 +1172,7 @@ namespace Toxy
 
         private void OpenSettings_Click(object sender, RoutedEventArgs e)
         {
+            userPressedSave = false;
             if (!SettingsFlyout.IsOpen)
             {
                 SettingsUsername.Text = tox.GetSelfName();
@@ -1176,10 +1181,12 @@ namespace Toxy
 
                 Tuple<AppTheme, Accent> style = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
                 Accent accent = ThemeManager.GetAccent(style.Item2.Name);
+                oldAccent = accent;
                 if (accent != null)
                     AccentComboBox.SelectedItem = AccentComboBox.Items.Cast<AccentColorMenuData>().Single(a => a.Name == style.Item2.Name);
 
                 AppTheme theme = ThemeManager.GetAppTheme(style.Item1.Name);
+                oldAppTheme = theme;
                 if (theme != null)
                     AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
             }
@@ -1236,6 +1243,8 @@ namespace Toxy
 
         private void SaveSettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
+            userPressedSave = true;
+
             tox.SetName(SettingsUsername.Text);
             tox.SetStatusMessage(SettingsStatus.Text);
 
@@ -1577,6 +1586,30 @@ namespace Toxy
         {
             this.nIcon.Icon = notifyIcon;
             this.ViewModel.HasNewMessage = false;
+        }
+
+        private void AccentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+            var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+
+            
+        }
+
+        private void SettingsFlyout_IsOpenChanged(object sender, EventArgs e)
+        {
+            if (!SettingsFlyout.IsOpen)
+            {
+                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, oldAccent, oldAppTheme);
+            }
+        }
+
+        private void AppThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+            var appTheme = ThemeManager.GetAppTheme(((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name);
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
         }
     }
 }

@@ -1198,14 +1198,14 @@ namespace Toxy
         {
             TextRange message = new TextRange(AddFriendMessage.Document.ContentStart, AddFriendMessage.Document.ContentEnd);
 
-            if (!(!string.IsNullOrEmpty(AddFriendID.Text) && !string.IsNullOrEmpty(message.Text)))
+            if (!(!string.IsNullOrWhiteSpace(AddFriendID.Text) && !string.IsNullOrWhiteSpace(message.Text)))
                 return;
 
             if (AddFriendID.Text.Contains("@"))
             {
                 try
                 {
-                    string id = DnsTools.DiscoverToxID(AddFriendID.Text);
+                    string id = DnsTools.DiscoverToxID(AddFriendID.Text.Trim());
                     AddFriendID.Text = id;
                 }
                 catch (Exception ex)

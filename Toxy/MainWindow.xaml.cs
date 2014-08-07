@@ -1198,7 +1198,7 @@ namespace Toxy
         {
             TextRange message = new TextRange(AddFriendMessage.Document.ContentStart, AddFriendMessage.Document.ContentEnd);
 
-            if (!(!string.IsNullOrWhiteSpace(AddFriendID.Text) && !string.IsNullOrWhiteSpace(message.Text)))
+            if (!(!string.IsNullOrWhiteSpace(AddFriendID.Text) && message.Text != null))
                 return;
 
             if (AddFriendID.Text.Contains("@"))

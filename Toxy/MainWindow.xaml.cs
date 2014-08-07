@@ -1201,16 +1201,18 @@ namespace Toxy
             if (!(!string.IsNullOrWhiteSpace(AddFriendID.Text) && message.Text != null))
                 return;
 
-            if (AddFriendID.Text.Contains("@"))
+            string friendID = AddFriendID.Text.Trim();
+
+            if (friendID.Contains("@"))
             {
                 try
                 {
-                    string id = DnsTools.DiscoverToxID(AddFriendID.Text.Trim());
+                    string id = DnsTools.DiscoverToxID(friendID);
                     AddFriendID.Text = id;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not find a tox id:\n" + ex.ToString());
+                    this.ShowMessageAsync("Could not find a tox id", ex.Message.ToString());
                 }
 
                 return;
@@ -1219,7 +1221,7 @@ namespace Toxy
             int friendnumber;
             try
             {
-                friendnumber = tox.AddFriend(AddFriendID.Text, message.Text);
+                friendnumber = tox.AddFriend(friendID, message.Text);
                 FriendFlyout.IsOpen = false;
                 AddFriendToView(friendnumber);
             }

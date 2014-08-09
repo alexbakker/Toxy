@@ -31,7 +31,7 @@ namespace Toxy.ToxHelpers
             CallIndex = callindex;
         }
 
-        public void Start()
+        public void Start(int input, int output)
         {
             if (WaveIn.DeviceCount < 1)
                 throw new Exception("Insufficient input device(s)!");
@@ -49,11 +49,17 @@ namespace Toxy.ToxHelpers
             wave_provider.DiscardOnBufferOverflow = true;
 
             wave_out = new WaveOut();
-            //wave_out.DeviceNumber = config["device_output"];
+
+            if (output != -1)
+                wave_out.DeviceNumber = output;
+
             wave_out.Init(wave_provider);
 
             wave_source = new WaveIn();
-            //wave_source.DeviceNumber = config["device_input"];
+
+            if (input != -1)
+                wave_source.DeviceNumber = input;
+
             wave_source.WaveFormat = format;
             wave_source.DataAvailable += wave_source_DataAvailable;
             wave_source.RecordingStopped += wave_source_RecordingStopped;

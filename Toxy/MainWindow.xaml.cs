@@ -28,6 +28,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using NAudio.Wave;
 
 namespace Toxy
 {
@@ -55,6 +56,9 @@ namespace Toxy
         Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
         private Icon notifyIcon;
         private Icon newMessageNotifyIcon;
+
+        private int inputDeviceIndex = -1;
+        private int outputDeviceIndex = -1;
 
         public MainWindow()
         {
@@ -217,7 +221,7 @@ namespace Toxy
         private void toxav_OnStart(int call_index, IntPtr args)
         {
             if (call != null)
-                call.Start();
+                call.Start(inputDeviceIndex, outputDeviceIndex);
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
             var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
@@ -1273,6 +1277,14 @@ namespace Toxy
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
             }
 
+            int index = InputDevicesComboBox.SelectedIndex + 1;
+
+            if (index != 0 && WaveIn.DeviceCount > 0 && WaveIn.DeviceCount >= index)
+                inputDeviceIndex = index;
+
+            index = OutputDevicesComboBox.SelectedIndex + 1;
+            if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
+                outputDeviceIndex = index;
 
             ExecuteActionsOnNotifyIcon();
         }

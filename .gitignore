@@ -154,3 +154,5 @@ $RECYCLE.BIN/
 .DS_Store
 libs/libtoxav.dll
 libs/SharpTox.dll
+libs/libtox.dll
+libs/SharpTox.XML

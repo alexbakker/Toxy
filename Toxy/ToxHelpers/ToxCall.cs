@@ -51,14 +51,14 @@ namespace Toxy.ToxHelpers
             wave_out = new WaveOut();
 
             if (output != -1)
-                wave_out.DeviceNumber = output;
+                wave_out.DeviceNumber = output - 1;
 
             wave_out.Init(wave_provider);
 
             wave_source = new WaveIn();
 
             if (input != -1)
-                wave_source.DeviceNumber = input;
+                wave_source.DeviceNumber = input - 1;
 
             wave_source.WaveFormat = format;
             wave_source.DataAvailable += wave_source_DataAvailable;

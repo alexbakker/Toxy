@@ -101,8 +101,9 @@ namespace Toxy.ToxHelpers
             byte[] dest = new byte[65535];
             int size = toxav.PrepareAudioFrame(CallIndex, dest, 65535, ushorts);
 
-            if (toxav.SendAudio(CallIndex, ref dest) != ToxAvError.None)
-                Console.WriteLine("Could not send audio");
+            ToxAvError error = toxav.SendAudio(CallIndex, ref dest, size);
+            if (error != ToxAvError.None)
+                Console.WriteLine("Could not send audio: {0}", error);
         }
 
         public void Stop()

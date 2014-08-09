@@ -41,7 +41,8 @@ namespace Toxy.ToxHelpers
 
             frame_size = toxav.CodecSettings.audio_sample_rate * toxav.CodecSettings.audio_frame_duration / 1000;
 
-            toxav.PrepareTransmission(CallIndex, false);
+            //who doesn't love magic numbers?!
+            toxav.PrepareTransmission(CallIndex, 3, 40, false);
 
             WaveFormat format = new WaveFormat((int)toxav.CodecSettings.audio_sample_rate, (int)toxav.CodecSettings.audio_channels);
             wave_provider = new BufferedWaveProvider(format);
@@ -92,9 +93,9 @@ namespace Toxy.ToxHelpers
             Buffer.BlockCopy(e.Buffer, 0, ushorts, 0, e.Buffer.Length);
 
             byte[] dest = new byte[65535];
-            int size = toxav.PrepareAudioFrame(CallIndex, dest, 65535, ushorts, ushorts.Length);
+            int size = toxav.PrepareAudioFrame(CallIndex, dest, 65535, ushorts);
 
-            if (toxav.SendAudio(CallIndex, ref dest, size) != ToxAvError.None)
+            if (toxav.SendAudio(CallIndex, ref dest) != ToxAvError.None)
                 Console.WriteLine("Could not send audio");
         }
 
@@ -126,14 +127,14 @@ namespace Toxy.ToxHelpers
 
         public void Answer()
         {
-            ToxAvError error = toxav.Answer(CallIndex, ToxAvCallType.Audio);
+            ToxAvError error = toxav.Answer(CallIndex, ToxAv.DefaultCodecSettings);
             if (error != ToxAvError.None)
                 throw new Exception("Could not answer call " + error.ToString());
         }
 
-        public void Call(int current_number, ToxAvCallType call_type, int ringing_seconds)
+        public void Call(int current_number, ToxAvCodecSettings settings, int ringing_seconds)
         {
-            toxav.Call(current_number, call_type, ringing_seconds, out CallIndex);
+            toxav.Call(current_number, settings, ringing_seconds, out CallIndex);
         }
     }
 }

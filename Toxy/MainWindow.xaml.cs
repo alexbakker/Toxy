@@ -194,7 +194,7 @@ namespace Toxy
             this.Activate();
         }
 
-        private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size)
+        private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size, IntPtr userdata)
         {
             if (call == null)
                 return;
@@ -242,8 +242,8 @@ namespace Toxy
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
 
-            ToxAvCallType type = toxav.GetPeerTransmissionType(call_index, 0);
-            if (type == ToxAvCallType.Video)
+            ToxAvCodecSettings settings = toxav.GetPeerCodecSettings(call_index, 0);
+            if (settings.call_type == ToxAvCallType.Video)
             {
                 //we don't support video calls, just reject this and return.
                 toxav.Reject(call_index, "Toxy does not support video calls.");
@@ -1509,7 +1509,7 @@ namespace Toxy
                 return;
 
             int call_index;
-            ToxAvError error = toxav.Call(selectedChatNumber, ToxAvCallType.Audio, 30, out call_index);
+            ToxAvError error = toxav.Call(selectedChatNumber, ToxAv.DefaultCodecSettings, 30, out call_index);
             if (error != ToxAvError.None)
                 return;
 

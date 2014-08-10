@@ -84,7 +84,7 @@ namespace Toxy
             tox.OnGroupAction += tox_OnGroupAction;
             tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
 
-            toxav = new ToxAv(tox.GetPointer(), ToxAv.DefaultCodecSettings, 1);
+            toxav = new ToxAv(tox.GetHandle(), ToxAv.DefaultCodecSettings, 1);
             toxav.Invoker = Dispatcher.BeginInvoke;
             toxav.OnInvite += toxav_OnInvite;
             toxav.OnStart += toxav_OnStart;
@@ -452,7 +452,7 @@ namespace Toxy
         {
             FileTransfer transfer = (FileTransfer)ft;
 
-            IntPtr ptr = tox.GetPointer();
+            ToxHandle handle = tox.GetHandle();
             int chunk_size = tox.FileDataSize(transfer.FriendNumber);
             byte[] buffer = new byte[chunk_size];
 
@@ -466,7 +466,7 @@ namespace Toxy
 
                     while (!tox.FileSendData(transfer.FriendNumber, transfer.FileNumber, buffer))
                     {
-                        int time = (int)ToxFunctions.DoInterval(ptr);
+                        int time = (int)ToxFunctions.DoInterval(handle);
 
                         Console.WriteLine("Could not send data, sleeping for {0}ms", time);
                         Thread.Sleep(time);
@@ -1164,8 +1164,8 @@ namespace Toxy
 
                 tox.Save("data");
 
-                toxav.Kill();
-                tox.Kill();
+                toxav.Dispose();
+                tox.Dispose();
             }
         }
 

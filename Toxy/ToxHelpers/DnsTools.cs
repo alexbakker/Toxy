@@ -46,14 +46,14 @@ namespace Toxy.ToxHelpers
                             {
                                 string result = tox_dns.DecryptDns3TXT(value, request_id);
 
-                                tox_dns.Kill();
+                                tox_dns.Dispose();
                                 return result;
                             }
                         }
                     }
                 }
 
-                tox_dns.Kill();
+                tox_dns.Dispose();
             }
             else if (domain.Contains("@"))
             {

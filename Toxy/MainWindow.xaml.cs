@@ -410,6 +410,8 @@ namespace Toxy
                         ft.Finished = true;
 
                         transfers.Remove(ft);
+
+                        tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.FINISHED, new byte[0]);
                         break;
                     }
 

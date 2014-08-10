@@ -285,13 +285,13 @@ namespace Toxy
 
             if (groupdic.ContainsKey(groupnumber))
             {
-                groupdic[groupnumber].AddNewMessageRow(tox, data);
+                groupdic[groupnumber].AddNewMessageRow(tox, data, false);
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 groupdic.Add(groupnumber, document);
-                groupdic[groupnumber].AddNewMessageRow(tox, data);
+                groupdic[groupnumber].AddNewMessageRow(tox, data, false);
             }
 
             var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
@@ -317,25 +317,25 @@ namespace Toxy
 
             if (groupdic.ContainsKey(groupnumber))
             {
-                Run run = GetLastMessageRun(groupdic[groupnumber]);
+                var run = GetLastMessageRun(groupdic[groupnumber]);
 
                 if (run != null)
                 {
-                    if (run.Text == data.Username)
-                        groupdic[groupnumber].AppendMessage(data);
+                    if (run.Tag == data.Username)
+                        groupdic[groupnumber].AddNewMessageRow(tox, data, true);
                     else
-                        groupdic[groupnumber].AddNewMessageRow(tox, data);
+                        groupdic[groupnumber].AddNewMessageRow(tox, data, false);
                 }
                 else
                 {
-                    groupdic[groupnumber].AddNewMessageRow(tox, data);
+                    groupdic[groupnumber].AddNewMessageRow(tox, data, false);
                 }
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 groupdic.Add(groupnumber, document);
-                groupdic[groupnumber].AddNewMessageRow(tox, data);
+                groupdic[groupnumber].AddNewMessageRow(tox, data, false);
             }
 
             var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
@@ -647,13 +647,13 @@ namespace Toxy
 
             if (convdic.ContainsKey(friendnumber))
             {
-                convdic[friendnumber].AddNewMessageRow(tox, data);
+                convdic[friendnumber].AddNewMessageRow(tox, data, false);
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 convdic.Add(friendnumber, document);
-                convdic[friendnumber].AddNewMessageRow(tox, data);
+                convdic[friendnumber].AddNewMessageRow(tox, data, false);
             }
 
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
@@ -691,25 +691,25 @@ namespace Toxy
 
             if (convdic.ContainsKey(friendnumber))
             {
-                Run run = GetLastMessageRun(convdic[friendnumber]);
+                var run = GetLastMessageRun(convdic[friendnumber]);
 
                 if (run != null)
                 {
-                    if (run.Text == tox.GetName(friendnumber))
-                        convdic[friendnumber].AppendMessage(data);
+                    if (run.Tag.ToString() == tox.GetName(friendnumber))
+                        convdic[friendnumber].AddNewMessageRow(tox, data, true);
                     else
-                        convdic[friendnumber].AddNewMessageRow(tox, data);
+                        convdic[friendnumber].AddNewMessageRow(tox, data, false);
                 }
                 else
                 {
-                    convdic[friendnumber].AddNewMessageRow(tox, data);
+                    convdic[friendnumber].AddNewMessageRow(tox, data, false);
                 }
             }
             else
             {
                 FlowDocument document = GetNewFlowDocument();
                 convdic.Add(friendnumber, document);
-                convdic[friendnumber].AddNewMessageRow(tox, data);
+                convdic[friendnumber].AddNewMessageRow(tox, data, false);
             }
 
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
@@ -757,18 +757,19 @@ namespace Toxy
             return (ScrollViewer)border.Child;
         }
 
-        private Run GetLastMessageRun(FlowDocument doc)
+        private TableRow GetLastMessageRun(FlowDocument doc)
         {
             try
             {
-                Paragraph para = (Paragraph)doc.FindChildren<TableRow>()
+                /*Paragraph para = (Paragraph)doc.FindChildren<TableRow>()
                     .Last()
                     .FindChildren<TableCell>()
                     .First()
-                    .Blocks.FirstBlock;
+                    .Blocks.FirstBlock;*/
 
-                Run run = (Run)para.Inlines.FirstInline;
-                return run;
+                
+                //Run run = (Run)para.Inlines.FirstInline;
+                return doc.FindChildren<TableRow>().Last();
             }
             catch (Exception e)
             {
@@ -1013,7 +1014,7 @@ namespace Toxy
 
         private void FriendRequestSelectedAction(IFriendObject friendObject, bool isSelected)
         {
-            friendObject.RequestFlowDocument.AddNewMessageRow(tox, friendObject.RequestMessageData);
+            friendObject.RequestFlowDocument.AddNewMessageRow(tox, friendObject.RequestMessageData, false);
         }
 
         private void FriendRequestAcceptAction(IFriendObject friendObject)
@@ -1330,14 +1331,14 @@ namespace Toxy
                     if (this.ViewModel.IsFriendSelected)
                     {
                         if (convdic.ContainsKey(selectedChatNumber))
-                        {
-                            convdic[selectedChatNumber].AddNewMessageRow(tox, data);
+                        {    
+                            convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                         }
                         else
                         {
                             FlowDocument document = GetNewFlowDocument();
                             convdic.Add(selectedChatNumber, document);
-                            convdic[selectedChatNumber].AddNewMessageRow(tox, data);
+                            convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                         }
                     }
                 }
@@ -1359,24 +1360,22 @@ namespace Toxy
                     {
                         if (convdic.ContainsKey(selectedChatNumber))
                         {
-                            Run run = GetLastMessageRun(convdic[selectedChatNumber]);
+                            var run = GetLastMessageRun(convdic[selectedChatNumber]);
                             if (run != null)
                             {
-                                if (run.Text == data.Username)
-                                    convdic[selectedChatNumber].AppendMessage(data);
+                                if (run.Tag.ToString() == data.Username)
+                                    convdic[selectedChatNumber].AddNewMessageRow(tox, data, true);
                                 else
-                                    convdic[selectedChatNumber].AddNewMessageRow(tox, data);
+                                    convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                             }
                             else
-                            {
-                                convdic[selectedChatNumber].AddNewMessageRow(tox, data);
-                            }
+                                convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                         }
                         else
                         {
                             FlowDocument document = GetNewFlowDocument();
                             convdic.Add(selectedChatNumber, document);
-                            convdic[selectedChatNumber].AddNewMessageRow(tox, data);
+                            convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                         }
                     }
                 }

@@ -14,13 +14,13 @@ namespace Toxy.Common
 {
     static class FlowDocumentExtensions
     {
-        public static void AddNewMessageRow(this FlowDocument document, Tox tox, MessageData data)
+        public static void AddNewMessageRow(this FlowDocument document, Tox tox, MessageData data, bool sameUser)
         {
             document.IsEnabled = true;
 
             //Make a new row
             TableRow newTableRow = new TableRow();
-
+            newTableRow.Tag = data.Username;
             //Make a new cell and create a paragraph in it
             TableCell usernameTableCell = new TableCell();
             usernameTableCell.Name = "usernameTableCell";
@@ -33,7 +33,8 @@ namespace Toxy.Common
             if (data.Username != tox.GetSelfName())
                 usernameParagraph.SetResourceReference(Paragraph.ForegroundProperty, "AccentColorBrush");
 
-            usernameParagraph.Inlines.Add(data.Username);
+            if(!sameUser)
+                usernameParagraph.Inlines.Add(data.Username);
             usernameTableCell.Blocks.Add(usernameParagraph);
 
             //Make a new cell and create a paragraph in it
@@ -60,15 +61,6 @@ namespace Toxy.Common
             //Adds row to the Table > TableRowGroup
             TableRowGroup MessageRows = (TableRowGroup)document.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
-        }
-
-        public static void AppendMessage(this FlowDocument doc, MessageData data)
-        {
-            TableRow tableRow = doc.FindChildren<TableRow>().Last();
-            Paragraph para = (Paragraph)tableRow.FindChildren<TableCell>().ElementAt(1).Blocks.LastBlock;
-            Paragraph timestampParagraph = (Paragraph)tableRow.FindChildren<TableCell>().Last().Blocks.LastBlock;
-            timestampParagraph.Inlines.Add(Environment.NewLine + DateTime.Now.ToShortTimeString());
-            ProcessMessage(data, para, true);
         }
 
         public static FileTransfer AddNewFileTransfer(this FlowDocument doc, Tox tox, int friendnumber, int filenumber, string filename, ulong filesize, bool is_sender)

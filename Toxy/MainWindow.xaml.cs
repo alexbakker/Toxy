@@ -893,7 +893,7 @@ namespace Toxy
             string friendName = tox.GetName(friendNumber);
             if (string.IsNullOrEmpty(friendName))
             {
-                friendName = tox.GetClientID(friendNumber);
+                friendName = tox.GetClientID(friendNumber).GetString();
             }
 
             var friendMV = new FriendControlModelView(this.ViewModel);
@@ -947,7 +947,7 @@ namespace Toxy
         private void FriendCopyIdAction(IFriendObject friendObject)
         {
             Clipboard.Clear();
-            Clipboard.SetText(tox.GetClientID(friendObject.ChatNumber));
+            Clipboard.SetText(tox.GetClientID(friendObject.ChatNumber).GetString());
         }
 
         private void FriendSelectedAction(IFriendObject friendObject, bool isSelected)

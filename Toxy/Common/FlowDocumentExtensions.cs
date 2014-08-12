@@ -20,7 +20,8 @@ namespace Toxy.Common
 
             //Make a new row
             TableRow newTableRow = new TableRow();
-            newTableRow.Tag = data.Username;
+            newTableRow.Tag = data;
+
             //Make a new cell and create a paragraph in it
             TableCell usernameTableCell = new TableCell();
             usernameTableCell.Name = "usernameTableCell";
@@ -35,12 +36,16 @@ namespace Toxy.Common
 
             if(!sameUser)
                 usernameParagraph.Inlines.Add(data.Username);
+
             usernameTableCell.Blocks.Add(usernameParagraph);
 
             //Make a new cell and create a paragraph in it
             TableCell messageTableCell = new TableCell();
             Paragraph messageParagraph = new Paragraph();
             messageParagraph.TextAlignment = TextAlignment.Left;
+
+            if (data.IsSelf)
+                messageParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
 
             ProcessMessage(data, messageParagraph, false);
 

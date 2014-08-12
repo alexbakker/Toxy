@@ -28,6 +28,8 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using Brushes = System.Windows.Media.Brushes;
+
 using NAudio.Wave;
 
 namespace Toxy
@@ -78,6 +80,7 @@ namespace Toxy
             tox.OnFileSendRequest += tox_OnFileSendRequest;
             tox.OnFileData += tox_OnFileData;
             tox.OnFileControl += tox_OnFileControl;
+            tox.OnReadReceipt += tox_OnReadReceipt;
 
             tox.OnGroupInvite += tox_OnGroupInvite;
             tox.OnGroupMessage += tox_OnGroupMessage;
@@ -131,7 +134,20 @@ namespace Toxy
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
         }
 
-        //this still needs testing
+        private void tox_OnReadReceipt(int friendnumber, uint receipt)
+        {
+            //a flowdocument should already be created, but hey, just in case
+            if (!convdic.ContainsKey(friendnumber))
+                return;
+
+            Paragraph para = (Paragraph)convdic[friendnumber].FindChildren<TableRow>().Where(r => ((MessageData)(r.Tag)).Id == receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
+
+            if (para == null)
+                return; //row or cell doesn't exist? odd, just return
+
+            para.Foreground = Brushes.Black;
+        }
+
         private void toxav_OnMediaChange(int call_index, IntPtr args)
         {
             if (call == null)
@@ -321,7 +337,7 @@ namespace Toxy
 
                 if (run != null)
                 {
-                    if (run.Tag == data.Username)
+                    if (((MessageData)run.Tag).Username == data.Username)
                         groupdic[groupnumber].AddNewMessageRow(tox, data, true);
                     else
                         groupdic[groupnumber].AddNewMessageRow(tox, data, false);
@@ -695,7 +711,7 @@ namespace Toxy
 
                 if (run != null)
                 {
-                    if (run.Tag.ToString() == tox.GetName(friendnumber))
+                    if (((MessageData)run.Tag).Username == tox.GetName(friendnumber))
                         convdic[friendnumber].AddNewMessageRow(tox, data, true);
                     else
                         convdic[friendnumber].AddNewMessageRow(tox, data, false);
@@ -767,7 +783,7 @@ namespace Toxy
                     .First()
                     .Blocks.FirstBlock;*/
 
-                
+
                 //Run run = (Run)para.Inlines.FirstInline;
                 return doc.FindChildren<TableRow>().Last();
             }
@@ -1326,12 +1342,12 @@ namespace Toxy
                     else if (this.ViewModel.IsGroupSelected)
                         tox.SendGroupAction(selectedChatNumber, action);
 
-                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetSelfName(), action), IsAction = true };
+                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetSelfName(), action), IsAction = true, Id = messageid, IsSelf = this.ViewModel.IsFriendSelected };
 
                     if (this.ViewModel.IsFriendSelected)
                     {
                         if (convdic.ContainsKey(selectedChatNumber))
-                        {    
+                        {
                             convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                         }
                         else
@@ -1354,7 +1370,7 @@ namespace Toxy
                     else if (this.ViewModel.IsGroupSelected)
                         tox.SendGroupMessage(selectedChatNumber, message);
 
-                    MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message };
+                    MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message, Id = messageid, IsSelf = this.ViewModel.IsFriendSelected };
 
                     if (this.ViewModel.IsFriendSelected)
                     {
@@ -1363,7 +1379,7 @@ namespace Toxy
                             var run = GetLastMessageRun(convdic[selectedChatNumber]);
                             if (run != null)
                             {
-                                if (run.Tag.ToString() == data.Username)
+                                if (((MessageData)run.Tag).Username == data.Username)
                                     convdic[selectedChatNumber].AddNewMessageRow(tox, data, true);
                                 else
                                     convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
@@ -1609,7 +1625,7 @@ namespace Toxy
             var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
 
-            
+
         }
 
         private void SettingsFlyout_IsOpenChanged(object sender, EventArgs e)

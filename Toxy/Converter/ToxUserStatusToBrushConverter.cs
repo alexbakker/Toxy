@@ -32,13 +32,13 @@ namespace Toxy.Converter
                 var status = (ToxUserStatus)value;
                 switch (status)
                 {
-                    case ToxUserStatus.NONE:
+                    case ToxUserStatus.None:
                         return ToxUserStatusNONE;
-                    case ToxUserStatus.BUSY:
+                    case ToxUserStatus.Busy:
                         return ToxUserStatusBUSY;
-                    case ToxUserStatus.AWAY:
+                    case ToxUserStatus.Away:
                         return ToxUserStatusAWAY;
-                    case ToxUserStatus.INVALID:
+                    case ToxUserStatus.Invalid:
                         return ToxUserStatusINVALID;
                 }
             }

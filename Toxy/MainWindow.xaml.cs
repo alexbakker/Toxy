@@ -267,7 +267,7 @@ namespace Toxy
             int friendnumber = toxav.GetPeerID(call_index, 0);
 
             ToxAvCodecSettings settings = toxav.GetPeerCodecSettings(call_index, 0);
-            if (settings.call_type == ToxAvCallType.Video)
+            if (settings.CallType == ToxAvCallType.Video)
             {
                 //we don't support video calls, just reject this and return.
                 toxav.Reject(call_index, "Toxy does not support video calls.");
@@ -287,7 +287,7 @@ namespace Toxy
             var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
             if (group != null)
             {
-                if (change == ToxChatChange.PEER_ADD || change == ToxChatChange.PEER_DEL)
+                if (change == ToxChatChange.PeerAdd || change == ToxChatChange.PeerDel)
                 {
                     var status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
                     group.StatusMessage = status;
@@ -327,7 +327,7 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
         }
 
@@ -371,7 +371,7 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
             this.nIcon.Icon = newMessageNotifyIcon;
@@ -399,7 +399,7 @@ namespace Toxy
             try
             {
                 AddFriendRequestToView(id, message);
-                if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+                if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                     this.Flash();
             }
             catch (Exception ex)
@@ -415,7 +415,7 @@ namespace Toxy
         {
             switch ((ToxFileControl)control_type)
             {
-                case ToxFileControl.FINISHED:
+                case ToxFileControl.Finished:
                     {
                         FileTransfer ft = GetFileTransfer(friendnumber, filenumber);
 
@@ -431,11 +431,11 @@ namespace Toxy
 
                         transfers.Remove(ft);
 
-                        tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.FINISHED, new byte[0]);
+                        tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Finished, new byte[0]);
                         break;
                     }
 
-                case ToxFileControl.ACCEPT:
+                case ToxFileControl.Accept:
                     {
                         FileTransfer ft = GetFileTransfer(friendnumber, filenumber);
                         ft.Control.SetStatus("Transferring....");
@@ -446,7 +446,7 @@ namespace Toxy
                         break;
                     }
 
-                case ToxFileControl.KILL:
+                case ToxFileControl.Kill:
                     {
                         FileTransfer transfer = GetFileTransfer(friendnumber, filenumber);
                         transfer.Finished = true;
@@ -513,7 +513,7 @@ namespace Toxy
             }
 
             transfer.Stream.Close();
-            tox.FileSendControl(transfer.FriendNumber, 0, transfer.FileNumber, ToxFileControl.FINISHED, new byte[0]);
+            tox.FileSendControl(transfer.FriendNumber, 0, transfer.FileNumber, ToxFileControl.Finished, new byte[0]);
 
             transfer.Control.HideAllButtons();
             transfer.Control.SetStatus("Finished!");
@@ -575,16 +575,16 @@ namespace Toxy
                 {
                     transfer.Stream = new FileStream(dialog.FileName, FileMode.Create);
                     transfer.FileName = dialog.FileName;
-                    tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.ACCEPT, new byte[0]);
+                    tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.Accept, new byte[0]);
                 }
             };
 
             transfer.Control.OnDecline += delegate(int friendnum, int filenum)
             {
                 if (!transfer.IsSender)
-                    tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+                    tox.FileSendControl(friendnumber, 1, filenumber, ToxFileControl.Kill, new byte[0]);
                 else
-                    tox.FileSendControl(friendnumber, 0, filenumber, ToxFileControl.KILL, new byte[0]);
+                    tox.FileSendControl(friendnumber, 0, filenumber, ToxFileControl.Kill, new byte[0]);
 
                 if (transfer.Thread != null)
                 {
@@ -609,7 +609,7 @@ namespace Toxy
             };
 
             transfers.Add(transfer);
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
         }
 
@@ -628,7 +628,7 @@ namespace Toxy
                     lastOnline = DateTime.Now;
                 }
                 friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
-                friend.ToxStatus = ToxUserStatus.INVALID; //not the proper way to do it, I know...
+                friend.ToxStatus = ToxUserStatus.Invalid; //not the proper way to do it, I know...
 
                 if (friend.Selected)
                 {
@@ -689,7 +689,7 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
             this.nIcon.Icon = newMessageNotifyIcon;
@@ -745,7 +745,7 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.BUSY)
+            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
             this.nIcon.Icon = newMessageNotifyIcon;
@@ -921,7 +921,7 @@ namespace Toxy
             friendMV.ChatNumber = friendNumber;
             friendMV.Name = friendName;
             friendMV.StatusMessage = friendStatus;
-            friendMV.ToxStatus = ToxUserStatus.INVALID;
+            friendMV.ToxStatus = ToxUserStatus.Invalid;
             friendMV.SelectedAction = FriendSelectedAction;
             friendMV.DenyCallAction = FriendDenyCallAction;
             friendMV.AcceptCallAction = FriendAcceptCallAction;
@@ -1017,7 +1017,7 @@ namespace Toxy
             var friendMV = new FriendControlModelView(this.ViewModel);
             friendMV.IsRequest = true;
             friendMV.Name = id;
-            friendMV.ToxStatus = ToxUserStatus.INVALID;
+            friendMV.ToxStatus = ToxUserStatus.Invalid;
             friendMV.RequestMessageData = new MessageData() { Message = message, Username = "Request Message" };
             friendMV.RequestFlowDocument = GetNewFlowDocument();
             friendMV.SelectedAction = FriendRequestSelectedAction;
@@ -1488,17 +1488,17 @@ namespace Toxy
 
         private void OnlineThumbButton_Click(object sender, EventArgs e)
         {
-            SetStatus(ToxUserStatus.NONE);
+            SetStatus(ToxUserStatus.None);
         }
 
         private void AwayThumbButton_Click(object sender, EventArgs e)
         {
-            SetStatus(ToxUserStatus.AWAY);
+            SetStatus(ToxUserStatus.Away);
         }
 
         private void BusyThumbButton_Click(object sender, EventArgs e)
         {
-            SetStatus(ToxUserStatus.BUSY);
+            SetStatus(ToxUserStatus.Busy);
         }
 
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1604,9 +1604,9 @@ namespace Toxy
                     ft.Stream.Close();
 
                 if (!ft.IsSender)
-                    tox.FileSendControl(ft.FriendNumber, 1, filenumber, ToxFileControl.KILL, new byte[0]);
+                    tox.FileSendControl(ft.FriendNumber, 1, filenumber, ToxFileControl.Kill, new byte[0]);
                 else
-                    tox.FileSendControl(ft.FriendNumber, 0, filenumber, ToxFileControl.KILL, new byte[0]);
+                    tox.FileSendControl(ft.FriendNumber, 0, filenumber, ToxFileControl.Kill, new byte[0]);
             };
 
             transfers.Add(ft);

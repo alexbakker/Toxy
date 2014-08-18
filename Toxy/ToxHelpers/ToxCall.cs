@@ -39,12 +39,12 @@ namespace Toxy.ToxHelpers
             if (WaveOut.DeviceCount < 1)
                 throw new Exception("Insufficient output device(s)!");
 
-            frame_size = toxav.CodecSettings.audio_sample_rate * toxav.CodecSettings.audio_frame_duration / 1000;
+            frame_size = toxav.CodecSettings.AudioSampleRate * toxav.CodecSettings.AudioFrameDuration / 1000;
 
             //who doesn't love magic numbers?!
             toxav.PrepareTransmission(CallIndex, 3, 40, false);
 
-            WaveFormat format = new WaveFormat((int)toxav.CodecSettings.audio_sample_rate, (int)toxav.CodecSettings.audio_channels);
+            WaveFormat format = new WaveFormat((int)toxav.CodecSettings.AudioSampleRate, (int)toxav.CodecSettings.AudioChannels);
             wave_provider = new BufferedWaveProvider(format);
             wave_provider.DiscardOnBufferOverflow = true;
 
@@ -63,7 +63,7 @@ namespace Toxy.ToxHelpers
             wave_source.WaveFormat = format;
             wave_source.DataAvailable += wave_source_DataAvailable;
             wave_source.RecordingStopped += wave_source_RecordingStopped;
-            wave_source.BufferMilliseconds = (int)toxav.CodecSettings.audio_frame_duration;
+            wave_source.BufferMilliseconds = (int)toxav.CodecSettings.AudioFrameDuration;
             wave_source.StartRecording();
 
             wave_out.Play();

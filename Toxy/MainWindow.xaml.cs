@@ -67,7 +67,11 @@ namespace Toxy
             InitializeComponent();
 
             this.DataContext = new MainWindowViewModel();
-            tox = new Tox(false);
+
+            //ToxOptions options = new ToxOptions(true, "127.0.0.1", 9050);
+            ToxOptions options = new ToxOptions(true, false);
+
+            tox = new Tox(options);
             tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;
             tox.OnFriendMessage += tox_OnFriendMessage;
@@ -831,9 +835,9 @@ namespace Toxy
 
         private ToxNode[] nodes = new ToxNode[] 
         { 
-            new ToxNode("192.254.75.98", 33445, new ToxKey(ToxKeyType.Public, "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F"), false),
-            new ToxNode("37.187.46.132", 33445, new ToxKey(ToxKeyType.Public, "A9D98212B3F972BD11DA52BEB0658C326FCCC1BFD49F347F9C2D3D8B61E1B927"), false),
-            new ToxNode("54.199.139.199", 33445, new ToxKey(ToxKeyType.Public, "7F9C31FE850E97CEFD4C4591DF93FC757C7C12549DDD55F8EEAECC34FE76C029"), false) 
+            new ToxNode("192.254.75.98", 33445, new ToxKey(ToxKeyType.Public, "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F")),
+            new ToxNode("144.76.60.215", 33445, new ToxKey(ToxKeyType.Public, "04119E835DF3E78BACF0F84235B300546AF8B936F035185E2A8E9E0A67C8924F")),
+            new ToxNode("23.226.230.47", 33445, new ToxKey(ToxKeyType.Public, "A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074")) 
         };
 
         private void InitFriends()

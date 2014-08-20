@@ -12,22 +12,21 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Threading;
+
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 
+using Microsoft.Win32;
+
 using SharpTox.Core;
 using SharpTox.Av;
+
 using Toxy.Common;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
+
 using Path = System.IO.Path;
-using Clipboard = System.Windows.Clipboard;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MenuItem = System.Windows.Controls.MenuItem;
-using MessageBox = System.Windows.MessageBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using Brushes = System.Windows.Media.Brushes;
 
 using NAudio.Wave;
@@ -781,14 +780,6 @@ namespace Toxy
         {
             try
             {
-                /*Paragraph para = (Paragraph)doc.FindChildren<TableRow>()
-                    .Last()
-                    .FindChildren<TableCell>()
-                    .First()
-                    .Blocks.FirstBlock;*/
-
-
-                //Run run = (Run)para.Inlines.FirstInline;
                 return doc.FindChildren<TableRow>().Last(t => t.Tag.GetType() != typeof(FileTransfer));
             }
             catch (Exception e)
@@ -1254,7 +1245,9 @@ namespace Toxy
             }
             catch (ToxAFException ex)
             {
-                this.ShowMessageAsync("An error occurred", Tools.GetAFError(ex.Error));
+                if (ex.Error != ToxAFError.SetNewNospam)
+                    this.ShowMessageAsync("An error occurred", Tools.GetAFError(ex.Error));
+                
                 return;
             }
             catch

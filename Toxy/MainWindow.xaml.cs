@@ -381,16 +381,16 @@ namespace Toxy
         private void tox_OnGroupInvite(int groupnumber, string group_public_key)
         {
             //auto join groupchats for now
-            int joinGroup = tox.JoinGroup(groupnumber, group_public_key);
+            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
 
-            if (joinGroup != -1)
+            if (group == null)
             {
-                var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
-
-                if (group == null)
+                if (tox.JoinGroup(groupnumber, group_public_key) != -1)
                     AddGroupToView(groupnumber);
-                else
-                    SelectGroupControl(group);
+            }
+            else
+            {
+                SelectGroupControl(group);
             }
         }
 

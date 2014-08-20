@@ -144,7 +144,7 @@ namespace Toxy
             if (!convdic.ContainsKey(friendnumber))
                 return;
 
-            Paragraph para = (Paragraph)convdic[friendnumber].FindChildren<TableRow>().Where(r => ((MessageData)(r.Tag)).Id == receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
+            Paragraph para = (Paragraph)convdic[friendnumber].FindChildren<TableRow>().Where(r => r.Tag.GetType() != typeof(FileTransfer) && ((MessageData)(r.Tag)).Id == receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
 
             if (para == null)
                 return; //row or cell doesn't exist? odd, just return
@@ -789,7 +789,7 @@ namespace Toxy
 
 
                 //Run run = (Run)para.Inlines.FirstInline;
-                return doc.FindChildren<TableRow>().Last();
+                return doc.FindChildren<TableRow>().Last(t => t.Tag.GetType() != typeof(FileTransfer));
             }
             catch (Exception e)
             {

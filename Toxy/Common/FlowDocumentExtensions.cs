@@ -75,6 +75,7 @@ namespace Toxy.Common
 
             Section usernameParagraph = new Section();
             TableRow newTableRow = new TableRow();
+            newTableRow.Tag = transfer;
 
             BlockUIContainer fileTransferContainer = new BlockUIContainer();
             fileTransferControl.HorizontalAlignment = HorizontalAlignment.Stretch;

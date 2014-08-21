@@ -120,9 +120,9 @@ namespace Toxy
             toxav.OnMediaChange += toxav_OnMediaChange;
 
             bool bootstrap_success = false;
-            foreach (ToxNode node in nodes)
+            foreach (ToxConfigNode node in config.Nodes)
             {
-                if (tox.BootstrapFromNode(node))
+                if (tox.BootstrapFromNode(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId))))
                     bootstrap_success = true;
             }
 

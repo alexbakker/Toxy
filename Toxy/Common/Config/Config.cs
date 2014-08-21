@@ -1,5 +1,7 @@
 ﻿using System;
 
+using SharpTox.Core;
+
 namespace Toxy.Common
 {
     [Serializable]
@@ -84,5 +86,27 @@ namespace Toxy.Common
             get { return theme; }
             set { theme = value; }
         }
+
+        private ToxConfigNode[] nodes = new ToxConfigNode[] 
+        {
+            new ToxConfigNode() { ClientId = "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F", Address = "192.254.75.98", Port = 33445 },
+            new ToxConfigNode() { ClientId = "04119E835DF3E78BACF0F84235B300546AF8B936F035185E2A8E9E0A67C8924F", Address = "144.76.60.215", Port = 33445 },
+            new ToxConfigNode() { ClientId = "A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074", Address = "23.226.230.47", Port = 33445 }
+        };
+
+        public ToxConfigNode[] Nodes
+        {
+            get { return nodes; }
+            set { nodes = value; }
+        }
+    }
+
+    [Serializable]
+    public class ToxConfigNode
+    {
+        public string ClientId { get; set; }
+
+        public string Address { get; set; }
+        public int Port { get; set; }
     }
 }

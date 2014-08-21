@@ -83,7 +83,7 @@ namespace Toxy
             else
                 options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
 
-            applyConfig();
+            applyTheme();
 
             tox = new Tox(options);
             tox.Invoker = Dispatcher.BeginInvoke;
@@ -155,7 +155,7 @@ namespace Toxy
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
         }
 
-        private void applyConfig()
+        private void applyTheme()
         {
             var accent = ThemeManager.GetAccent(config.AccentColor);
             var theme = ThemeManager.GetAppTheme(config.Theme);
@@ -664,6 +664,8 @@ namespace Toxy
             }
             else
             {
+                friend.StatusMessage = tox.GetStatusMessage(friend.ChatNumber);
+
                 if (friend.Selected)
                 {
                     CallButton.Visibility = Visibility.Visible;

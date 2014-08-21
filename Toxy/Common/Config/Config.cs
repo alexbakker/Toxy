@@ -99,6 +99,18 @@ namespace Toxy.Common
             get { return nodes; }
             set { nodes = value; }
         }
+
+        private ToxNameService[] nameServices = new ToxNameService[]
+        {
+            new ToxNameService(){ Domain = "toxme.se", PublicKey = "5D72C517DF6AEC54F1E977A6B6F25914EA4CF7277A85027CD9F5196DF17E0B13", PublicKeyUrl = "" },
+            new ToxNameService(){ Domain = "utox.org", PublicKey = "D3154F65D28A5B41A05D4AC7E4B39C6B1C233CC857FB365C56E8392737462A12", PublicKeyUrl = "http://utox.org/qkey" }
+        };
+
+        public ToxNameService[] NameServices
+        {
+            get { return nameServices; }
+            set { nameServices = value; }
+        }
     }
 
     [Serializable]
@@ -108,5 +120,13 @@ namespace Toxy.Common
 
         public string Address { get; set; }
         public int Port { get; set; }
+    }
+
+    [Serializable]
+    public class ToxNameService
+    {
+        public string Domain { get; set; }
+        public string PublicKey { get; set; }
+        public string PublicKeyUrl { get; set; }
     }
 }

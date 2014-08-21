@@ -1269,7 +1269,11 @@ namespace Toxy
             {
                 try
                 {
-                    string id = DnsTools.DiscoverToxID(friendID);
+                    string id = DnsTools.DiscoverToxID(friendID, config.NameServices);
+
+                    if (string.IsNullOrEmpty(id))
+                        throw new Exception("The server returned an empty result");
+
                     AddFriendID.Text = id;
                 }
                 catch (Exception ex)

@@ -2,8 +2,12 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Net;
+using System.Linq;
 using System.Runtime.InteropServices;
+
+using Toxy.Common;
 using SharpTox.Dns;
+
 
 namespace Toxy.ToxHelpers
 {
@@ -15,12 +19,52 @@ namespace Toxy.ToxHelpers
         [DllImport("dnsapi", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern void DnsRecordListFree(IntPtr pRecordList, int FreeType);
 
-        public static string DiscoverToxID(string domain)
+        private static ToxNameService findNameService(ToxNameService[] services, string suffix)
         {
-            if (domain.Contains("@utox.org"))
+            return services.Where(s => s.Domain == suffix).First();
+        }
+
+        public static string DiscoverToxID(string domain, ToxNameService[] services)
+        {
+            var service = findNameService(services, domain.Split('@')[1]);
+
+            if (service == null)
             {
+                //this name service does not use tox3, how unencrypted of them
+                domain = domain.Replace("@", "._tox.");
+
+                string[] records = GetSPFRecords(domain);
+
+                foreach (string record in records)
+                {
+                    if (record.Contains("v=tox1"))
+                    {
+                        string[] entries = record.Split(';');
+
+                        foreach (string entry in entries)
+                        {
+                            string[] parts = entry.Split('=');
+                            string name = parts[0];
+                            string value = parts[1];
+
+                            if (name == "id")
+                                return value;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string public_key;
+
+                if (string.IsNullOrWhiteSpace(service.PublicKey) && !string.IsNullOrWhiteSpace(service.PublicKeyUrl))
+                    public_key = new WebClient().DownloadString(service.PublicKeyUrl);
+                else if (!string.IsNullOrWhiteSpace(service.PublicKey))
+                    public_key = service.PublicKey;
+                else
+                    return null;
+
                 string[] split = domain.Split('@');
-                string public_key = new WebClient().DownloadString("http://utox.org/qkey");
 
                 ToxDns tox_dns = new ToxDns(public_key);
                 uint request_id;
@@ -54,30 +98,6 @@ namespace Toxy.ToxHelpers
                 }
 
                 tox_dns.Dispose();
-            }
-            else if (domain.Contains("@"))
-            {
-                domain = domain.Replace("@", "._tox.");
-
-                string[] records = GetSPFRecords(domain);
-
-                foreach (string record in records)
-                {
-                    if (record.Contains("v=tox1"))
-                    {
-                        string[] entries = record.Split(';');
-
-                        foreach (string entry in entries)
-                        {
-                            string[] parts = entry.Split('=');
-                            string name = parts[0];
-                            string value = parts[1];
-
-                            if (name == "id")
-                                return value;
-                        }
-                    }
-                }
             }
 
             return null;

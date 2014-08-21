@@ -83,7 +83,7 @@ namespace Toxy
             else
                 options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
 
-            applyTheme();
+            applyConfig();
 
             tox = new Tox(options);
             tox.Invoker = Dispatcher.BeginInvoke;
@@ -155,13 +155,15 @@ namespace Toxy
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
         }
 
-        private void applyTheme()
+        private void applyConfig()
         {
             var accent = ThemeManager.GetAccent(config.AccentColor);
             var theme = ThemeManager.GetAppTheme(config.Theme);
 
             if (accent != null && theme != null)
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme);
+
+            ExecuteActionsOnNotifyIcon();
         }
 
         private void tox_OnReadReceipt(int friendnumber, uint receipt)

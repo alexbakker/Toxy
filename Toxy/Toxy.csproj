@@ -109,6 +109,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Config\Config.cs" />
+    <Compile Include="Common\Config\ConfigTools.cs" />
     <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
     <Compile Include="Common\VisualExtensions.cs" />
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />

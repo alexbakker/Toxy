@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Threading;
+using System.Threading.Tasks;
 
 using MahApps.Metro;
 using MahApps.Metro.Controls;
@@ -51,6 +52,8 @@ namespace Toxy
         private Accent oldAccent;
         private AppTheme oldAppTheme;
 
+        private Config config;
+
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
         Stream newMessageIconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon2.ico")).Stream;
@@ -67,8 +70,18 @@ namespace Toxy
 
             this.DataContext = new MainWindowViewModel();
 
-            //ToxOptions options = new ToxOptions(true, "127.0.0.1", 9050);
-            ToxOptions options = new ToxOptions(true, false);
+            ToxOptions options = new ToxOptions(true, "127.0.0.1", 9050);
+            //ToxOptions options = new ToxOptions(false, false);
+
+            if (File.Exists("config.xml"))
+            {
+                config = ConfigTools.Load("config.xml");
+            }
+            else
+            {
+                config = new Config();
+                ConfigTools.Save(config, "config.xml");
+            }
 
             tox = new Tox(options);
             tox.Invoker = Dispatcher.BeginInvoke;
@@ -110,6 +123,9 @@ namespace Toxy
                 if (tox.BootstrapFromNode(node))
                     bootstrap_success = true;
             }
+
+            if (bootstrap_success)
+                Console.WriteLine("Could not bootstrap from any node!");
 
             if (File.Exists("data"))
             {

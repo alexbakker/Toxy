@@ -511,7 +511,6 @@
                               HorizontalAlignment="Left"
                               Width="275" />
                     <CheckBox x:Name="HideInTrayCheckBox"
-                              IsChecked="{Binding HideInTray}"
                               Margin="15,430,0,0"
                               VerticalAlignment="Top"
                               HorizontalAlignment="Left"

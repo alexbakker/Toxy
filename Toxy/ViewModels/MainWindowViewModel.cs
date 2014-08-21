@@ -43,7 +43,6 @@ namespace Toxy.ViewModels
 
     public class MainWindowViewModel : ViewModelBase
     {
-        public bool HideInTray { get; set; }
         public MainWindowViewModel()
         {
             this.MainToxyUser = new UserModel();

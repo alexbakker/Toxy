@@ -53,7 +53,7 @@ namespace Toxy.Common
             set { hideInTray = value; }
         }
 
-        private int outputDevice;
+        private int outputDevice = 0;
 
         public int OutputDevice
         {
@@ -61,7 +61,7 @@ namespace Toxy.Common
             set { outputDevice = value; }
         }
 
-        private int inputDevice;
+        private int inputDevice = 0;
 
         public int InputDevice
         {
@@ -69,7 +69,7 @@ namespace Toxy.Common
             set { inputDevice = value; }
         }
 
-        private string accentColor;
+        private string accentColor = "Steel";
 
         public string AccentColor
         {
@@ -77,7 +77,7 @@ namespace Toxy.Common
             set { accentColor = value; }
         }
 
-        private string theme;
+        private string theme = "BaseLight";
 
         public string Theme
         {

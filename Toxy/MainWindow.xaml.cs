@@ -61,17 +61,11 @@ namespace Toxy
         private Icon notifyIcon;
         private Icon newMessageNotifyIcon;
 
-        private int inputDeviceIndex = -1;
-        private int outputDeviceIndex = -1;
-
         public MainWindow()
         {
             InitializeComponent();
 
             this.DataContext = new MainWindowViewModel();
-
-            ToxOptions options = new ToxOptions(true, "127.0.0.1", 9050);
-            //ToxOptions options = new ToxOptions(false, false);
 
             if (File.Exists("config.xml"))
             {
@@ -82,6 +76,14 @@ namespace Toxy
                 config = new Config();
                 ConfigTools.Save(config, "config.xml");
             }
+
+            ToxOptions options;
+            if (config.ProxyEnabled)
+                options = new ToxOptions(config.Ipv6Enabled, config.ProxyAddress, config.ProxyPort);
+            else
+                options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
+
+            applyConfig();
 
             tox = new Tox(options);
             tox.Invoker = Dispatcher.BeginInvoke;
@@ -151,6 +153,15 @@ namespace Toxy
 
             if (tox.GetFriendlistCount() > 0)
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+        }
+
+        private void applyConfig()
+        {
+            var accent = ThemeManager.GetAccent(config.AccentColor);
+            var theme = ThemeManager.GetAppTheme(config.Theme);
+
+            if (accent != null && theme != null)
+                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme);
         }
 
         private void tox_OnReadReceipt(int friendnumber, uint receipt)
@@ -223,7 +234,7 @@ namespace Toxy
 
         private void closeMenuItem_Click(object sender, EventArgs eventArgs)
         {
-            this.ViewModel.HideInTray = false;
+            config.HideInTray = false;
             this.Close();
         }
 
@@ -256,7 +267,7 @@ namespace Toxy
         private void toxav_OnStart(int call_index, IntPtr args)
         {
             if (call != null)
-                call.Start(inputDeviceIndex, outputDeviceIndex);
+                call.Start(config.InputDevice, config.OutputDevice);
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
             var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
@@ -1171,7 +1182,7 @@ namespace Toxy
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (this.ViewModel.HideInTray)
+            if (config.HideInTray)
             {
                 e.Cancel = true;
                 this.ShowInTaskbar = false;
@@ -1223,6 +1234,14 @@ namespace Toxy
                 oldAppTheme = theme;
                 if (theme != null)
                     AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
+
+                if (InputDevicesComboBox.Items.Count - 1 >= config.InputDevice)
+                    InputDevicesComboBox.SelectedIndex = config.InputDevice;
+
+                if (OutputDevicesComboBox.Items.Count - 1 >= config.OutputDevice)
+                    OutputDevicesComboBox.SelectedIndex = config.OutputDevice;
+
+                HideInTrayCheckBox.IsChecked = config.HideInTray;
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1293,32 +1312,42 @@ namespace Toxy
             this.ViewModel.MainToxyUser.Name = SettingsUsername.Text;
             this.ViewModel.MainToxyUser.StatusMessage = SettingsStatus.Text;
 
+            config.HideInTray = HideInTrayCheckBox.IsChecked ?? false;
+
             SettingsFlyout.IsOpen = false;
 
             if (AccentComboBox.SelectedItem != null)
             {
+                string accentName = ((AccentColorMenuData)AccentComboBox.SelectedItem).Name;
                 var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-                var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
+                var accent = ThemeManager.GetAccent(accentName);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+
+                config.AccentColor = accentName;
             }
 
             if (AppThemeComboBox.SelectedItem != null)
             {
+                string themeName = ((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name;
                 var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-                var appTheme = ThemeManager.GetAppTheme(((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name);
+                var appTheme = ThemeManager.GetAppTheme(themeName);
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
+
+                config.Theme = themeName;
             }
 
             int index = InputDevicesComboBox.SelectedIndex + 1;
-
             if (index != 0 && WaveIn.DeviceCount > 0 && WaveIn.DeviceCount >= index)
-                inputDeviceIndex = index;
+                config.InputDevice = index - 1;
 
             index = OutputDevicesComboBox.SelectedIndex + 1;
             if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
-                outputDeviceIndex = index;
+                config.OutputDevice = index - 1;
 
             ExecuteActionsOnNotifyIcon();
+
+            ConfigTools.Save(config, "config.xml");
+            tox.Save("data");
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)
@@ -1623,7 +1652,7 @@ namespace Toxy
 
         private void ExecuteActionsOnNotifyIcon()
         {
-            nIcon.Visible = this.ViewModel.HideInTray;
+            nIcon.Visible = config.HideInTray;
         }
 
         private void mv_Activated(object sender, EventArgs e)

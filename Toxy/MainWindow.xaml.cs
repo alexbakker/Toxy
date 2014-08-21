@@ -53,6 +53,7 @@ namespace Toxy
         private AppTheme oldAppTheme;
 
         private Config config;
+        private string toxDataFilename = "data";
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
@@ -129,9 +130,9 @@ namespace Toxy
             if (bootstrap_success)
                 Console.WriteLine("Could not bootstrap from any node!");
 
-            if (File.Exists("data"))
+            if (File.Exists(toxDataFilename))
             {
-                if (!tox.Load("data"))
+                if (!tox.Load(toxDataFilename))
                 {
                     MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
                     Close();
@@ -985,6 +986,8 @@ namespace Toxy
             friendObject.DeleteAction = null;
             friendObject.GroupInviteAction = null;
             friendObject.MainViewModel = null;
+
+            tox.Save(toxDataFilename);
         }
 
         private void FriendCopyIdAction(IFriendObject friendObject)
@@ -1071,6 +1074,8 @@ namespace Toxy
             friendObject.AcceptAction = null;
             friendObject.DeclineAction = null;
             friendObject.MainViewModel = null;
+
+            tox.Save(toxDataFilename);
         }
 
         private void FriendRequestDeclineAction(IFriendObject friendObject)
@@ -1207,7 +1212,7 @@ namespace Toxy
                     }
                 }
 
-                tox.Save("data");
+                tox.Save(toxDataFilename);
 
                 toxav.Dispose();
                 tox.Dispose();
@@ -1299,6 +1304,7 @@ namespace Toxy
             AddFriendMessage.Document.Blocks.Clear();
             AddFriendMessage.Document.Blocks.Add(new Paragraph(new Run("Hello, I'd like to add you to my friends list.")));
 
+            tox.Save(toxDataFilename);
             FriendFlyout.IsOpen = false;
         }
 
@@ -1351,7 +1357,7 @@ namespace Toxy
             ExecuteActionsOnNotifyIcon();
 
             ConfigTools.Save(config, "config.xml");
-            tox.Save("data");
+            tox.Save(toxDataFilename);
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)

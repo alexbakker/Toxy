@@ -1065,7 +1065,7 @@ namespace Toxy
         private void FriendRequestAcceptAction(IFriendObject friendObject)
         {
             int friendnumber = tox.AddFriendNoRequest(friendObject.Name);
-            tox.SetSendsReceipts(friendnumber, true);
+
             AddFriendToView(friendnumber);
 
             this.ViewModel.ChatRequestCollection.Remove(friendObject);

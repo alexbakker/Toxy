@@ -127,7 +127,7 @@ namespace Toxy
                     bootstrap_success = true;
             }
 
-            if (bootstrap_success)
+            if (!bootstrap_success)
                 Console.WriteLine("Could not bootstrap from any node!");
 
             if (File.Exists(toxDataFilename))
@@ -1417,37 +1417,38 @@ namespace Toxy
                 else
                 {
                     //regular message
-                    string message = text;
-
-                    int messageid = -1;
-
-                    if (this.ViewModel.IsFriendSelected)
-                        messageid = tox.SendMessage(selectedChatNumber, message);
-                    else if (this.ViewModel.IsGroupSelected)
-                        tox.SendGroupMessage(selectedChatNumber, message);
-
-                    MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message, Id = messageid, IsSelf = this.ViewModel.IsFriendSelected };
-
-                    if (this.ViewModel.IsFriendSelected)
+                    foreach (string message in text.WordWrap(ToxConstants.MaxMessageLength))
                     {
-                        if (convdic.ContainsKey(selectedChatNumber))
+                        int messageid = -1;
+
+                        if (this.ViewModel.IsFriendSelected)
+                            messageid = tox.SendMessage(selectedChatNumber, message);
+                        else if (this.ViewModel.IsGroupSelected)
+                            tox.SendGroupMessage(selectedChatNumber, message);
+
+                        MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message, Id = messageid, IsSelf = this.ViewModel.IsFriendSelected };
+
+                        if (this.ViewModel.IsFriendSelected)
                         {
-                            var run = GetLastMessageRun(convdic[selectedChatNumber]);
-                            if (run != null)
+                            if (convdic.ContainsKey(selectedChatNumber))
                             {
-                                if (((MessageData)run.Tag).Username == data.Username)
-                                    convdic[selectedChatNumber].AddNewMessageRow(tox, data, true);
+                                var run = GetLastMessageRun(convdic[selectedChatNumber]);
+                                if (run != null)
+                                {
+                                    if (((MessageData)run.Tag).Username == data.Username)
+                                        convdic[selectedChatNumber].AddNewMessageRow(tox, data, true);
+                                    else
+                                        convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
+                                }
                                 else
                                     convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
                             }
                             else
+                            {
+                                FlowDocument document = GetNewFlowDocument();
+                                convdic.Add(selectedChatNumber, document);
                                 convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
-                        }
-                        else
-                        {
-                            FlowDocument document = GetNewFlowDocument();
-                            convdic.Add(selectedChatNumber, document);
-                            convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
+                            }
                         }
                     }
                 }

@@ -221,14 +221,25 @@
                             Click="OpenAddFriend_Click"
                             Height="44"
                             Width="44">
-                        <Rectangle Width="20"
-                                   Height="20"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{StaticResource appbar_user_add}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <Grid>
+                            <Rectangle Width="20"
+                                       Height="20"
+                                       Grid.ZIndex="1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_user_add}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="20"
+                                       Height="20"
+                                       Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_user_add}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                     <Button Height="44"
                             Width="44"
@@ -236,14 +247,25 @@
                             BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="NewGroupButton_Click">
-                        <Rectangle Width="20"
-                                   Height="20"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{StaticResource appbar_group_add}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <Grid>
+                            <Rectangle Width="20"
+                                       Height="20"
+                                       Grid.ZIndex="1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_group_add}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="20"
+                                       Height="20"
+                                       Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_group_add}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                     <Button Height="44"
                             Name="OpenSettingsButton"
@@ -251,14 +273,25 @@
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="OpenSettings_Click"
                             Width="44">
-                        <Rectangle Width="20"
-                                   Height="20"
-                                   Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
-                                             Visual="{StaticResource appbar_cog}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <Grid>
+                            <Rectangle Width="20"
+                                       Height="20"
+                                       Grid.ZIndex="1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_cog}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="20"
+                            Height="20"
+                                       Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                        Visual="{StaticResource appbar_cog}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                 </StackPanel>
             </Border>
@@ -311,39 +344,72 @@
                                 Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                                 Height="37"
                                 Width="37">
-                            <Rectangle Width="10"
+                            <Grid>
+                                <Rectangle Width="10"
                                        Height="17"
                                        Margin="0,-1"
+                                       Grid.ZIndex="1"
                                        Style="{StaticResource ButtonRectangleStyle}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill"
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
                                                  Visual="{DynamicResource appbar_paperclip}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <Rectangle Width="10"
+                                       Height="17"
+                                       Margin="0,-1"
+                                       Fill="{DynamicResource WhiteColorBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_paperclip}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Grid>
                         </Button>
                         <Button Name="CallButton"
                                 Click="CallButton_OnClick"
                                 Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                                 Height="37"
                                 Width="37">
-                            <Rectangle Width="15"
-                                       Height="15"
-                                       Margin="0,-1"
-                                       RenderTransformOrigin="0.5,0.5"
-                                       Style="{StaticResource ButtonRectangleStyle}">
-                                <Rectangle.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform />
-                                        <SkewTransform />
-                                        <RotateTransform Angle="-259.861" />
-                                        <TranslateTransform />
-                                    </TransformGroup>
-                                </Rectangle.RenderTransform>
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill"
-                                                 Visual="{DynamicResource appbar_phone_alternative}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
+                            <Grid>
+                                <Rectangle Width="15"
+                                           Height="15"
+                                           Grid.ZIndex="1"
+                                           Margin="0,-1"
+                                           RenderTransformOrigin="0.5,0.5"
+                                           Style="{StaticResource ButtonRectangleStyle}">
+                                    <Rectangle.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="-259.861" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_phone_alternative}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <Rectangle Width="15"
+                                           Height="15"
+                                           Margin="0,-1"
+                                           RenderTransformOrigin="0.5,0.5"
+                                           Fill="{DynamicResource WhiteColorBrush}">
+                                    <Rectangle.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <RotateTransform Angle="-259.861" />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_phone_alternative}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Grid>
                         </Button>
                         <Button Name="HangupButton"
                                 Visibility="Collapsed"

@@ -93,14 +93,25 @@
                             BorderBrush="{DynamicResource AccentColorBrush}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Margin="1">
-                        <Rectangle Width="10"
+                        <Grid>
+                            <Rectangle Width="10"
                                    Height="10"
+                                   Grid.ZIndex="1"
                                    Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_check}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="10"
+                                   Height="10"
+                                   Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_check}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                     <Button x:Name="DeclineButton"
                             Command="{Binding DeclineCommand, Mode=OneWay}"
@@ -109,14 +120,25 @@
                             BorderBrush="{DynamicResource AccentColorBrush}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Margin="1">
-                        <Rectangle Width="10"
+                        <Grid>
+                            <Rectangle Width="10"
                                    Height="10"
+                                   Grid.ZIndex="1"
                                    Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_close}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="10"
+                                   Height="10"
+                                   Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_close}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                 </StackPanel>
             </Grid>
@@ -134,14 +156,25 @@
                             BorderBrush="{DynamicResource AccentColorBrush}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Margin="0">
-                        <Rectangle Width="10"
+                        <Grid>
+                            <Rectangle Width="10"
                                    Height="17"
+                                   Grid.ZIndex="1"
                                    Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_phone}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="10"
+                                   Height="17"
+                                   Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_phone}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                     <Button x:Name="DenyCallButton"
                             Command="{Binding DenyCallCommand, Mode=OneWay}"
@@ -150,14 +183,25 @@
                             BorderBrush="{DynamicResource AccentColorBrush}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Margin="0">
-                        <Rectangle Width="15"
+                        <Grid>
+                            <Rectangle Width="15"
                                    Height="13"
+                                   Grid.ZIndex="1"
                                    Style="{StaticResource ButtonRectangleStyle}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill"
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
                                              Visual="{DynamicResource appbar_phone_hangup}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <Rectangle Width="15"
+                                   Height="13"
+                                   Fill="{DynamicResource WhiteColorBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                             Visual="{DynamicResource appbar_phone_hangup}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
                     </Button>
                 </StackPanel>
             </Grid>

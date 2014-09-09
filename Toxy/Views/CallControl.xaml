@@ -81,14 +81,24 @@
                 Height="28"
                 Width="28"
                 Background="{DynamicResource AccentColorBrush}">
-            <Rectangle Width="10"
+            <Grid>
+                <Rectangle Width="10"
                        Height="10"
                        Style="{StaticResource ButtonRectangleStyle}">
-                <Rectangle.OpacityMask>
-                    <VisualBrush Stretch="Fill"
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
                                  Visual="{DynamicResource appbar_phone_hangup}" />
-                </Rectangle.OpacityMask>
-            </Rectangle>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+                <Rectangle Width="10"
+                       Height="10"
+                       Fill="{DynamicResource WhiteColorBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                 Visual="{DynamicResource appbar_phone_hangup}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Grid>
         </Button>
 
     </Grid>

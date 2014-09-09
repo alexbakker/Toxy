@@ -9,7 +9,7 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ListBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Tooltip.xaml" />
     </ResourceDictionary.MergedDictionaries>
-
+    
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:ToUpperConverter x:Key="ToUpperConverter" />
     <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
@@ -33,25 +33,25 @@
         <Setter Property="VerticalAlignment"
                 Value="Center"></Setter>
         <Setter Property="Fill"
-                Value="{DynamicResource BlackBrush}" />
+                Value="{DynamicResource AccentColorBrush}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}, Path=IsMouseOver}"
                          Value="True">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                            To="White"
-                                            Duration="0:0:0.3" />
+                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Opacity)"
+                                            To="0"
+                                            Duration="0:0:0.15"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.EnterActions>
                 <DataTrigger.ExitActions>
                     <BeginStoryboard>
                         <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
-                                            To="Black"
-                                            Duration="0:0:0.3" />
+                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Opacity)"
+                                            To="1"
+                                            Duration="0:0:0.15"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </DataTrigger.ExitActions>

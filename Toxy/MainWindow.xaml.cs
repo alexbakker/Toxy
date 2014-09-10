@@ -142,6 +142,8 @@ namespace Toxy
             {
                 if (tox.Load("data"))
                 {
+                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox"));
+
                     if (tox.Save(toxDataFilename))
                         File.Delete("data");
                 }

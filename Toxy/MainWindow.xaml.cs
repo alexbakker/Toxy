@@ -53,7 +53,7 @@ namespace Toxy
         private AppTheme oldAppTheme;
 
         private Config config;
-        private string toxDataFilename = "data";
+        private string toxDataFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\data");
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
@@ -136,6 +136,14 @@ namespace Toxy
                 {
                     MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
                     Close();
+                }
+            }
+            else if (File.Exists("data"))
+            {
+                if (tox.Load("data"))
+                {
+                    if (tox.Save(toxDataFilename))
+                        File.Delete("data");
                 }
             }
 

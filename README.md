@@ -25,7 +25,8 @@ Feel free to contribute.
 
 ### Screenshots
 
-![Main Window](http://reverbs.pw/i/46f5a9.png)
+![Main Window (calling)](http://impy.me/i/6f44aa.png)
+![Main Window with settings)](http://impy.me/i/4e2de8.png)
 
 Binaries
 ===

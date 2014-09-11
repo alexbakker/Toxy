@@ -588,6 +588,13 @@
                               HorizontalAlignment="Left"
                               Content="Portable"
                               />
+                    <Button x:Name="ExportDataButton"
+                            Content="Export"
+                            Margin="15,242,10,10"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Left"
+                            Width="75"
+                            Click="ExportDataButton_OnClick" />
                     <Button x:Name="SaveSettingsButton"
                             Content="Save"
                             Margin="0,242,10,10"
@@ -595,7 +602,6 @@
                             HorizontalAlignment="Right"
                             Width="75"
                             Click="SaveSettingsButton_OnClick" />
-                    
                     <Button x:Name="CopyIDButton"
                             Content="Copy ID"
                             HorizontalAlignment="Left"

@@ -1769,5 +1769,18 @@ namespace Toxy
             var appTheme = ThemeManager.GetAppTheme(((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name);
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
         }
+
+        private void ExportDataButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Title = "Export Tox data";
+            dialog.InitialDirectory = Environment.CurrentDirectory;
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            try { File.WriteAllBytes(dialog.FileName, tox.GetDataBytes()); }
+            catch { this.ShowMessageAsync("Error", "Could not export data."); }
+        }
     }
 }

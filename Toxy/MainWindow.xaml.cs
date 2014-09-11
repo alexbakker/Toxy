@@ -53,7 +53,7 @@ namespace Toxy
         private AppTheme oldAppTheme;
 
         private Config config;
-        private string toxDataFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\data");
+        private string toxDataFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\tox_save");
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
@@ -130,25 +130,7 @@ namespace Toxy
             if (!bootstrap_success)
                 Console.WriteLine("Could not bootstrap from any node!");
 
-            if (File.Exists(toxDataFilename))
-            {
-                if (!tox.Load(toxDataFilename))
-                {
-                    MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
-                    Close();
-                }
-            }
-            else if (File.Exists("data"))
-            {
-                if (tox.Load("data"))
-                {
-                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox"));
-
-                    if (tox.Save(toxDataFilename))
-                        File.Delete("data");
-                }
-            }
-
+            loadTox();
             tox.Start();
 
             if (string.IsNullOrEmpty(tox.GetSelfName()))
@@ -164,6 +146,42 @@ namespace Toxy
 
             if (tox.GetFriendlistCount() > 0)
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+        }
+
+        private void loadTox()
+        {
+            if (File.Exists(toxDataFilename) && !config.Portable)
+            {
+                if (!tox.Load(toxDataFilename))
+                {
+                    MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
+                    Close();
+                }
+            }
+            else if (File.Exists("tox_save"))
+            {
+                if (!config.Portable)
+                {
+                    if (tox.Load("tox_save"))
+                    {
+                        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
+
+                        if (!Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
+
+                        if (tox.Save(toxDataFilename))
+                            File.Delete("tox_save");
+                    }
+                }
+                else
+                {
+                    if (!tox.Load("tox_save"))
+                    {
+                        MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
+                        Close();
+                    }
+                }
+            }
         }
 
         private void applyConfig()
@@ -866,13 +884,6 @@ namespace Toxy
             }
         }
 
-        private ToxNode[] nodes = new ToxNode[] 
-        { 
-            new ToxNode("192.254.75.98", 33445, new ToxKey(ToxKeyType.Public, "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F")),
-            new ToxNode("144.76.60.215", 33445, new ToxKey(ToxKeyType.Public, "04119E835DF3E78BACF0F84235B300546AF8B936F035185E2A8E9E0A67C8924F")),
-            new ToxNode("23.226.230.47", 33445, new ToxKey(ToxKeyType.Public, "A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074")) 
-        };
-
         private void InitFriends()
         {
             //Creates a new FriendControl for every friend
@@ -997,7 +1008,15 @@ namespace Toxy
             friendObject.GroupInviteAction = null;
             friendObject.MainViewModel = null;
 
-            tox.Save(toxDataFilename);
+            saveTox();
+        }
+
+        private void saveTox()
+        {
+            if (!config.Portable)
+                tox.Save(toxDataFilename);
+            else
+                tox.Save("tox_save");
         }
 
         private void FriendCopyIdAction(IFriendObject friendObject)
@@ -1085,7 +1104,7 @@ namespace Toxy
             friendObject.DeclineAction = null;
             friendObject.MainViewModel = null;
 
-            tox.Save(toxDataFilename);
+            saveTox();
         }
 
         private void FriendRequestDeclineAction(IFriendObject friendObject)
@@ -1222,7 +1241,7 @@ namespace Toxy
                     }
                 }
 
-                tox.Save(toxDataFilename);
+                saveTox();
 
                 toxav.Dispose();
                 tox.Dispose();
@@ -1261,6 +1280,7 @@ namespace Toxy
                     OutputDevicesComboBox.SelectedIndex = config.OutputDevice;
 
                 HideInTrayCheckBox.IsChecked = config.HideInTray;
+                PortableCheckBox.IsChecked = config.Portable;
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1318,7 +1338,7 @@ namespace Toxy
             AddFriendMessage.Document.Blocks.Clear();
             AddFriendMessage.Document.Blocks.Add(new Paragraph(new Run("Hello, I'd like to add you to my friends list.")));
 
-            tox.Save(toxDataFilename);
+            saveTox();
             FriendFlyout.IsOpen = false;
         }
 
@@ -1368,10 +1388,12 @@ namespace Toxy
             if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
                 config.OutputDevice = index - 1;
 
+            config.Portable = (bool)PortableCheckBox.IsChecked;
+
             ExecuteActionsOnNotifyIcon();
 
             ConfigTools.Save(config, "config.xml");
-            tox.Save(toxDataFilename);
+            saveTox();
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)

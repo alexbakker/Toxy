@@ -15,6 +15,14 @@ namespace Toxy.Common
             set { udpDisabled = value; }
         }
 
+        private bool portable = false;
+
+        public bool Portable
+        {
+            get { return portable; }
+            set { portable = value; }
+        }
+
         private bool ipv6Enabled = true;
 
         public bool Ipv6Enabled

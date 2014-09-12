@@ -1283,6 +1283,8 @@ namespace Toxy
 
                 toxav.Dispose();
                 tox.Dispose();
+
+                nIcon.Dispose();
             }
         }
 

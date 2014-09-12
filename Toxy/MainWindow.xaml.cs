@@ -296,9 +296,11 @@ namespace Toxy
             SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag);
         }
 
-        void openMenuItem_Click(object sender, EventArgs e)
+        private void openMenuItem_Click(object sender, EventArgs e)
         {
+            this.Show();
             this.WindowState = WindowState.Normal;
+            this.ShowInTaskbar = true;
         }
 
         private void closeMenuItem_Click(object sender, EventArgs eventArgs)
@@ -309,8 +311,9 @@ namespace Toxy
 
         private void nIcon_Click(object sender, EventArgs e)
         {
+            this.Show();
             this.WindowState = WindowState.Normal;
-            this.Activate();
+            this.ShowInTaskbar = true;
         }
 
         private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size, IntPtr userdata)
@@ -1263,6 +1266,7 @@ namespace Toxy
                 e.Cancel = true;
                 this.ShowInTaskbar = false;
                 this.WindowState = WindowState.Minimized;
+                this.Hide();
             }
             else
             {

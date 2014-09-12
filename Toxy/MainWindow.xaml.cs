@@ -311,9 +311,18 @@ namespace Toxy
 
         private void nIcon_Click(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = WindowState.Normal;
-            this.ShowInTaskbar = true;
+            if (WindowState != WindowState.Normal)
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+                this.ShowInTaskbar = true;
+            }
+            else
+            {
+                this.Hide();
+                this.WindowState = WindowState.Minimized;
+                this.ShowInTaskbar = false;
+            }
         }
 
         private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size, IntPtr userdata)

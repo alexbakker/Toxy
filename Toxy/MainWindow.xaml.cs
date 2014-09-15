@@ -244,7 +244,10 @@ namespace Toxy
             if (para == null)
                 return; //row or cell doesn't exist? odd, just return
 
-            para.Foreground = Brushes.Black;
+            if (config.Theme == "BaseDark")
+                para.Foreground = Brushes.White;
+            else
+                para.Foreground = Brushes.Black;
         }
 
         private void toxav_OnMediaChange(int call_index, IntPtr args)

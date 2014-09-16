@@ -156,7 +156,7 @@ namespace Toxy
 
         private async void Chat_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.GetFriendConnectionStatus(this.ViewModel.SelectedChatNumber) == 1)
             {
                 var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
                 MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
@@ -182,7 +182,7 @@ namespace Toxy
 
         private void Chat_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.GetFriendConnectionStatus(this.ViewModel.SelectedChatNumber) == 1)
             {
                 e.Effects = DragDropEffects.All;
             }

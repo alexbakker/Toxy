@@ -34,9 +34,17 @@ namespace Toxy.Common
             return lines;
         }
 
+        public static bool IsImage(this string s)
+        {
+            var result = s.ToLower().EndsWith(".png") || s.ToLower().EndsWith(".jpeg") || s.ToLower().EndsWith(".jpg") || s.ToLower().EndsWith(".gif");
+            return result;
+        }
+
         private static int GetByteCount(this string s)
         {
             return Encoding.UTF8.GetByteCount(s);
         }
+
+      
     }
 }

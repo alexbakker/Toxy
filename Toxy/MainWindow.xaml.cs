@@ -151,12 +151,29 @@ namespace Toxy
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
         }
 
-        private void RichTextBox_Drop(object sender, DragEventArgs e)
+        private async void RichTextBox_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                var docPath = (string[])e.Data.GetData(DataFormats.FileDrop);
-                SendFile(this.ViewModel.SelectedChatNumber, docPath[0]);
+                var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
+                MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
+
+                var mySettings = new MetroDialogSettings()
+                {
+                    AffirmativeButtonText = "Yes",
+                    FirstAuxiliaryButtonText = "Cancel",
+                    AnimateShow = false,
+                    AnimateHide = false,
+                    ColorScheme = MetroDialogColorScheme.Theme
+                };
+
+                MessageDialogResult result = await this.ShowMessageAsync("Please confirm", "Are you sure you want to send this file?",
+                MessageDialogStyle.AffirmativeAndNegative, mySettings);
+
+                if (result != MessageDialogResult.FirstAuxiliary)
+                {
+                    SendFile(this.ViewModel.SelectedChatNumber, docPath[0]);
+                }
             }
         }
 

@@ -437,6 +437,7 @@
                                       IsEnabled="True"
                                       x:Name="ChatBox"
                                       BorderThickness="0"
+                                      AllowDrop="True"
                                       IsHitTestVisible="True"
                                       ClipToBounds="True"
                                       MaxZoom="100"

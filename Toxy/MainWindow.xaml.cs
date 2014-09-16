@@ -144,14 +144,17 @@ namespace Toxy
             SetStatus(null);
             InitFriends();
 
-            TextToSend.AddHandler(DragOverEvent, new DragEventHandler(RichTextBox_DragOver), true);
-            TextToSend.AddHandler(DropEvent, new DragEventHandler(RichTextBox_Drop), true);
+            TextToSend.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
+            TextToSend.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
+
+            ChatBox.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
+            ChatBox.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
 
             if (tox.GetFriendlistCount() > 0)
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
         }
 
-        private async void RichTextBox_Drop(object sender, DragEventArgs e)
+        private async void Chat_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -170,14 +173,14 @@ namespace Toxy
                 MessageDialogResult result = await this.ShowMessageAsync("Please confirm", "Are you sure you want to send this file?",
                 MessageDialogStyle.AffirmativeAndNegative, mySettings);
 
-                if (result != MessageDialogResult.FirstAuxiliary)
+                if (result == MessageDialogResult.Affirmative)
                 {
                     SendFile(this.ViewModel.SelectedChatNumber, docPath[0]);
                 }
             }
         }
 
-        private void RichTextBox_DragOver(object sender, DragEventArgs e)
+        private void Chat_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {

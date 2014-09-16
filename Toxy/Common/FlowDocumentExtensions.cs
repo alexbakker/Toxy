@@ -9,11 +9,6 @@ using System.Windows.Media;
 using MahApps.Metro.Controls;
 using SharpTox.Core;
 using Toxy.Views;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using Toxy.ViewModels;
-using System.Windows.Media.Animation;
-using System.Threading.Tasks;
 
 namespace Toxy.Common
 {
@@ -159,39 +154,5 @@ namespace Toxy.Common
                     messageParagraph.Inlines.Add("\n" + data.Message);
             }
         }
-
-        public static void AddThumbnail(TableCell messageTableCell, string message)
-        {
-            var task = new Task(() =>
-            {
-                try
-                {
-                    if (message.IsImage())
-                    {
-                        var imagePath = message;
-                        MainWindow.Current.Dispatcher.Invoke(() =>
-                        {
-                            var thumbnail = new Paragraph();
-                            var image = new Image();
-                            var bitmapImage = new BitmapImage();
-
-                            bitmapImage.BeginInit();
-                            bitmapImage.UriSource = new Uri(imagePath);
-                            bitmapImage.EndInit();
-                            image.Source = bitmapImage;
-
-                            thumbnail.Inlines.Add(image);
-                            messageTableCell.Blocks.Add(thumbnail);
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                }
-            });
-            task.Start();
-        }
-
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 using Toxy.Common;
 
 namespace Toxy.Views
@@ -64,7 +66,7 @@ namespace Toxy.Views
                 {
                     var uri = new Uri(FilePath);
                     var absoluteUri = uri.AbsoluteUri;
-                    FlowDocumentExtensions.AddThumbnail(fileTableCell, absoluteUri);
+                    AddThumbnail(fileTableCell, absoluteUri);
                 }
             }
         }
@@ -113,6 +115,39 @@ namespace Toxy.Views
                 FileOpenButton.Visibility = Visibility.Collapsed;
                 FolderOpenButton.Visibility = Visibility.Collapsed;
             })));
+        }
+
+        private void AddThumbnail(TableCell messageTableCell, string message)
+        {
+            var task = new Task(() =>
+            {
+                try
+                {
+                    if (message.IsImage())
+                    {
+                        var imagePath = message;
+                        Dispatcher.Invoke(() =>
+                        {
+                            var thumbnail = new Paragraph();
+                            var image = new System.Windows.Controls.Image();
+                            var bitmapImage = new BitmapImage();
+
+                            bitmapImage.BeginInit();
+                            bitmapImage.UriSource = new Uri(imagePath);
+                            bitmapImage.EndInit();
+                            image.Source = bitmapImage;
+
+                            thumbnail.Inlines.Add(image);
+                            messageTableCell.Blocks.Add(thumbnail);
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            });
+            task.Start();
         }
     }
 }

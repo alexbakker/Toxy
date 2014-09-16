@@ -61,11 +61,11 @@ namespace Toxy
         Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
         private Icon notifyIcon;
         private Icon newMessageNotifyIcon;
-        public static MainWindow Current { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
-            Current = this;
+
             this.DataContext = new MainWindowViewModel();
 
             if (File.Exists("config.xml"))

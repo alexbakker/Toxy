@@ -259,6 +259,11 @@ namespace Toxy
                     }
                     else
                     {
+                        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
+
+                        if (!Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
+
                         File.Move("data", path);
 
                         tox.Load(path);

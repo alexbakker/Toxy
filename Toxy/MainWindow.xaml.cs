@@ -144,8 +144,33 @@ namespace Toxy
             SetStatus(null);
             InitFriends();
 
+            TextToSend.AddHandler(DragOverEvent, new DragEventHandler(RichTextBox_DragOver), true);
+            TextToSend.AddHandler(DropEvent, new DragEventHandler(RichTextBox_Drop), true);
+
             if (tox.GetFriendlistCount() > 0)
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+        }
+
+        private void RichTextBox_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var docPath = (string[])e.Data.GetData(DataFormats.FileDrop);
+                SendFile(this.ViewModel.SelectedChatNumber, docPath[0]);
+            }
+        }
+
+        private void RichTextBox_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.All;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+            e.Handled = false;
         }
 
         private void loadTox()
@@ -1725,14 +1750,20 @@ namespace Toxy
                 return;
 
             string filename = dialog.FileName;
+
+            SendFile(selectedChatNumber, filename);
+        }
+
+        private void SendFile(int chatNumber, string filename)
+        {
             FileInfo info = new FileInfo(filename);
-            int filenumber = tox.NewFileSender(selectedChatNumber, (ulong)info.Length, filename.Split('\\').Last<string>());
+            int filenumber = tox.NewFileSender(chatNumber, (ulong)info.Length, filename.Split('\\').Last<string>());
 
             if (filenumber == -1)
                 return;
 
-            FileTransfer ft = convdic[selectedChatNumber].AddNewFileTransfer(tox, selectedChatNumber, filenumber, filename, (ulong)info.Length, true);
-            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(selectedChatNumber)));
+            FileTransfer ft = convdic[chatNumber].AddNewFileTransfer(tox, chatNumber, filenumber, filename, (ulong)info.Length, true);
+            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(chatNumber)));
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;
 

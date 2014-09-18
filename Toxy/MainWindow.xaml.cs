@@ -1733,9 +1733,14 @@ namespace Toxy
         private void SetStatus(ToxUserStatus? newStatus)
         {
             if (newStatus == null)
+            {
                 newStatus = ToxUserStatus.Invalid;
+            }
             else
-                tox.SetUserStatus(newStatus.GetValueOrDefault());
+            {
+                if (!tox.SetUserStatus(newStatus.GetValueOrDefault()))
+                    return;
+            }
 
             this.ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();
         }

@@ -53,7 +53,7 @@
               VerticalAlignment="Center">
             <Image Height="40"
                    Width="40"
-                   Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
+                   Source="{Binding Avatar, Mode=OneWay, TargetNullValue='pack://application:,,,/Resources/Icons/profilepicture.png'}" />
 
             <Rectangle Name="StatusRectangle"
                        Height="10"

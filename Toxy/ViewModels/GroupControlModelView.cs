@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Input;
+using System.Windows.Media;
+
 using SharpTox.Core;
+
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels
@@ -127,6 +130,21 @@ namespace Toxy.ViewModels
                 {
                     this.hasNewMessage = value;
                     this.OnPropertyChanged(() => this.HasNewMessage);
+                }
+            }
+        }
+
+        private ImageSource avatar;
+
+        public ImageSource Avatar
+        {
+            get { return this.avatar; }
+            set
+            {
+                if (!Equals(value, this.Avatar))
+                {
+                    this.avatar = value;
+                    this.OnPropertyChanged(() => this.Avatar);
                 }
             }
         }

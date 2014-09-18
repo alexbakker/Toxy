@@ -1876,5 +1876,25 @@ namespace Toxy
             try { File.WriteAllBytes(dialog.FileName, tox.GetDataBytes()); }
             catch { this.ShowMessageAsync("Error", "Could not export data."); }
         }
+
+        private void AvatarMenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)e.Source;
+            AvatarMenuItem item = (AvatarMenuItem)menuItem.Tag;
+
+            switch (item)
+            {
+                case AvatarMenuItem.ChangeAvatar:
+                    break;
+                case AvatarMenuItem.RemoveAvatar:
+                    break;
+            }
+        }
+
+        private void AvatarImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            AvatarContextMenu.PlacementTarget = this;
+            AvatarContextMenu.IsOpen = true;
+        }
     }
 }

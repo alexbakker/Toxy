@@ -78,15 +78,28 @@
                       Width="50"
                       Margin="4"
                       HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      MouseLeftButtonDown="StatusRectangle_MouseLeftButtonDown">
-                    <Image Height="50"
+                      VerticalAlignment="Center">
+                <Image Height="50"
                            Width="50"
-                           Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
-                    <Rectangle Height="10"
+                           Source="{Binding MainToxyUser.Avatar, Mode=OneWay, TargetNullValue='pack://application:,,,/Resources/Icons/profilepicture.png'}"
+                           MouseLeftButtonDown="AvatarImage_MouseLeftButtonDown">
+                    <Image.ContextMenu>
+                        <ContextMenu Name="AvatarContextMenu"
+                                     MenuItem.Click="AvatarMenuItem_MouseLeftButtonDown">
+                            <MenuItem Header="Edit"
+                                      Tag="{x:Static common:AvatarMenuItem.ChangeAvatar}">
+                            </MenuItem>
+                            <MenuItem Header="Remove Avatar"
+                                      Tag="{x:Static common:AvatarMenuItem.RemoveAvatar}">
+                            </MenuItem>
+                        </ContextMenu>
+                    </Image.ContextMenu>
+                </Image>
+                <Rectangle Height="10"
                                Width="10"
                                Fill="{Binding MainToxyUser.ToxStatus, Mode=OneWay, Converter={StaticResource ToxUserStatusToBrushConverter}}"
                                VerticalAlignment="Bottom"
+                               MouseLeftButtonDown="StatusRectangle_MouseLeftButtonDown"
                                HorizontalAlignment="Right" />
                     <Grid.ContextMenu>
                         <ContextMenu Name="StatusContextMenu"

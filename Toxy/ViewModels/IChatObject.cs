@@ -1,4 +1,6 @@
-﻿using SharpTox.Core;
+﻿using System.Windows.Media;
+
+using SharpTox.Core;
 
 namespace Toxy.ViewModels
 {
@@ -12,5 +14,6 @@ namespace Toxy.ViewModels
         string StatusMessage { get; set; }
         string AdditionalInfo { get; set; }
         ToxUserStatus ToxStatus { get; set; }
+        ImageSource Avatar { get; set; }
     }
 }

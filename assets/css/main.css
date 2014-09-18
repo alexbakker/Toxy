@@ -150,3 +150,9 @@ i {
 	font-weight: 300;
 	letter-spacing: 1px;
 }
+
+img.main{
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 50px;
+}

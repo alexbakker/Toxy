@@ -100,6 +100,8 @@ namespace Toxy
             tox.OnFileData += tox_OnFileData;
             tox.OnFileControl += tox_OnFileControl;
             tox.OnReadReceipt += tox_OnReadReceipt;
+            tox.OnConnected += tox_OnConnected;
+            tox.OnDisconnected += tox_OnDisconnected;
 
             tox.OnGroupInvite += tox_OnGroupInvite;
             tox.OnGroupMessage += tox_OnGroupMessage;
@@ -152,6 +154,16 @@ namespace Toxy
 
             if (tox.GetFriendlistCount() > 0)
                 this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+        }
+
+        private void tox_OnDisconnected()
+        {
+            SetStatus(ToxUserStatus.Invalid);
+        }
+
+        private void tox_OnConnected()
+        {
+            SetStatus(ToxUserStatus.None);
         }
 
         private async void Chat_Drop(object sender, DragEventArgs e)
@@ -365,7 +377,8 @@ namespace Toxy
 
         private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)
         {
-            SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag);
+            if (tox.IsConnected())
+                SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag);
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)
@@ -1710,6 +1723,9 @@ namespace Toxy
 
         private void MenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
+            if (!tox.IsConnected())
+                return;
+
             MenuItem menuItem = (MenuItem)e.Source;
             SetStatus((ToxUserStatus)int.Parse(menuItem.Tag.ToString()));
         }
@@ -1717,7 +1733,7 @@ namespace Toxy
         private void SetStatus(ToxUserStatus? newStatus)
         {
             if (newStatus == null)
-                newStatus = tox.GetSelfUserStatus();
+                newStatus = ToxUserStatus.Invalid;
             else
                 tox.SetUserStatus(newStatus.GetValueOrDefault());
 

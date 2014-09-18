@@ -12,6 +12,7 @@
 [Rr]elease/
 x64/
 build/
+libs/
 [Bb]in/
 [Oo]bj/
 [Pp]ackages/
@@ -152,7 +153,3 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
-libs/libtoxav.dll
-libs/SharpTox.dll
-libs/libtox.dll
-libs/SharpTox.XML

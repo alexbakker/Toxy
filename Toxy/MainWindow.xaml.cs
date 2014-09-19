@@ -54,6 +54,7 @@ namespace Toxy
 
         private Config config;
         private string toxDataFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\tox_save");
+        private string toxDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
@@ -221,10 +222,8 @@ namespace Toxy
                 {
                     if (tox.Load("tox_save"))
                     {
-                        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
-
-                        if (!Directory.Exists(dir))
-                            Directory.CreateDirectory(dir);
+                        if (!Directory.Exists(toxDataDir))
+                            Directory.CreateDirectory(toxDataDir);
 
                         if (tox.Save(toxDataFilename))
                             File.Delete("tox_save");
@@ -271,10 +270,8 @@ namespace Toxy
                     }
                     else
                     {
-                        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
-
-                        if (!Directory.Exists(dir))
-                            Directory.CreateDirectory(dir);
+                        if (!Directory.Exists(toxDataDir))
+                            Directory.CreateDirectory(toxDataDir);
 
                         File.Move("data", path);
 
@@ -1134,7 +1131,12 @@ namespace Toxy
         private void saveTox()
         {
             if (!config.Portable)
+            {
+                if (!Directory.Exists(toxDataDir))
+                    Directory.CreateDirectory(toxDataDir);
+
                 tox.Save(toxDataFilename);
+            }
             else
                 tox.Save("tox_save");
         }

@@ -769,6 +769,7 @@ namespace Toxy
                 if (transfer.Stream != null)
                     transfer.Stream.Close();
 
+                transfer.Finished = true;
             };
 
             transfer.Control.OnFileOpen += delegate()
@@ -1831,6 +1832,8 @@ namespace Toxy
                     tox.FileSendControl(ft.FriendNumber, 1, filenumber, ToxFileControl.Kill, new byte[0]);
                 else
                     tox.FileSendControl(ft.FriendNumber, 0, filenumber, ToxFileControl.Kill, new byte[0]);
+
+                ft.Finished = true;
             };
 
             transfers.Add(ft);

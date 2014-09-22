@@ -149,6 +149,21 @@ namespace Toxy.ViewModels
             }
         }
 
+        private byte[] avatarBytes;
+
+        public byte[] AvatarBytes
+        {
+            get { return avatarBytes; }
+            set
+            {
+                if (!Equals(value, this.AvatarBytes))
+                {
+                    this.avatarBytes = value;
+                    this.OnPropertyChanged(() => this.AvatarBytes);
+                }
+            }
+        }
+
         private int newMessageCount;
 
         public int NewMessageCount

@@ -15,5 +15,6 @@ namespace Toxy.ViewModels
         string AdditionalInfo { get; set; }
         ToxUserStatus ToxStatus { get; set; }
         ImageSource Avatar { get; set; }
+        byte[] AvatarBytes { get; set; }
     }
 }

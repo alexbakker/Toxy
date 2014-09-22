@@ -32,6 +32,7 @@ using Path = System.IO.Path;
 using Brushes = System.Windows.Media.Brushes;
 
 using NAudio.Wave;
+using System.Drawing.Imaging;
 
 namespace Toxy
 {
@@ -162,40 +163,59 @@ namespace Toxy
             loadAvatars();
         }
 
-        private async void loadAvatars()
+        private void loadAvatars()
         {
-            await Task.Run(() =>
+            string toxLoc;
+            if (!config.Portable)
+                toxLoc = toxDataDir;
+            else
+                toxLoc = "";
+
+            string avatarLoc = Path.Combine(toxLoc, "avatar.png");
+            if (File.Exists(avatarLoc))
             {
-                string toxLoc;
-                if (!config.Portable)
-                    toxLoc = toxDataDir;
-                else
-                    toxLoc = "";
-
-                string avatarsDir = Path.Combine(toxLoc, "avatars");
-
-                if (!Directory.Exists(avatarsDir))
-                    return;
-
-                foreach (int friend in tox.GetFriendlist())
+                byte[] bytes = File.ReadAllBytes(avatarLoc);
+                if (bytes.Length > 0)
                 {
-                    var obj = this.ViewModel.GetFriendObjectByNumber(friend);
-                    if (obj == null)
-                        continue;
-
-                    ToxKey publicKey = tox.GetClientID(friend);
-                    string avatarFilename = Path.Combine(avatarsDir, publicKey.GetString() + ".png");
-                    if (File.Exists(avatarFilename))
+                    using (MemoryStream stream = new MemoryStream(bytes))
                     {
-                        byte[] bytes = File.ReadAllBytes(avatarFilename);
-                        if (bytes.Length > 0)
+                        using (Bitmap bmp = new Bitmap(stream))
                         {
-                            obj.AvatarBytes = bytes;
-                            obj.Avatar = BytesToImageSource(obj.AvatarBytes);
+                            this.ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
                         }
                     }
                 }
-            });
+            }
+
+            string avatarsDir = Path.Combine(toxLoc, "avatars");
+            if (!Directory.Exists(avatarsDir))
+                return;
+
+            foreach (int friend in tox.GetFriendlist())
+            {
+                var obj = this.ViewModel.GetFriendObjectByNumber(friend);
+                if (obj == null)
+                    continue;
+
+                ToxKey publicKey = tox.GetClientID(friend);
+                string avatarFilename = Path.Combine(avatarsDir, publicKey.GetString() + ".png");
+                if (File.Exists(avatarFilename))
+                {
+                    byte[] bytes = File.ReadAllBytes(avatarFilename);
+                    if (bytes.Length > 0)
+                    {
+                        obj.AvatarBytes = bytes;
+
+                        using (MemoryStream stream = new MemoryStream(bytes))
+                        {
+                            using (Bitmap bmp = new Bitmap(stream))
+                            {
+                                obj.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private ImageSource BytesToImageSource(byte[] data)
@@ -222,21 +242,34 @@ namespace Toxy
             else
                 toxDir = "";
 
-            return File.Exists(Path.Combine(toxDir, "avatar//" + public_key + ".png"));
+            return File.Exists(Path.Combine(toxDir, "avatars\\" + public_key + ".png"));
         }
 
         private void tox_OnAvatarInfo(int friendnumber, ToxAvatarFormat format, byte[] hash)
         {
+            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            if (friend == null)
+                return;
+
             if (format == ToxAvatarFormat.None)
             {
                 //friend removed avatar
+                if (avatarExistsOnDisk(friendnumber))
+                {
+                    string toxLoc;
+                    if (!config.Portable)
+                        toxLoc = toxDataDir;
+                    else
+                        toxLoc = "";
+
+                    File.Delete(Path.Combine(toxLoc, "avatars\\" + tox.GetClientID(friendnumber).GetString() + ".png"));
+                }
+
+                friend.AvatarBytes = null;
+                friend.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
             }
             else
             {
-                var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
-                if (friend == null)
-                    return;
-
                 if (friend.AvatarBytes == null || friend.AvatarBytes.Length == 0)
                 {
                     //looks like we're still busy loading the avatar or we don't have it at all
@@ -272,10 +305,11 @@ namespace Toxy
             if (friend == null)
                 return;
 
-            if (tox.GetAvatarHash(friend.AvatarBytes) == avatar.Hash)
+            if (friend.AvatarBytes != null && tox.GetAvatarHash(friend.AvatarBytes) == avatar.Hash)
             {
                 //that's odd, why did we even receive this avatar?
                 //let's ignore this...
+                Console.WriteLine("Received avatar data unexpectedly, ignoring");
             }
             else
             {
@@ -283,7 +317,25 @@ namespace Toxy
                 {
                     //note: this might be dangerous, maybe we need a way of verifying that this isn't malicious data (but how?)
                     friend.AvatarBytes = avatar.Data;
-                    friend.Avatar = BytesToImageSource(friend.AvatarBytes);
+                    using (MemoryStream stream = new MemoryStream(avatar.Data))
+                    {
+                        using (Bitmap bmp = new Bitmap(stream))
+                        {
+                            friend.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);//BytesToImageSource(friend.AvatarBytes);
+                        }
+                    }
+
+                    string toxLoc;
+                    if (!config.Portable)
+                        toxLoc = toxDataDir;
+                    else
+                        toxLoc = "";
+
+                    string avatarsDir = Path.Combine(toxLoc, "avatars");
+                    if (!Directory.Exists(avatarsDir))
+                        Directory.CreateDirectory(avatarsDir);
+
+                    File.WriteAllBytes(Path.Combine(avatarsDir, tox.GetClientID(friendnumber).GetString() + ".png"), avatar.Data);
                 }
                 catch
                 {
@@ -2048,22 +2100,33 @@ namespace Toxy
             if (dialog.ShowDialog() != true)
                 return;
 
-            //TODO: scale images down to 16 KB
             string filename = dialog.FileName;
             FileInfo info = new FileInfo(filename);
-            if (info.Length > 0x4000) //bigger than 16 KB?
+            byte[] avatarBytes = File.ReadAllBytes(filename);
+            MemoryStream stream = new MemoryStream(avatarBytes);
+            Bitmap bmp = new Bitmap(stream);
+
+            if (info.Length > 0x4000)
             {
-                this.ShowMessageAsync("Error", "This file is too large, the maximum size is 16 KB");
-                return;
+                //TODO: maintain aspect ratio
+                Bitmap newBmp = new Bitmap(64, 64);
+                using (Graphics g = Graphics.FromImage(newBmp))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bmp, 0, 0, 64, 64);
+                }
+
+                bmp = newBmp;
+                avatarBytes = avatarBitmapToBytes(bmp);
+
+                if (avatarBytes.Length > 0x4000)
+                {
+                    this.ShowMessageAsync("Error", "This image is bigger than 16 KB and Toxy could not resize the image.");
+                    return;
+                }
             }
 
-            byte[] avatarBytes = File.ReadAllBytes(filename);
-
-            MemoryStream stream = new MemoryStream(avatarBytes);
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.StreamSource = stream;
-
-            this.ViewModel.MainToxyUser.Avatar = bitmap;
+            this.ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
 
             if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
             {
@@ -2083,10 +2146,33 @@ namespace Toxy
             }
         }
 
-        private ImageSource bitmapToImageSource(System.Drawing.Image bmp)
+        private byte[] avatarBitmapToBytes(Bitmap bmp)
         {
-            ImageSourceConverter converter = new ImageSourceConverter();
-            return (ImageSource)converter.ConvertFrom(bmp);
+            using (MemoryStream stream = new MemoryStream())
+            {
+                bmp.Save(stream, ImageFormat.Png);
+                stream.Close();
+
+                return stream.ToArray();
+            }
+        }
+
+        private BitmapImage BitmapToImageSource(Bitmap bmp, ImageFormat format)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                bmp.Save(stream, format);
+
+                stream.Position = 0;
+
+                BitmapImage newBmp = new BitmapImage();
+                newBmp.BeginInit();
+                newBmp.StreamSource = stream;
+                newBmp.CacheOption = BitmapCacheOption.OnLoad;
+                newBmp.EndInit();
+
+                return newBmp;
+            }
         }
 
         private void removeAvatar()

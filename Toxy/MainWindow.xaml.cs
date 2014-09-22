@@ -284,7 +284,7 @@ namespace Toxy
                 else
                 {
                     //let's compare this to the hash we have
-                    if (tox.GetAvatarHash(friend.AvatarBytes) == hash)
+                    if (tox.GetAvatarHash(friend.AvatarBytes).SequenceEqual(hash))
                     {
                         //we already have this avatar, ignore
                         return;
@@ -305,7 +305,7 @@ namespace Toxy
             if (friend == null)
                 return;
 
-            if (friend.AvatarBytes != null && tox.GetAvatarHash(friend.AvatarBytes) == avatar.Hash)
+            if (friend.AvatarBytes != null && tox.GetAvatarHash(friend.AvatarBytes).SequenceEqual(avatar.Hash))
             {
                 //that's odd, why did we even receive this avatar?
                 //let's ignore this...

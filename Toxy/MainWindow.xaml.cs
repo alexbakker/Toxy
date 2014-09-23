@@ -182,6 +182,7 @@ namespace Toxy
                         using (Bitmap bmp = new Bitmap(stream))
                         {
                             this.ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
+                            tox.SetAvatar(ToxAvatarFormat.Png, bytes);
                         }
                     }
                 }

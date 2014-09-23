@@ -142,7 +142,7 @@ namespace Toxy.Views
                         });
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }

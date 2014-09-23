@@ -219,20 +219,6 @@ namespace Toxy
             }
         }
 
-        private ImageSource BytesToImageSource(byte[] data)
-        {
-            BitmapImage bmp = new BitmapImage();
-
-            using (MemoryStream stream = new MemoryStream(data))
-            {
-                bmp.BeginInit();
-                bmp.StreamSource = stream;
-                bmp.EndInit();
-
-                return (ImageSource)bmp;
-            }
-        }
-
         private bool avatarExistsOnDisk(int friendnumber)
         {
             string public_key = tox.GetClientID(friendnumber).GetString();
@@ -1150,7 +1136,7 @@ namespace Toxy
             {
                 return doc.FindChildren<TableRow>().Last(t => t.Tag.GetType() != typeof(FileTransfer));
             }
-            catch (Exception e)
+            catch
             {
                 return null;
             }

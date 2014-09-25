@@ -1226,7 +1226,7 @@ namespace Toxy
         private void AddFriendToView(int friendNumber)
         {
             string friendStatus;
-            if (tox.GetFriendConnectionStatus(friendNumber) != 0)
+            if (tox.IsOnline(friendNumber))
             {
                 friendStatus = tox.GetStatusMessage(friendNumber);
             }
@@ -1482,7 +1482,7 @@ namespace Toxy
             }
             else
             {
-                if (tox.IsOnline(friendNumber))
+                if (!tox.IsOnline(friendNumber))
                 {
                     CallButton.Visibility = Visibility.Collapsed;
                     FileButton.Visibility = Visibility.Collapsed;
@@ -1703,7 +1703,7 @@ namespace Toxy
                     return;
 
                 var selectedChatNumber = ViewModel.SelectedChatNumber;
-                if (tox.GetFriendConnectionStatus(selectedChatNumber) == 0 && ViewModel.IsFriendSelected)
+                if (!tox.IsOnline(selectedChatNumber) && ViewModel.IsFriendSelected)
                     return;
 
                 if (text.StartsWith("/me "))
@@ -1963,7 +1963,7 @@ namespace Toxy
                 return;
 
             var selectedChatNumber = ViewModel.SelectedChatNumber;
-            if (tox.IsOnline(selectedChatNumber))
+            if (!tox.IsOnline(selectedChatNumber))
                 return;
 
             int call_index;
@@ -1995,7 +1995,7 @@ namespace Toxy
                 return;
 
             var selectedChatNumber = ViewModel.SelectedChatNumber;
-            if (tox.IsOnline(selectedChatNumber))
+            if (!tox.IsOnline(selectedChatNumber))
                 return;
 
             OpenFileDialog dialog = new OpenFileDialog();
@@ -2156,7 +2156,7 @@ namespace Toxy
             //let's announce our new avatar
             foreach(int friend in tox.GetFriendlist())
             {
-                if (tox.GetFriendConnectionStatus(friend) == 0)
+                if (!tox.IsOnline(friend))
                     continue;
 
                 tox.SendAvatarInfo(friend);

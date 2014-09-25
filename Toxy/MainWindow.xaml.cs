@@ -343,7 +343,7 @@ namespace Toxy
 
         private async void Chat_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.GetFriendConnectionStatus(this.ViewModel.SelectedChatNumber) == 1)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(this.ViewModel.SelectedChatNumber))
             {
                 var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
                 MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
@@ -369,7 +369,7 @@ namespace Toxy
 
         private void Chat_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.GetFriendConnectionStatus(this.ViewModel.SelectedChatNumber) == 1)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(this.ViewModel.SelectedChatNumber))
             {
                 e.Effects = DragDropEffects.All;
             }
@@ -967,13 +967,13 @@ namespace Toxy
                 this.Flash();
         }
 
-        private void tox_OnConnectionStatusChanged(int friendnumber, int status)
+        private void tox_OnConnectionStatusChanged(int friendnumber, ToxFriendConnectionStatus status)
         {
             var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend == null)
                 return;
 
-            if (status == 0)
+            if (status == ToxFriendConnectionStatus.Offline)
             {
                 DateTime lastOnline = tox.GetLastOnline(friendnumber);
                 if (lastOnline == emptyLastOnline)
@@ -989,7 +989,7 @@ namespace Toxy
                     FileButton.Visibility = Visibility.Collapsed;
                 }
             }
-            else
+            else if (status == ToxFriendConnectionStatus.Online)
             {
                 friend.StatusMessage = tox.GetStatusMessage(friend.ChatNumber);
 
@@ -1498,7 +1498,7 @@ namespace Toxy
             }
             else
             {
-                if (tox.GetFriendConnectionStatus(friendNumber) != 1)
+                if (tox.IsOnline(friendNumber))
                 {
                     CallButton.Visibility = Visibility.Collapsed;
                     FileButton.Visibility = Visibility.Collapsed;
@@ -1983,7 +1983,7 @@ namespace Toxy
                 return;
 
             var selectedChatNumber = this.ViewModel.SelectedChatNumber;
-            if (tox.GetFriendConnectionStatus(selectedChatNumber) != 1)
+            if (tox.IsOnline(selectedChatNumber))
                 return;
 
             int call_index;
@@ -2015,7 +2015,7 @@ namespace Toxy
                 return;
 
             var selectedChatNumber = this.ViewModel.SelectedChatNumber;
-            if (tox.GetFriendConnectionStatus(selectedChatNumber) != 1)
+            if (tox.IsOnline(selectedChatNumber))
                 return;
 
             OpenFileDialog dialog = new OpenFileDialog();

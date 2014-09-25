@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 using MahApps.Metro;
@@ -46,30 +45,45 @@ namespace Toxy
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
 
-        private bool resizing = false;
-        private bool focusTextbox = false;
-        private bool typing = false;
-        public bool userPressedSave = false;
+        private bool resizing;
+        private bool focusTextbox;
+        private bool typing;
 
         private Accent oldAccent;
         private AppTheme oldAppTheme;
 
         private Config config;
-        private string toxDataFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\tox_save");
-        private string toxDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
 
         private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
-        Stream newMessageIconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon2.ico")).Stream;
-        Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
+
         private Icon notifyIcon;
         private Icon newMessageNotifyIcon;
+
+        private string toxDataDir
+        {
+            get
+            {
+                if (!config.Portable)
+                    return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
+                else
+                    return "";
+            }
+        }
+
+        private string toxDataFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, "tox_save");
+            }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            this.DataContext = new MainWindowViewModel();
+            DataContext = new MainWindowViewModel();
 
             if (File.Exists("config.xml"))
             {
@@ -143,8 +157,8 @@ namespace Toxy
             if (string.IsNullOrEmpty(tox.GetSelfName()))
                 tox.SetName("Toxy User");
 
-            this.ViewModel.MainToxyUser.Name = tox.GetSelfName();
-            this.ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
+            ViewModel.MainToxyUser.Name = tox.GetSelfName();
+            ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
 
             InitializeNotifyIcon();
 
@@ -158,20 +172,14 @@ namespace Toxy
             ChatBox.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
 
             if (tox.GetFriendlistCount() > 0)
-                this.ViewModel.SelectedChatObject = this.ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+                ViewModel.SelectedChatObject = ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
 
             loadAvatars();
         }
 
         private void loadAvatars()
         {
-            string toxLoc;
-            if (!config.Portable)
-                toxLoc = toxDataDir;
-            else
-                toxLoc = "";
-
-            string avatarLoc = Path.Combine(toxLoc, "avatar.png");
+            string avatarLoc = Path.Combine(toxDataDir, "avatar.png");
             if (File.Exists(avatarLoc))
             {
                 byte[] bytes = File.ReadAllBytes(avatarLoc);
@@ -181,20 +189,20 @@ namespace Toxy
                     {
                         using (Bitmap bmp = new Bitmap(stream))
                         {
-                            this.ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
+                            ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
                             tox.SetAvatar(ToxAvatarFormat.Png, bytes);
                         }
                     }
                 }
             }
 
-            string avatarsDir = Path.Combine(toxLoc, "avatars");
+            string avatarsDir = Path.Combine(toxDataDir, "avatars");
             if (!Directory.Exists(avatarsDir))
                 return;
 
             foreach (int friend in tox.GetFriendlist())
             {
-                var obj = this.ViewModel.GetFriendObjectByNumber(friend);
+                var obj = ViewModel.GetFriendObjectByNumber(friend);
                 if (obj == null)
                     continue;
 
@@ -221,20 +229,12 @@ namespace Toxy
 
         private bool avatarExistsOnDisk(int friendnumber)
         {
-            string public_key = tox.GetClientID(friendnumber).GetString();
-
-            string toxDir;
-            if (!config.Portable)
-                toxDir = toxDataDir;
-            else
-                toxDir = "";
-
-            return File.Exists(Path.Combine(toxDir, "avatars\\" + public_key + ".png"));
+            return File.Exists(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientID(friendnumber).GetString() + ".png"));
         }
 
         private void tox_OnAvatarInfo(int friendnumber, ToxAvatarFormat format, byte[] hash)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend == null)
                 return;
 
@@ -242,15 +242,7 @@ namespace Toxy
             {
                 //friend removed avatar
                 if (avatarExistsOnDisk(friendnumber))
-                {
-                    string toxLoc;
-                    if (!config.Portable)
-                        toxLoc = toxDataDir;
-                    else
-                        toxLoc = "";
-
-                    File.Delete(Path.Combine(toxLoc, "avatars\\" + tox.GetClientID(friendnumber).GetString() + ".png"));
-                }
+                    File.Delete(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientID(friendnumber).GetString() + ".png"));
 
                 friend.AvatarBytes = null;
                 friend.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
@@ -288,14 +280,14 @@ namespace Toxy
 
         private void tox_OnAvatarData(int friendnumber, ToxAvatar avatar)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend == null)
                 return;
 
             if (friend.AvatarBytes != null && tox.GetHash(friend.AvatarBytes).SequenceEqual(avatar.Hash))
             {
                 //that's odd, why did we even receive this avatar?
-                //let's ignore this...
+                //let's ignore ..
                 Console.WriteLine("Received avatar data unexpectedly, ignoring");
             }
             else
@@ -312,13 +304,7 @@ namespace Toxy
                         }
                     }
 
-                    string toxLoc;
-                    if (!config.Portable)
-                        toxLoc = toxDataDir;
-                    else
-                        toxLoc = "";
-
-                    string avatarsDir = Path.Combine(toxLoc, "avatars");
+                    string avatarsDir = Path.Combine(toxDataDir, "avatars");
                     if (!Directory.Exists(avatarsDir))
                         Directory.CreateDirectory(avatarsDir);
 
@@ -343,7 +329,7 @@ namespace Toxy
 
         private async void Chat_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(this.ViewModel.SelectedChatNumber))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(ViewModel.SelectedChatNumber))
             {
                 var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
                 MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
@@ -362,14 +348,14 @@ namespace Toxy
 
                 if (result == MessageDialogResult.Affirmative)
                 {
-                    SendFile(this.ViewModel.SelectedChatNumber, docPath[0]);
+                    SendFile(ViewModel.SelectedChatNumber, docPath[0]);
                 }
             }
         }
 
         private void Chat_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(this.ViewModel.SelectedChatNumber))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(ViewModel.SelectedChatNumber))
             {
                 e.Effects = DragDropEffects.All;
             }
@@ -501,7 +487,7 @@ namespace Toxy
             notifyIcon = new Icon(iconStream);
             newMessageNotifyIcon = new Icon(newMessageIconStream);
 
-            this.nIcon.Icon = notifyIcon;
+            nIcon.Icon = notifyIcon;
             nIcon.MouseClick += nIcon_MouseClick;
 
             var trayIconContextMenu = new System.Windows.Forms.ContextMenu();
@@ -534,15 +520,15 @@ namespace Toxy
 
             if (WindowState != WindowState.Normal)
             {
-                this.Show();
-                this.WindowState = WindowState.Normal;
-                this.ShowInTaskbar = true;
+                Show();
+                WindowState = WindowState.Normal;
+                ShowInTaskbar = true;
             }
             else
             {
-                this.Hide();
-                this.WindowState = WindowState.Minimized;
-                this.ShowInTaskbar = false;
+                Hide();
+                WindowState = WindowState.Minimized;
+                ShowInTaskbar = false;
             }
         }
 
@@ -554,15 +540,15 @@ namespace Toxy
 
         private void openMenuItem_Click(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = WindowState.Normal;
-            this.ShowInTaskbar = true;
+            Show();
+            WindowState = WindowState.Normal;
+            ShowInTaskbar = true;
         }
 
         private void closeMenuItem_Click(object sender, EventArgs eventArgs)
         {
             config.HideInTray = false;
-            this.Close();
+            Close();
         }
 
         private void toxav_OnReceivedAudio(IntPtr toxav, int call_index, short[] frame, int frame_size, IntPtr userdata)
@@ -575,7 +561,7 @@ namespace Toxy
 
         public MainWindowViewModel ViewModel
         {
-            get { return this.DataContext as MainWindowViewModel; }
+            get { return DataContext as MainWindowViewModel; }
         }
 
         private void toxav_OnEnd(int call_index, IntPtr args)
@@ -591,7 +577,7 @@ namespace Toxy
                 call.Start(config.InputDevice, config.OutputDevice);
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
-            var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (callingFriend != null)
             {
                 callingFriend.IsCalling = false;
@@ -601,7 +587,7 @@ namespace Toxy
                 {
                     HangupButton.Visibility = Visibility.Visible;
                 }
-                this.ViewModel.CallingFriend = callingFriend;
+                ViewModel.CallingFriend = callingFriend;
             }
         }
 
@@ -621,7 +607,7 @@ namespace Toxy
                 return;
             }
 
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
                 friend.CallIndex = call_index;
@@ -631,7 +617,7 @@ namespace Toxy
 
         private void tox_OnGroupNamelistChange(int groupnumber, int peernumber, ToxChatChange change)
         {
-            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            var group = ViewModel.GetGroupObjectByNumber(groupnumber);
             if (group != null)
             {
                 if (change == ToxChatChange.PeerAdd || change == ToxChatChange.PeerDel)
@@ -661,7 +647,7 @@ namespace Toxy
                 groupdic[groupnumber].AddNewMessageRow(tox, data, false);
             }
 
-            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            var group = ViewModel.GetGroupObjectByNumber(groupnumber);
             if (group != null)
             {
                 if (!group.Selected)
@@ -674,7 +660,7 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
         }
 
@@ -705,7 +691,7 @@ namespace Toxy
                 groupdic[groupnumber].AddNewMessageRow(tox, data, false);
             }
 
-            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            var group = ViewModel.GetGroupObjectByNumber(groupnumber);
             if (group != null)
             {
                 if (!group.Selected)
@@ -718,17 +704,17 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
-            this.nIcon.Icon = newMessageNotifyIcon;
-            this.ViewModel.HasNewMessage = true;
+            nIcon.Icon = newMessageNotifyIcon;
+            ViewModel.HasNewMessage = true;
         }
 
         private void tox_OnGroupInvite(int groupnumber, string group_public_key)
         {
             //auto join groupchats for now
-            var group = this.ViewModel.GetGroupObjectByNumber(groupnumber);
+            var group = ViewModel.GetGroupObjectByNumber(groupnumber);
 
             if (group == null)
             {
@@ -746,7 +732,7 @@ namespace Toxy
             try
             {
                 AddFriendRequestToView(id, message);
-                if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                     this.Flash();
             }
             catch (Exception ex)
@@ -754,8 +740,8 @@ namespace Toxy
                 MessageBox.Show(ex.ToString());
             }
 
-            this.nIcon.Icon = newMessageNotifyIcon;
-            this.ViewModel.HasNewMessage = true;
+            nIcon.Icon = newMessageNotifyIcon;
+            ViewModel.HasNewMessage = true;
         }
 
         private void tox_OnFileControl(int friendnumber, int receive_send, int filenumber, int control_type, byte[] data)
@@ -908,7 +894,7 @@ namespace Toxy
 
             FileTransfer transfer = convdic[friendnumber].AddNewFileTransfer(tox, friendnumber, filenumber, filename, filesize, false);
 
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null && !friend.Selected)
             {
                 friend.HasNewMessage = true;
@@ -963,13 +949,13 @@ namespace Toxy
             };
 
             transfers.Add(transfer);
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
         }
 
         private void tox_OnConnectionStatusChanged(int friendnumber, ToxFriendConnectionStatus status)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend == null)
                 return;
 
@@ -1006,7 +992,7 @@ namespace Toxy
 
         private void tox_OnTypingChange(int friendnumber, bool is_typing)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend == null)
                 return;
 
@@ -1034,7 +1020,7 @@ namespace Toxy
                 convdic[friendnumber].AddNewMessageRow(tox, data, false);
             }
 
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
                 if (!friend.Selected)
@@ -1047,11 +1033,11 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
-            this.nIcon.Icon = newMessageNotifyIcon;
-            this.ViewModel.HasNewMessage = true;
+            nIcon.Icon = newMessageNotifyIcon;
+            ViewModel.HasNewMessage = true;
         }
 
         private FlowDocument GetNewFlowDocument()
@@ -1090,7 +1076,7 @@ namespace Toxy
                 convdic[friendnumber].AddNewMessageRow(tox, data, false);
             }
 
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
                 if (!friend.Selected)
@@ -1103,11 +1089,11 @@ namespace Toxy
                     ScrollChatBox();
                 }
             }
-            if (this.ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
-            this.nIcon.Icon = newMessageNotifyIcon;
-            this.ViewModel.HasNewMessage = true;
+            nIcon.Icon = newMessageNotifyIcon;
+            ViewModel.HasNewMessage = true;
         }
 
         private void ScrollChatBox()
@@ -1158,7 +1144,7 @@ namespace Toxy
 
         private void tox_OnUserStatus(int friendnumber, ToxUserStatus status)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
                 friend.ToxStatus = status;
@@ -1167,7 +1153,7 @@ namespace Toxy
 
         private void tox_OnStatusMessage(int friendnumber, string newstatus)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
                 friend.StatusMessage = newstatus;
@@ -1176,7 +1162,7 @@ namespace Toxy
 
         private void tox_OnNameChange(int friendnumber, string newname)
         {
-            var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
                 friend.Name = newname;
@@ -1203,12 +1189,12 @@ namespace Toxy
             groupMV.SelectedAction = GroupSelectedAction;
             groupMV.DeleteAction = GroupDeleteAction;
 
-            this.ViewModel.ChatCollection.Add(groupMV);
+            ViewModel.ChatCollection.Add(groupMV);
         }
 
         private void GroupDeleteAction(IGroupObject groupObject)
         {
-            this.ViewModel.ChatCollection.Remove(groupObject);
+            ViewModel.ChatCollection.Remove(groupObject);
             int groupNumber = groupObject.ChatNumber;
             if (groupdic.ContainsKey(groupNumber))
             {
@@ -1260,7 +1246,7 @@ namespace Toxy
                 friendName = tox.GetClientID(friendNumber).GetString();
             }
 
-            var friendMV = new FriendControlModelView(this.ViewModel);
+            var friendMV = new FriendControlModelView(ViewModel);
             friendMV.ChatNumber = friendNumber;
             friendMV.Name = friendName;
             friendMV.StatusMessage = friendStatus;
@@ -1273,7 +1259,7 @@ namespace Toxy
             friendMV.GroupInviteAction = GroupInviteAction;
             friendMV.HangupAction = FriendHangupAction;
 
-            this.ViewModel.ChatCollection.Add(friendMV);
+            ViewModel.ChatCollection.Add(friendMV);
         }
 
         private void FriendHangupAction(IFriendObject friendObject)
@@ -1288,7 +1274,7 @@ namespace Toxy
 
         private void FriendDeleteAction(IFriendObject friendObject)
         {
-            this.ViewModel.ChatCollection.Remove(friendObject);
+            ViewModel.ChatCollection.Remove(friendObject);
             var friendNumber = friendObject.ChatNumber;
             if (convdic.ContainsKey(friendNumber))
             {
@@ -1316,11 +1302,9 @@ namespace Toxy
             {
                 if (!Directory.Exists(toxDataDir))
                     Directory.CreateDirectory(toxDataDir);
-
-                tox.Save(toxDataFilename);
             }
-            else
-                tox.Save("tox_save");
+
+            tox.Save(toxDataFilename);
         }
 
         private void FriendCopyIdAction(IFriendObject friendObject)
@@ -1352,7 +1336,7 @@ namespace Toxy
             if (call != null)
                 return;
 
-            call = new ToxCall(tox, toxav, friendObject.CallIndex, friendObject.ChatNumber);
+            call = new ToxCall(toxav, friendObject.CallIndex, friendObject.ChatNumber);
             call.Answer();
         }
 
@@ -1372,7 +1356,7 @@ namespace Toxy
 
         private void AddFriendRequestToView(string id, string message)
         {
-            var friendMV = new FriendControlModelView(this.ViewModel);
+            var friendMV = new FriendControlModelView(ViewModel);
             friendMV.IsRequest = true;
             friendMV.Name = id;
             friendMV.ToxStatus = ToxUserStatus.Invalid;
@@ -1382,7 +1366,7 @@ namespace Toxy
             friendMV.AcceptAction = FriendRequestAcceptAction;
             friendMV.DeclineAction = FriendRequestDeclineAction;
 
-            this.ViewModel.ChatRequestCollection.Add(friendMV);
+            ViewModel.ChatRequestCollection.Add(friendMV);
 
             if (ListViewTabControl.SelectedIndex != 1)
             {
@@ -1401,7 +1385,7 @@ namespace Toxy
 
             AddFriendToView(friendnumber);
 
-            this.ViewModel.ChatRequestCollection.Remove(friendObject);
+            ViewModel.ChatRequestCollection.Remove(friendObject);
             friendObject.RequestFlowDocument = null;
             friendObject.SelectedAction = null;
             friendObject.AcceptAction = null;
@@ -1413,7 +1397,7 @@ namespace Toxy
 
         private void FriendRequestDeclineAction(IFriendObject friendObject)
         {
-            this.ViewModel.ChatRequestCollection.Remove(friendObject);
+            ViewModel.ChatRequestCollection.Remove(friendObject);
             friendObject.RequestFlowDocument = null;
             friendObject.SelectedAction = null;
             friendObject.AcceptAction = null;
@@ -1449,13 +1433,13 @@ namespace Toxy
             if (call != null)
             {
                 var friendnumber = toxav.GetPeerID(call.CallIndex, 0);
-                var friend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+                var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
 
-                this.EndCall(friend);
+                EndCall(friend);
             }
             else
             {
-                this.EndCall(null);
+                EndCall(null);
             }
         }
 
@@ -1475,7 +1459,7 @@ namespace Toxy
                 call = null;
             }
 
-            this.ViewModel.CallingFriend = null;
+            ViewModel.CallingFriend = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
             CallButton.Visibility = Visibility.Visible;
@@ -1527,9 +1511,9 @@ namespace Toxy
             if (config.HideInTray)
             {
                 e.Cancel = true;
-                this.ShowInTaskbar = false;
-                this.WindowState = WindowState.Minimized;
-                this.Hide();
+                ShowInTaskbar = false;
+                WindowState = WindowState.Minimized;
+                Hide();
             }
             else
             {
@@ -1562,7 +1546,6 @@ namespace Toxy
 
         private void OpenSettings_Click(object sender, RoutedEventArgs e)
         {
-            userPressedSave = false;
             if (!SettingsFlyout.IsOpen)
             {
                 SettingsUsername.Text = tox.GetSelfName();
@@ -1621,10 +1604,9 @@ namespace Toxy
                 return;
             }
 
-            int friendnumber;
             try
             {
-                friendnumber = tox.AddFriend(friendID, message.Text);
+                int friendnumber = tox.AddFriend(friendID, message.Text);
                 FriendFlyout.IsOpen = false;
                 AddFriendToView(friendnumber);
             }
@@ -1651,8 +1633,6 @@ namespace Toxy
 
         private void SaveSettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            userPressedSave = true;
-
             tox.SetName(SettingsUsername.Text);
             tox.SetStatusMessage(SettingsStatus.Text);
 
@@ -1660,8 +1640,8 @@ namespace Toxy
             if (uint.TryParse(SettingsNospam.Text, out nospam))
                 tox.SetNospam(nospam);
 
-            this.ViewModel.MainToxyUser.Name = SettingsUsername.Text;
-            this.ViewModel.MainToxyUser.StatusMessage = SettingsStatus.Text;
+            ViewModel.MainToxyUser.Name = SettingsUsername.Text;
+            ViewModel.MainToxyUser.StatusMessage = SettingsStatus.Text;
 
             config.HideInTray = HideInTrayCheckBox.IsChecked ?? false;
 
@@ -1722,8 +1702,8 @@ namespace Toxy
                 if (string.IsNullOrEmpty(text))
                     return;
 
-                var selectedChatNumber = this.ViewModel.SelectedChatNumber;
-                if (tox.GetFriendConnectionStatus(selectedChatNumber) == 0 && this.ViewModel.IsFriendSelected)
+                var selectedChatNumber = ViewModel.SelectedChatNumber;
+                if (tox.GetFriendConnectionStatus(selectedChatNumber) == 0 && ViewModel.IsFriendSelected)
                     return;
 
                 if (text.StartsWith("/me "))
@@ -1732,14 +1712,14 @@ namespace Toxy
                     string action = text.Substring(4);
                     int messageid = -1;
 
-                    if (this.ViewModel.IsFriendSelected)
+                    if (ViewModel.IsFriendSelected)
                         messageid = tox.SendAction(selectedChatNumber, action);
-                    else if (this.ViewModel.IsGroupSelected)
+                    else if (ViewModel.IsGroupSelected)
                         tox.SendGroupAction(selectedChatNumber, action);
 
-                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetSelfName(), action), IsAction = true, Id = messageid, IsSelf = this.ViewModel.IsFriendSelected };
+                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetSelfName(), action), IsAction = true, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
 
-                    if (this.ViewModel.IsFriendSelected)
+                    if (ViewModel.IsFriendSelected)
                     {
                         if (convdic.ContainsKey(selectedChatNumber))
                         {
@@ -1760,14 +1740,14 @@ namespace Toxy
                     {
                         int messageid = -1;
 
-                        if (this.ViewModel.IsFriendSelected)
+                        if (ViewModel.IsFriendSelected)
                             messageid = tox.SendMessage(selectedChatNumber, message);
-                        else if (this.ViewModel.IsGroupSelected)
+                        else if (ViewModel.IsGroupSelected)
                             tox.SendGroupMessage(selectedChatNumber, message);
 
-                        MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message, Id = messageid, IsSelf = this.ViewModel.IsFriendSelected };
+                        MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
 
-                        if (this.ViewModel.IsFriendSelected)
+                        if (ViewModel.IsFriendSelected)
                         {
                             if (convdic.ContainsKey(selectedChatNumber))
                             {
@@ -1797,9 +1777,9 @@ namespace Toxy
                 TextToSend.Text = "";
                 e.Handled = true;
             }
-            else if (e.Key == Key.Tab && this.ViewModel.IsGroupSelected)
+            else if (e.Key == Key.Tab && ViewModel.IsGroupSelected)
             {
-                string[] names = tox.GetGroupNames(this.ViewModel.SelectedChatNumber);
+                string[] names = tox.GetGroupNames(ViewModel.SelectedChatNumber);
 
                 foreach (string name in names)
                 {
@@ -1821,7 +1801,7 @@ namespace Toxy
 
         private void TextToSend_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!this.ViewModel.IsFriendSelected)
+            if (!ViewModel.IsFriendSelected)
                 return;
 
             string text = TextToSend.Text;
@@ -1831,7 +1811,7 @@ namespace Toxy
                 if (typing)
                 {
                     typing = false;
-                    tox.SetUserIsTyping(this.ViewModel.SelectedChatNumber, typing);
+                    tox.SetUserIsTyping(ViewModel.SelectedChatNumber, typing);
                 }
             }
             else
@@ -1839,7 +1819,7 @@ namespace Toxy
                 if (!typing)
                 {
                     typing = true;
-                    tox.SetUserIsTyping(this.ViewModel.SelectedChatNumber, typing);
+                    tox.SetUserIsTyping(ViewModel.SelectedChatNumber, typing);
                 }
             }
         }
@@ -1923,17 +1903,17 @@ namespace Toxy
                     var bmp = (Bitmap) System.Windows.Forms.Clipboard.GetImage();
                     byte[] bytes = bmp.GetBytes();
 
-                    if (!convdic.ContainsKey(this.ViewModel.SelectedChatNumber))
-                        convdic.Add(this.ViewModel.SelectedChatNumber, GetNewFlowDocument());
+                    if (!convdic.ContainsKey(ViewModel.SelectedChatNumber))
+                        convdic.Add(ViewModel.SelectedChatNumber, GetNewFlowDocument());
 
-                    int filenumber = tox.NewFileSender(this.ViewModel.SelectedChatNumber, (ulong)bytes.Length, "image.bmp");
+                    int filenumber = tox.NewFileSender(ViewModel.SelectedChatNumber, (ulong)bytes.Length, "image.bmp");
 
                     if (filenumber == -1)
                         return;
 
-                    FileTransfer transfer = convdic[this.ViewModel.SelectedChatNumber].AddNewFileTransfer(tox, this.ViewModel.SelectedChatNumber, filenumber, "image.bmp", (ulong)bytes.Length, false);
+                    FileTransfer transfer = convdic[ViewModel.SelectedChatNumber].AddNewFileTransfer(tox, ViewModel.SelectedChatNumber, filenumber, "image.bmp", (ulong)bytes.Length, false);
                     transfer.Stream = new MemoryStream(bytes);
-                    transfer.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(this.ViewModel.SelectedChatNumber)));
+                    transfer.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(ViewModel.SelectedChatNumber)));
                     transfer.Control.AcceptButton.Visibility = Visibility.Collapsed;
                     transfer.Control.DeclineButton.Visibility = Visibility.Visible;
 
@@ -1971,18 +1951,18 @@ namespace Toxy
                     return;
             }
 
-            this.ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();
+            ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();
         }
 
         private void CallButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!this.ViewModel.IsFriendSelected)
+            if (!ViewModel.IsFriendSelected)
                 return;
 
             if (call != null)
                 return;
 
-            var selectedChatNumber = this.ViewModel.SelectedChatNumber;
+            var selectedChatNumber = ViewModel.SelectedChatNumber;
             if (tox.IsOnline(selectedChatNumber))
                 return;
 
@@ -1992,14 +1972,14 @@ namespace Toxy
                 return;
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
-            call = new ToxCall(tox, toxav, call_index, friendnumber);
+            call = new ToxCall(toxav, call_index, friendnumber);
 
             CallButton.Visibility = Visibility.Collapsed;
             HangupButton.Visibility = Visibility.Visible;
-            var callingFriend = this.ViewModel.GetFriendObjectByNumber(friendnumber);
+            var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (callingFriend != null)
             {
-                this.ViewModel.CallingFriend = callingFriend;
+                ViewModel.CallingFriend = callingFriend;
                 callingFriend.IsCallingToFriend = true;
             }
         }
@@ -2011,10 +1991,10 @@ namespace Toxy
 
         private void FileButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!this.ViewModel.IsFriendSelected)
+            if (!ViewModel.IsFriendSelected)
                 return;
 
-            var selectedChatNumber = this.ViewModel.SelectedChatNumber;
+            var selectedChatNumber = ViewModel.SelectedChatNumber;
             if (tox.IsOnline(selectedChatNumber))
                 return;
 
@@ -2072,8 +2052,8 @@ namespace Toxy
 
         private void mv_Activated(object sender, EventArgs e)
         {
-            this.nIcon.Icon = notifyIcon;
-            this.ViewModel.HasNewMessage = false;
+            nIcon.Icon = notifyIcon;
+            ViewModel.HasNewMessage = false;
         }
 
         private void AccentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2163,7 +2143,7 @@ namespace Toxy
                 }
             }
 
-            this.ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
+            ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
 
             if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
             {
@@ -2182,7 +2162,7 @@ namespace Toxy
                 tox.SendAvatarInfo(friend);
             }
         }
-
+        
         private byte[] avatarBitmapToBytes(Bitmap bmp)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -2216,7 +2196,7 @@ namespace Toxy
         {
             if (tox.RemoveAvatar())
             {
-                this.ViewModel.MainToxyUser.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
+                ViewModel.MainToxyUser.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
 
                 if (!config.Portable)
                 {

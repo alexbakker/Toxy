@@ -1,7 +1,5 @@
 ﻿using System;
 
-using SharpTox.Core;
-
 namespace Toxy.Common
 {
     [Serializable]

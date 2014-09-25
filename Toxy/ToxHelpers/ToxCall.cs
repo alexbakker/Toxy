@@ -8,23 +8,17 @@ namespace Toxy.ToxHelpers
 {
     class ToxCall
     {
-        private Tox tox;
         private ToxAv toxav;
 
         private WaveIn wave_source;
         private WaveOut wave_out;
         private BufferedWaveProvider wave_provider;
 
-        private Thread thread;
-
-        private uint frame_size;
-
         public int CallIndex;
         public int FriendNumber;
 
-        public ToxCall(Tox tox, ToxAv toxav, int callindex, int friendnumber)
+        public ToxCall(ToxAv toxav, int callindex, int friendnumber)
         {
-            this.tox = tox;
             this.toxav = toxav;
             this.FriendNumber = friendnumber;
 
@@ -38,8 +32,6 @@ namespace Toxy.ToxHelpers
 
             if (WaveOut.DeviceCount < 1)
                 throw new Exception("Insufficient output device(s)!");
-
-            frame_size = toxav.CodecSettings.AudioSampleRate * toxav.CodecSettings.AudioFrameDuration / 1000;
 
             //who doesn't love magic numbers?!
             toxav.PrepareTransmission(CallIndex, 3, 40, false);
@@ -120,12 +112,6 @@ namespace Toxy.ToxHelpers
             {
                 wave_out.Stop();
                 wave_out.Dispose();
-            }
-
-            if (thread != null)
-            {
-                thread.Abort();
-                thread.Join();
             }
 
             toxav.KillTransmission(CallIndex);

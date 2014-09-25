@@ -117,7 +117,7 @@ namespace Toxy.ToxHelpers
             try
             {
 
-                int num1 = DnsTools.DnsQuery(ref domain, QueryTypes.DNS_TYPE_TXT, QueryOptions.DNS_QUERY_BYPASS_CACHE, 0, ref ptr1, 0);
+                int num1 = DnsQuery(ref domain, QueryTypes.DNS_TYPE_TXT, QueryOptions.DNS_QUERY_BYPASS_CACHE, 0, ref ptr1, 0);
                 if (num1 != 0)
                     throw new Win32Exception(num1);
 
@@ -138,7 +138,7 @@ namespace Toxy.ToxHelpers
             }
             finally
             {
-                DnsTools.DnsRecordListFree(ptr1, 0);
+                DnsRecordListFree(ptr1, 0);
             }
 
             return (string[])list.ToArray(typeof(string));

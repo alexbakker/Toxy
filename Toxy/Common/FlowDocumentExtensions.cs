@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using MahApps.Metro.Controls;
 using SharpTox.Core;
 using Toxy.Views;
 
@@ -71,7 +69,7 @@ namespace Toxy.Common
         public static FileTransfer AddNewFileTransfer(this FlowDocument doc, Tox tox, int friendnumber, int filenumber, string filename, ulong filesize, bool is_sender)
         {
             var fileTableCell = new TableCell();
-            var fileTransferControl = new FileTransferControl(tox.GetName(friendnumber), friendnumber, filenumber, filename, filesize, fileTableCell);
+            var fileTransferControl = new FileTransferControl(friendnumber, filenumber, filename, filesize, fileTableCell);
             var transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, IsSender = is_sender, Control = fileTransferControl };
 
             var usernameParagraph = new Section();
@@ -140,8 +138,8 @@ namespace Toxy.Common
                         try { Process.Start(url); }
                         catch
                         {
-                            try { Process.Start("http://" + url); }
-                            catch { }
+                            try{ Process.Start("http://" + url); }
+                            catch{ }
                         }
                     };
                 }

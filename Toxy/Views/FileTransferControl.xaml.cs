@@ -34,7 +34,7 @@ namespace Toxy.Views
 
         public string FilePath { get; set; }
 
-        public FileTransferControl(string friendname, int friendnumber, int filenumber, string filename, ulong filesize, TableCell fileTableCell)
+        public FileTransferControl(int friendnumber, int filenumber, string filename, ulong filesize, TableCell fileTableCell)
         {
             this.filenumber = filenumber;
             this.friendnumber = friendnumber;
@@ -129,7 +129,7 @@ namespace Toxy.Views
                         Dispatcher.Invoke(() =>
                         {
                             var thumbnail = new Paragraph();
-                            var image = new System.Windows.Controls.Image();
+                            var image = new Image();
                             var bitmapImage = new BitmapImage();
 
                             bitmapImage.BeginInit();

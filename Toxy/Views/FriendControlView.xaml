@@ -15,7 +15,7 @@
     <UserControl.ContextMenu>
         <!-- DataContext is FriendControlModelView -->
         <ContextMenu DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
-            <MenuItem Header="Copy ID"
+            <MenuItem Header="Copy Key"
                       Command="{Binding DataContext.CopyIDCommand, Mode=OneWay}" />
             <MenuItem Header="Delete"
                       Command="{Binding DataContext.DeleteCommand, Mode=OneWay}" />

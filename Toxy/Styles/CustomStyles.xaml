@@ -28,6 +28,10 @@
                    FontFamily="{DynamicResource DefaultFont}" />
     </DataTemplate>
 
+    <Style TargetType="Image">
+        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+    </Style>
+
     <Style x:Key="ButtonRectangleStyle"
            TargetType="Rectangle">
         <Setter Property="VerticalAlignment"

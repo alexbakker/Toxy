@@ -467,6 +467,7 @@
                      Height="55"
                      TextWrapping="Wrap"
                      KeyDown="TextToSend_KeyDown"
+                     KeyUp="TextToSend_KeyUp"
                      LostFocus="TextToSend_OnLostFocus"
                      GotFocus="TextToSend_OnGotFocus"
                      TextChanged="TextToSend_TextChanged"

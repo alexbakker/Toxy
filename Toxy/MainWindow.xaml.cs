@@ -961,7 +961,7 @@ namespace Toxy
 
             if (status == ToxFriendConnectionStatus.Offline)
             {
-                DateTime lastOnline = tox.GetLastOnline(friendnumber);
+                DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(friendnumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
                 if (lastOnline == emptyLastOnline)
                 {
                     lastOnline = DateTime.Now;
@@ -1232,7 +1232,7 @@ namespace Toxy
             }
             else
             {
-                DateTime lastOnline = tox.GetLastOnline(friendNumber);
+                DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
                 if (lastOnline == emptyLastOnline)
                 {
                     lastOnline = DateTime.Now;

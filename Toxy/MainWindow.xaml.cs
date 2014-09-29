@@ -162,7 +162,7 @@ namespace Toxy
 
             InitializeNotifyIcon();
 
-            SetStatus(null);
+            SetStatus(null, false);
             InitFriends();
 
             TextToSend.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
@@ -319,12 +319,12 @@ namespace Toxy
 
         private void tox_OnDisconnected()
         {
-            SetStatus(ToxUserStatus.Invalid);
+            SetStatus(ToxUserStatus.Invalid, false);
         }
 
         private void tox_OnConnected()
         {
-            SetStatus(ToxUserStatus.None);
+            SetStatus(tox.GetSelfUserStatus(), false);
         }
 
         private async void Chat_Drop(object sender, DragEventArgs e)
@@ -535,7 +535,7 @@ namespace Toxy
         private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)
         {
             if (tox.IsConnected())
-                SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag);
+                SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag, true);
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)
@@ -1860,17 +1860,17 @@ namespace Toxy
 
         private void OnlineThumbButton_Click(object sender, EventArgs e)
         {
-            SetStatus(ToxUserStatus.None);
+            SetStatus(ToxUserStatus.None, true);
         }
 
         private void AwayThumbButton_Click(object sender, EventArgs e)
         {
-            SetStatus(ToxUserStatus.Away);
+            SetStatus(ToxUserStatus.Away, true);
         }
 
         private void BusyThumbButton_Click(object sender, EventArgs e)
         {
-            SetStatus(ToxUserStatus.Busy);
+            SetStatus(ToxUserStatus.Busy, true);
         }
 
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1891,7 +1891,7 @@ namespace Toxy
                 return;
 
             MenuItem menuItem = (MenuItem)e.Source;
-            SetStatus((ToxUserStatus)int.Parse(menuItem.Tag.ToString()));
+            SetStatus((ToxUserStatus)int.Parse(menuItem.Tag.ToString()), true);
         }
 
         private void TextToSend_KeyUp(object sender, KeyEventArgs e)
@@ -1939,7 +1939,7 @@ namespace Toxy
             }
         }
 
-        private void SetStatus(ToxUserStatus? newStatus)
+        private void SetStatus(ToxUserStatus? newStatus, bool changeUserStatus)
         {
             if (newStatus == null)
             {
@@ -1947,8 +1947,9 @@ namespace Toxy
             }
             else
             {
-                if (!tox.SetUserStatus(newStatus.GetValueOrDefault()))
-                    return;
+                if (changeUserStatus)
+                    if (!tox.SetUserStatus(newStatus.GetValueOrDefault()))
+                        return;
             }
 
             ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();

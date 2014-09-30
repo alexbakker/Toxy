@@ -54,7 +54,6 @@ namespace Toxy
 
         private Config config;
 
-        private DateTime emptyLastOnline = new DateTime(1970, 1, 1, 0, 0, 0);
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
 
         private Icon notifyIcon;
@@ -962,11 +961,12 @@ namespace Toxy
             if (status == ToxFriendConnectionStatus.Offline)
             {
                 DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(friendnumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
-                if (lastOnline == emptyLastOnline)
-                {
-                    lastOnline = DateTime.Now;
-                }
-                friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+
+                if (lastOnline.Year == 1970) //quick and dirty way to check if we're dealing with epoch 0
+                    friend.StatusMessage = "Friend request sent";
+                else
+                    friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+
                 friend.ToxStatus = ToxUserStatus.Invalid; //not the proper way to do it, I know...
 
                 if (friend.Selected)
@@ -1233,11 +1233,11 @@ namespace Toxy
             else
             {
                 DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
-                if (lastOnline == emptyLastOnline)
-                {
-                    lastOnline = DateTime.Now;
-                }
-                friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+
+                if (lastOnline.Year == 1970)
+                    friendStatus = "Friend request sent";
+                else
+                    friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
             }
 
             string friendName = tox.GetName(friendNumber);

@@ -1320,13 +1320,13 @@ namespace Toxy
             friendObject.HasNewMessage = false;
             friendObject.NewMessageCount = 0;
 
-            if (!tox.GetIsTyping(friendObject.ChatNumber))
-                TypingStatusLabel.Content = "";
-            else
-                TypingStatusLabel.Content = tox.GetName(friendObject.ChatNumber) + " is typing...";
-
             if (isSelected)
             {
+                if (!tox.GetIsTyping(friendObject.ChatNumber))
+                    TypingStatusLabel.Content = "";
+                else
+                    TypingStatusLabel.Content = tox.GetName(friendObject.ChatNumber) + " is typing...";
+
                 SelectFriendControl(friendObject);
                 ScrollChatBox();
                 TextToSend.Focus();

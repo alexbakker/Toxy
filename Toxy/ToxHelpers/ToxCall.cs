@@ -27,12 +27,6 @@ namespace Toxy.ToxHelpers
 
         public void Start(int input, int output)
         {
-            if (WaveIn.DeviceCount < 1)
-                throw new Exception("Insufficient input device(s)!");
-
-            if (WaveOut.DeviceCount < 1)
-                throw new Exception("Insufficient output device(s)!");
-
             //who doesn't love magic numbers?!
             toxav.PrepareTransmission(CallIndex, 3, 40, false);
 
@@ -40,25 +34,30 @@ namespace Toxy.ToxHelpers
             wave_provider = new BufferedWaveProvider(format);
             wave_provider.DiscardOnBufferOverflow = true;
 
-            wave_out = new WaveOut();
+            if (WaveIn.DeviceCount > 0)
+            {
+                wave_source = new WaveIn();
 
-            if (output != -1)
-                wave_out.DeviceNumber = output - 1;
+                if (input != -1)
+                    wave_source.DeviceNumber = input - 1;
 
-            wave_out.Init(wave_provider);
+                wave_source.WaveFormat = format;
+                wave_source.DataAvailable += wave_source_DataAvailable;
+                wave_source.RecordingStopped += wave_source_RecordingStopped;
+                wave_source.BufferMilliseconds = (int)toxav.CodecSettings.AudioFrameDuration;
+                wave_source.StartRecording();
+            }
 
-            wave_source = new WaveIn();
+            if (WaveOut.DeviceCount > 0)
+            {
+                wave_out = new WaveOut();
 
-            if (input != -1)
-                wave_source.DeviceNumber = input - 1;
+                if (output != -1)
+                    wave_out.DeviceNumber = output - 1;
 
-            wave_source.WaveFormat = format;
-            wave_source.DataAvailable += wave_source_DataAvailable;
-            wave_source.RecordingStopped += wave_source_RecordingStopped;
-            wave_source.BufferMilliseconds = (int)toxav.CodecSettings.AudioFrameDuration;
-            wave_source.StartRecording();
-
-            wave_out.Play();
+                wave_out.Init(wave_provider);
+                wave_out.Play();
+            }
         }
 
         private void wave_source_RecordingStopped(object sender, StoppedEventArgs e)
@@ -68,6 +67,9 @@ namespace Toxy.ToxHelpers
 
         public void ProcessAudioFrame(short[] frame, int frame_size)
         {
+            if (wave_out == null)
+                return;
+
             byte[] bytes = ShortArrayToByteArray(frame);
             wave_provider.AddSamples(bytes, 0, bytes.Length);
         }

@@ -950,6 +950,8 @@ namespace Toxy
             transfers.Add(transfer);
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
+
+            ScrollChatBox();
         }
 
         private void tox_OnConnectionStatusChanged(int friendnumber, ToxFriendConnectionStatus status)
@@ -1935,6 +1937,8 @@ namespace Toxy
                     };
 
                     transfers.Add(transfer);
+
+                    ScrollChatBox();
                 }
             }
         }
@@ -2044,6 +2048,8 @@ namespace Toxy
             };
 
             transfers.Add(ft);
+
+            ScrollChatBox();
         }
 
         private void ExecuteActionsOnNotifyIcon()

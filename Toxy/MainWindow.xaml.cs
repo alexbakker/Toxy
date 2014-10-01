@@ -1691,7 +1691,7 @@ namespace Toxy
 
             if (e.Key == Key.Enter)
             {
-                if (Keyboard.IsKeyDown(Key.LeftShift))
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                 {
                     TextToSend.Text += Environment.NewLine;
                     TextToSend.CaretIndex = TextToSend.Text.Length;

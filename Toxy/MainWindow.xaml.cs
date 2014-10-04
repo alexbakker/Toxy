@@ -205,7 +205,7 @@ namespace Toxy
                 if (obj == null)
                     continue;
 
-                ToxKey publicKey = tox.GetClientID(friend);
+                ToxKey publicKey = tox.GetClientId(friend);
                 string avatarFilename = Path.Combine(avatarsDir, publicKey.GetString() + ".png");
                 if (File.Exists(avatarFilename))
                 {
@@ -228,7 +228,7 @@ namespace Toxy
 
         private bool avatarExistsOnDisk(int friendnumber)
         {
-            return File.Exists(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientID(friendnumber).GetString() + ".png"));
+            return File.Exists(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientId(friendnumber).GetString() + ".png"));
         }
 
         private void tox_OnAvatarInfo(int friendnumber, ToxAvatarFormat format, byte[] hash)
@@ -241,7 +241,7 @@ namespace Toxy
             {
                 //friend removed avatar
                 if (avatarExistsOnDisk(friendnumber))
-                    File.Delete(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientID(friendnumber).GetString() + ".png"));
+                    File.Delete(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientId(friendnumber).GetString() + ".png"));
 
                 friend.AvatarBytes = null;
                 friend.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
@@ -307,7 +307,7 @@ namespace Toxy
                     if (!Directory.Exists(avatarsDir))
                         Directory.CreateDirectory(avatarsDir);
 
-                    File.WriteAllBytes(Path.Combine(avatarsDir, tox.GetClientID(friendnumber).GetString() + ".png"), avatar.Data);
+                    File.WriteAllBytes(Path.Combine(avatarsDir, tox.GetClientId(friendnumber).GetString() + ".png"), avatar.Data);
                 }
                 catch
                 {
@@ -710,20 +710,15 @@ namespace Toxy
             ViewModel.HasNewMessage = true;
         }
 
-        private void tox_OnGroupInvite(int groupnumber, string group_public_key)
+        private void tox_OnGroupInvite(int friendnumber, byte[] data)
         {
-            //auto join groupchats for now
-            var group = ViewModel.GetGroupObjectByNumber(groupnumber);
+            int number = tox.JoinGroup(friendnumber, data);
+            var group = ViewModel.GetGroupObjectByNumber(number);
 
-            if (group == null)
-            {
-                if (tox.JoinGroup(groupnumber, group_public_key) != -1)
-                    AddGroupToView(groupnumber);
-            }
-            else
-            {
+            if (group != null)
                 SelectGroupControl(group);
-            }
+            else if (number != -1)
+                AddGroupToView(number);
         }
 
         private void tox_OnFriendRequest(string id, string message)
@@ -1245,7 +1240,7 @@ namespace Toxy
             string friendName = tox.GetName(friendNumber);
             if (string.IsNullOrEmpty(friendName))
             {
-                friendName = tox.GetClientID(friendNumber).GetString();
+                friendName = tox.GetClientId(friendNumber).GetString();
             }
 
             var friendMV = new FriendControlModelView(ViewModel);
@@ -1312,7 +1307,7 @@ namespace Toxy
         private void FriendCopyIdAction(IFriendObject friendObject)
         {
             Clipboard.Clear();
-            Clipboard.SetText(tox.GetClientID(friendObject.ChatNumber).GetString());
+            Clipboard.SetText(tox.GetClientId(friendObject.ChatNumber).GetString());
         }
 
         private void FriendSelectedAction(IFriendObject friendObject, bool isSelected)

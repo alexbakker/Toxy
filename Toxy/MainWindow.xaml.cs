@@ -184,13 +184,22 @@ namespace Toxy
                 byte[] bytes = File.ReadAllBytes(avatarLoc);
                 if (bytes.Length > 0)
                 {
-                    using (MemoryStream stream = new MemoryStream(bytes))
+                    tox.SetAvatar(ToxAvatarFormat.Png, bytes);
+
+                    MemoryStream stream = null;
+                    try
                     {
+                        stream = new MemoryStream(bytes);
+
                         using (Bitmap bmp = new Bitmap(stream))
                         {
-                            ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
-                            tox.SetAvatar(ToxAvatarFormat.Png, bytes);
+                            ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
                         }
+                    }
+                    finally
+                    {
+                        if (stream != null)
+                            stream.Dispose();
                     }
                 }
             }
@@ -214,12 +223,20 @@ namespace Toxy
                     {
                         obj.AvatarBytes = bytes;
 
-                        using (MemoryStream stream = new MemoryStream(bytes))
+                        MemoryStream stream = null;
+                        try
                         {
+                            stream = new MemoryStream(bytes);
+
                             using (Bitmap bmp = new Bitmap(stream))
                             {
-                                obj.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);// BytesToImageSource(obj.AvatarBytes);
+                                obj.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
                             }
+                        }
+                        finally
+                        {
+                            if (stream != null)
+                                stream.Dispose();
                         }
                     }
                 }
@@ -295,12 +312,21 @@ namespace Toxy
                 {
                     //note: this might be dangerous, maybe we need a way of verifying that this isn't malicious data (but how?)
                     friend.AvatarBytes = avatar.Data;
-                    using (MemoryStream stream = new MemoryStream(avatar.Data))
+
+                    MemoryStream stream = null;
+                    try
                     {
+                        stream = new MemoryStream(avatar.Data);
+
                         using (Bitmap bmp = new Bitmap(stream))
                         {
-                            friend.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);//BytesToImageSource(friend.AvatarBytes);
+                            friend.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
                         }
+                    }
+                    finally
+                    {
+                        if (stream != null)
+                            stream.Dispose();
                     }
 
                     string avatarsDir = Path.Combine(toxDataDir, "avatars");
@@ -2135,6 +2161,9 @@ namespace Toxy
                     g.DrawImage(bmp, 0, 0, 64, 64);
                 }
 
+                bmp.Dispose();
+                stream.Dispose();
+
                 bmp = newBmp;
                 avatarBytes = avatarBitmapToBytes(bmp);
 
@@ -2146,6 +2175,7 @@ namespace Toxy
             }
 
             ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
+            bmp.Dispose();
 
             if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
             {
@@ -2214,7 +2244,7 @@ namespace Toxy
                 }
             }
         }
-
+        
         private void AvatarImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             AvatarContextMenu.PlacementTarget = this;

@@ -12,24 +12,28 @@ namespace Win32
             PlayWavResource("Resources.Audio.Blop.wav");
         }
 
-        public const UInt32 SND_ASYNC = 1;
-        public const UInt32 SND_MEMORY = 4;
+        private static byte[] resourceStreamLength;
+        private const UInt32 SND_ASYNC = 1;
+        private const UInt32 SND_MEMORY = 4;
         [DllImport("Winmm.dll")]
-        public static extern bool PlaySound(byte[] data, IntPtr hMod, UInt32 dwFlags);
+        private static extern bool PlaySound(byte[] data, IntPtr hMod, UInt32 dwFlags);
 
-        public static void PlayWavResource(string wav)
+        private static void PlayWavResource(string wav)
         {
-            string strNameSpace =
-            System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.ToString();
+            var strNameSpace = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 
-            using (Stream str = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(strNameSpace + "." + wav))
+            if (resourceStreamLength == null)
             {
-                if (str == null)
-                    return;
-                byte[] bStr = new Byte[str.Length];
-                str.Read(bStr, 0, (int)str.Length);
-                PlaySound(bStr, IntPtr.Zero, SND_ASYNC | SND_MEMORY);
+                var resourceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(strNameSpace + "." + wav);
+                if (resourceStream != null)
+                {
+                    resourceStreamLength = new Byte[resourceStream.Length];
+                    resourceStream.Read(resourceStreamLength, 0, (int)resourceStream.Length);
+                }
             }
+
+            if (resourceStreamLength != null)
+                PlaySound(resourceStreamLength, IntPtr.Zero, SND_ASYNC | SND_MEMORY);
         }
     }
 }

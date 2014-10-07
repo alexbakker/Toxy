@@ -21,7 +21,15 @@ namespace Toxy.Common
             set { portable = value; }
         }
 
-        private bool ipv6Enabled = true;
+        private bool enableaudionotifications = false;
+
+        public bool EnableAudioNotifications
+        {
+            get { return enableaudionotifications; }
+            set { enableaudionotifications = value; }
+        }
+
+       private bool ipv6Enabled = true;
 
         public bool Ipv6Enabled
         {

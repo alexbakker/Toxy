@@ -2249,7 +2249,7 @@ namespace Toxy
         {
             chat.HasNewMessage = true;
             chat.NewMessageCount++;
-            if(config.EnableAudioNotifications && call==null)
+            if(config.EnableAudioNotifications && call==null && WindowState == WindowState.Minimized)
             {
                 Win32.Winmm.PlayMessageNotify();
             }

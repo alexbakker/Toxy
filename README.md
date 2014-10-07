@@ -1,4 +1,4 @@
-Toxy [![Build Status](http://jenkins.impy.me/job/Toxy%20x86/badge/icon)](http://jenkins.impy.me/job/Toxy%20x86/)
+Toxy [![Build Status](https://jenkins.impy.me/job/Toxy%20x86/badge/icon)](https://jenkins.impy.me/job/Toxy%20x86/)
 ====
 
 Metro-style Tox client for Windows. ([Tox](https://github.com/irungentoo/ProjectTox-Core "ProjectTox GitHub repo") is a free (as in freedom) Skype replacement.)
@@ -31,7 +31,7 @@ Feel free to contribute.
 
 Binaries
 ===
-Pre-compiled versions of Toxy can be found [here](http://jenkins.impy.me/ "Toxy Binaries"). Those include all of the dependencies.
+Pre-compiled versions of Toxy can be found [here](https://jenkins.impy.me/ "Toxy Binaries"). Those include all of the dependencies.
 
 Things you'll need to compile
 ===

@@ -122,6 +122,7 @@
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
+    <Compile Include="ViewModels\BaseChatModelView.cs" />
     <Compile Include="ViewModels\FriendControlModelView.cs" />
     <Compile Include="ViewModels\GroupControlModelView.cs" />
     <Compile Include="ViewModels\IChatObject.cs" />

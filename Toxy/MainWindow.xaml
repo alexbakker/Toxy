@@ -222,7 +222,7 @@
 
             <!-- add friend, create group, settings -->
             <Border Grid.Row="2"
-                    BorderBrush="#FFDADADA"
+                    BorderBrush="{DynamicResource AccentColorBrush}"
                     BorderThickness="0,1,0,0">
                 <StackPanel Orientation="Horizontal"
                             Margin="0 10"
@@ -314,7 +314,7 @@
         <GridSplitter Grid.Column="1"
                       Width="2"
                       HorizontalAlignment="Center"
-                      BorderBrush="#8E8E8E" />
+                      Background="{DynamicResource AccentColorBrush}"/>
 
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
@@ -325,7 +325,7 @@
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0"
-                    BorderBrush="#FFDADADA"
+                    BorderBrush="{DynamicResource AccentColorBrush}"
                     BorderThickness="0,0,0,1">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
@@ -338,15 +338,15 @@
                     <TextBlock Grid.Row="0"
                                FontSize="25"
                                Text="{Binding SelectedChatObject.Name, Mode=OneWay}"
-                               TextTrimming="CharacterEllipsis" />
+                               TextTrimming="CharacterEllipsis" Margin="5,0,0,0" />
                     <TextBlock Grid.Row="1"
                                FontStyle="Italic"
                                Text="{Binding SelectedChatObject.StatusMessage, Mode=OneWay}"
-                               TextTrimming="CharacterEllipsis" />
+                               TextTrimming="CharacterEllipsis" Margin="5,0,0,0" />
                     <TextBlock Grid.Row="2"
                                FontStyle="Italic"
                                Text="{Binding SelectedChatObject.AdditionalInfo, Mode=OneWay}"
-                               TextTrimming="CharacterEllipsis" />
+                               TextTrimming="CharacterEllipsis" Margin="5,0,0,0" />
 
                     <StackPanel Grid.Row="0"
                                 MinHeight="40"
@@ -465,6 +465,7 @@
                      Margin="10,0,15,10"
                      x:Name="TextToSend"
                      Height="55"
+                     BorderBrush="{DynamicResource AccentColorBrush}"
                      TextWrapping="Wrap"
                      KeyDown="TextToSend_KeyDown"
                      KeyUp="TextToSend_KeyUp"

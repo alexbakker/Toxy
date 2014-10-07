@@ -677,8 +677,7 @@ namespace Toxy
             {
                 if (!group.Selected)
                 {
-                    group.HasNewMessage = true;
-                    group.NewMessageCount++;
+                    MessageAlertIncrement(group);
                 }
                 else
                 {
@@ -721,8 +720,7 @@ namespace Toxy
             {
                 if (!group.Selected)
                 {
-                    group.HasNewMessage = true;
-                    group.NewMessageCount++;
+                    MessageAlertIncrement(group);
                 }
                 else
                 {
@@ -917,8 +915,7 @@ namespace Toxy
             var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null && !friend.Selected)
             {
-                friend.HasNewMessage = true;
-                friend.NewMessageCount++;
+                MessageAlertIncrement(friend);
             }
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum)
@@ -1048,8 +1045,7 @@ namespace Toxy
             {
                 if (!friend.Selected)
                 {
-                    friend.HasNewMessage = true;
-                    friend.NewMessageCount++;
+                    MessageAlertIncrement(friend);
                 }
                 else
                 {
@@ -1104,8 +1100,7 @@ namespace Toxy
             {
                 if (!friend.Selected)
                 {
-                    friend.HasNewMessage = true;
-                    friend.NewMessageCount++;
+                    MessageAlertIncrement(friend);
                 }
                 else
                 {
@@ -1233,8 +1228,7 @@ namespace Toxy
 
         private void GroupSelectedAction(IGroupObject groupObject, bool isSelected)
         {
-            groupObject.HasNewMessage = false;
-            groupObject.NewMessageCount = 0;
+            MessageAlertClear(groupObject);
 
             TypingStatusLabel.Content = "";
 
@@ -1338,8 +1332,7 @@ namespace Toxy
 
         private void FriendSelectedAction(IFriendObject friendObject, bool isSelected)
         {
-            friendObject.HasNewMessage = false;
-            friendObject.NewMessageCount = 0;
+            MessageAlertClear(friendObject);
 
             if (isSelected)
             {
@@ -1594,6 +1587,7 @@ namespace Toxy
 
                 HideInTrayCheckBox.IsChecked = config.HideInTray;
                 PortableCheckBox.IsChecked = config.Portable;
+                AudioNotificationCheckBox.IsChecked = config.EnableAudioNotifications;
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1699,7 +1693,7 @@ namespace Toxy
                 config.OutputDevice = index - 1;
 
             config.Portable = (bool)PortableCheckBox.IsChecked;
-
+            config.EnableAudioNotifications = (bool)AudioNotificationCheckBox.IsChecked;
             ExecuteActionsOnNotifyIcon();
 
             ConfigTools.Save(config, "config.xml");
@@ -2250,5 +2244,22 @@ namespace Toxy
             AvatarContextMenu.PlacementTarget = this;
             AvatarContextMenu.IsOpen = true;
         }
+
+        private void MessageAlertIncrement(IChatObject chat)
+        {
+            chat.HasNewMessage = true;
+            chat.NewMessageCount++;
+            if(config.EnableAudioNotifications && call==null)
+            {
+                Win32.Winmm.PlayMessageNotify();
+            }
+        }
+
+        private void MessageAlertClear(IChatObject chat)
+        {
+            chat.HasNewMessage = false;
+            chat.NewMessageCount = 0;
+        }
+
     }
 }

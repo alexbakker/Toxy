@@ -119,6 +119,7 @@
     <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VisualExtensions.cs" />
+    <Compile Include="Common\Winmm.cs" />
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
@@ -250,6 +251,7 @@
       <Link>libtox.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\Audio\Blop.wav" />
     <Resource Include="Resources\Icons\icon2.ico" />
     <Resource Include="Resources\Icons\icon.ico" />
   </ItemGroup>

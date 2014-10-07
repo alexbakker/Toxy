@@ -603,6 +603,13 @@
                               HorizontalAlignment="Left"
                               Content="Portable"
                               />
+                    <CheckBox x:Name="AudioNotificationCheckBox"
+                              Margin="15,470,0,0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Content="Enable audible message alerts"
+                              ToolTip="Beep on new message unless you are in a voice call."
+                              />
                     <Button x:Name="ExportDataButton"
                             Content="Export"
                             Margin="15,242,10,10"

@@ -153,11 +153,11 @@ namespace Toxy
             loadTox();
             tox.Start();
 
-            if (string.IsNullOrEmpty(tox.GetSelfName()))
+            if (string.IsNullOrEmpty(getSelfName()))
                 tox.SetName("Toxy User");
 
-            ViewModel.MainToxyUser.Name = tox.GetSelfName();
-            ViewModel.MainToxyUser.StatusMessage = tox.GetSelfStatusMessage();
+            ViewModel.MainToxyUser.Name = getSelfName();
+            ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();
 
             InitializeNotifyIcon();
 
@@ -272,7 +272,7 @@ namespace Toxy
 
                     if (!avatarExistsOnDisk(friendnumber))
                         if (!tox.RequestAvatarData(friendnumber))
-                            Console.WriteLine("Could not request avatar date from {0}: {1}", friendnumber, tox.GetName(friendnumber));
+                            Console.WriteLine("Could not request avatar date from {0}: {1}", friendnumber, getFriendName(friendnumber));
 
                     //if the avatar DOES exist on disk we're probably still loading it
                 }
@@ -288,7 +288,7 @@ namespace Toxy
                     {
                         //that's interesting, let's ask for the avatar data
                         if (!tox.RequestAvatarData(friendnumber))
-                            Console.WriteLine("Could not request avatar date from {0}: {1}", friendnumber, tox.GetName(friendnumber));
+                            Console.WriteLine("Could not request avatar date from {0}: {1}", friendnumber, getFriendName(friendnumber));
                     }
                 }
             }
@@ -997,7 +997,7 @@ namespace Toxy
             }
             else if (status == ToxFriendConnectionStatus.Online)
             {
-                friend.StatusMessage = tox.GetStatusMessage(friend.ChatNumber);
+                friend.StatusMessage = getFriendStatusMessage(friend.ChatNumber);
 
                 if (friend.Selected)
                 {
@@ -1019,7 +1019,7 @@ namespace Toxy
             if (friend.Selected)
             {
                 if (is_typing)
-                    TypingStatusLabel.Content = tox.GetName(friendnumber) + " is typing...";
+                    TypingStatusLabel.Content = getFriendName(friendnumber) + " is typing...";
                 else
                     TypingStatusLabel.Content = "";
             }
@@ -1027,7 +1027,7 @@ namespace Toxy
 
         private void tox_OnFriendAction(int friendnumber, string action)
         {
-            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetName(friendnumber), action), IsAction = true };
+            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getFriendName(friendnumber), action), IsAction = true };
 
             if (convdic.ContainsKey(friendnumber))
             {
@@ -1070,7 +1070,7 @@ namespace Toxy
 
         private void tox_OnFriendMessage(int friendnumber, string message)
         {
-            MessageData data = new MessageData() { Username = tox.GetName(friendnumber), Message = message };
+            MessageData data = new MessageData() { Username = getFriendName(friendnumber), Message = message };
 
             if (convdic.ContainsKey(friendnumber))
             {
@@ -1078,7 +1078,7 @@ namespace Toxy
 
                 if (run != null)
                 {
-                    if (((MessageData)run.Tag).Username == tox.GetName(friendnumber))
+                    if (((MessageData)run.Tag).Username == getFriendName(friendnumber))
                         convdic[friendnumber].AddNewMessageRow(tox, data, true);
                     else
                         convdic[friendnumber].AddNewMessageRow(tox, data, false);
@@ -1174,7 +1174,7 @@ namespace Toxy
             var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
-                friend.StatusMessage = newstatus;
+                friend.StatusMessage = getFriendStatusMessage(friendnumber);
             }
         }
 
@@ -1183,7 +1183,7 @@ namespace Toxy
             var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
             {
-                friend.Name = newname;
+                friend.Name = getFriendName(friendnumber);
             }
         }
 
@@ -1192,7 +1192,7 @@ namespace Toxy
             //Creates a new FriendControl for every friend
             foreach (var friendNumber in tox.GetFriendlist())
             {
-                AddFriendToView(friendNumber);
+                AddFriendToView(friendNumber, false);
             }
         }
 
@@ -1240,24 +1240,47 @@ namespace Toxy
             }
         }
 
-        private void AddFriendToView(int friendNumber)
+        private string getFriendName(int friendnumber)
         {
-            string friendStatus;
+            return tox.GetName(friendnumber).Replace("\n", "").Replace("\r", "");
+        }
+
+        private string getSelfStatusMessage()
+        {
+            return tox.GetSelfStatusMessage().Replace("\n", "").Replace("\r", "");
+        }
+
+        private string getSelfName()
+        {
+            return tox.GetSelfName().Replace("\n", "").Replace("\r", "");
+        }
+
+        private string getFriendStatusMessage(int friendnumber)
+        {
+            return tox.GetStatusMessage(friendnumber).Replace("\n", "").Replace("\r", "");
+        }
+
+        private void AddFriendToView(int friendNumber, bool sentRequest)
+        {
+            string friendStatus = "";
             if (tox.IsOnline(friendNumber))
             {
-                friendStatus = tox.GetStatusMessage(friendNumber);
+                friendStatus = getFriendStatusMessage(friendNumber);
             }
             else
             {
                 DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
 
                 if (lastOnline.Year == 1970)
-                    friendStatus = "Friend request sent";
+                {
+                    if (sentRequest)
+                        friendStatus = "Friend request sent";
+                }
                 else
                     friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
             }
 
-            string friendName = tox.GetName(friendNumber);
+            string friendName = getFriendName(friendNumber);
             if (string.IsNullOrEmpty(friendName))
             {
                 friendName = tox.GetClientId(friendNumber).GetString();
@@ -1339,7 +1362,7 @@ namespace Toxy
                 if (!tox.GetIsTyping(friendObject.ChatNumber))
                     TypingStatusLabel.Content = "";
                 else
-                    TypingStatusLabel.Content = tox.GetName(friendObject.ChatNumber) + " is typing...";
+                    TypingStatusLabel.Content = getFriendName(friendObject.ChatNumber) + " is typing...";
 
                 SelectFriendControl(friendObject);
                 ScrollChatBox();
@@ -1399,7 +1422,7 @@ namespace Toxy
         {
             int friendnumber = tox.AddFriendNoRequest(friendObject.Name);
 
-            AddFriendToView(friendnumber);
+            AddFriendToView(friendnumber, false);
 
             ViewModel.ChatRequestCollection.Remove(friendObject);
             friendObject.RequestFlowDocument = null;
@@ -1564,8 +1587,8 @@ namespace Toxy
         {
             if (!SettingsFlyout.IsOpen)
             {
-                SettingsUsername.Text = tox.GetSelfName();
-                SettingsStatus.Text = tox.GetSelfStatusMessage();
+                SettingsUsername.Text = getSelfName();
+                SettingsStatus.Text = getSelfStatusMessage();
                 SettingsNospam.Text = tox.GetNospam().ToString();
 
                 Tuple<AppTheme, Accent> style = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
@@ -1625,7 +1648,7 @@ namespace Toxy
             {
                 int friendnumber = tox.AddFriend(friendID, message.Text);
                 FriendFlyout.IsOpen = false;
-                AddFriendToView(friendnumber);
+                AddFriendToView(friendnumber, true);
             }
             catch (ToxAFException ex)
             {
@@ -1657,8 +1680,8 @@ namespace Toxy
             if (uint.TryParse(SettingsNospam.Text, out nospam))
                 tox.SetNospam(nospam);
 
-            ViewModel.MainToxyUser.Name = SettingsUsername.Text;
-            ViewModel.MainToxyUser.StatusMessage = SettingsStatus.Text;
+            ViewModel.MainToxyUser.Name = getSelfName();
+            ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();
 
             config.HideInTray = HideInTrayCheckBox.IsChecked ?? false;
 
@@ -1734,7 +1757,7 @@ namespace Toxy
                     else if (ViewModel.IsGroupSelected)
                         tox.SendGroupAction(selectedChatNumber, action);
 
-                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetSelfName(), action), IsAction = true, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
+                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getSelfName(), action), IsAction = true, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
 
                     if (ViewModel.IsFriendSelected)
                     {
@@ -1762,7 +1785,7 @@ namespace Toxy
                         else if (ViewModel.IsGroupSelected)
                             tox.SendGroupMessage(selectedChatNumber, message);
 
-                        MessageData data = new MessageData() { Username = tox.GetSelfName(), Message = message, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
+                        MessageData data = new MessageData() { Username = getSelfName(), Message = message, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
 
                         if (ViewModel.IsFriendSelected)
                         {
@@ -1930,7 +1953,7 @@ namespace Toxy
 
                     FileTransfer transfer = convdic[ViewModel.SelectedChatNumber].AddNewFileTransfer(tox, ViewModel.SelectedChatNumber, filenumber, "image.bmp", (ulong)bytes.Length, false);
                     transfer.Stream = new MemoryStream(bytes);
-                    transfer.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(ViewModel.SelectedChatNumber)));
+                    transfer.Control.SetStatus(string.Format("Waiting for {0} to accept...", getFriendName(ViewModel.SelectedChatNumber)));
                     transfer.Control.AcceptButton.Visibility = Visibility.Collapsed;
                     transfer.Control.DeclineButton.Visibility = Visibility.Visible;
 
@@ -2039,7 +2062,7 @@ namespace Toxy
                 return;
 
             FileTransfer ft = convdic[chatNumber].AddNewFileTransfer(tox, chatNumber, filenumber, filename, (ulong)info.Length, true);
-            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", tox.GetName(chatNumber)));
+            ft.Control.SetStatus(string.Format("Waiting for {0} to accept...", getFriendName(chatNumber)));
             ft.Control.AcceptButton.Visibility = Visibility.Collapsed;
             ft.Control.DeclineButton.Visibility = Visibility.Visible;
 

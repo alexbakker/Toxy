@@ -521,117 +521,114 @@
             <controls:Flyout x:Name="SettingsFlyout"
                              Header="Settings"
                              Position="Right"
-                             Width="325" IsOpenChanged="SettingsFlyout_IsOpenChanged">
+                             Width="300" IsOpenChanged="SettingsFlyout_IsOpenChanged">
                 <Grid>
-                    <Label Content="Enter your desired username"
-                           HorizontalAlignment="Left"
-                           Margin="10,10,0,0"
-                           VerticalAlignment="Top" />
-                    <TextBox x:Name="SettingsUsername"
-                             HorizontalAlignment="Left"
-                             Height="23"
-                             TextWrapping="Wrap"
-                             Text=""
-                             VerticalAlignment="Top"
-                             Width="275"
-                             Margin="15,41,0,0" />
-                    <Label Content="Enter your desired status message"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
-                           Margin="10,82,0,0" />
-                    <TextBox x:Name="SettingsStatus"
-                             AcceptsReturn="True"
-                             HorizontalAlignment="Left"
-                             Height="41"
-                             Margin="15,113,0,0"
-                             TextWrapping="Wrap"
-                             VerticalAlignment="Top"
-                             Width="275" />
-                    <Label Content="Change nospam (note: this will change your id)"
-                           HorizontalAlignment="Left"
-                           Margin="10,169,0,0" />
-                    <TextBox x:Name="SettingsNospam"
-                             AcceptsReturn="True"
-                             HorizontalAlignment="Left"
-                             Height="23"
-                             Margin="15,200,0,0"
-                             TextWrapping="Wrap"
-                             VerticalAlignment="Top"
-                             Width="275" />
-                    <Label Content="Pick an accent color"
-                           HorizontalAlignment="Left"
-                           Margin="10,239,0,0" />
-                    <ComboBox x:Name="AccentComboBox"
-                              ItemsSource="{Binding AccentColors}"
-                              DisplayMemberPath="Name"
-                              Margin="15,270,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Width="275" SelectionChanged="AccentComboBox_SelectionChanged" />
-                    <ComboBox x:Name="AppThemeComboBox"
-                              ItemsSource="{Binding AppThemes}"
-                              DisplayMemberPath="Name"
-                              Margin="15,300,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
-                    <Label Content="Choose which devices should be used"
-                           HorizontalAlignment="Left"
-                           Margin="10,339,0,0" />
-                    <ComboBox x:Name="InputDevicesComboBox"
-                              ItemsSource="{Binding InputDevices}"
-                              DisplayMemberPath="Name"
-                              Margin="15,370,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Width="275" />
-                    <ComboBox x:Name="OutputDevicesComboBox"
-                              ItemsSource="{Binding OutputDevices}"
-                              DisplayMemberPath="Name"
-                              Margin="15,400,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Width="275" />
-                    <CheckBox x:Name="HideInTrayCheckBox"
-                              Margin="15,430,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Content="Hide in tray"
-                              />
-                    <CheckBox x:Name="PortableCheckBox"
-                              Margin="15,450,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Content="Portable"
-                              />
-                    <CheckBox x:Name="AudioNotificationCheckBox"
-                              Margin="15,470,0,0"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"
-                              Content="Enable audible message alerts"
-                              ToolTip="Beep on new message unless you are in a voice call."
-                              />
-                    <Button x:Name="ExportDataButton"
-                            Content="Export"
-                            Margin="15,242,10,10"
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Left"
-                            Width="75"
-                            Click="ExportDataButton_OnClick" />
-                    <Button x:Name="SaveSettingsButton"
-                            Content="Save"
-                            Margin="0,242,10,10"
-                            VerticalAlignment="Bottom"
-                            HorizontalAlignment="Right"
-                            Width="75"
-                            Click="SaveSettingsButton_OnClick" />
-                    <Button x:Name="CopyIDButton"
-                            Content="Copy ID"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Width="75"
-                            Margin="160,242,0,10"
-                            Click="CopyIDButton_Click" />
+                    <ScrollViewer VerticalAlignment="Top">
+                        <StackPanel Margin="10,0,0,0">
+                            <Label Content="Enter your desired username"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top" />
+                            <TextBox x:Name="SettingsUsername"
+                                 HorizontalAlignment="Left"
+                                 Height="23"
+                                 TextWrapping="Wrap"
+                                 Text=""
+                                 VerticalAlignment="Top"
+                                 Width="275"/>
+                            <Label Content="Enter your desired status message"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top" />
+                            <TextBox x:Name="SettingsStatus"
+                                 AcceptsReturn="True"
+                                 HorizontalAlignment="Left"
+                                 Height="41"
+                                 TextWrapping="Wrap"
+                                 VerticalAlignment="Top"
+                                 Width="275" />
+                            <Label Content="Change nospam (note: this will change your id)"
+                               HorizontalAlignment="Left"/>
+                            <TextBox x:Name="SettingsNospam"
+                                 AcceptsReturn="True"
+                                 HorizontalAlignment="Left"
+                                 Height="23"
+                                 TextWrapping="Wrap"
+                                 VerticalAlignment="Top"
+                                 Width="275" />
+                            <Label Content="Pick an accent color"
+                               HorizontalAlignment="Left" />
+                            <ComboBox x:Name="AccentComboBox"
+                                  ItemsSource="{Binding AccentColors}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Width="275" SelectionChanged="AccentComboBox_SelectionChanged" />
+                            <ComboBox x:Name="AppThemeComboBox"
+                                  ItemsSource="{Binding AppThemes}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  Margin="0,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
+                            <Label Content="Choose which devices should be used"
+                               HorizontalAlignment="Left" />
+                            <ComboBox x:Name="InputDevicesComboBox"
+                                  ItemsSource="{Binding InputDevices}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Width="275" />
+                            <ComboBox x:Name="OutputDevicesComboBox"
+                                  ItemsSource="{Binding OutputDevices}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Margin="0,5,0,0"
+                                  Width="275" />
+                            <CheckBox x:Name="HideInTrayCheckBox"
+                                  VerticalAlignment="Top"
+                                  Margin="0,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  Content="Hide in tray"
+                                  />
+                            <CheckBox x:Name="PortableCheckBox"
+                                  VerticalAlignment="Top"
+                                  Margin="0,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  Content="Portable"
+                                  />
+                            <CheckBox x:Name="AudioNotificationCheckBox"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Margin="0,5,0,0"
+                                  Content="Enable audible message alerts"
+                                  ToolTip="Beep on new message unless you are in a voice call."
+                                  />
+
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Grid VerticalAlignment="Bottom" Margin="0,0,10,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="ExportDataButton"
+                                Content="Export"
+                                Grid.Column="1"
+                                Width="75"
+                                Click="ExportDataButton_OnClick" />
+                        <Button x:Name="SaveSettingsButton"
+                                Content="Save"
+                                Grid.Column="3"
+                                Width="75"
+                                Click="SaveSettingsButton_OnClick" />
+                        <Button x:Name="CopyIdButton"
+                                Content="Copy ID"
+                                Width="75"
+                                Grid.Column="2"
+                                Click="CopyIDButton_Click" />
+                    </Grid>
                 </Grid>
             </controls:Flyout>
         </controls:FlyoutsControl>

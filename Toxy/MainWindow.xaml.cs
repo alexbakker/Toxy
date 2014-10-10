@@ -393,75 +393,12 @@ namespace Toxy
 
         private void loadTox()
         {
-            if (File.Exists(toxDataFilename) && !config.Portable)
+            if (File.Exists(toxDataFilename))
             {
                 if (!tox.Load(toxDataFilename))
                 {
                     MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
                     Close();
-                }
-            }
-            else if (File.Exists("tox_save"))
-            {
-                if (!config.Portable)
-                {
-                    if (tox.Load("tox_save"))
-                    {
-                        if (!Directory.Exists(toxDataDir))
-                            Directory.CreateDirectory(toxDataDir);
-
-                        if (tox.Save(toxDataFilename))
-                            File.Delete("tox_save");
-                    }
-                }
-                else
-                {
-                    if (!tox.Load("tox_save"))
-                    {
-                        MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
-                        Close();
-                    }
-                }
-            }
-            else if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\data")))
-            {
-                MessageBoxResult result = MessageBox.Show("Could not find your tox_save file.\nWe did find a file named \"data\" located in AppData though, do you want to load this file?\nNote: We'll rename the \"data\" file to \"tox_save\" for you", "Notice", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
-                    File.Move(Path.Combine(path, "data"), Path.Combine(path, "tox_save"));
-
-                    tox.Load(Path.Combine(path, "tox_save"));
-                }
-            }
-            else if (File.Exists("data"))
-            {
-                MessageBoxResult result = MessageBox.Show("Could not find your tox_save file.\nWe did find a file named \"data\" though, do you want to load this file?\nNote: We'll rename the \"data\" file to \"tox_save\" for you", "Notice", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                MessageBoxResult result2 = MessageBox.Show("Do you want to move \"tox_save\" to AppData?\nThis will make it easier to switch between Tox clients.", "Notice", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox\\tox_save");
-
-                    if (result2 != MessageBoxResult.Yes)
-                    {
-                        File.Move("data", "tox_save");
-
-                        config.Portable = true;
-                        ConfigTools.Save(config, "config.xml");
-
-                        tox.Load("tox_save");
-                    }
-                    else
-                    {
-                        if (!Directory.Exists(toxDataDir))
-                            Directory.CreateDirectory(toxDataDir);
-
-                        File.Move("data", path);
-
-                        tox.Load(path);
-                    }
                 }
             }
         }

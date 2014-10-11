@@ -29,6 +29,14 @@ namespace Toxy.Common
             set { enableaudionotifications = value; }
         }
 
+        private bool alwaysNotify = false;
+
+        public bool AlwaysNotify
+        {
+            get { return alwaysNotify; }
+            set { alwaysNotify = value; }
+        }
+
        private bool ipv6Enabled = true;
 
         public bool Ipv6Enabled

@@ -1600,6 +1600,7 @@ namespace Toxy
                 HideInTrayCheckBox.IsChecked = config.HideInTray;
                 PortableCheckBox.IsChecked = config.Portable;
                 AudioNotificationCheckBox.IsChecked = config.EnableAudioNotifications;
+                AlwaysNotifyCheckBox.IsChecked = config.AlwaysNotify;
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1706,6 +1707,7 @@ namespace Toxy
 
             config.Portable = (bool)PortableCheckBox.IsChecked;
             config.EnableAudioNotifications = (bool)AudioNotificationCheckBox.IsChecked;
+            config.AlwaysNotify = (bool) AlwaysNotifyCheckBox.IsChecked;
             ExecuteActionsOnNotifyIcon();
 
             ConfigTools.Save(config, "config.xml");
@@ -2268,9 +2270,16 @@ namespace Toxy
         {
             chat.HasNewMessage = true;
             chat.NewMessageCount++;
-            if(config.EnableAudioNotifications && call==null && WindowState == WindowState.Minimized)
+            if (config.EnableAudioNotifications && call == null)
             {
-                Win32.Winmm.PlayMessageNotify();
+                if (WindowState == WindowState.Normal && config.AlwaysNotify)
+                {
+                    Win32.Winmm.PlayMessageNotify();
+                }
+                else if(WindowState == WindowState.Minimized)
+                {
+                    Win32.Winmm.PlayMessageNotify();
+                }
             }
         }
 

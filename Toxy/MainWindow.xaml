@@ -603,7 +603,13 @@
                                   Content="Enable audible message alerts"
                                   ToolTip="Beep on new message unless you are in a voice call."
                                   />
-
+                            <CheckBox x:Name="AlwaysNotifyCheckBox"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left"
+                                      Margin="0,5,0,0"
+                                      IsEnabled="{Binding ElementName=AudioNotificationCheckBox, Path=IsChecked}"
+                                      Content="Always play sound, even when Toxy is open"
+                                      />
                         </StackPanel>
                     </ScrollViewer>
                     <Grid VerticalAlignment="Bottom" Margin="0,0,10,10">

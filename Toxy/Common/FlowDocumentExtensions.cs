@@ -29,7 +29,7 @@ namespace Toxy.Common
             usernameParagraph.TextAlignment = data.IsAction ? TextAlignment.Right : TextAlignment.Left;
             usernameParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
 
-            if (data.Username != tox.GetSelfName().Replace("\n", "").Replace("\r", ""))
+            if (data.Username != tox.Name.Replace("\n", "").Replace("\r", ""))
                 usernameParagraph.SetResourceReference(Paragraph.ForegroundProperty, "AccentColorBrush");
 
             if(!sameUser)

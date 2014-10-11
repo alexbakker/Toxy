@@ -155,7 +155,7 @@ namespace Toxy
             tox.Start();
 
             if (string.IsNullOrEmpty(getSelfName()))
-                tox.SetName("Toxy User");
+                tox.Name = "Toxy User";
 
             ViewModel.MainToxyUser.Name = getSelfName();
             ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();
@@ -171,7 +171,7 @@ namespace Toxy
             ChatBox.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
             ChatBox.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
 
-            if (tox.GetFriendlistCount() > 0)
+            if (tox.FriendCount > 0)
                 ViewModel.SelectedChatObject = ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
 
             loadAvatars();
@@ -186,7 +186,7 @@ namespace Toxy
                 return;
             }
 
-            string selfAvatarFile = Path.Combine(avatarsDir, tox.GetKeys().PublicKey.GetString() + ".png");
+            string selfAvatarFile = Path.Combine(avatarsDir, tox.Keys.PublicKey.GetString() + ".png");
             if (File.Exists(selfAvatarFile))
             {
                 byte[] bytes = File.ReadAllBytes(selfAvatarFile);
@@ -212,7 +212,7 @@ namespace Toxy
                 }
             }
 
-            foreach (int friend in tox.GetFriendlist())
+            foreach (int friend in tox.FriendList)
             {
                 var obj = ViewModel.GetFriendObjectByNumber(friend);
                 if (obj == null)
@@ -398,7 +398,7 @@ namespace Toxy
 
         private void tox_OnConnected()
         {
-            SetStatus(tox.GetSelfUserStatus(), false);
+            SetStatus(tox.Status, false);
         }
 
         private async void Chat_Drop(object sender, DragEventArgs e)
@@ -444,7 +444,8 @@ namespace Toxy
         {
             if (File.Exists(toxDataFilename))
             {
-                if (!tox.Load(toxDataFilename))
+                ToxData data = ToxData.FromDisk(toxDataFilename);
+                if (data == null || !tox.Load(data))
                 {
                     MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
                     Close();
@@ -545,7 +546,7 @@ namespace Toxy
 
         private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)
         {
-            if (tox.IsConnected())
+            if (tox.IsConnected)
                 SetStatus((ToxUserStatus)((System.Windows.Forms.MenuItem)sender).Tag, true);
         }
 
@@ -1176,7 +1177,7 @@ namespace Toxy
         private void InitFriends()
         {
             //Creates a new FriendControl for every friend
-            foreach (var friendNumber in tox.GetFriendlist())
+            foreach (var friendNumber in tox.FriendList)
             {
                 AddFriendToView(friendNumber, false);
             }
@@ -1233,12 +1234,12 @@ namespace Toxy
 
         private string getSelfStatusMessage()
         {
-            return tox.GetSelfStatusMessage().Replace("\n", "").Replace("\r", "");
+            return tox.StatusMessage.Replace("\n", "").Replace("\r", "");
         }
 
         private string getSelfName()
         {
-            return tox.GetSelfName().Replace("\n", "").Replace("\r", "");
+            return tox.Name.Replace("\n", "").Replace("\r", "");
         }
 
         private string getFriendStatusMessage(int friendnumber)
@@ -1330,7 +1331,9 @@ namespace Toxy
                     Directory.CreateDirectory(toxDataDir);
             }
 
-            tox.Save(toxDataFilename);
+            ToxData data = tox.GetData();
+            if (data != null)
+                data.Save(toxDataFilename);
         }
 
         private void FriendCopyIdAction(IFriendObject friendObject)
@@ -1659,8 +1662,8 @@ namespace Toxy
 
         private void SaveSettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            tox.SetName(SettingsUsername.Text);
-            tox.SetStatusMessage(SettingsStatus.Text);
+            tox.Name = SettingsUsername.Text;
+            tox.StatusMessage = SettingsStatus.Text;
 
             uint nospam;
             if (uint.TryParse(SettingsNospam.Text, out nospam))
@@ -1852,7 +1855,7 @@ namespace Toxy
 
         private void CopyIDButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetDataObject(tox.GetAddress());
+            Clipboard.SetDataObject(tox.Id);
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1913,7 +1916,7 @@ namespace Toxy
 
         private void MenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            if (!tox.IsConnected())
+            if (!tox.IsConnected)
                 return;
 
             MenuItem menuItem = (MenuItem)e.Source;
@@ -1976,8 +1979,12 @@ namespace Toxy
             else
             {
                 if (changeUserStatus)
-                    if (!tox.SetUserStatus(newStatus.GetValueOrDefault()))
+                {
+                    tox.Status = newStatus.GetValueOrDefault();
+
+                    if (tox.Status != newStatus.GetValueOrDefault())
                         return;
+                }
             }
 
             ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();
@@ -2118,7 +2125,7 @@ namespace Toxy
             if (dialog.ShowDialog() != true)
                 return;
 
-            try { File.WriteAllBytes(dialog.FileName, tox.GetDataBytes()); }
+            try { File.WriteAllBytes(dialog.FileName, tox.GetData().Bytes); }
             catch { this.ShowMessageAsync("Error", "Could not export data."); }
         }
 
@@ -2183,7 +2190,7 @@ namespace Toxy
             if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
             {
                 string avatarsDir = Path.Combine(toxDataDir, "avatars");
-                string selfAvatarFile = Path.Combine(avatarsDir, tox.GetKeys().PublicKey.GetString() + ".png");
+                string selfAvatarFile = Path.Combine(avatarsDir, tox.Keys.PublicKey.GetString() + ".png");
 
                 if (!Directory.Exists(avatarsDir))
                     Directory.CreateDirectory(avatarsDir);
@@ -2192,7 +2199,7 @@ namespace Toxy
             }
 
             //let's announce our new avatar
-            foreach(int friend in tox.GetFriendlist())
+            foreach(int friend in tox.FriendList)
             {
                 if (!tox.IsOnline(friend))
                     continue;

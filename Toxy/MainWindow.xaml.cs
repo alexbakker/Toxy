@@ -127,7 +127,7 @@ namespace Toxy
             tox.OnGroupAction += tox_OnGroupAction;
             tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
 
-            toxav = new ToxAv(tox.GetHandle(), ToxAv.DefaultCodecSettings, 1);
+            toxav = new ToxAv(tox.Handle, ToxAv.DefaultCodecSettings, 1);
             toxav.Invoker = Dispatcher.BeginInvoke;
             toxav.OnInvite += toxav_OnInvite;
             toxav.OnStart += toxav_OnStart;
@@ -817,7 +817,7 @@ namespace Toxy
         {
             FileTransfer transfer = (FileTransfer)ft;
 
-            ToxHandle handle = tox.GetHandle();
+            ToxHandle handle = tox.Handle;
             int chunk_size = tox.FileDataSize(transfer.FriendNumber);
             byte[] buffer = new byte[chunk_size];
 

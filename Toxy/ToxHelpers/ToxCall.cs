@@ -65,7 +65,7 @@ namespace Toxy.ToxHelpers
             Console.WriteLine("Recording stopped");
         }
 
-        public void ProcessAudioFrame(short[] frame, int frame_size)
+        public void ProcessAudioFrame(short[] frame)
         {
             if (wave_out == null)
                 return;

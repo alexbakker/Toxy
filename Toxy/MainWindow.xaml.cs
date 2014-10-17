@@ -930,7 +930,7 @@ namespace Toxy
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(ViewModel.SelectedChatNumber))
             {
-                var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
+                var docPath = (string[])e.Data.GetData(DataFormats.FileDrop);
                 MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
 
                 var mySettings = new MetroDialogSettings()
@@ -1650,7 +1650,7 @@ namespace Toxy
             {
                 if (ex.Error != ToxAFError.SetNewNospam)
                     this.ShowMessageAsync("An error occurred", Tools.GetAFError(ex.Error));
-                
+
                 return;
             }
             catch
@@ -1713,7 +1713,7 @@ namespace Toxy
 
             config.Portable = (bool)PortableCheckBox.IsChecked;
             config.EnableAudioNotifications = (bool)AudioNotificationCheckBox.IsChecked;
-            config.AlwaysNotify = (bool) AlwaysNotifyCheckBox.IsChecked;
+            config.AlwaysNotify = (bool)AlwaysNotifyCheckBox.IsChecked;
             ExecuteActionsOnNotifyIcon();
 
             ConfigTools.Save(config, "config.xml");
@@ -1937,7 +1937,7 @@ namespace Toxy
             {
                 if (Clipboard.ContainsImage())
                 {
-                    var bmp = (Bitmap) System.Windows.Forms.Clipboard.GetImage();
+                    var bmp = (Bitmap)System.Windows.Forms.Clipboard.GetImage();
                     byte[] bytes = bmp.GetBytes();
 
                     if (!convdic.ContainsKey(ViewModel.SelectedChatNumber))
@@ -2207,7 +2207,7 @@ namespace Toxy
             }
 
             //let's announce our new avatar
-            foreach(int friend in tox.FriendList)
+            foreach (int friend in tox.FriendList)
             {
                 if (!tox.IsOnline(friend))
                     continue;
@@ -2215,7 +2215,7 @@ namespace Toxy
                 tox.SendAvatarInfo(friend);
             }
         }
-        
+
         private byte[] avatarBitmapToBytes(Bitmap bmp)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -2265,7 +2265,7 @@ namespace Toxy
                 }
             }
         }
-        
+
         private void AvatarImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             AvatarContextMenu.PlacementTarget = this;
@@ -2282,7 +2282,7 @@ namespace Toxy
                 {
                     Win32.Winmm.PlayMessageNotify();
                 }
-                else if(WindowState == WindowState.Minimized)
+                else if (WindowState == WindowState.Minimized)
                 {
                     Win32.Winmm.PlayMessageNotify();
                 }
@@ -2295,5 +2295,33 @@ namespace Toxy
             chat.NewMessageCount = 0;
         }
 
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(SearchBox.Text))
+            {
+                foreach (IChatObject chat in this.ViewModel.ChatCollection)
+                {
+                    if (!chat.Name.ToLower().Contains(SearchBox.Text.ToLower()))
+                    {
+                        if (chat.GetType() == typeof(FriendControlModelView) || chat.GetType() == typeof(GroupControlModelView))
+                        {
+                            var view = (BaseChatModelView)chat;
+                            view.Visible = false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (IChatObject chat in this.ViewModel.ChatCollection)
+                {
+                    if (chat.GetType() == typeof(FriendControlModelView) || chat.GetType() == typeof(GroupControlModelView))
+                    {
+                        var view = (BaseChatModelView)chat;
+                        view.Visible = true;
+                    }
+                }
+            }
+        }
     }
 }

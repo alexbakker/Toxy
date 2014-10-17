@@ -150,5 +150,19 @@ namespace Toxy.ViewModels
             }
         }
 
+        private bool visible = true;
+
+        public bool Visible
+        {
+            get { return this.visible; }
+            set
+            {
+                if (!Equals(value, this.Visible))
+                {
+                    this.visible = value;
+                    this.OnPropertyChanged(() => this.Visible);
+                }
+            }
+        }
     }
 }

@@ -168,7 +168,8 @@
                                  Grid.Row="0"
                                  Margin="0 3"
                                  TextChanged="SearchBox_TextChanged"
-                                 controls:TextboxHelper.Watermark="Search for friends/groups"/>
+                                 controls:TextboxHelper.Watermark="Search for friends/groups"
+                                 BorderBrush="{DynamicResource AccentColorBrush}"/>
 
                         <views:CallControl Grid.Row="1"
                                            DataContext="{Binding CallingFriend, Mode=OneWay}"
@@ -327,7 +328,7 @@
 
         <!-- the grid splitter -->
         <GridSplitter Grid.Column="1"
-                      Width="2"
+                      Width="1"
                       HorizontalAlignment="Center"
                       Background="{DynamicResource AccentColorBrush}"/>
 

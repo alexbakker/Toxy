@@ -93,7 +93,7 @@ namespace Toxy.Common
             set { inputDevice = value; }
         }
 
-        private string accentColor = "Steel";
+        private string accentColor = "Blue";
 
         public string AccentColor
         {

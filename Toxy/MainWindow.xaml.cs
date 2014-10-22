@@ -759,8 +759,10 @@ namespace Toxy
 
         private void toxav_OnStart(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
+            var settings = toxav.GetPeerCodecSettings(e.CallIndex, 0);
+
             if (call != null)
-                call.Start(config.InputDevice, config.OutputDevice);
+                call.Start(config.InputDevice, config.OutputDevice, settings);
 
             int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
             var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);

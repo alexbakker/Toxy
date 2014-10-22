@@ -25,12 +25,12 @@ namespace Toxy.ToxHelpers
             CallIndex = callindex;
         }
 
-        public void Start(int input, int output)
+        public void Start(int input, int output, ToxAvCodecSettings settings)
         {
             //who doesn't love magic numbers?!
             toxav.PrepareTransmission(CallIndex, 3, 40, false);
 
-            WaveFormat format = new WaveFormat((int)toxav.CodecSettings.AudioSampleRate, (int)toxav.CodecSettings.AudioChannels);
+            WaveFormat format = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
             wave_provider = new BufferedWaveProvider(format);
             wave_provider.DiscardOnBufferOverflow = true;
 

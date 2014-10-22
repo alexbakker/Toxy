@@ -172,6 +172,7 @@
                                  BorderBrush="{DynamicResource AccentColorBrush}"/>
 
                         <views:CallControl Grid.Row="1"
+                                           x:Name="CurrentCallControl"
                                            DataContext="{Binding CallingFriend, Mode=OneWay}"
                                            Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
 

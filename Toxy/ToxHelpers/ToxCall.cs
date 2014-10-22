@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
+using System.Diagnostics;
+
 using NAudio.Wave;
+
 using SharpTox.Av;
 using SharpTox.Core;
 
@@ -13,6 +16,9 @@ namespace Toxy.ToxHelpers
         private WaveIn wave_source;
         private WaveOut wave_out;
         private BufferedWaveProvider wave_provider;
+
+        private Timer timer;
+        public int TotalSeconds = 0;
 
         public int CallIndex;
         public int FriendNumber;
@@ -60,6 +66,11 @@ namespace Toxy.ToxHelpers
                 wave_out.Init(wave_provider);
                 wave_out.Play();
             }
+        }
+
+        public void SetTimerCallback(TimerCallback callback)
+        {
+            timer = new Timer(callback, null, 0, 1000);
         }
 
         private void wave_source_RecordingStopped(object sender, StoppedEventArgs e)
@@ -120,6 +131,9 @@ namespace Toxy.ToxHelpers
 
             toxav.KillTransmission(CallIndex);
             toxav.Hangup(CallIndex);
+
+            if (timer != null)
+                timer.Dispose();
         }
 
         public void Answer()

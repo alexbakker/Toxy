@@ -777,6 +777,19 @@ namespace Toxy
                 }
                 ViewModel.CallingFriend = callingFriend;
             }
+
+            call.SetTimerCallback(timerCallback);
+        }
+
+        private void timerCallback(object state)
+        {
+            if (call == null)
+                return;
+
+            call.TotalSeconds++;
+            var timeSpan = TimeSpan.FromSeconds(call.TotalSeconds);
+
+            Dispatcher.BeginInvoke(((Action)(() => CurrentCallControl.TimerLabel.Content = string.Format("{0}:{1}:{2}", timeSpan.Hours.ToString("00"), timeSpan.Minutes.ToString("00"), timeSpan.Seconds.ToString("00")))));
         }
 
         private void toxav_OnInvite(object sender, ToxAvEventArgs.CallStateEventArgs e)

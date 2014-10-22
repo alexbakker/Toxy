@@ -67,10 +67,11 @@
 
         <Label Grid.Column="2"
                Margin="2"
-               Content="37:50"
+               Content="00:00:00"
                VerticalAlignment="Center"
                FontSize="14"
-               Foreground="#FF404040" />
+               Foreground="#FF404040" 
+               x:Name="TimerLabel"/>
 
         <Button Grid.Column="3"
                 Margin="2"

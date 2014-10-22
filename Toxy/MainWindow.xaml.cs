@@ -1506,6 +1506,8 @@ namespace Toxy
             {
                 call.Stop();
                 call = null;
+
+                CurrentCallControl.TimerLabel.Content = "00:00:00";
             }
 
             ViewModel.CallingFriend = null;

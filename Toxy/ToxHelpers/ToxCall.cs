@@ -30,8 +30,8 @@ namespace Toxy.ToxHelpers
             //who doesn't love magic numbers?!
             toxav.PrepareTransmission(CallIndex, 3, 40, false);
 
-            WaveFormat format = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
-            wave_provider = new BufferedWaveProvider(format);
+            WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
+            wave_provider = new BufferedWaveProvider(outFormat);
             wave_provider.DiscardOnBufferOverflow = true;
 
             if (WaveIn.DeviceCount > 0)
@@ -41,10 +41,12 @@ namespace Toxy.ToxHelpers
                 if (input != -1)
                     wave_source.DeviceNumber = input - 1;
 
-                wave_source.WaveFormat = format;
+                WaveFormat inFormat = new WaveFormat((int)ToxAv.DefaultCodecSettings.AudioSampleRate, 1);
+
+                wave_source.WaveFormat = inFormat;
                 wave_source.DataAvailable += wave_source_DataAvailable;
                 wave_source.RecordingStopped += wave_source_RecordingStopped;
-                wave_source.BufferMilliseconds = (int)toxav.CodecSettings.AudioFrameDuration;
+                wave_source.BufferMilliseconds = ToxAv.DefaultCodecSettings.AudioFrameDuration;
                 wave_source.StartRecording();
             }
 

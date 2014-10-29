@@ -835,20 +835,11 @@ namespace Toxy
                 {
                     tox.SetAvatar(ToxAvatarFormat.Png, bytes);
 
-                    MemoryStream stream = null;
-                    try
-                    {
-                        stream = new MemoryStream(bytes);
+                    MemoryStream stream = new MemoryStream(bytes);
 
-                        using (Bitmap bmp = new Bitmap(stream))
-                        {
-                            ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
-                        }
-                    }
-                    finally
+                    using (Bitmap bmp = new Bitmap(stream))
                     {
-                        if (stream != null)
-                            stream.Dispose();
+                        ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
                     }
                 }
             }
@@ -868,20 +859,11 @@ namespace Toxy
                     {
                         obj.AvatarBytes = bytes;
 
-                        MemoryStream stream = null;
-                        try
-                        {
-                            stream = new MemoryStream(bytes);
+                        MemoryStream stream = new MemoryStream(bytes);
 
-                            using (Bitmap bmp = new Bitmap(stream))
-                            {
-                                obj.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
-                            }
-                        }
-                        finally
+                        using (Bitmap bmp = new Bitmap(stream))
                         {
-                            if (stream != null)
-                                stream.Dispose();
+                            obj.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
                         }
                     }
                 }
@@ -914,26 +896,14 @@ namespace Toxy
 
                 Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    MemoryStream stream = null;
-                    try
-                    {
-                        stream = new MemoryStream(data);
+                    MemoryStream stream = new MemoryStream(data);
 
-                        Console.WriteLine("Created memory stream for avatar data ({0})", friend.ChatNumber);
+                    Console.WriteLine("Created memory stream for avatar data ({0})", friend.ChatNumber);
 
-                        using (Bitmap bmp = new Bitmap(stream))
-                        {
-                            friend.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
-                            Console.WriteLine("Done applying avatar ({0})", friend.ChatNumber);
-                        }
-                    }
-                    finally
+                    using (Bitmap bmp = new Bitmap(stream))
                     {
-                        if (stream != null)
-                        {
-                            stream.Dispose();
-                            Console.WriteLine("Disposed avatar memory stream ({0})", friend.ChatNumber);
-                        }
+                        friend.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
+                        Console.WriteLine("Done applying avatar ({0})", friend.ChatNumber);
                     }
                 })));
 
@@ -2197,7 +2167,6 @@ namespace Toxy
                 }
 
                 bmp.Dispose();
-                stream.Dispose();
 
                 bmp = newBmp;
                 avatarBytes = avatarBitmapToBytes(bmp);
@@ -2238,8 +2207,6 @@ namespace Toxy
             using (MemoryStream stream = new MemoryStream())
             {
                 bmp.Save(stream, ImageFormat.Png);
-                stream.Close();
-
                 return stream.ToArray();
             }
         }

@@ -894,18 +894,17 @@ namespace Toxy
                     return false;
                 }
 
-                Dispatcher.BeginInvoke(((Action)(() =>
+                MemoryStream stream = new MemoryStream(data);
+
+                Console.WriteLine("Created memory stream for avatar data ({0})", friend.ChatNumber);
+
+                using (Bitmap bmp = new Bitmap(stream))
                 {
-                    MemoryStream stream = new MemoryStream(data);
+                    var result = BitmapToImageSource(bmp, ImageFormat.Png);
+                    Dispatcher.BeginInvoke(((Action)(() => friend.Avatar = result)));
 
-                    Console.WriteLine("Created memory stream for avatar data ({0})", friend.ChatNumber);
-
-                    using (Bitmap bmp = new Bitmap(stream))
-                    {
-                        friend.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
-                        Console.WriteLine("Done applying avatar ({0})", friend.ChatNumber);
-                    }
-                })));
+                    Console.WriteLine("Done applying avatar ({0})", friend.ChatNumber);
+                }
 
                 return true;
             });
@@ -2224,6 +2223,7 @@ namespace Toxy
                 newBmp.StreamSource = stream;
                 newBmp.CacheOption = BitmapCacheOption.OnLoad;
                 newBmp.EndInit();
+                newBmp.Freeze();
 
                 return newBmp;
             }

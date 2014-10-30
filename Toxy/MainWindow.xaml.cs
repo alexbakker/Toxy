@@ -213,14 +213,10 @@ namespace Toxy
             var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
             if (group != null)
             {
-                if (!group.Selected)
-                {
-                    MessageAlertIncrement(group);
-                }
-                else
-                {
+                MessageAlertIncrement(group);
+
+                if (group.Selected)
                     ScrollChatBox();
-                }
             }
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
@@ -256,14 +252,10 @@ namespace Toxy
             var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
             if (group != null)
             {
-                if (!group.Selected)
-                {
-                    MessageAlertIncrement(group);
-                }
-                else
-                {
+                MessageAlertIncrement(group);
+
+                if (group.Selected)
                     ScrollChatBox();
-                }
             }
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
@@ -493,9 +485,13 @@ namespace Toxy
             FileTransfer transfer = convdic[e.FriendNumber].AddNewFileTransfer(tox, e.FriendNumber, e.FileNumber, e.FileName, e.FileSize, false);
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend != null && !friend.Selected)
+
+            if (friend != null)
             {
                 MessageAlertIncrement(friend);
+
+                if (friend.Selected)
+                    ScrollChatBox();
             }
 
             transfer.Control.OnAccept += delegate(int friendnum, int filenum)
@@ -506,7 +502,7 @@ namespace Toxy
                 SaveFileDialog dialog = new SaveFileDialog();
                 dialog.FileName = e.FileName;
 
-                if (dialog.ShowDialog() == true) //guess what, this bool is nullable
+                if (dialog.ShowDialog() == true)
                 {
                     transfer.Stream = new FileStream(dialog.FileName, FileMode.Create);
                     transfer.FileName = dialog.FileName;
@@ -548,8 +544,6 @@ namespace Toxy
             transfers.Add(transfer);
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
-
-            ScrollChatBox();
         }
 
         private void tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
@@ -658,14 +652,10 @@ namespace Toxy
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
             if (friend != null)
             {
-                if (!friend.Selected)
-                {
-                    MessageAlertIncrement(friend);
-                }
-                else
-                {
+                MessageAlertIncrement(friend);
+
+                if (friend.Selected)
                     ScrollChatBox();
-                }
             }
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
@@ -704,14 +694,10 @@ namespace Toxy
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
             if (friend != null)
             {
-                if (!friend.Selected)
-                {
-                    MessageAlertIncrement(friend);
-                }
-                else
-                {
+                MessageAlertIncrement(friend);
+
+                if (friend.Selected)
                     ScrollChatBox();
-                }
             }
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
@@ -2258,15 +2244,19 @@ namespace Toxy
 
         private void MessageAlertIncrement(IChatObject chat)
         {
-            chat.HasNewMessage = true;
-            chat.NewMessageCount++;
+            if (!chat.Selected)
+            {
+                chat.HasNewMessage = true;
+                chat.NewMessageCount++;
+            }
+
             if (config.EnableAudioNotifications && call == null)
             {
-                if (WindowState == WindowState.Normal && config.AlwaysNotify)
+                if (WindowState == WindowState.Normal && config.AlwaysNotify && !chat.Selected)
                 {
                     Win32.Winmm.PlayMessageNotify();
                 }
-                else if (WindowState == WindowState.Minimized)
+                else if (WindowState == WindowState.Minimized || !IsActive)
                 {
                     Win32.Winmm.PlayMessageNotify();
                 }

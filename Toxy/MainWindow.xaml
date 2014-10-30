@@ -540,7 +540,7 @@
                              Position="Right"
                              Width="300" IsOpenChanged="SettingsFlyout_IsOpenChanged">
                 <Grid>
-                    <ScrollViewer VerticalAlignment="Top">
+                    <ScrollViewer VerticalAlignment="Top" Margin="0 0 0 50">
                         <StackPanel Margin="10,0,0,0">
                             <Label Content="Enter your desired username"
                                HorizontalAlignment="Left"
@@ -554,6 +554,7 @@
                                  Width="275"/>
                             <Label Content="Enter your desired status message"
                                HorizontalAlignment="Left"
+                               Margin="0 10 0 0"
                                VerticalAlignment="Top" />
                             <TextBox x:Name="SettingsStatus"
                                  AcceptsReturn="True"
@@ -563,6 +564,7 @@
                                  VerticalAlignment="Top"
                                  Width="275" />
                             <Label Content="Change nospam (note: this will change your id)"
+                               Margin="0 10 0 0"
                                HorizontalAlignment="Left"/>
                             <TextBox x:Name="SettingsNospam"
                                  AcceptsReturn="True"
@@ -572,6 +574,7 @@
                                  VerticalAlignment="Top"
                                  Width="275" />
                             <Label Content="Pick an accent color"
+                               Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="AccentComboBox"
                                   ItemsSource="{Binding AccentColors}"
@@ -587,6 +590,7 @@
                                   HorizontalAlignment="Left"
                                   Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
                             <Label Content="Choose which devices should be used"
+                               Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="InputDevicesComboBox"
                                   ItemsSource="{Binding InputDevices}"
@@ -603,7 +607,7 @@
                                   Width="275" />
                             <CheckBox x:Name="HideInTrayCheckBox"
                                   VerticalAlignment="Top"
-                                  Margin="0,5,0,0"
+                                  Margin="0,15,0,0"
                                   HorizontalAlignment="Left"
                                   Content="Hide in tray"
                                   />
@@ -627,6 +631,38 @@
                                       IsEnabled="{Binding ElementName=AudioNotificationCheckBox, Path=IsChecked}"
                                       Content="Always play sound, even when Toxy is open"
                                       />
+                            <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+                                <Label Content="Proxy address"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top" />
+                                <Label Content="Proxy port"
+                                    Margin="120 0 0 0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox x:Name="SettingsProxyAddress"
+                                     HorizontalAlignment="Left"
+                                     Height="23"
+                                     Text="127.0.0.1"
+                                     TextWrapping="Wrap"
+                                     VerticalAlignment="Top"
+                                     Width="200" />
+                                <TextBox x:Name="SettingsProxyPort"
+                                     HorizontalAlignment="Left"
+                                     Height="23"
+                                     Text="9050"
+                                     TextWrapping="Wrap"
+                                     VerticalAlignment="Top"
+                                     Margin="5 0"
+                                     Width="70" />
+                            </StackPanel>
+                            <CheckBox x:Name="EnableProxyCheckbox"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Margin="0,5,0,0"
+                                  Content="Enable proxy"
+                                  />
                         </StackPanel>
                     </ScrollViewer>
                     <Grid VerticalAlignment="Bottom" Margin="0,0,10,10">

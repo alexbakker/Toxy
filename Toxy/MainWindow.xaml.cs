@@ -1579,6 +1579,14 @@ namespace Toxy
                 PortableCheckBox.IsChecked = config.Portable;
                 AudioNotificationCheckBox.IsChecked = config.EnableAudioNotifications;
                 AlwaysNotifyCheckBox.IsChecked = config.AlwaysNotify;
+
+                if (!string.IsNullOrEmpty(config.ProxyAddress))
+                    SettingsProxyAddress.Text = config.ProxyAddress;
+
+                if (config.ProxyPort != 0)
+                    SettingsProxyPort.Text = config.ProxyPort.ToString();
+
+                EnableProxyCheckbox.IsChecked = config.ProxyEnabled;
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1688,8 +1696,24 @@ namespace Toxy
             config.AlwaysNotify = (bool)AlwaysNotifyCheckBox.IsChecked;
             ExecuteActionsOnNotifyIcon();
 
+            bool proxyConfigChanged = false;
+            if (config.ProxyEnabled != EnableProxyCheckbox.IsChecked || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)
+                proxyConfigChanged = true;
+
+            config.ProxyEnabled = (bool)EnableProxyCheckbox.IsChecked;
+            config.ProxyAddress = SettingsProxyAddress.Text;
+
+            int proxyPort;
+            if (int.TryParse(SettingsProxyPort.Text, out proxyPort))
+                config.ProxyPort = proxyPort;
+
             ConfigTools.Save(config, "config.xml");
             saveTox();
+
+            if (proxyConfigChanged)
+            {
+                this.ShowMessageAsync("Alert", "You have changed your proxy configuration.\nPlease restart Toxy to apply these changes.");
+            }
         }
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)

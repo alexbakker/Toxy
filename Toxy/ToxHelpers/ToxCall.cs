@@ -75,7 +75,7 @@ namespace Toxy.ToxHelpers
 
         private void wave_source_RecordingStopped(object sender, StoppedEventArgs e)
         {
-            Console.WriteLine("Recording stopped");
+            Debug.WriteLine("Recording stopped");
         }
 
         public void ProcessAudioFrame(short[] frame)
@@ -110,7 +110,7 @@ namespace Toxy.ToxHelpers
 
             ToxAvError error = toxav.SendAudio(CallIndex, dest, size);
             if (error != ToxAvError.None)
-                Console.WriteLine("Could not send audio: {0}", error);
+                Debug.WriteLine(string.Format("Could not send audio: {0}", error));
         }
 
         public void Stop()

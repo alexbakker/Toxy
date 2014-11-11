@@ -43,5 +43,20 @@ namespace Toxy.ViewModels
                 }
             }
         }
+
+        private ToxGroupType groupType;
+
+        public ToxGroupType GroupType
+        {
+            get { return this.groupType; }
+            set
+            {
+                if (!Equals(value, this.GroupType))
+                {
+                    this.groupType = value;
+                    this.OnPropertyChanged(() => this.GroupType);
+                }
+            }
+        }
     }
 }

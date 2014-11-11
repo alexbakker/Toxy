@@ -84,6 +84,7 @@ namespace Toxy
             InitializeComponent();
 
             DataContext = new MainWindowViewModel();
+            Debug.AutoFlush = true;
 
             if (File.Exists("config.xml"))
             {
@@ -149,7 +150,7 @@ namespace Toxy
             }
 
             if (!bootstrap_success)
-                Console.WriteLine("Could not bootstrap from any node!");
+                Debug.WriteLine("Could not bootstrap from any node!");
 
             loadTox();
             tox.Start();
@@ -272,12 +273,12 @@ namespace Toxy
             if (group != null)
                 SelectGroupControl(group);
             else if (number != -1)
-                AddGroupToView(number);
+                AddGroupToView(number, e.GroupType);
         }
 
         private void tox_OnAvatarInfo(object sender, ToxEventArgs.AvatarInfoEventArgs e)
         {
-            Console.WriteLine("Received avatar info from {0}", e.FriendNumber);
+            Debug.WriteLine(string.Format("Received avatar info from {0}", e.FriendNumber));
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
             if (friend == null)
@@ -285,7 +286,7 @@ namespace Toxy
 
             if (e.Format == ToxAvatarFormat.None)
             {
-                Console.WriteLine("Received ToxAvatarFormat.None ({0})", e.FriendNumber);
+                Debug.WriteLine(string.Format("Received ToxAvatarFormat.None ({0})", e.FriendNumber));
 
                 //friend removed avatar
                 if (avatarExistsOnDisk(e.FriendNumber))
@@ -296,7 +297,7 @@ namespace Toxy
             }
             else
             {
-                Console.WriteLine("Received ToxAvatarFormat.Png ({0})", e.FriendNumber);
+                Debug.WriteLine(string.Format("Received ToxAvatarFormat.Png ({0})", e.FriendNumber));
 
                 if (friend.AvatarBytes == null || friend.AvatarBytes.Length == 0)
                 {
@@ -305,30 +306,30 @@ namespace Toxy
 
                     if (!avatarExistsOnDisk(e.FriendNumber))
                     {
-                        Console.WriteLine("Avatar ({0}) does not exist on disk, requesting data", e.FriendNumber);
+                        Debug.WriteLine(string.Format("Avatar ({0}) does not exist on disk, requesting data", e.FriendNumber));
 
                         if (!tox.RequestAvatarData(e.FriendNumber))
-                            Console.WriteLine("Could not request avatar data from {0}: {1}", e.FriendNumber, getFriendName(e.FriendNumber));
+                            Debug.WriteLine(string.Format("Could not request avatar data from {0}: {1}", e.FriendNumber, getFriendName(e.FriendNumber)));
                     }
 
                     //if the avatar DOES exist on disk we're probably still loading it
                 }
                 else
                 {
-                    Console.WriteLine("Comparing given hash to the avatar we already have ({0})", e.FriendNumber);
+                    Debug.WriteLine(string.Format("Comparing given hash to the avatar we already have ({0})", e.FriendNumber));
                     //let's compare this to the hash we have
                     if (tox.GetHash(friend.AvatarBytes).SequenceEqual(e.Hash))
                     {
-                        Console.WriteLine("We already have this avatar, ignore ({0})", e.FriendNumber);
+                        Debug.WriteLine(string.Format("We already have this avatar, ignore ({0})", e.FriendNumber));
                         //we already have this avatar, ignore
                         return;
                     }
                     else
                     {
-                        Console.WriteLine("Hashes don't match, requesting avatar data... ({0})", e.FriendNumber);
+                        Debug.WriteLine(string.Format("Hashes don't match, requesting avatar data... ({0})", e.FriendNumber));
                         //that's interesting, let's ask for the avatar data
                         if (!tox.RequestAvatarData(e.FriendNumber))
-                            Console.WriteLine("Could not request avatar date from {0}: {1}", e.FriendNumber, getFriendName(e.FriendNumber));
+                            Debug.WriteLine(string.Format("Could not request avatar date from {0}: {1}", e.FriendNumber, getFriendName(e.FriendNumber)));
                     }
                 }
             }
@@ -336,7 +337,7 @@ namespace Toxy
 
         private void tox_OnAvatarData(object sender, ToxEventArgs.AvatarDataEventArgs e)
         {
-            Console.WriteLine("Received avatar data from {0}", e.FriendNumber);
+            Debug.WriteLine(string.Format("Received avatar data from {0}", e.FriendNumber));
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
             if (friend == null)
@@ -346,7 +347,7 @@ namespace Toxy
             {
                 //that's odd, why did we even receive this avatar?
                 //let's ignore ..
-                Console.WriteLine("Received avatar data unexpectedly, ignoring");
+                Debug.WriteLine("Received avatar data unexpectedly, ignoring");
             }
             else
             {
@@ -355,13 +356,13 @@ namespace Toxy
                     //note: this might be dangerous, maybe we need a way of verifying that this isn't malicious data (but how?)
                     friend.AvatarBytes = e.Avatar.Data;
 
-                    Console.WriteLine("Starting task to apply the new avatar ({0})", e.FriendNumber);
+                    Debug.WriteLine(string.Format("Starting task to apply the new avatar ({0})", e.FriendNumber));
                     applyAvatar(friend, e.Avatar.Data);
                 }
                 catch
                 {
                     //looks like someone sent invalid image data, what a troll
-                    Console.WriteLine("Received invalid avatar data ({0})", e.FriendNumber);
+                    Debug.WriteLine(string.Format("Received invalid avatar data ({0})", e.FriendNumber));
                 }
             }
         }
@@ -867,7 +868,7 @@ namespace Toxy
             {
                 try
                 {
-                    Console.WriteLine("Saving avatar to disk ({0})", friend.ChatNumber);
+                    Debug.WriteLine(string.Format("Saving avatar to disk ({0})", friend.ChatNumber));
                     string avatarsDir = Path.Combine(toxDataDir, "avatars");
                     if (!Directory.Exists(avatarsDir))
                         Directory.CreateDirectory(avatarsDir);
@@ -876,20 +877,20 @@ namespace Toxy
                 }
                 catch
                 {
-                    Console.WriteLine("Could not save avatar to disk ({0})", friend.ChatNumber);
+                    Debug.WriteLine(string.Format("Could not save avatar to disk ({0})", friend.ChatNumber));
                     return false;
                 }
 
                 MemoryStream stream = new MemoryStream(data);
 
-                Console.WriteLine("Created memory stream for avatar data ({0})", friend.ChatNumber);
+                Debug.WriteLine(string.Format("Created memory stream for avatar data ({0})", friend.ChatNumber));
 
                 using (Bitmap bmp = new Bitmap(stream))
                 {
                     var result = BitmapToImageSource(bmp, ImageFormat.Png);
                     Dispatcher.BeginInvoke(((Action)(() => friend.Avatar = result)));
 
-                    Console.WriteLine("Done applying avatar ({0})", friend.ChatNumber);
+                    Debug.WriteLine(string.Format("Done applying avatar ({0})", friend.ChatNumber));
                 }
 
                 return true;
@@ -1056,11 +1057,11 @@ namespace Toxy
                     {
                         int time = (int)ToxFunctions.DoInterval(handle);
 
-                        Console.WriteLine("Could not send data, sleeping for {0}ms", time);
+                        Debug.WriteLine(string.Format("Could not send data, sleeping for {0}ms", time));
                         Thread.Sleep(time);
                     }
 
-                    Console.WriteLine("Data sent: {0} bytes", buffer.Length);
+                    Debug.WriteLine(string.Format("Data sent: {0} bytes", buffer.Length));
                 }
                 else
                 {
@@ -1071,7 +1072,7 @@ namespace Toxy
 
                     tox.FileSendData(transfer.FriendNumber, transfer.FileNumber, buffer);
 
-                    Console.WriteLine("Sent the last chunk of data: {0} bytes", buffer.Length);
+                    Debug.WriteLine(string.Format("Sent the last chunk of data: {0} bytes", buffer.Length));
                 }
 
                 double value = (double)remaining / (double)transfer.FileSize;
@@ -1146,7 +1147,7 @@ namespace Toxy
             int groupnumber = tox.NewGroup();
             if (groupnumber != -1)
             {
-                AddGroupToView(groupnumber);
+                AddGroupToView(groupnumber, ToxGroupType.Text);
             }
         }
 
@@ -1159,13 +1160,17 @@ namespace Toxy
             }
         }
 
-        private void AddGroupToView(int groupnumber)
+        private void AddGroupToView(int groupnumber, ToxGroupType type)
         {
             string groupname = string.Format("Groupchat #{0}", groupnumber);
+
+            if (type == ToxGroupType.Av)
+                groupname += " \uD83D\uDD0A"; /*:loud_sound:*/
 
             var groupMV = new GroupControlModelView();
             groupMV.ChatNumber = groupnumber;
             groupMV.Name = groupname;
+            groupMV.GroupType = type;
             groupMV.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));//string.Join(", ", tox.GetGroupNames(groupnumber));
             groupMV.SelectedAction = GroupSelectedAction;
             groupMV.DeleteAction = GroupDeleteAction;

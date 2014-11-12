@@ -141,6 +141,7 @@ namespace Toxy
             toxav.OnCancel += toxav_OnEnd;
             toxav.OnReceivedAudio += toxav_OnReceivedAudio;
             toxav.OnMediaChange += toxav_OnMediaChange;
+            toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 
             bool bootstrap_success = false;
             foreach (ToxConfigNode node in config.Nodes)
@@ -176,6 +177,12 @@ namespace Toxy
                 ViewModel.SelectedChatObject = ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
 
             loadAvatars();
+        }
+
+        private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
+        {
+            if (call != null && call.GetType() == typeof(ToxGroupCall))
+                call.ProcessAudioFrame(e.Data);
         }
 
         #region Tox EventHandlers
@@ -265,9 +272,33 @@ namespace Toxy
             ViewModel.HasNewMessage = true;
         }
 
-        private void tox_OnGroupInvite(object sender, ToxEventArgs.GroupInviteEventArgs e)
+        private async void tox_OnGroupInvite(object sender, ToxEventArgs.GroupInviteEventArgs e)
         {
-            int number = tox.JoinGroup(e.FriendNumber, e.Data);
+            int number;
+
+            if (e.GroupType == ToxGroupType.Text)
+            {
+                number = tox.JoinGroup(e.FriendNumber, e.Data);
+            }
+            else if (e.GroupType == ToxGroupType.Av)
+            {
+                if (call != null)
+                {
+                    await this.ShowMessageAsync("Error", "Could not join audio groupchat, there's already a call in progress.");
+                    return;
+                }
+                else
+                {
+                    number = toxav.JoinAvGroupchat(e.FriendNumber, e.Data);
+                    call = new ToxGroupCall(toxav, number);
+                    call.Start(config.InputDevice, config.OutputDevice, ToxAv.DefaultCodecSettings);
+                }
+            }
+            else
+            {
+                return;
+            }
+
             var group = ViewModel.GetGroupObjectByNumber(number);
 
             if (group != null)
@@ -1144,11 +1175,8 @@ namespace Toxy
 
         private void NewGroupButton_Click(object sender, RoutedEventArgs e)
         {
-            int groupnumber = tox.NewGroup();
-            if (groupnumber != -1)
-            {
-                AddGroupToView(groupnumber, ToxGroupType.Text);
-            }
+            GroupContextMenu.PlacementTarget = this;
+            GroupContextMenu.IsOpen = true;
         }
 
         private void InitFriends()
@@ -1189,7 +1217,15 @@ namespace Toxy
                 if (groupObject.Selected)
                     ChatBox.Document = null;
             }
+
+            if (tox.GetGroupType(groupNumber) == ToxGroupType.Av && call != null)
+            {
+                call.Stop();
+                call = null;
+            }
+
             tox.DeleteGroupChat(groupNumber);
+
             groupObject.SelectedAction = null;
             groupObject.DeleteAction = null;
         }
@@ -1484,7 +1520,7 @@ namespace Toxy
             }
             int friendNumber = friend.ChatNumber;
 
-            if (call != null)
+            if (call != null && call.GetType() != typeof(ToxGroupCall))
             {
                 if (call.FriendNumber != friendNumber)
                     HangupButton.Visibility = Visibility.Collapsed;
@@ -2324,6 +2360,24 @@ namespace Toxy
                         view.Visible = true;
                     }
                 }
+            }
+        }
+
+        private void GroupMenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)e.Source;
+            GroupMenuItem item = (GroupMenuItem)menuItem.Tag;
+
+            int groupNumber = item == GroupMenuItem.Text ? tox.NewGroup() : toxav.AddAvGroupchat();
+            if (groupNumber != -1)
+            {
+                AddGroupToView(groupNumber, (ToxGroupType)item);
+            }
+
+            if (item == GroupMenuItem.TextAudio)
+            {
+                call = new ToxGroupCall(toxav, groupNumber);
+                call.Start(config.InputDevice, config.OutputDevice, ToxAv.DefaultCodecSettings);
             }
         }
     }

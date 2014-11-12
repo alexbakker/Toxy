@@ -5,4 +5,10 @@
         ChangeAvatar,
         RemoveAvatar
     }
+
+    enum GroupMenuItem
+    {
+        Text,
+        TextAudio
+    }
 }

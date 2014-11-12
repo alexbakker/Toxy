@@ -277,6 +277,17 @@
                             BorderBrush="{DynamicResource AccentColorBrush3}"
                             Style="{DynamicResource MetroCircleLovelyButtonStyle}"
                             Click="NewGroupButton_Click">
+                        <Button.ContextMenu>
+                            <ContextMenu Name="GroupContextMenu"
+                                     MenuItem.Click="GroupMenuItem_MouseLeftButtonDown">
+                                <MenuItem Header="Text"
+                                      Tag="{x:Static common:GroupMenuItem.Text}">
+                                </MenuItem>
+                                <MenuItem Header="Text + Audio"
+                                      Tag="{x:Static common:GroupMenuItem.TextAudio}">
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
                         <Grid>
                             <Rectangle Width="20"
                                        Height="20"

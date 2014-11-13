@@ -13,6 +13,9 @@ namespace Toxy.ToxHelpers
     {
         public int GroupNumber;
 
+        public WaveOut wave_out_single;
+        public BufferedWaveProvider wave_provider_single;
+
         public ToxGroupCall(ToxAv toxav, int groupNumber)
             : base(toxav)
         {
@@ -21,9 +24,13 @@ namespace Toxy.ToxHelpers
 
         public override void Start(int input, int output, ToxAvCodecSettings settings)
         {
-            WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
+            WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, 2);
+            WaveFormat outFormatSingle = new WaveFormat((int)settings.AudioSampleRate, 1);
+
             wave_provider = new BufferedWaveProvider(outFormat);
             wave_provider.DiscardOnBufferOverflow = true;
+            wave_provider_single = new BufferedWaveProvider(outFormatSingle);
+            wave_provider_single.DiscardOnBufferOverflow = true;
 
             if (WaveIn.DeviceCount > 0)
             {
@@ -49,6 +56,14 @@ namespace Toxy.ToxHelpers
                     wave_out.DeviceNumber = output - 1;
 
                 wave_out.Init(wave_provider);
+                wave_out.Play();
+
+                wave_out_single = new WaveOut();
+
+                if (output != -1)
+                    wave_out.DeviceNumber = output - 1;
+
+                wave_out.Init(wave_provider_single);
                 wave_out.Play();
             }
         }
@@ -77,6 +92,18 @@ namespace Toxy.ToxHelpers
 
             if (!toxav.GroupSendAudio(GroupNumber, shorts, wave_source.WaveFormat.Channels, wave_source.WaveFormat.SampleRate))
                 Debug.WriteLine("Could not send audio to groupchat #{0}", GroupNumber);
+        }
+
+        public void ProcessAudioFrame(short[] frame, int channels)
+        {
+            var waveOut = channels == 2 ? wave_out : wave_out_single;
+            var waveProvider = channels == 2 ? wave_provider : wave_provider_single;
+
+            if (waveOut != null && waveProvider != null)
+            {
+                byte[] bytes = ShortArrayToByteArray(frame);
+                wave_provider.AddSamples(bytes, 0, bytes.Length);
+            }
         }
 
         /// <summary>
@@ -183,7 +210,7 @@ namespace Toxy.ToxHelpers
             wave_provider.AddSamples(bytes, 0, bytes.Length);
         }
 
-        private byte[] ShortArrayToByteArray(short[] shorts)
+        protected byte[] ShortArrayToByteArray(short[] shorts)
         {
             byte[] bytes = new byte[shorts.Length * 2];
 

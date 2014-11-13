@@ -182,7 +182,7 @@ namespace Toxy
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
         {
             if (call != null && call.GetType() == typeof(ToxGroupCall))
-                call.ProcessAudioFrame(e.Data);
+                ((ToxGroupCall)call).ProcessAudioFrame(e.Data, e.Channels);
         }
 
         #region Tox EventHandlers

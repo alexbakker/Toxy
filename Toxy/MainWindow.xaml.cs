@@ -2363,10 +2363,16 @@ namespace Toxy
             }
         }
 
-        private void GroupMenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        private async void GroupMenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)e.Source;
             GroupMenuItem item = (GroupMenuItem)menuItem.Tag;
+
+            if (item == GroupMenuItem.TextAudio && call != null)
+            {
+                await this.ShowMessageAsync("Error", "Could not create audio groupchat, there's already a call in progress.");
+                return;
+            }
 
             int groupNumber = item == GroupMenuItem.Text ? tox.NewGroup() : toxav.AddAvGroupchat();
             if (groupNumber != -1)

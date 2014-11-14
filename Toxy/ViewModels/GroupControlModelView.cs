@@ -12,12 +12,20 @@ namespace Toxy.ViewModels
     {
         public Action<IGroupObject, bool> SelectedAction { get; set; }
         public Action<IGroupObject> DeleteAction { get; set; }
+        public Action<IGroupObject> ChangeTitleAction { get; set; }
 
         protected ICommand deleteCommand;
 
         public ICommand DeleteCommand
         {
             get { return this.deleteCommand ?? (this.deleteCommand = new DelegateCommand(() => this.DeleteAction(this), () => DeleteAction != null)); }
+        }
+
+        protected ICommand changeTitleCommand;
+
+        public ICommand ChangeTitleCommand
+        {
+            get { return this.changeTitleCommand ?? (this.changeTitleCommand = new DelegateCommand(() => this.ChangeTitleAction(this), () => ChangeTitleAction != null)); }
         }
 
         private bool selected;

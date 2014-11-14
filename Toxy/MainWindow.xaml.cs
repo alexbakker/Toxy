@@ -122,6 +122,7 @@ namespace Toxy
             tox.OnDisconnected += tox_OnDisconnected;
             tox.OnAvatarData += tox_OnAvatarData;
             tox.OnAvatarInfo += tox_OnAvatarInfo;
+            tox.OnGroupTitleChanged += tox_OnGroupTitleChanged;
 
             tox.OnGroupInvite += tox_OnGroupInvite;
             tox.OnGroupMessage += tox_OnGroupMessage;
@@ -179,10 +180,13 @@ namespace Toxy
             loadAvatars();
         }
 
-        private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
+        private void tox_OnGroupTitleChanged(object sender, ToxEventArgs.GroupTitleEventArgs e)
         {
-            if (call != null && call.GetType() == typeof(ToxGroupCall))
-                ((ToxGroupCall)call).ProcessAudioFrame(e.Data, e.Channels);
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            group.Name = e.Title;
         }
 
         #region Tox EventHandlers
@@ -750,6 +754,12 @@ namespace Toxy
         #endregion
 
         #region ToxAv EventHandlers
+        private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
+        {
+            if (call != null && call.GetType() == typeof(ToxGroupCall))
+                ((ToxGroupCall)call).ProcessAudioFrame(e.Data, e.Channels);
+        }
+
         private void toxav_OnMediaChange(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             if (call == null)
@@ -1202,8 +1212,19 @@ namespace Toxy
             groupMV.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(groupnumber));//string.Join(", ", tox.GetGroupNames(groupnumber));
             groupMV.SelectedAction = GroupSelectedAction;
             groupMV.DeleteAction = GroupDeleteAction;
+            groupMV.ChangeTitleAction = ChangeTitleAction;
 
             ViewModel.ChatCollection.Add(groupMV);
+        }
+
+        private async void ChangeTitleAction(IGroupObject groupObject)
+        {
+            string title = await this.ShowInputAsync("Change group title", "Enter a new title for this group.");
+            if (string.IsNullOrEmpty(title))
+                return;
+
+            tox.SetGroupTitle(groupObject.ChatNumber, title);
+            groupObject.Name = title;
         }
 
         private void GroupDeleteAction(IGroupObject groupObject)
@@ -2385,6 +2406,8 @@ namespace Toxy
                 call = new ToxGroupCall(toxav, groupNumber);
                 call.Start(config.InputDevice, config.OutputDevice, ToxAv.DefaultCodecSettings);
             }
+
+            tox.SetGroupTitle(groupNumber, string.Format("Groupchat #{0}", groupNumber));
         }
     }
 }

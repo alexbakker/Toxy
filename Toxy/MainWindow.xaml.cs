@@ -158,7 +158,10 @@ namespace Toxy
             tox.Start();
 
             if (string.IsNullOrEmpty(getSelfName()))
-                tox.Name = "Toxy User";
+                tox.Name = "Tox User";
+
+            if (string.IsNullOrEmpty(getSelfStatusMessage()))
+                tox.StatusMessage = "Toxing on Toxy";
 
             ViewModel.MainToxyUser.Name = getSelfName();
             ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();

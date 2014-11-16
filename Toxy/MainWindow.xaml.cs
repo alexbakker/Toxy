@@ -1657,7 +1657,7 @@ namespace Toxy
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
 
-        private void AddFriend_Click(object sender, RoutedEventArgs e)
+        private async void AddFriend_Click(object sender, RoutedEventArgs e)
         {
             TextRange message = new TextRange(AddFriendMessage.Document.ContentStart, AddFriendMessage.Document.ContentEnd);
 
@@ -1668,6 +1668,20 @@ namespace Toxy
 
             if (friendID.Contains("@"))
             {
+                if (config.ProxyEnabled && config.RemindAboutProxy)
+                {
+                    MessageDialogResult result = await this.ShowMessageAsync("Warning", "You're about to submit a dns lookup query, the configured proxy will not be used for this.\nDo you wish to continue?", MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { AffirmativeButtonText = "Yes, don't remind me again", NegativeButtonText = "Yes", FirstAuxiliaryButtonText = "No" });
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        config.RemindAboutProxy = false;
+                        ConfigTools.Save(config, "config.xml");
+                    }
+                    else if (result == MessageDialogResult.FirstAuxiliary)
+                    {
+                        return;
+                    }
+                }
+
                 try
                 {
                     string id = DnsTools.DiscoverToxID(friendID, config.NameServices);

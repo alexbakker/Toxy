@@ -45,6 +45,14 @@ namespace Toxy.Common
             set { ipv6Enabled = value; }
         }
 
+        private bool remindAboutProxy = true;
+
+        public bool RemindAboutProxy
+        {
+            get { return remindAboutProxy; }
+            set { remindAboutProxy = value; }
+        }
+
         private bool proxyEnabled = false;
 
         public bool ProxyEnabled

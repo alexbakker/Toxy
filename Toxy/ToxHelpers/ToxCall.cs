@@ -88,7 +88,16 @@ namespace Toxy.ToxHelpers
 
         protected override void wave_source_DataAvailable(object sender, WaveInEventArgs e)
         {
-            short[] shorts = Array.ConvertAll(e.Buffer, b => (short)b);
+            short[] shorts = new short[e.Buffer.Length / 2];
+            int index = 0;
+            
+            for (int i = 0; i < e.Buffer.Length; i += 2)
+            {
+                byte[] bytes = new byte[]{ e.Buffer[i], e.Buffer[i+1] };
+                shorts[index] = BitConverter.ToInt16(bytes, 0);
+
+                index++;
+            }
 
             if (!toxav.GroupSendAudio(GroupNumber, shorts, wave_source.WaveFormat.Channels, wave_source.WaveFormat.SampleRate))
                 Debug.WriteLine("Could not send audio to groupchat #{0}", GroupNumber);

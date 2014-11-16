@@ -1222,7 +1222,7 @@ namespace Toxy
 
         private async void ChangeTitleAction(IGroupObject groupObject)
         {
-            string title = await this.ShowInputAsync("Change group title", "Enter a new title for this group.");
+            string title = await this.ShowInputAsync("Change group title", "Enter a new title for this group.", new MetroDialogSettings() { DefaultText = tox.GetGroupTitle(groupObject.ChatNumber) });
             if (string.IsNullOrEmpty(title))
                 return;
 

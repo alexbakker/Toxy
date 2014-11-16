@@ -102,7 +102,7 @@ namespace Toxy.ToxHelpers
             if (waveOut != null && waveProvider != null)
             {
                 byte[] bytes = ShortArrayToByteArray(frame);
-                wave_provider.AddSamples(bytes, 0, bytes.Length);
+                waveProvider.AddSamples(bytes, 0, bytes.Length);
             }
         }
 

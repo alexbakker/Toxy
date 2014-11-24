@@ -298,6 +298,7 @@ namespace Toxy
                 {
                     number = toxav.JoinAvGroupchat(e.FriendNumber, e.Data);
                     call = new ToxGroupCall(toxav, number);
+                    call.FilterAudio = config.FilterAudio;
                     call.Start(config.InputDevice, config.OutputDevice, ToxAv.DefaultCodecSettings);
                 }
             }
@@ -1406,6 +1407,7 @@ namespace Toxy
                 return;
 
             call = new ToxCall(toxav, friendObject.CallIndex, friendObject.ChatNumber);
+            call.FilterAudio = config.FilterAudio;
             call.Answer();
         }
 
@@ -2092,6 +2094,7 @@ namespace Toxy
 
             int friendnumber = toxav.GetPeerID(call_index, 0);
             call = new ToxCall(toxav, call_index, friendnumber);
+            call.FilterAudio = config.FilterAudio;
 
             CallButton.Visibility = Visibility.Collapsed;
             HangupButton.Visibility = Visibility.Visible;
@@ -2421,6 +2424,7 @@ namespace Toxy
             if (item == GroupMenuItem.TextAudio)
             {
                 call = new ToxGroupCall(toxav, groupNumber);
+                call.FilterAudio = config.FilterAudio;
                 call.Start(config.InputDevice, config.OutputDevice, ToxAv.DefaultCodecSettings);
             }
 

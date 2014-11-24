@@ -5,6 +5,7 @@ using System.Diagnostics;
 using NAudio.Wave;
 
 using SharpTox.Av;
+using SharpTox.Av.Filter;
 using SharpTox.Core;
 
 namespace Toxy.ToxHelpers
@@ -26,6 +27,8 @@ namespace Toxy.ToxHelpers
         {
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, 2);
             WaveFormat outFormatSingle = new WaveFormat((int)settings.AudioSampleRate, 1);
+
+            filterAudio = new FilterAudio((int)settings.AudioSampleRate);
 
             wave_provider = new BufferedWaveProvider(outFormat);
             wave_provider.DiscardOnBufferOverflow = true;
@@ -88,16 +91,10 @@ namespace Toxy.ToxHelpers
 
         protected override void wave_source_DataAvailable(object sender, WaveInEventArgs e)
         {
-            short[] shorts = new short[e.Buffer.Length / 2];
-            int index = 0;
-            
-            for (int i = 0; i < e.Buffer.Length; i += 2)
-            {
-                byte[] bytes = new byte[]{ e.Buffer[i], e.Buffer[i+1] };
-                shorts[index] = BitConverter.ToInt16(bytes, 0);
+            short[] shorts = BytesToShorts(e.Buffer);
 
-                index++;
-            }
+            if (filterAudio != null && FilterAudio)
+                filterAudio.Filter(shorts, shorts.Length / wave_source.WaveFormat.Channels);
 
             if (!toxav.GroupSendAudio(GroupNumber, shorts, wave_source.WaveFormat.Channels, wave_source.WaveFormat.SampleRate))
                 Debug.WriteLine("Could not send audio to groupchat #{0}", GroupNumber);
@@ -135,10 +132,13 @@ namespace Toxy.ToxHelpers
     class ToxCall
     {
         protected ToxAv toxav;
+        protected FilterAudio filterAudio;
 
         protected WaveIn wave_source;
         protected WaveOut wave_out;
         protected BufferedWaveProvider wave_provider;
+
+        public bool FilterAudio = false;
 
         protected Timer timer;
         public int TotalSeconds = 0;
@@ -165,12 +165,13 @@ namespace Toxy.ToxHelpers
 
         public virtual void Start(int input, int output, ToxAvCodecSettings settings)
         {
-            //who doesn't love magic numbers?!
             toxav.PrepareTransmission(CallIndex, 3, 40, false);
 
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
             wave_provider = new BufferedWaveProvider(outFormat);
             wave_provider.DiscardOnBufferOverflow = true;
+
+            filterAudio = new FilterAudio((int)settings.AudioSampleRate);
 
             if (WaveIn.DeviceCount > 0)
             {
@@ -232,10 +233,30 @@ namespace Toxy.ToxHelpers
             return bytes;
         }
 
+        protected short[] BytesToShorts(byte[] buffer)
+        {
+            short[] shorts = new short[buffer.Length / 2];
+            int index = 0;
+
+            for (int i = 0; i < buffer.Length; i += 2)
+            {
+                byte[] bytes = new byte[] { buffer[i], buffer[i + 1] };
+                shorts[index] = BitConverter.ToInt16(bytes, 0);
+
+                index++;
+            }
+
+            return shorts;
+        }
+
         protected virtual void wave_source_DataAvailable(object sender, WaveInEventArgs e)
         {
-            ushort[] ushorts = new ushort[e.Buffer.Length / 2];
-            Buffer.BlockCopy(e.Buffer, 0, ushorts, 0, e.Buffer.Length);
+            short[] shorts = BytesToShorts(e.Buffer);
+
+            if (filterAudio != null && FilterAudio)
+                filterAudio.Filter(shorts, shorts.Length / wave_source.WaveFormat.Channels);
+
+            ushort[] ushorts = (ushort[])(object)shorts;
 
             byte[] dest = new byte[65535];
             int size = toxav.PrepareAudioFrame(CallIndex, dest, 65535, ushorts);

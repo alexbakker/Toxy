@@ -19,6 +19,10 @@ Feel free to contribute.
 * Avatars
 * Group chats
 * Voice chats
+* Group voice chats
+* Inline images
+* Proxy support (SOCKS 5)
+* Read receipts
 * File transfers
 * Typing detection
 * DNS discovery (tox1 and tox3)
@@ -36,11 +40,13 @@ Pre-compiled versions of Toxy can be found [here](https://jenkins.impy.me/ "Toxy
 Things you'll need to compile
 ===
 
-* The [SharpTox library](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies. Once you have obtained those, place libtox.dll and SharpTox.dll in the libs folder.
+* The [SharpTox library](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies.
+* The [SharpTox.Av.Filter library](https://github.com/Impyy/SharpTox "SharpTox.Av.Filter GitHub repo") and its dependencies.
 
-All other dependencies can be found in the packages.config file and should be downloaded by Visual Studio automatically
+Once you have obtained those, place libtox.dll, filter_audio.dll, SharpTox.dll and SharpTox.Av.Filter.dll in the libs folder.
+All other dependencies can be found in the packages.config file and should be downloaded by Visual Studio automatically.
 
 ===
 ### Special Thanks
 
-* Punker
+* punker76

@@ -40,7 +40,7 @@ Things you'll need to compile
 ===
 
 * The [SharpTox library](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies.
-* The [SharpTox.Av.Filter library](https://github.com/Impyy/SharpTox "SharpTox.Av.Filter GitHub repo") and its dependencies.
+* The [SharpTox.Av.Filter library](https://github.com/Impyy/SharpTox.Av.Filter "SharpTox.Av.Filter GitHub repo") and its dependencies.
 
 Once you have obtained those, place libtox.dll, filter_audio.dll, SharpTox.dll and SharpTox.Av.Filter.dll in the libs folder.
 All other dependencies can be found in the packages.config file and should be downloaded by Visual Studio automatically.

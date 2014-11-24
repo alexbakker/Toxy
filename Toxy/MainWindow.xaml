@@ -616,6 +616,9 @@
                                   HorizontalAlignment="Left"
                                   Margin="0,5,0,0"
                                   Width="275" />
+                            <CheckBox x:Name="FilterAudioCheckbox" 
+                                  Content="Filter input audio" 
+                                  Margin="0 5" />
                             <CheckBox x:Name="HideInTrayCheckBox"
                                   VerticalAlignment="Top"
                                   Margin="0,15,0,0"

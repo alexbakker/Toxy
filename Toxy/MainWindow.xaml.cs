@@ -1646,6 +1646,7 @@ namespace Toxy
                 PortableCheckBox.IsChecked = config.Portable;
                 AudioNotificationCheckBox.IsChecked = config.EnableAudioNotifications;
                 AlwaysNotifyCheckBox.IsChecked = config.AlwaysNotify;
+                FilterAudioCheckbox.IsChecked = config.FilterAudio;
 
                 if (!string.IsNullOrEmpty(config.ProxyAddress))
                     SettingsProxyAddress.Text = config.ProxyAddress;
@@ -1776,6 +1777,14 @@ namespace Toxy
             config.EnableAudioNotifications = (bool)AudioNotificationCheckBox.IsChecked;
             config.AlwaysNotify = (bool)AlwaysNotifyCheckBox.IsChecked;
             ExecuteActionsOnNotifyIcon();
+
+            bool filterAudio = (bool)FilterAudioCheckbox.IsChecked;
+
+            if (config.FilterAudio != filterAudio)
+                if (call != null)
+                    call.FilterAudio = filterAudio;
+
+            config.FilterAudio = filterAudio;
 
             bool proxyConfigChanged = false;
             if (config.ProxyEnabled != EnableProxyCheckbox.IsChecked || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)

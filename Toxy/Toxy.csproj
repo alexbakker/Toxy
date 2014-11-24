@@ -255,6 +255,10 @@
       <Link>libtox.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\libs\filter_audio.dll">
+      <Link>filter_audio.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Resources\Audio\Blop.wav" />
     <Resource Include="Resources\Icons\icon2.ico" />
     <Resource Include="Resources\Icons\icon.ico" />

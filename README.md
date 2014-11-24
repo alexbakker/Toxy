@@ -28,14 +28,13 @@ Feel free to contribute.
 * DNS discovery (tox1 and tox3)
 * Theme customization
 
+### Binaries
+Pre-compiled versions of Toxy can be found [here](https://jenkins.impy.me/ "Toxy Binaries"). Those include all of the dependencies.
+
 ### Screenshots
 
 ![Main Window (calling)](http://impy.me/i/6f44aa.png)
 ![Main Window with settings)](http://impy.me/i/4e2de8.png)
-
-Binaries
-===
-Pre-compiled versions of Toxy can be found [here](https://jenkins.impy.me/ "Toxy Binaries"). Those include all of the dependencies.
 
 Things you'll need to compile
 ===

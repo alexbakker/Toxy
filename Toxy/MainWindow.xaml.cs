@@ -1664,7 +1664,7 @@ namespace Toxy
         {
             TextRange message = new TextRange(AddFriendMessage.Document.ContentStart, AddFriendMessage.Document.ContentEnd);
 
-            if (!(!string.IsNullOrWhiteSpace(AddFriendID.Text) && message.Text != null))
+            if (string.IsNullOrWhiteSpace(AddFriendID.Text) || message.Text == null)
                 return;
 
             string friendID = AddFriendID.Text.Trim();

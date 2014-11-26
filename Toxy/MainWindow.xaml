@@ -624,12 +624,14 @@
                                   Margin="0,15,0,0"
                                   HorizontalAlignment="Left"
                                   Content="Hide in tray"
+                                  ToolTip="Minimize to system tray instead of closing Toxy."
                                   />
                             <CheckBox x:Name="PortableCheckBox"
                                   VerticalAlignment="Top"
                                   Margin="0,5,0,0"
                                   HorizontalAlignment="Left"
                                   Content="Portable"
+                                  ToolTip="Save application settings in the executable folder."
                                   />
                             <CheckBox x:Name="AudioNotificationCheckBox"
                                   VerticalAlignment="Top"

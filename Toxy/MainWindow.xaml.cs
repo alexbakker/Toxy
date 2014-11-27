@@ -133,15 +133,13 @@ namespace Toxy
             toxav.Invoker = Dispatcher.BeginInvoke;
             toxav.OnInvite += toxav_OnInvite;
             toxav.OnStart += toxav_OnStart;
-            toxav.OnStarting += toxav_OnStart;
             toxav.OnEnd += toxav_OnEnd;
-            toxav.OnEnding += toxav_OnEnd;
             toxav.OnPeerTimeout += toxav_OnEnd;
             toxav.OnRequestTimeout += toxav_OnEnd;
             toxav.OnReject += toxav_OnEnd;
             toxav.OnCancel += toxav_OnEnd;
             toxav.OnReceivedAudio += toxav_OnReceivedAudio;
-            toxav.OnMediaChange += toxav_OnMediaChange;
+            toxav.OnPeerCodecSettingsChanged += toxav_OnPeerCodecSettingsChanged;
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 
             bool bootstrap_success = false;
@@ -156,6 +154,7 @@ namespace Toxy
 
             loadTox();
             tox.Start();
+            toxav.Start();
 
             if (string.IsNullOrEmpty(getSelfName()))
                 tox.Name = "Tox User";
@@ -183,6 +182,7 @@ namespace Toxy
             loadAvatars();
         }
 
+        #region Tox EventHandlers
         private void tox_OnGroupTitleChanged(object sender, ToxEventArgs.GroupTitleEventArgs e)
         {
             var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
@@ -192,7 +192,6 @@ namespace Toxy
             group.Name = e.Title;
         }
 
-        #region Tox EventHandlers
         private void tox_OnGroupNamelistChange(object sender, ToxEventArgs.GroupNamelistChangeEventArgs e)
         {
             var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
@@ -758,20 +757,20 @@ namespace Toxy
         #endregion
 
         #region ToxAv EventHandlers
+        private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
+        {
+            if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
+                return;
+
+            //we don't support video just yet
+            if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType == ToxAvCallType.Video)
+                EndCall();
+        }
+
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
         {
             if (call != null && call.GetType() == typeof(ToxGroupCall))
                 ((ToxGroupCall)call).ProcessAudioFrame(e.Data, e.Channels);
-        }
-
-        private void toxav_OnMediaChange(object sender, ToxAvEventArgs.CallStateEventArgs e)
-        {
-            if (call == null)
-                return;
-
-            //can't change the call type, we don't support video calls
-            if (call.CallIndex == e.CallIndex)
-                EndCall();
         }
 
         private void toxav_OnReceivedAudio(object sender, ToxAvEventArgs.AudioDataEventArgs e)

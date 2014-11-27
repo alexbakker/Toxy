@@ -166,7 +166,7 @@ namespace Toxy.ToxHelpers
 
         public virtual void Start(int input, int output, ToxAvCodecSettings settings)
         {
-            toxav.PrepareTransmission(CallIndex, 3, 40, false);
+            toxav.PrepareTransmission(CallIndex, false);
 
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
             wave_provider = new BufferedWaveProvider(outFormat);

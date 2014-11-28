@@ -97,7 +97,7 @@ namespace Toxy.ToxHelpers
                 if (!filterAudio.Filter(shorts, shorts.Length / wave_source.WaveFormat.Channels))
                     Debug.WriteLine("Could not filter audio");
 
-            if (!toxav.GroupSendAudio(GroupNumber, shorts, wave_source.WaveFormat.Channels, wave_source.WaveFormat.SampleRate))
+            if (!toxav.GroupSendAudio(GroupNumber, shorts, ((int)ToxAv.DefaultCodecSettings.AudioFrameDuration * (int)wave_source.WaveFormat.SampleRate) / 1000, wave_source.WaveFormat.Channels, wave_source.WaveFormat.SampleRate))
                 Debug.WriteLine("Could not send audio to groupchat #{0}", GroupNumber);
         }
 
@@ -258,10 +258,8 @@ namespace Toxy.ToxHelpers
                 if (!filterAudio.Filter(shorts, shorts.Length / wave_source.WaveFormat.Channels))
                     Debug.WriteLine("Could not filter audio");
 
-            ushort[] ushorts = (ushort[])(object)shorts;
-
-            byte[] dest = new byte[((wave_source.BufferMilliseconds * wave_source.WaveFormat.SampleRate) / 1000) * 2 * wave_source.WaveFormat.Channels];
-            int size = toxav.PrepareAudioFrame(CallIndex, dest, dest.Length, ushorts);
+            byte[] dest = new byte[(((int)ToxAv.DefaultCodecSettings.AudioFrameDuration * wave_source.WaveFormat.SampleRate) / 1000) * 2 * wave_source.WaveFormat.Channels];
+            int size = toxav.PrepareAudioFrame(CallIndex, dest, dest.Length, shorts, ((int)wave_source.BufferMilliseconds * (int)wave_source.WaveFormat.SampleRate) / 1000);
 
             ToxAvError error = toxav.SendAudio(CallIndex, dest, size);
             if (error != ToxAvError.None)

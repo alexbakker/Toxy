@@ -1451,7 +1451,7 @@ namespace Toxy
 
         private void FriendRequestAcceptAction(IFriendObject friendObject)
         {
-            int friendnumber = tox.AddFriendNoRequest(friendObject.Name);
+            int friendnumber = tox.AddFriendNoRequest(new ToxId(friendObject.Name));
 
             AddFriendToView(friendnumber, false);
 
@@ -1703,7 +1703,7 @@ namespace Toxy
 
             try
             {
-                int friendnumber = tox.AddFriend(friendID, message.Text);
+                int friendnumber = tox.AddFriend(new ToxId(friendID), message.Text);
                 FriendFlyout.IsOpen = false;
                 AddFriendToView(friendnumber, true);
             }
@@ -2331,7 +2331,7 @@ namespace Toxy
 
         private void removeAvatar()
         {
-            if (tox.RemoveAvatar())
+            if (tox.UnsetAvatar())
             {
                 ViewModel.MainToxyUser.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
 

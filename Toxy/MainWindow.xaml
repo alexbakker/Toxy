@@ -345,6 +345,11 @@
                       Background="{DynamicResource AccentColorBrush}"/>
 
         <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition x:Name="PeerColumn"  Width="Auto" MaxWidth="300"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -353,6 +358,7 @@
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0"
+                    Grid.ColumnSpan="3"
                     BorderBrush="{DynamicResource AccentColorBrush}"
                     BorderThickness="0,0,0,1">
                 <Grid Margin="5">
@@ -502,7 +508,23 @@
                      TextChanged="TextToSend_TextChanged"
                      AcceptsReturn="False"
                      SelectionBrush="{DynamicResource AccentColorBrush}" />
+            <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
+                      Width="1"
 
+                      HorizontalAlignment="Center"
+                      Background="{DynamicResource AccentColorBrush}"/>
+            <Grid x:Name="GroupListGrid" 
+                  Grid.Column="3" Grid.Row="1" Grid.RowSpan="3">
+                <ListView x:Name="GroupListView" Height="Auto" BorderBrush="{x:Null}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
     </Grid>
 

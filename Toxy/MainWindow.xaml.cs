@@ -1496,6 +1496,12 @@ namespace Toxy
                 groupdic.Add(group.ChatNumber, document);
                 ChatBox.Document = groupdic[group.ChatNumber];
             }
+
+            GroupListGrid.Visibility = System.Windows.Visibility.Visible;
+
+            GroupListView.ItemsSource = new List<string>();
+            GroupListView.ItemsSource = tox.GetGroupNames(group.ChatNumber);
+            PeerColumn.Width = new GridLength(150);
         }
 
         private void EndCall()
@@ -1576,6 +1582,9 @@ namespace Toxy
                 convdic.Add(friend.ChatNumber, document);
                 ChatBox.Document = convdic[friend.ChatNumber];
             }
+
+            GroupListGrid.Visibility = System.Windows.Visibility.Collapsed;
+            PeerColumn.Width = GridLength.Auto;
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

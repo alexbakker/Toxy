@@ -119,7 +119,7 @@
     <Compile Include="Common\BitmapExtension.cs" />
     <Compile Include="Common\Config\Config.cs" />
     <Compile Include="Common\Config\ConfigTools.cs" />
-    <Compile Include="Common\Enums.cs" />
+    <Compile Include="Common\MenuItemEnums.cs" />
     <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VisualExtensions.cs" />
@@ -127,6 +127,8 @@
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
+    <Compile Include="Common\Groups\GroupPeer.cs" />
+    <Compile Include="Common\Groups\GroupPeerCollection.cs" />
     <Compile Include="ViewModels\BaseChatModelView.cs" />
     <Compile Include="ViewModels\FriendControlModelView.cs" />
     <Compile Include="ViewModels\GroupControlModelView.cs" />

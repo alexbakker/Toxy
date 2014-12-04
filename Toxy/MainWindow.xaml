@@ -515,19 +515,24 @@
                       Background="{DynamicResource AccentColorBrush}"/>
             <Grid x:Name="GroupListGrid" 
                   Grid.Column="3" Grid.Row="1" Grid.RowSpan="3">
-                <ListView x:Name="GroupListView" Height="Auto" BorderBrush="{x:Null}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+                <ListView x:Name="GroupListView" Height="Auto" BorderBrush="{x:Null}" ItemsSource="{Binding SelectedChatObject.PeerList}" DisplayMemberPath="Name" SelectionMode="Single">
+                    <ListView.Resources>
+                        <ContextMenu x:Key="GroupPeerContextMenu" Name="GroupPeerContextMenu">
+                            <MenuItem Header="Copy Key" Click="GroupPeerCopyKey_Click"/>
+                            <MenuItem Header="Mute" Click="GroupPeerMute_Click"/>
+                            <MenuItem Header="Ignore" Click="GroupPeerIgnore_Click"/>
+                        </ContextMenu>
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}" >
+                            <Setter Property="ContextMenu" Value="{StaticResource GroupPeerContextMenu}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </Grid>
         </Grid>
     </Grid>
-
+    
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="FriendFlyout"

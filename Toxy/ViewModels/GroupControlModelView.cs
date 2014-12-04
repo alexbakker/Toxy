@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Collections.Generic;
 
 using SharpTox.Core;
 
 using Toxy.MVVM;
+using Toxy.Common;
 
 namespace Toxy.ViewModels
 {
@@ -63,6 +65,22 @@ namespace Toxy.ViewModels
                 {
                     this.groupType = value;
                     this.OnPropertyChanged(() => this.GroupType);
+                }
+            }
+        }
+
+
+        private GroupPeerCollection peerList = new GroupPeerCollection();
+
+        public GroupPeerCollection PeerList
+        {
+            get { return this.peerList; }
+            set
+            {
+                if (!Equals(value, this.PeerList))
+                {
+                    this.peerList = value;
+                    this.OnPropertyChanged(() => this.PeerList);
                 }
             }
         }

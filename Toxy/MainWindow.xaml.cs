@@ -190,6 +190,9 @@ namespace Toxy
                 return;
 
             group.Name = e.Title;
+
+            if (e.PeerNumber != -1)
+                group.AdditionalInfo = string.Format("Topic set by: {0}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber));
         }
 
         private void tox_OnGroupNamelistChange(object sender, ToxEventArgs.GroupNamelistChangeEventArgs e)
@@ -198,19 +201,46 @@ namespace Toxy
             if (group != null)
             {
                 if (e.Change == ToxChatChange.PeerAdd || e.Change == ToxChatChange.PeerDel)
+                    group.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
+
+                switch (e.Change)
                 {
-                    var status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
-                    group.StatusMessage = status;
-                }
-                if (group.Selected)
-                {
-                    group.AdditionalInfo = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
+                    case ToxChatChange.PeerAdd:
+                        {
+                            if (!group.PeerList.ContainsPeer(e.PeerNumber))
+                                group.PeerList.Add(new GroupPeer(e.GroupNumber, e.PeerNumber));
+
+                            break;
+                        }
+                    case ToxChatChange.PeerDel:
+                        {
+                            if (group.PeerList.ContainsPeer(e.PeerNumber))
+                                group.PeerList.RemovePeer(e.PeerNumber);
+
+                            break;
+                        }
+                    case ToxChatChange.PeerName:
+                        {
+                            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+                            if (peer != null)
+                                peer.Name = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+
+                            break;
+                        }
                 }
             }
         }
 
         private void tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
         {
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+            if (peer != null && peer.Ignored)
+                return;
+
             MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), e.Action), IsAction = true };
 
             if (groupdic.ContainsKey(e.GroupNumber))
@@ -224,20 +254,25 @@ namespace Toxy
                 groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
             }
 
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group != null)
-            {
-                MessageAlertIncrement(group);
+            MessageAlertIncrement(group);
 
-                if (group.Selected)
-                    ScrollChatBox();
-            }
+            if (group.Selected)
+                ScrollChatBox();
+
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
         }
 
         private void tox_OnGroupMessage(object sender, ToxEventArgs.GroupMessageEventArgs e)
         {
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+            if (peer != null && peer.Ignored)
+                return;
+
             MessageData data = new MessageData() { Username = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), Message = e.Message };
 
             if (groupdic.ContainsKey(e.GroupNumber))
@@ -263,14 +298,11 @@ namespace Toxy
                 groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
             }
 
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group != null)
-            {
-                MessageAlertIncrement(group);
+            MessageAlertIncrement(group);
 
-                if (group.Selected)
-                    ScrollChatBox();
-            }
+            if (group.Selected)
+                ScrollChatBox();
+
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
@@ -769,6 +801,14 @@ namespace Toxy
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
         {
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+            if (peer == null || peer.Ignored || peer.Muted)
+                return;
+
             if (call != null && call.GetType() == typeof(ToxGroupCall))
                 ((ToxGroupCall)call).ProcessAudioFrame(e.Data, e.Channels);
         }
@@ -1226,8 +1266,11 @@ namespace Toxy
             if (string.IsNullOrEmpty(title))
                 return;
 
-            tox.SetGroupTitle(groupObject.ChatNumber, title);
-            groupObject.Name = title;
+            if (tox.SetGroupTitle(groupObject.ChatNumber, title))
+            {
+                groupObject.Name = title;
+                groupObject.AdditionalInfo = string.Format("Topic set by: {0}", tox.Name);
+            }
         }
 
         private void GroupDeleteAction(IGroupObject groupObject)
@@ -1484,8 +1527,6 @@ namespace Toxy
             CallButton.Visibility = Visibility.Collapsed;
             FileButton.Visibility = Visibility.Collapsed;
 
-            group.AdditionalInfo = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
-
             if (groupdic.ContainsKey(group.ChatNumber))
             {
                 ChatBox.Document = groupdic[group.ChatNumber];
@@ -1498,9 +1539,6 @@ namespace Toxy
             }
 
             GroupListGrid.Visibility = System.Windows.Visibility.Visible;
-
-            GroupListView.ItemsSource = new List<string>();
-            GroupListView.ItemsSource = tox.GetGroupNames(group.ChatNumber);
             PeerColumn.Width = new GridLength(150);
         }
 
@@ -2446,6 +2484,34 @@ namespace Toxy
             }
 
             tox.SetGroupTitle(groupNumber, string.Format("Groupchat #{0}", groupNumber));
+        }
+
+        public void GroupPeerCopyKey_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = GroupListView.SelectedItem as GroupPeer;
+            if (peer == null)
+                return;
+
+            Clipboard.Clear();
+            Clipboard.SetText(tox.GetGroupPeerPublicKey(peer.GroupNumber, peer.PeerNumber).GetString());
+        }
+
+        private void GroupPeerMute_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = GroupListView.SelectedItem as GroupPeer;
+            if (peer == null)
+                return;
+
+            peer.Muted = !peer.Muted;
+        }
+
+        private void GroupPeerIgnore_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = GroupListView.SelectedItem as GroupPeer;
+            if (peer == null)
+                return;
+
+            peer.Ignored = !peer.Ignored;
         }
     }
 }

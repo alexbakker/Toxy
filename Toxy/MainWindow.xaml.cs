@@ -49,6 +49,7 @@ namespace Toxy
         private bool resizing;
         private bool focusTextbox;
         private bool typing;
+        private bool savingSettings;
 
         private Accent oldAccent;
         private AppTheme oldAppTheme;
@@ -1799,6 +1800,8 @@ namespace Toxy
             ConfigTools.Save(config, "config.xml");
             saveTox();
 
+            savingSettings = true;
+
             if (proxyConfigChanged)
             {
                 this.ShowMessageAsync("Alert", "You have changed your proxy configuration.\nPlease restart Toxy to apply these changes.");
@@ -2195,11 +2198,15 @@ namespace Toxy
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
         }
 
-        private void SettingsFlyout_IsOpenChanged(object sender, EventArgs e)
+        private void SettingsFlyout_IsOpenChanged(object sender, RoutedEventArgs e)
         {
-            if (!SettingsFlyout.IsOpen)
+            if (!SettingsFlyout.IsOpen && !savingSettings)
             {
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, oldAccent, oldAppTheme);
+            }
+            else if (savingSettings)
+            {
+                savingSettings = false;
             }
         }
 

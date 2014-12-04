@@ -168,7 +168,7 @@
                                  Grid.Row="0"
                                  Margin="0 3"
                                  TextChanged="SearchBox_TextChanged"
-                                 controls:TextboxHelper.Watermark="Search for friends/groups"
+                                 controls:TextBoxHelper.Watermark="Search for friends/groups"
                                  BorderBrush="{DynamicResource AccentColorBrush}"/>
 
                         <views:CallControl Grid.Row="1"

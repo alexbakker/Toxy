@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Toxy.Common
 {
-    public class GroupPeerCollection : List<GroupPeer>
+    public class GroupPeerCollection : ObservableCollection<GroupPeer>
     {
         public bool ContainsPeer(int peerNumber)
         {
@@ -21,7 +21,12 @@ namespace Toxy.Common
 
         public GroupPeer GetPeerByNumber(int peerNumber)
         {
-            return this.Find(p => p.PeerNumber == peerNumber);
+            var peers = this.Where(p => p.PeerNumber == peerNumber).ToArray();
+
+            if (peers.Length == 1)
+                return peers[0];
+            else
+                return null;
         }
     }
 }

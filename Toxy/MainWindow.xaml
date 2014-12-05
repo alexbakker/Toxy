@@ -517,10 +517,12 @@
                   Grid.Column="3" Grid.Row="1" Grid.RowSpan="3">
                 <ListView x:Name="GroupListView" Height="Auto" BorderBrush="{x:Null}" ItemsSource="{Binding SelectedChatObject.PeerList}" DisplayMemberPath="Name" SelectionMode="Single">
                     <ListView.Resources>
+                        <converter:IgnoreStatusToStringConverter x:Key="IgnoreStatusConverter" />
+                        <converter:MuteStatusToStringConverter x:Key="MuteStatusConverter" />
                         <ContextMenu x:Key="GroupPeerContextMenu" Name="GroupPeerContextMenu">
                             <MenuItem Header="Copy Key" Click="GroupPeerCopyKey_Click"/>
-                            <MenuItem Header="Mute" Click="GroupPeerMute_Click"/>
-                            <MenuItem Header="Ignore" Click="GroupPeerIgnore_Click"/>
+                            <MenuItem Header="{Binding Muted, Mode=OneWay, Converter={StaticResource MuteStatusConverter}}" Click="GroupPeerMute_Click"/>
+                            <MenuItem Header="{Binding Ignored, Mode=OneWay, Converter={StaticResource IgnoreStatusConverter}}" Click="GroupPeerIgnore_Click"/>
                         </ContextMenu>
                     </ListView.Resources>
                     <ListView.ItemContainerStyle>

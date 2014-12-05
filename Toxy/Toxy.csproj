@@ -125,6 +125,8 @@
     <Compile Include="Common\VisualExtensions.cs" />
     <Compile Include="Common\Winmm.cs" />
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converter\IgnoreStatusToStringConverter.cs" />
+    <Compile Include="Converter\MuteStatusToStringConverter.cs" />
     <Compile Include="Converter\NullToVisibilityConverter.cs" />
     <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
     <Compile Include="Common\Groups\GroupPeer.cs" />

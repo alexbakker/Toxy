@@ -1495,9 +1495,12 @@ namespace Toxy
 
         private void FriendRequestAcceptAction(IFriendObject friendObject)
         {
-            int friendnumber = tox.AddFriendNoRequest(new ToxId(friendObject.Name));
+            int friendnumber = tox.AddFriendNoRequest(new ToxKey(ToxKeyType.Public, friendObject.Name));
 
-            AddFriendToView(friendnumber, false);
+            if (friendnumber != -1)
+                AddFriendToView(friendnumber, false);
+            else
+                this.ShowMessageAsync("Unknown Error", "Could not accept friend request.");
 
             ViewModel.ChatRequestCollection.Remove(friendObject);
             friendObject.RequestFlowDocument = null;

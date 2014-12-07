@@ -184,6 +184,21 @@
                                  HorizontalContentAlignment="Stretch"
                                  ItemsSource="{Binding ChatCollection, Mode=OneWay}"
                                  SelectedItem="{Binding SelectedChatObject}">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}"
+                                       BasedOn="{StaticResource ToxyMetroListBoxItem}">
+                                    <Setter Property="IsSelected"
+                                            Value="{Binding Selected}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Visible}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Visible}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             <ListBox.Resources>
                                 <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
                                     <views:FriendControlView DataContext="{Binding Mode=OneWay}" />

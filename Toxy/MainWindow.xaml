@@ -526,7 +526,7 @@
                         </ContextMenu>
                     </ListView.Resources>
                     <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}" >
+                        <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}" >
                             <Setter Property="ContextMenu" Value="{StaticResource GroupPeerContextMenu}" />
                         </Style>
                     </ListView.ItemContainerStyle>

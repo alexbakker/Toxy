@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -220,7 +221,10 @@ namespace Toxy
                         {
                             var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
                             if (peer != null)
+                            {
                                 peer.Name = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+                                RearrangeGroupPeerList(group);
+                            }
 
                             break;
                         }
@@ -230,7 +234,7 @@ namespace Toxy
 
         private void RearrangeGroupPeerList(IGroupObject group)
         {
-            var peers = new GroupPeerCollection();
+            var peers = new ObservableCollection<GroupPeer>();
 
             for (int i = 0; i < tox.GetGroupMemberCount(group.ChatNumber); i++)
             {
@@ -246,7 +250,7 @@ namespace Toxy
                 peers.Add(newPeer);
             }
 
-            group.PeerList = peers;
+            group.PeerList = new GroupPeerCollection(peers.OrderBy(p=>p.Name).ToList());
         }
 
         private void tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)

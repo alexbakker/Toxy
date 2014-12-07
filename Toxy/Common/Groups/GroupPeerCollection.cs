@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using SharpTox.Core;
@@ -8,6 +9,11 @@ namespace Toxy.Common
 {
     public class GroupPeerCollection : ObservableCollection<GroupPeer>
     {
+        public GroupPeerCollection(List<GroupPeer> peers)
+            : base(peers) { }
+
+        public GroupPeerCollection() { }
+
         public bool ContainsPeer(ToxKey publicKey)
         {
             return GetPeerByPublicKey(publicKey) != null;

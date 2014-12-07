@@ -2022,7 +2022,7 @@ namespace Toxy
 
         private void CopyIDButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetDataObject(tox.Id);
+            Clipboard.SetDataObject(tox.Id.ToString());
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)

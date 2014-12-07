@@ -236,13 +236,12 @@ namespace Toxy
             {
                 var publicKey = tox.GetGroupPeerPublicKey(group.ChatNumber, i);
                 var oldPeer = group.PeerList.GetPeerByPublicKey(publicKey);
-                var newPeer = new GroupPeer(group.ChatNumber, publicKey) { Name = tox.GetGroupMemberName(group.ChatNumber, i) };
+                GroupPeer newPeer;
 
                 if (oldPeer != null)
-                {
-                    newPeer.Muted = oldPeer.Muted;
-                    newPeer.Ignored = oldPeer.Ignored;
-                }
+                    newPeer = oldPeer;
+                else
+                    newPeer = new GroupPeer(group.ChatNumber, publicKey) { Name = tox.GetGroupMemberName(group.ChatNumber, i) };
 
                 peers.Add(newPeer);
             }

@@ -208,21 +208,17 @@ namespace Toxy
                 {
                     case ToxChatChange.PeerAdd:
                         {
-                            if (!group.PeerList.ContainsPeer(e.PeerNumber))
-                                group.PeerList.Add(new GroupPeer(e.GroupNumber, e.PeerNumber));
-
+                            RearrangeGroupPeerList(group);
                             break;
                         }
                     case ToxChatChange.PeerDel:
                         {
-                            if (group.PeerList.ContainsPeer(e.PeerNumber))
-                                group.PeerList.RemovePeer(e.PeerNumber);
-
+                            RearrangeGroupPeerList(group);
                             break;
                         }
                     case ToxChatChange.PeerName:
                         {
-                            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+                            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
                             if (peer != null)
                                 peer.Name = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
 
@@ -232,13 +228,35 @@ namespace Toxy
             }
         }
 
+        private void RearrangeGroupPeerList(IGroupObject group)
+        {
+            var peers = new GroupPeerCollection();
+
+            for (int i = 0; i < tox.GetGroupMemberCount(group.ChatNumber); i++)
+            {
+                var publicKey = tox.GetGroupPeerPublicKey(group.ChatNumber, i);
+                var oldPeer = group.PeerList.GetPeerByPublicKey(publicKey);
+                var newPeer = new GroupPeer(group.ChatNumber, publicKey) { Name = tox.GetGroupMemberName(group.ChatNumber, i) };
+
+                if (oldPeer != null)
+                {
+                    newPeer.Muted = oldPeer.Muted;
+                    newPeer.Ignored = oldPeer.Ignored;
+                }
+
+                peers.Add(newPeer);
+            }
+
+            group.PeerList = peers;
+        }
+
         private void tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
         {
             var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
             if (group == null)
                 return;
 
-            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
             if (peer != null && peer.Ignored)
                 return;
 
@@ -270,7 +288,7 @@ namespace Toxy
             if (group == null)
                 return;
 
-            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
             if (peer != null && peer.Ignored)
                 return;
 
@@ -806,7 +824,7 @@ namespace Toxy
             if (group == null)
                 return;
 
-            var peer = group.PeerList.GetPeerByNumber(e.PeerNumber);
+            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
             if (peer == null || peer.Ignored || peer.Muted)
                 return;
 
@@ -2503,7 +2521,7 @@ namespace Toxy
                 return;
 
             Clipboard.Clear();
-            Clipboard.SetText(tox.GetGroupPeerPublicKey(peer.GroupNumber, peer.PeerNumber).GetString());
+            Clipboard.SetText(peer.PublicKey.GetString());
         }
 
         private void GroupPeerMute_Click(object sender, RoutedEventArgs e)

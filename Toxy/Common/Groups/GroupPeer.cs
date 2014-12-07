@@ -1,18 +1,20 @@
 ﻿using System;
 using System.ComponentModel;
+
+using SharpTox.Core;
 using Toxy.MVVM;
 
 namespace Toxy.Common
 {
     public class GroupPeer : ViewModelBase
     {
-        public int PeerNumber { get; private set; }
+        public ToxKey PublicKey { get; private set; }
         public int GroupNumber { get; private set; }
 
-        public GroupPeer(int groupNumber, int peerNumber)
+        public GroupPeer(int groupNumber, ToxKey publicKey)
         {
             GroupNumber = groupNumber;
-            PeerNumber = peerNumber;
+            PublicKey = publicKey;
         }
 
         private string name;

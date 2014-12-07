@@ -11,6 +11,7 @@
                       xmlns:viewModels="clr-namespace:Toxy.ViewModels"
                       xmlns:views="clr-namespace:Toxy.Views"
                       xmlns:common="clr-namespace:Toxy.Common"
+                      xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       x:Class="Toxy.MainWindow"
                       x:Name="mv"
                       Title="Toxy"
@@ -27,13 +28,46 @@
                       RenderOptions.ClearTypeHint="Enabled"
                       TextOptions.TextRenderingMode="ClearType"
                       TextOptions.TextFormattingMode="Display"
-                      Activated="mv_Activated" >
+                      Activated="mv_Activated" Loaded="mv_Loaded" >
 
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <dialogs:CustomDialog x:Name="SwitchProfileDialog" x:Key="SwitchProfileDialog"
+                                 Title="Switch Profile">
+                <Grid Margin="0 10 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="20" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock TextWrapping="Wrap" Grid.Row="0" Height="30" Text="Pick a profile to switch to. Clicking OK will apply this setting immediately."/>
+                    <ComboBox Grid.Row="1">
+                        <ComboBox.Items>
+                            <ComboBoxItem Content="Impy"/>
+                            <ComboBoxItem Content="Reverb"/>
+                            <ComboBoxItem Content="Henk"/>
+                        </ComboBox.Items>
+                    </ComboBox>
+                    <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Height="85">
+                        <Button x:Name="PART_AffirmativeButton"
+                            Height="35"
+                            MinWidth="80"
+                            Content="OK"
+                            Margin="0 0 5 0" />
+                        <Button x:Name="PART_NegativeButton"
+                            Height="35"
+                            MinWidth="80"
+                            Content="Cancel"
+                            Margin="5 0 5 0" />
+                    </StackPanel>
+                </Grid>
+            </dialogs:CustomDialog>
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
 
@@ -708,23 +742,25 @@
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
-    <controls:MetroWindow.RightWindowCommands>
+    <controls:MetroWindow.LeftWindowCommands>
         <controls:WindowCommands>
             <Button x:Name="GithubButton"
                     Click="GithubButton_Click">
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20"
+                <Rectangle Width="20"
                                Height="20"
                                Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill"
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
                                          Visual="{StaticResource appbar_github}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0"
-                               VerticalAlignment="Center"
-                               Text="GitHub" />
-                </StackPanel>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.LeftWindowCommands>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button x:Name ="SwitchProfileButton" Click="SwitchProfileButton_Click">
+                <TextBlock VerticalAlignment="Center" Text="Switch Profile" />
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>

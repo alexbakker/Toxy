@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -160,6 +161,9 @@ namespace Toxy
                 return;
 
             group.Name = e.Title;
+
+            if (e.PeerNumber != -1)
+                group.AdditionalInfo = string.Format("Topic set by: {0}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber));
         }
 
         private void tox_OnGroupNamelistChange(object sender, ToxEventArgs.GroupNamelistChangeEventArgs e)
@@ -168,19 +172,66 @@ namespace Toxy
             if (group != null)
             {
                 if (e.Change == ToxChatChange.PeerAdd || e.Change == ToxChatChange.PeerDel)
+                    group.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
+
+                switch (e.Change)
                 {
-                    var status = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
-                    group.StatusMessage = status;
-                }
-                if (group.Selected)
-                {
-                    group.AdditionalInfo = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
+                    case ToxChatChange.PeerAdd:
+                        {
+                            RearrangeGroupPeerList(group);
+                            break;
+                        }
+                    case ToxChatChange.PeerDel:
+                        {
+                            RearrangeGroupPeerList(group);
+                            break;
+                        }
+                    case ToxChatChange.PeerName:
+                        {
+                            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+                            if (peer != null)
+                            {
+                                peer.Name = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+                                RearrangeGroupPeerList(group);
+                            }
+
+                            break;
+                        }
                 }
             }
         }
 
+        private void RearrangeGroupPeerList(IGroupObject group)
+        {
+            var peers = new ObservableCollection<GroupPeer>();
+
+            for (int i = 0; i < tox.GetGroupMemberCount(group.ChatNumber); i++)
+            {
+                var publicKey = tox.GetGroupPeerPublicKey(group.ChatNumber, i);
+                var oldPeer = group.PeerList.GetPeerByPublicKey(publicKey);
+                GroupPeer newPeer;
+
+                if (oldPeer != null)
+                    newPeer = oldPeer;
+                else
+                    newPeer = new GroupPeer(group.ChatNumber, publicKey) { Name = tox.GetGroupMemberName(group.ChatNumber, i) };
+
+                peers.Add(newPeer);
+            }
+
+            group.PeerList = new GroupPeerCollection(peers.OrderBy(p=>p.Name).ToList());
+        }
+
         private void tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
         {
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+            if (peer != null && peer.Ignored)
+                return;
+
             MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), e.Action), IsAction = true };
 
             if (groupdic.ContainsKey(e.GroupNumber))
@@ -194,20 +245,25 @@ namespace Toxy
                 groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
             }
 
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group != null)
-            {
-                MessageAlertIncrement(group);
+            MessageAlertIncrement(group);
 
-                if (group.Selected)
-                    ScrollChatBox();
-            }
+            if (group.Selected)
+                ScrollChatBox();
+
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
         }
 
         private void tox_OnGroupMessage(object sender, ToxEventArgs.GroupMessageEventArgs e)
         {
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+            if (peer != null && peer.Ignored)
+                return;
+
             MessageData data = new MessageData() { Username = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), Message = e.Message };
 
             if (groupdic.ContainsKey(e.GroupNumber))
@@ -233,14 +289,11 @@ namespace Toxy
                 groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
             }
 
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group != null)
-            {
-                MessageAlertIncrement(group);
+            MessageAlertIncrement(group);
 
-                if (group.Selected)
-                    ScrollChatBox();
-            }
+            if (group.Selected)
+                ScrollChatBox();
+
             if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                 this.Flash();
 
@@ -739,6 +792,14 @@ namespace Toxy
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
         {
+            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            if (group == null)
+                return;
+
+            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+            if (peer == null || peer.Ignored || peer.Muted)
+                return;
+
             if (call != null && call.GetType() == typeof(ToxGroupCall))
                 ((ToxGroupCall)call).ProcessAudioFrame(e.Data, e.Channels);
         }
@@ -1222,8 +1283,11 @@ namespace Toxy
             if (string.IsNullOrEmpty(title))
                 return;
 
-            tox.SetGroupTitle(groupObject.ChatNumber, title);
-            groupObject.Name = title;
+            if (tox.SetGroupTitle(groupObject.ChatNumber, title))
+            {
+                groupObject.Name = title;
+                groupObject.AdditionalInfo = string.Format("Topic set by: {0}", tox.Name);
+            }
         }
 
         private void GroupDeleteAction(IGroupObject groupObject)
@@ -1483,8 +1547,6 @@ namespace Toxy
             CallButton.Visibility = Visibility.Collapsed;
             FileButton.Visibility = Visibility.Collapsed;
 
-            group.AdditionalInfo = string.Join(", ", tox.GetGroupNames(group.ChatNumber));
-
             if (groupdic.ContainsKey(group.ChatNumber))
             {
                 ChatBox.Document = groupdic[group.ChatNumber];
@@ -1495,6 +1557,9 @@ namespace Toxy
                 groupdic.Add(group.ChatNumber, document);
                 ChatBox.Document = groupdic[group.ChatNumber];
             }
+
+            GroupListGrid.Visibility = System.Windows.Visibility.Visible;
+            PeerColumn.Width = new GridLength(150);
         }
 
         private void EndCall()
@@ -1575,6 +1640,9 @@ namespace Toxy
                 convdic.Add(friend.ChatNumber, document);
                 ChatBox.Document = convdic[friend.ChatNumber];
             }
+
+            GroupListGrid.Visibility = System.Windows.Visibility.Collapsed;
+            PeerColumn.Width = GridLength.Auto;
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1949,7 +2017,7 @@ namespace Toxy
 
         private void CopyIDButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetDataObject(tox.Id);
+            Clipboard.SetDataObject(tox.Id.ToString());
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -2491,6 +2559,34 @@ namespace Toxy
         {
             var dialog = (BaseMetroDialog)this.Resources["SwitchProfileDialog"];
             await this.ShowMetroDialogAsync(dialog);
+        }
+
+        public void GroupPeerCopyKey_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = GroupListView.SelectedItem as GroupPeer;
+            if (peer == null)
+                return;
+
+            Clipboard.Clear();
+            Clipboard.SetText(peer.PublicKey.GetString());
+        }
+
+        private void GroupPeerMute_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = GroupListView.SelectedItem as GroupPeer;
+            if (peer == null)
+                return;
+
+            peer.Muted = !peer.Muted;
+        }
+
+        private void GroupPeerIgnore_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = GroupListView.SelectedItem as GroupPeer;
+            if (peer == null)
+                return;
+
+            peer.Ignored = !peer.Ignored;
         }
     }
 }

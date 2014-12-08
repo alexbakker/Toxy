@@ -8,14 +8,16 @@ using SharpTox.Av;
 using SharpTox.Av.Filter;
 using SharpTox.Core;
 
+using Toxy.ViewModels;
+
 namespace Toxy.ToxHelpers
 {
     class ToxGroupCall : ToxCall
     {
-        public int GroupNumber;
+        public int GroupNumber { get; private set; }
 
-        public WaveOut wave_out_single;
-        public BufferedWaveProvider wave_provider_single;
+        private WaveOut wave_out_single;
+        private BufferedWaveProvider wave_provider_single;
 
         public ToxGroupCall(ToxAv toxav, int groupNumber)
             : base(toxav)
@@ -138,21 +140,33 @@ namespace Toxy.ToxHelpers
         protected WaveIn wave_source;
         protected WaveOut wave_out;
         protected BufferedWaveProvider wave_provider;
-
-        public bool FilterAudio = false;
-
         protected Timer timer;
-        public int TotalSeconds = 0;
 
-        public int CallIndex;
-        public int FriendNumber;
+        public bool FilterAudio { get; set; }
+
+        private int totalSeconds = 0;
+
+        public int TotalSeconds
+        {
+            get { return totalSeconds; }
+            set { totalSeconds = value; }
+        }
+
+        private int callIndex;
+
+        public int CallIndex
+        {
+            get { return callIndex; }
+        }
+        
+        public int FriendNumber { get; private set; }
 
         public ToxCall(ToxAv toxav, int callindex, int friendnumber)
         {
             this.toxav = toxav;
             this.FriendNumber = friendnumber;
 
-            CallIndex = callindex;
+            callIndex = callindex;
         }
 
         /// <summary>
@@ -166,7 +180,7 @@ namespace Toxy.ToxHelpers
 
         public virtual void Start(int input, int output, ToxAvCodecSettings settings)
         {
-            toxav.PrepareTransmission(CallIndex, false);
+            toxav.PrepareTransmission(callIndex, false);
 
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
             wave_provider = new BufferedWaveProvider(outFormat);
@@ -259,9 +273,9 @@ namespace Toxy.ToxHelpers
                     Debug.WriteLine("Could not filter audio");
 
             byte[] dest = new byte[(((int)ToxAv.DefaultCodecSettings.AudioFrameDuration * wave_source.WaveFormat.SampleRate) / 1000) * 2 * wave_source.WaveFormat.Channels];
-            int size = toxav.PrepareAudioFrame(CallIndex, dest, dest.Length, shorts, ((int)wave_source.BufferMilliseconds * (int)wave_source.WaveFormat.SampleRate) / 1000);
+            int size = toxav.PrepareAudioFrame(callIndex, dest, dest.Length, shorts, ((int)wave_source.BufferMilliseconds * (int)wave_source.WaveFormat.SampleRate) / 1000);
 
-            ToxAvError error = toxav.SendAudio(CallIndex, dest, size);
+            ToxAvError error = toxav.SendAudio(callIndex, dest, size);
             if (error != ToxAvError.None)
                 Debug.WriteLine(string.Format("Could not send audio: {0}", error));
         }
@@ -282,8 +296,8 @@ namespace Toxy.ToxHelpers
                 wave_out.Dispose();
             }
 
-            toxav.KillTransmission(CallIndex);
-            toxav.Hangup(CallIndex);
+            toxav.KillTransmission(callIndex);
+            toxav.Hangup(callIndex);
 
             if (timer != null)
                 timer.Dispose();
@@ -291,14 +305,14 @@ namespace Toxy.ToxHelpers
 
         public virtual void Answer()
         {
-            ToxAvError error = toxav.Answer(CallIndex, ToxAv.DefaultCodecSettings);
+            ToxAvError error = toxav.Answer(callIndex, ToxAv.DefaultCodecSettings);
             if (error != ToxAvError.None)
                 throw new Exception("Could not answer call " + error.ToString());
         }
 
         public virtual void Call(int current_number, ToxAvCodecSettings settings, int ringing_seconds)
         {
-            toxav.Call(current_number, settings, ringing_seconds, out CallIndex);
+            toxav.Call(current_number, settings, ringing_seconds, out callIndex);
         }
     }
 }

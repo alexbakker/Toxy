@@ -379,6 +379,11 @@
                       Background="{DynamicResource AccentColorBrush}"/>
 
         <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2"/>
+                <ColumnDefinition x:Name="PeerColumn"  Width="Auto" MaxWidth="300"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -387,6 +392,7 @@
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0"
+                    Grid.ColumnSpan="3"
                     BorderBrush="{DynamicResource AccentColorBrush}"
                     BorderThickness="0,0,0,1">
                 <Grid Margin="5">
@@ -536,10 +542,33 @@
                      TextChanged="TextToSend_TextChanged"
                      AcceptsReturn="False"
                      SelectionBrush="{DynamicResource AccentColorBrush}" />
+            <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
+                      Width="1"
 
+                      HorizontalAlignment="Center"
+                      Background="{DynamicResource AccentColorBrush}"/>
+            <Grid x:Name="GroupListGrid" 
+                  Grid.Column="3" Grid.Row="1" Grid.RowSpan="3">
+                <ListView x:Name="GroupListView" Height="Auto" BorderBrush="{x:Null}" ItemsSource="{Binding SelectedChatObject.PeerList}" DisplayMemberPath="Name" SelectionMode="Single">
+                    <ListView.Resources>
+                        <converter:IgnoreStatusToStringConverter x:Key="IgnoreStatusConverter" />
+                        <converter:MuteStatusToStringConverter x:Key="MuteStatusConverter" />
+                        <ContextMenu x:Key="GroupPeerContextMenu" Name="GroupPeerContextMenu">
+                            <MenuItem Header="Copy Key" Click="GroupPeerCopyKey_Click"/>
+                            <MenuItem Header="{Binding Muted, Mode=OneWay, Converter={StaticResource MuteStatusConverter}}" Click="GroupPeerMute_Click"/>
+                            <MenuItem Header="{Binding Ignored, Mode=OneWay, Converter={StaticResource IgnoreStatusConverter}}" Click="GroupPeerIgnore_Click"/>
+                        </ContextMenu>
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}" >
+                            <Setter Property="ContextMenu" Value="{StaticResource GroupPeerContextMenu}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </Grid>
         </Grid>
     </Grid>
-
+    
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="FriendFlyout"

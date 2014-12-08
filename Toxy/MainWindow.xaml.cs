@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using SharpTox.Core;
 using SharpTox.Av;
 
+using Toxy.Views;
 using Toxy.Common;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
@@ -2557,8 +2558,25 @@ namespace Toxy
 
         private async void SwitchProfileButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = (BaseMetroDialog)this.Resources["SwitchProfileDialog"];
+            var dialog = new SwitchProfileDialog(this);
             await this.ShowMetroDialogAsync(dialog);
+            var result = await dialog.WaitForButtonPressAsync();
+            await this.HideMetroDialogAsync(dialog);
+
+            if (result == null || result.Content == null || string.IsNullOrEmpty(result.Content.ToString()))
+                return;
+
+            string profile = result.Content.ToString();
+            if (!LoadProfile(profile))
+                await this.ShowMessageAsync("Error", "Could not load profile, make sure it exists/is accessable");
+        }
+
+        private bool LoadProfile(string profile)
+        {
+            if (!File.Exists(Path.Combine(toxDataDir, profile + ".tox")))
+                return false;
+
+            return true;
         }
 
         public void GroupPeerCopyKey_Click(object sender, RoutedEventArgs e)

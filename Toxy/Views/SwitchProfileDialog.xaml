@@ -43,14 +43,10 @@
                     Content="{Binding NegativeButtonText, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
                     Margin="5 0 5 0" />
         </StackPanel>-->
-        <TextBlock x:Name="PART_ProfileComboBox" TextWrapping="Wrap" Grid.Row="0" Height="30" Text="Pick a profile to switch to. Clicking OK will apply this setting immediately."/>
-        <ComboBox Grid.Row="1" 
+        <TextBlock TextWrapping="Wrap" Grid.Row="0" Height="30" Text="Pick a profile to switch to. Clicking OK will apply this setting immediately."/>
+        <ComboBox x:Name="PART_ProfileComboBox"
+                  Grid.Row="1" 
                   SelectedItem="{Binding Input, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}">
-            <ComboBox.Items>
-                <ComboBoxItem Content="Impy"/>
-                <ComboBoxItem Content="Reverb"/>
-                <ComboBoxItem Content="Henk"/>
-            </ComboBox.Items>
         </ComboBox>
         <StackPanel Grid.Row="3"
                         Orientation="Horizontal"

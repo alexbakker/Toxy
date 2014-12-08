@@ -15,19 +15,22 @@ namespace Toxy.Views
     /// </summary>
     public partial class SwitchProfileDialog : BaseMetroDialog
     {
-        internal SwitchProfileDialog(MetroWindow parentWindow)
-            : this(parentWindow, null)
+        public SwitchProfileDialog(string[] profiles, MetroWindow parentWindow)
+            : this(profiles, parentWindow, null)
         {
         }
 
-        internal SwitchProfileDialog(MetroWindow parentWindow, MetroDialogSettings settings)
+        public SwitchProfileDialog(string[] profiles, MetroWindow parentWindow, MetroDialogSettings settings)
             : base(parentWindow, settings)
         {
             Title = "Switch Profile";
             InitializeComponent();
+
+            foreach (string profile in profiles)
+                PART_ProfileComboBox.Items.Add(profile);
         }
 
-        public Task<ComboBoxItem> WaitForButtonPressAsync()
+        public Task<string> WaitForButtonPressAsync()
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -35,7 +38,7 @@ namespace Toxy.Views
                 PART_ProfileComboBox.Focus();
             }));
 
-            var tcs = new TaskCompletionSource<ComboBoxItem>();
+            var tcs = new TaskCompletionSource<string>();
 
             RoutedEventHandler negativeHandler = null;
             KeyEventHandler negativeKeyHandler = null;
@@ -154,7 +157,7 @@ namespace Toxy.Views
         }
 
         public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
-        public static readonly DependencyProperty InputProperty = DependencyProperty.Register("Input", typeof(ComboBoxItem), typeof(InputDialog), new PropertyMetadata(default(ComboBoxItem)));
+        public static readonly DependencyProperty InputProperty = DependencyProperty.Register("Input", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
         public static readonly DependencyProperty AffirmativeButtonTextProperty = DependencyProperty.Register("AffirmativeButtonText", typeof(string), typeof(InputDialog), new PropertyMetadata("OK"));
         public static readonly DependencyProperty NegativeButtonTextProperty = DependencyProperty.Register("NegativeButtonText", typeof(string), typeof(InputDialog), new PropertyMetadata("Cancel"));
 
@@ -164,9 +167,9 @@ namespace Toxy.Views
             set { SetValue(MessageProperty, value); }
         }
 
-        public ComboBoxItem Input
+        public string Input
         {
-            get { return (ComboBoxItem)GetValue(InputProperty); }
+            get { return (string)GetValue(InputProperty); }
             set { SetValue(InputProperty, value); }
         }
 

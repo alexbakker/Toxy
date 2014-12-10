@@ -131,6 +131,9 @@
     <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
     <Compile Include="Common\Groups\GroupPeer.cs" />
     <Compile Include="Common\Groups\GroupPeerCollection.cs" />
+    <Compile Include="SQLite\SQLite.cs" />
+    <Compile Include="SQLite\SQLiteAsync.cs" />
+    <Compile Include="SQLite\Tables\ToxMessage.cs" />
     <Compile Include="ViewModels\BaseChatModelView.cs" />
     <Compile Include="ViewModels\FriendControlModelView.cs" />
     <Compile Include="ViewModels\GroupControlModelView.cs" />
@@ -261,6 +264,10 @@
     </Content>
     <Content Include="..\libs\filter_audio.dll">
       <Link>filter_audio.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\libs\sqlite3.dll">
+      <Link>sqlite3.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\Audio\Blop.wav" />

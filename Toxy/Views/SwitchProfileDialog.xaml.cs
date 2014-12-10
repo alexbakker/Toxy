@@ -29,7 +29,7 @@ namespace Toxy.Views
                 PART_ProfileComboBox.Items.Add(profile);
         }
 
-        public Task<string> WaitForButtonPressAsync()
+        public Task<SwitchProfileResult> WaitForButtonPressAsync()
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -37,7 +37,7 @@ namespace Toxy.Views
                 PART_ProfileComboBox.Focus();
             }));
 
-            var tcs = new TaskCompletionSource<string>();
+            var tcs = new TaskCompletionSource<SwitchProfileResult>();
 
             RoutedEventHandler negativeHandler = null;
             KeyEventHandler negativeKeyHandler = null;
@@ -45,7 +45,8 @@ namespace Toxy.Views
             RoutedEventHandler affirmativeHandler = null;
             KeyEventHandler affirmativeKeyHandler = null;
 
-            RoutedEventHandler importHandler = null; 
+            RoutedEventHandler importHandler = null;
+            RoutedEventHandler newProfileHandler = null; 
 
             KeyEventHandler escapeKeyHandler = null;
 
@@ -55,6 +56,7 @@ namespace Toxy.Views
 
                 PART_NegativeButton.Click -= negativeHandler;
                 PART_AffirmativeButton.Click -= affirmativeHandler;
+                PART_NewProfileButton.Click -= newProfileHandler;
 
                 PART_NegativeButton.KeyDown -= negativeKeyHandler;
                 PART_AffirmativeButton.KeyDown -= affirmativeKeyHandler;
@@ -86,7 +88,7 @@ namespace Toxy.Views
                 {
                     cleanUpHandlers();
 
-                    tcs.TrySetResult(Input);
+                    tcs.TrySetResult(new SwitchProfileResult() { Input = this.Input, Result = SwitchProfileDialogResult.OK });
                 }
             };
 
@@ -103,7 +105,7 @@ namespace Toxy.Views
             {
                 cleanUpHandlers();
 
-                tcs.TrySetResult(Input);
+                tcs.TrySetResult(new SwitchProfileResult() { Input = this.Input, Result = SwitchProfileDialogResult.OK });
 
                 e.Handled = true;
             };
@@ -124,7 +126,16 @@ namespace Toxy.Views
 
                 cleanUpHandlers();
 
-                tcs.TrySetResult(Input);
+                tcs.TrySetResult(new SwitchProfileResult() { Input = string.Empty, Result = SwitchProfileDialogResult.Import });
+
+                e.Handled = true;
+            };
+
+            newProfileHandler = (sender, e) =>
+            {
+                cleanUpHandlers();
+
+                tcs.TrySetResult(new SwitchProfileResult() { Input = string.Empty, Result = SwitchProfileDialogResult.New });
 
                 e.Handled = true;
             };
@@ -137,6 +148,7 @@ namespace Toxy.Views
             PART_NegativeButton.Click += negativeHandler;
             PART_AffirmativeButton.Click += affirmativeHandler;
             PART_ImportButton.Click += importHandler;
+            PART_NewProfileButton.Click += newProfileHandler;
 
             return tcs.Task;
         }
@@ -151,12 +163,26 @@ namespace Toxy.Views
                     break;
             }
         }
-        public static readonly DependencyProperty InputProperty = DependencyProperty.Register("Input", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
+
+        public static readonly DependencyProperty InputProperty = DependencyProperty.Register("Input", typeof(string), typeof(SwitchProfileDialog), new PropertyMetadata(default(string)));
 
         public string Input
         {
             get { return (string)GetValue(InputProperty); }
             set { SetValue(InputProperty, value); }
         }
+    }
+
+    public class SwitchProfileResult
+    {
+        public string Input { get; set; }
+        public SwitchProfileDialogResult Result { get; set; }
+    }
+
+    public enum SwitchProfileDialogResult
+    {
+        OK,
+        Import,
+        New
     }
 }

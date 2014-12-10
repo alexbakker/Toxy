@@ -2608,12 +2608,47 @@ namespace Toxy
             var result = await dialog.WaitForButtonPressAsync();
             await this.HideMetroDialogAsync(dialog);
 
-            if (result == null || string.IsNullOrEmpty(result))
+            if (result == null || result.Result == SwitchProfileDialogResult.Import)
                 return;
 
-            string profile = result;
-            if (!LoadProfile(profile, false))
-                await this.ShowMessageAsync("Error", "Could not load profile, make sure it exists/is accessible.");
+            if (result.Result == SwitchProfileDialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(result.Input))
+                    return;
+
+                if (!LoadProfile(result.Input, false))
+                    await this.ShowMessageAsync("Error", "Could not load profile, make sure it exists/is accessible.");
+            }
+            else if (result.Result == SwitchProfileDialogResult.New)
+            {
+                string profile = await this.ShowInputAsync("New Profile", "Enter a name for your new profile.");
+                if (string.IsNullOrEmpty(profile))
+                    await this.ShowMessageAsync("Error", "Could not create profile, you must enter a name for your profile.");
+                else
+                {
+                    if (!CreateNewProfile(profile))
+                        await this.ShowMessageAsync("Error", "Could not create profile, did you enter a valid name?");
+                }
+            }
+        }
+
+        private bool CreateNewProfile(string profileName)
+        {
+            string path = Path.Combine(toxDataDir, profileName + ".tox");
+            if (File.Exists(path))
+                return false;
+
+            Tox t = new Tox(new ToxOptions());
+            t.Name = profileName;
+
+            if (!t.GetData().Save(path))
+            {
+                t.Dispose();
+                return false;
+            }
+
+            t.Dispose();
+            return LoadProfile(profileName, false);
         }
 
         private bool LoadProfile(string profile, bool allowReload)

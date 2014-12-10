@@ -60,6 +60,12 @@
                             Content="Import..."
                             Visibility="Hidden"
                             Margin="0 0 5 0"/>
+            <Button x:Name="PART_NewProfileButton"
+                            Height="35"
+                            HorizontalAlignment="Right"
+                            MinWidth="80"
+                            Content="New"
+                            Margin="0 0 5 0"/>
             <Button x:Name="PART_AffirmativeButton"
                             Height="35"
                             MinWidth="80"

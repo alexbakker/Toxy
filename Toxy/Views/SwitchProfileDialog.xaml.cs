@@ -23,7 +23,6 @@ namespace Toxy.Views
         public SwitchProfileDialog(string[] profiles, MetroWindow parentWindow, MetroDialogSettings settings)
             : base(parentWindow, settings)
         {
-            Title = "Switch Profile";
             InitializeComponent();
 
             foreach (string profile in profiles)
@@ -111,7 +110,7 @@ namespace Toxy.Views
 
             importHandler = (sender, e) =>
             {
-                OpenFileDialog dialog = new OpenFileDialog();
+                /*OpenFileDialog dialog = new OpenFileDialog();
                 dialog.InitialDirectory = Environment.CurrentDirectory;
                 dialog.Multiselect = false;
                 if (dialog.ShowDialog() != true)
@@ -119,7 +118,7 @@ namespace Toxy.Views
 
                 string fileName = dialog.FileName;
                 if (string.IsNullOrEmpty(fileName))
-                    return;
+                    return;*/
 
                 //show the 'give this profile a name' dialog
 
@@ -144,9 +143,6 @@ namespace Toxy.Views
 
         private void Dialog_Loaded(object sender, RoutedEventArgs e)
         {
-            this.AffirmativeButtonText = this.DialogSettings.AffirmativeButtonText;
-            this.NegativeButtonText = this.DialogSettings.NegativeButtonText;
-
             switch (this.DialogSettings.ColorScheme)
             {
                 case MetroDialogColorScheme.Accented:
@@ -155,34 +151,12 @@ namespace Toxy.Views
                     break;
             }
         }
-
-        public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
         public static readonly DependencyProperty InputProperty = DependencyProperty.Register("Input", typeof(string), typeof(InputDialog), new PropertyMetadata(default(string)));
-        public static readonly DependencyProperty AffirmativeButtonTextProperty = DependencyProperty.Register("AffirmativeButtonText", typeof(string), typeof(InputDialog), new PropertyMetadata("OK"));
-        public static readonly DependencyProperty NegativeButtonTextProperty = DependencyProperty.Register("NegativeButtonText", typeof(string), typeof(InputDialog), new PropertyMetadata("Cancel"));
-
-        public string Message
-        {
-            get { return (string)GetValue(MessageProperty); }
-            set { SetValue(MessageProperty, value); }
-        }
 
         public string Input
         {
             get { return (string)GetValue(InputProperty); }
             set { SetValue(InputProperty, value); }
-        }
-
-        public string AffirmativeButtonText
-        {
-            get { return (string)GetValue(AffirmativeButtonTextProperty); }
-            set { SetValue(AffirmativeButtonTextProperty, value); }
-        }
-
-        public string NegativeButtonText
-        {
-            get { return (string)GetValue(NegativeButtonTextProperty); }
-            set { SetValue(NegativeButtonTextProperty, value); }
         }
     }
 }

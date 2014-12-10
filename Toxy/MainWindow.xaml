@@ -507,7 +507,8 @@
                      GotFocus="TextToSend_OnGotFocus"
                      TextChanged="TextToSend_TextChanged"
                      AcceptsReturn="False"
-                     SelectionBrush="{DynamicResource AccentColorBrush}" />
+                     SelectionBrush="{DynamicResource AccentColorBrush}"
+                     SpellCheck.IsEnabled="True"/>
             <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
                       Width="1"
 

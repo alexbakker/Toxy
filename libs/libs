@@ -1,1 +1,1 @@
-SharpTox.dll, SharpTox.Av.Filter.dll, libtox.dll and filter_audio.dll should be placed here.
+SharpTox.dll, SharpTox.Av.Filter.dll, libtox.dll, filter_audio.dll and sqlite3.dll should be placed here.

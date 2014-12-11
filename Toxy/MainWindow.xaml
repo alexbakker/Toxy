@@ -664,6 +664,13 @@
                                   Content="Portable"
                                   ToolTip="Save application settings in the executable folder."
                                   />
+                            <CheckBox x:Name="ChatLogCheckBox"
+                                  VerticalAlignment="Top"
+                                  Margin="0,5,0,0"
+                                  HorizontalAlignment="Left"
+                                  Content="Enable chat logging"
+                                  ToolTip="Chat logs get saved to a local database and are loaded at launch."
+                                  />
                             <CheckBox x:Name="AudioNotificationCheckBox"
                                   VerticalAlignment="Top"
                                   HorizontalAlignment="Left"

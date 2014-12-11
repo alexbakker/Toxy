@@ -53,7 +53,7 @@ namespace Toxy.Common
             TableCell timestampTableCell = new TableCell();
             Paragraph timestamParagraph = new Paragraph();
             timestampTableCell.TextAlignment = TextAlignment.Right;
-            timestamParagraph.Inlines.Add(DateTime.Now.ToShortTimeString());
+            timestamParagraph.Inlines.Add(data.Timestamp.ToShortTimeString());
             timestampTableCell.Blocks.Add(timestamParagraph);
             timestamParagraph.Foreground = new SolidColorBrush(Color.FromRgb(164, 164, 164));
             //Add the two cells to the row we made before

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using Toxy.Views;
 
@@ -11,6 +12,7 @@ namespace Toxy.Common
         public int Id { get; set; }
         public bool IsAction { get; set; }
         public bool IsSelf { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 
     public class FileTransfer

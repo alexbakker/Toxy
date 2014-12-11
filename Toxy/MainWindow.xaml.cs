@@ -1636,7 +1636,10 @@ namespace Toxy
         private void KillTox()
         {
             if (call != null)
+            {
                 call.Stop();
+                call = null;
+            }
 
             foreach (FileTransfer transfer in transfers)
             {
@@ -1648,6 +1651,8 @@ namespace Toxy
                 }
             }
 
+            convdic.Clear();
+            groupdic.Clear();
             transfers.Clear();
 
             if (toxav != null)

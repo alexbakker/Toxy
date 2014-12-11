@@ -13,37 +13,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!--<TextBlock Grid.Row="0"
-                    Margin="0 5 0 0"
-                    FontSize="{StaticResource DialogMessageFontSize}"
-                    Text="{Binding Message, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="Wrap"
-                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox Grid.Row="1"
-                    Margin="0 5 0 0"
-                    FontSize="{StaticResource DialogMessageFontSize}"
-                    controls:ControlsHelper.FocusBorderBrush="{DynamicResource AccentColorBrush}"
-                    x:Name="PART_TextBox"
-                    Text="{Binding Input, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="Wrap"
-                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}" />
-
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Height="85">
-            <Button x:Name="PART_AffirmativeButton"
-                    Height="35"
-                    MinWidth="80"
-                    Style="{DynamicResource AccentedDialogSquareButton}"
-                    Content="{Binding AffirmativeButtonText, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
-                    Margin="0 0 5 0" />
-            <Button x:Name="PART_NegativeButton"
-                    Height="35"
-                    MinWidth="80"
-                    Content="{Binding NegativeButtonText, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
-                    Margin="5 0 5 0" />
-        </StackPanel>-->
         <TextBlock TextWrapping="Wrap" Grid.Row="0" Height="30" Text="Pick a profile to switch to. Clicking OK will apply this setting immediately."/>
         <ComboBox x:Name="PART_ProfileComboBox"
                   Grid.Row="1" 

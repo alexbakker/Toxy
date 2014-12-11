@@ -64,6 +64,7 @@ namespace Toxy
         private Icon newMessageNotifyIcon;
 
         private SQLiteAsyncConnection dbConnection;
+        private string dbPath = "chatlogs.db";
 
         private string toxDataDir
         {
@@ -855,7 +856,7 @@ namespace Toxy
 
         private async void initDatabase()
         {
-            dbConnection = new SQLiteAsyncConnection("database");
+            dbConnection = new SQLiteAsyncConnection(dbPath);
             await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
 
             if (config.EnableChatLogging)

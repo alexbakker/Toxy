@@ -125,6 +125,14 @@ namespace Toxy.Common
             set { filterAudio = value; }
         }
 
+        private string profileName = string.Empty;
+
+        public string ProfileName
+        {
+            get { return profileName; }
+            set { profileName = value; }
+        }
+
         private ToxConfigNode[] nodes = new ToxConfigNode[] 
         {
             new ToxConfigNode() { ClientId = "951C88B7E75C867418ACDB5D273821372BB5BD652740BCDF623A4FA293E75D2F", Address = "192.254.75.98", Port = 33445 },

@@ -150,6 +150,9 @@
     <Compile Include="ToxHelpers\Tools.cs" />
     <Compile Include="ToxHelpers\ToxCall.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Views\SwitchProfileDialog.xaml.cs">
+      <DependentUpon>SwitchProfileDialog.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\CallControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -198,6 +201,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\CustomStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SwitchProfileDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

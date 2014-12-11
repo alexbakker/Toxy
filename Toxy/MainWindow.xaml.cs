@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using SharpTox.Core;
 using SharpTox.Av;
 
+using Toxy.Views;
 using Toxy.Common;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
@@ -69,11 +70,19 @@ namespace Toxy
                 if (!config.Portable)
                     return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
                 else
-                    return "";
+                    return Environment.CurrentDirectory;
             }
         }
 
         private string toxDataFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, string.Format("{0}.tox", string.IsNullOrEmpty(config.ProfileName) ? tox.Keys.PublicKey.GetString().Substring(0, 10) : config.ProfileName));
+            }
+        }
+
+        private string toxOldDataFilename
         {
             get
             {
@@ -98,90 +107,7 @@ namespace Toxy
                 ConfigTools.Save(config, "config.xml");
             }
 
-            ToxOptions options;
-            if (config.ProxyEnabled)
-                options = new ToxOptions(config.Ipv6Enabled, config.ProxyAddress, config.ProxyPort);
-            else
-                options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
-
             applyConfig();
-
-            tox = new Tox(options);
-            tox.Invoker = Dispatcher.BeginInvoke;
-            tox.OnNameChange += tox_OnNameChange;
-            tox.OnFriendMessage += tox_OnFriendMessage;
-            tox.OnFriendAction += tox_OnFriendAction;
-            tox.OnFriendRequest += tox_OnFriendRequest;
-            tox.OnUserStatus += tox_OnUserStatus;
-            tox.OnStatusMessage += tox_OnStatusMessage;
-            tox.OnTypingChange += tox_OnTypingChange;
-            tox.OnConnectionStatusChanged += tox_OnConnectionStatusChanged;
-            tox.OnFileSendRequest += tox_OnFileSendRequest;
-            tox.OnFileData += tox_OnFileData;
-            tox.OnFileControl += tox_OnFileControl;
-            tox.OnReadReceipt += tox_OnReadReceipt;
-            tox.OnConnected += tox_OnConnected;
-            tox.OnDisconnected += tox_OnDisconnected;
-            tox.OnAvatarData += tox_OnAvatarData;
-            tox.OnAvatarInfo += tox_OnAvatarInfo;
-            tox.OnGroupTitleChanged += tox_OnGroupTitleChanged;
-
-            tox.OnGroupInvite += tox_OnGroupInvite;
-            tox.OnGroupMessage += tox_OnGroupMessage;
-            tox.OnGroupAction += tox_OnGroupAction;
-            tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
-
-            toxav = new ToxAv(tox.Handle, 1);
-            toxav.Invoker = Dispatcher.BeginInvoke;
-            toxav.OnInvite += toxav_OnInvite;
-            toxav.OnStart += toxav_OnStart;
-            toxav.OnEnd += toxav_OnEnd;
-            toxav.OnPeerTimeout += toxav_OnEnd;
-            toxav.OnRequestTimeout += toxav_OnEnd;
-            toxav.OnReject += toxav_OnEnd;
-            toxav.OnCancel += toxav_OnEnd;
-            toxav.OnReceivedAudio += toxav_OnReceivedAudio;
-            toxav.OnPeerCodecSettingsChanged += toxav_OnPeerCodecSettingsChanged;
-            toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
-
-            bool bootstrap_success = false;
-            foreach (ToxConfigNode node in config.Nodes)
-            {
-                if (tox.BootstrapFromNode(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId))))
-                    bootstrap_success = true;
-            }
-
-            if (!bootstrap_success)
-                Debug.WriteLine("Could not bootstrap from any node!");
-
-            loadTox();
-            tox.Start();
-            toxav.Start();
-
-            if (string.IsNullOrEmpty(getSelfName()))
-                tox.Name = "Tox User";
-
-            if (string.IsNullOrEmpty(getSelfStatusMessage()))
-                tox.StatusMessage = "Toxing on Toxy";
-
-            ViewModel.MainToxyUser.Name = getSelfName();
-            ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();
-
-            InitializeNotifyIcon();
-
-            SetStatus(null, false);
-            InitFriends();
-
-            TextToSend.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
-            TextToSend.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
-
-            ChatBox.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
-            ChatBox.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
-
-            if (tox.FriendCount > 0)
-                ViewModel.SelectedChatObject = ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
-
-            loadAvatars();
         }
 
         #region Tox EventHandlers
@@ -1042,16 +968,57 @@ namespace Toxy
             e.Handled = false;
         }
 
-        private void loadTox()
+        private async Task loadTox()
         {
-            if (File.Exists(toxDataFilename))
+            if (!Directory.Exists(toxDataDir))
+                Directory.CreateDirectory(toxDataDir);
+
+            string[] fileNames = Directory.GetFiles(toxDataDir, "*.tox", SearchOption.TopDirectoryOnly).Where(s => s.EndsWith(".tox")).ToArray();
+            if (fileNames.Length > 0)
             {
+                if (!fileNames.Contains(toxDataFilename))
+                {
+                    SwitchProfileButton_Click(this, new RoutedEventArgs());
+                }
+                else
+                {
+                    ToxData data = ToxData.FromDisk(toxDataFilename);
+                    if (data == null || !tox.Load(data))
+                    {
+                        MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
+                        Application.Current.Shutdown();
+                    }
+                }
+            }
+            else if (File.Exists(toxOldDataFilename))
+            {
+                string profileName = await this.ShowInputAsync("Old data file", "Toxy has detected an old data file. Please enter a name for your profile");
+                if (!string.IsNullOrEmpty(profileName))
+                    config.ProfileName = profileName;
+                else
+                    config.ProfileName = tox.Keys.PublicKey.GetString().Substring(0, 10);
+
+                File.Move(toxOldDataFilename, toxDataFilename);
+                ConfigTools.Save(config, "config.xml");
+
                 ToxData data = ToxData.FromDisk(toxDataFilename);
                 if (data == null || !tox.Load(data))
                 {
                     MessageBox.Show("Could not load tox data, this program will now exit.", "Error");
                     Close();
                 }
+            }
+            else
+            {
+                string profileName = await this.ShowInputAsync("Welcome to Toxy!", "To get started, enter a name for your first profile.");
+                if (!string.IsNullOrEmpty(profileName))
+                    config.ProfileName = profileName;
+                else
+                    config.ProfileName = tox.Keys.PublicKey.GetString().Substring(0, 10);
+
+                tox.Name = config.ProfileName;
+                tox.GetData().Save(toxDataFilename);
+                ConfigTools.Save(config, "config.xml");
             }
         }
 
@@ -1661,26 +1628,44 @@ namespace Toxy
             }
             else
             {
-                if (call != null)
-                    call.Stop();
-
-                foreach (FileTransfer transfer in transfers)
-                {
-                    if (transfer.Thread != null)
-                    {
-                        //TODO: show a message warning the users that there are still file transfers in progress
-                        transfer.Thread.Abort();
-                        transfer.Thread.Join();
-                    }
-                }
-
-                saveTox();
-
-                toxav.Dispose();
-                tox.Dispose();
-
+                KillTox();
                 nIcon.Dispose();
             }
+        }
+
+        private void KillTox()
+        {
+            if (call != null)
+            {
+                call.Stop();
+                call = null;
+            }
+
+            foreach (FileTransfer transfer in transfers)
+            {
+                if (transfer.Thread != null)
+                {
+                    //TODO: show a message warning the users that there are still file transfers in progress
+                    transfer.Thread.Abort();
+                    transfer.Thread.Join();
+                }
+            }
+
+            convdic.Clear();
+            groupdic.Clear();
+            transfers.Clear();
+
+            if (toxav != null)
+                toxav.Dispose();
+
+            if (tox != null)
+            {
+                saveTox();
+                tox.Dispose();
+            }
+
+            if (config != null)
+                ConfigTools.Save(config, "config.xml");
         }
 
         private void OpenAddFriend_Click(object sender, RoutedEventArgs e)
@@ -2515,6 +2500,177 @@ namespace Toxy
             }
 
             tox.SetGroupTitle(groupNumber, string.Format("Groupchat #{0}", groupNumber));
+        }
+
+        private async void mv_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToxOptions options;
+            if (config.ProxyEnabled)
+                options = new ToxOptions(config.Ipv6Enabled, config.ProxyAddress, config.ProxyPort);
+            else
+                options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
+
+            tox = new Tox(options);
+            tox.Invoker = Dispatcher.BeginInvoke;
+            tox.OnNameChange += tox_OnNameChange;
+            tox.OnFriendMessage += tox_OnFriendMessage;
+            tox.OnFriendAction += tox_OnFriendAction;
+            tox.OnFriendRequest += tox_OnFriendRequest;
+            tox.OnUserStatus += tox_OnUserStatus;
+            tox.OnStatusMessage += tox_OnStatusMessage;
+            tox.OnTypingChange += tox_OnTypingChange;
+            tox.OnConnectionStatusChanged += tox_OnConnectionStatusChanged;
+            tox.OnFileSendRequest += tox_OnFileSendRequest;
+            tox.OnFileData += tox_OnFileData;
+            tox.OnFileControl += tox_OnFileControl;
+            tox.OnReadReceipt += tox_OnReadReceipt;
+            tox.OnConnected += tox_OnConnected;
+            tox.OnDisconnected += tox_OnDisconnected;
+            tox.OnAvatarData += tox_OnAvatarData;
+            tox.OnAvatarInfo += tox_OnAvatarInfo;
+            tox.OnGroupTitleChanged += tox_OnGroupTitleChanged;
+
+            tox.OnGroupInvite += tox_OnGroupInvite;
+            tox.OnGroupMessage += tox_OnGroupMessage;
+            tox.OnGroupAction += tox_OnGroupAction;
+            tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
+
+            toxav = new ToxAv(tox.Handle, 1);
+            toxav.Invoker = Dispatcher.BeginInvoke;
+            toxav.OnInvite += toxav_OnInvite;
+            toxav.OnStart += toxav_OnStart;
+            toxav.OnEnd += toxav_OnEnd;
+            toxav.OnPeerTimeout += toxav_OnEnd;
+            toxav.OnRequestTimeout += toxav_OnEnd;
+            toxav.OnReject += toxav_OnEnd;
+            toxav.OnCancel += toxav_OnEnd;
+            toxav.OnReceivedAudio += toxav_OnReceivedAudio;
+            toxav.OnPeerCodecSettingsChanged += toxav_OnPeerCodecSettingsChanged;
+            toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
+
+            await loadTox();
+
+            bool bootstrap_success = false;
+            foreach (ToxConfigNode node in config.Nodes)
+            {
+                if (tox.BootstrapFromNode(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId))))
+                    bootstrap_success = true;
+            }
+
+            if (!bootstrap_success)
+                Debug.WriteLine("Could not bootstrap from any node!");
+
+            tox.Start();
+            toxav.Start();
+
+            if (string.IsNullOrEmpty(getSelfName()))
+                tox.Name = "Tox User";
+
+            if (string.IsNullOrEmpty(getSelfStatusMessage()))
+                tox.StatusMessage = "Toxing on Toxy";
+
+            ViewModel.MainToxyUser.Name = getSelfName();
+            ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();
+
+            InitializeNotifyIcon();
+
+            SetStatus(null, false);
+            InitFriends();
+
+            TextToSend.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
+            TextToSend.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
+
+            ChatBox.AddHandler(DragOverEvent, new DragEventHandler(Chat_DragOver), true);
+            ChatBox.AddHandler(DropEvent, new DragEventHandler(Chat_Drop), true);
+
+            if (tox.FriendCount > 0)
+                ViewModel.SelectedChatObject = ViewModel.ChatCollection.OfType<IFriendObject>().FirstOrDefault();
+
+            loadAvatars();
+        }
+
+        private string[] GetProfileNames(string path)
+        {
+            if (!Directory.Exists(path))
+                return null;
+
+            List<string> profiles = new List<string>();
+
+            foreach (string profile in Directory.GetFiles(path, "*.tox", SearchOption.TopDirectoryOnly).Where(s => s.EndsWith(".tox")))
+                profiles.Add(profile.Substring(0, profile.LastIndexOf(".tox")).Split('\\').Last());
+
+            return profiles.ToArray();
+        }
+
+        private async void SwitchProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string[] profiles = GetProfileNames(toxDataDir);
+            if (profiles == null && profiles.Length < 1)
+                return;
+
+            var dialog = new SwitchProfileDialog(profiles, this);
+            await this.ShowMetroDialogAsync(dialog);
+            var result = await dialog.WaitForButtonPressAsync();
+            await this.HideMetroDialogAsync(dialog);
+
+            if (result == null || result.Result == SwitchProfileDialogResult.Import)
+                return;
+
+            if (result.Result == SwitchProfileDialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(result.Input))
+                    return;
+
+                if (!LoadProfile(result.Input, false))
+                    await this.ShowMessageAsync("Error", "Could not load profile, make sure it exists/is accessible.");
+            }
+            else if (result.Result == SwitchProfileDialogResult.New)
+            {
+                string profile = await this.ShowInputAsync("New Profile", "Enter a name for your new profile.");
+                if (string.IsNullOrEmpty(profile))
+                    await this.ShowMessageAsync("Error", "Could not create profile, you must enter a name for your profile.");
+                else
+                {
+                    if (!CreateNewProfile(profile))
+                        await this.ShowMessageAsync("Error", "Could not create profile, did you enter a valid name?");
+                }
+            }
+        }
+
+        private bool CreateNewProfile(string profileName)
+        {
+            string path = Path.Combine(toxDataDir, profileName + ".tox");
+            if (File.Exists(path))
+                return false;
+
+            Tox t = new Tox(new ToxOptions());
+            t.Name = profileName;
+
+            if (!t.GetData().Save(path))
+            {
+                t.Dispose();
+                return false;
+            }
+
+            t.Dispose();
+            return LoadProfile(profileName, false);
+        }
+
+        private bool LoadProfile(string profile, bool allowReload)
+        {
+            if (config.ProfileName == profile && !allowReload)
+                return true;
+
+            if (!File.Exists(Path.Combine(toxDataDir, profile + ".tox")))
+                return false;
+
+            KillTox();
+            ViewModel.ChatCollection.Clear();
+
+            config.ProfileName = profile;
+            mv_Loaded(this, new RoutedEventArgs());
+
+            return true;
         }
 
         public void GroupPeerCopyKey_Click(object sender, RoutedEventArgs e)

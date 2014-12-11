@@ -160,27 +160,6 @@ namespace Toxy
             }
         }
 
-        private void RearrangeGroupPeerList(IGroupObject group)
-        {
-            var peers = new ObservableCollection<GroupPeer>();
-
-            for (int i = 0; i < tox.GetGroupMemberCount(group.ChatNumber); i++)
-            {
-                var publicKey = tox.GetGroupPeerPublicKey(group.ChatNumber, i);
-                var oldPeer = group.PeerList.GetPeerByPublicKey(publicKey);
-                GroupPeer newPeer;
-
-                if (oldPeer != null)
-                    newPeer = oldPeer;
-                else
-                    newPeer = new GroupPeer(group.ChatNumber, publicKey) { Name = tox.GetGroupMemberName(group.ChatNumber, i) };
-
-                peers.Add(newPeer);
-            }
-
-            group.PeerList = new GroupPeerCollection(peers.OrderBy(p=>p.Name).ToList());
-        }
-
         private void tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
         {
             var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
@@ -658,17 +637,7 @@ namespace Toxy
         private void tox_OnFriendAction(object sender, ToxEventArgs.FriendActionEventArgs e)
         {
             MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getFriendName(e.FriendNumber), e.Action), IsAction = true };
-
-            if (convdic.ContainsKey(e.FriendNumber))
-            {
-                convdic[e.FriendNumber].AddNewMessageRow(tox, data, false);
-            }
-            else
-            {
-                FlowDocument document = GetNewFlowDocument();
-                convdic.Add(e.FriendNumber, document);
-                convdic[e.FriendNumber].AddNewMessageRow(tox, data, false);
-            }
+            AddActionToView(e.FriendNumber, data);
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
             if (friend != null)
@@ -683,43 +652,14 @@ namespace Toxy
 
             nIcon.Icon = newMessageNotifyIcon;
             ViewModel.HasNewMessage = true;
-        }
 
-        private void AddFriendMessageToView(int friendNumber, MessageData data)
-        {
-            if (convdic.ContainsKey(friendNumber))
-            {
-                var run = GetLastMessageRun(convdic[friendNumber]);
-
-                if (run != null)
-                {
-                    if (((MessageData)run.Tag).Username == getFriendName(friendNumber))
-                        convdic[friendNumber].AddNewMessageRow(tox, data, true);
-                    else
-                        convdic[friendNumber].AddNewMessageRow(tox, data, false);
-                }
-                else
-                {
-                    convdic[friendNumber].AddNewMessageRow(tox, data, false);
-                }
-            }
-            else
-            {
-                FlowDocument document = GetNewFlowDocument();
-                convdic.Add(friendNumber, document);
-                convdic[friendNumber].AddNewMessageRow(tox, data, false);
-            }
-        }
-
-        private void AddGroupMessageToView(int friendNumber, MessageData data)
-        {
-            
+            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
         }
 
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
         {
             MessageData data = new MessageData() { Username = getFriendName(e.FriendNumber), Message = e.Message };
-            AddFriendMessageToView(e.FriendNumber, data);
+            AddMessageToView(e.FriendNumber, data);
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
             if (friend != null)
@@ -735,7 +675,7 @@ namespace Toxy
             nIcon.Icon = newMessageNotifyIcon;
             ViewModel.HasNewMessage = true;
 
-            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = e.Message, Timestamp = DateTime.Now, IsAction = false });
+            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
         }
 
         private void tox_OnNameChange(object sender, ToxEventArgs.NameChangeEventArgs e)
@@ -850,6 +790,67 @@ namespace Toxy
 
         #endregion
 
+        private void RearrangeGroupPeerList(IGroupObject group)
+        {
+            var peers = new ObservableCollection<GroupPeer>();
+
+            for (int i = 0; i < tox.GetGroupMemberCount(group.ChatNumber); i++)
+            {
+                var publicKey = tox.GetGroupPeerPublicKey(group.ChatNumber, i);
+                var oldPeer = group.PeerList.GetPeerByPublicKey(publicKey);
+                GroupPeer newPeer;
+
+                if (oldPeer != null)
+                    newPeer = oldPeer;
+                else
+                    newPeer = new GroupPeer(group.ChatNumber, publicKey) { Name = tox.GetGroupMemberName(group.ChatNumber, i) };
+
+                peers.Add(newPeer);
+            }
+
+            group.PeerList = new GroupPeerCollection(peers.OrderBy(p => p.Name).ToList());
+        }
+
+        private void AddMessageToView(int friendNumber, MessageData data)
+        {
+            if (convdic.ContainsKey(friendNumber))
+            {
+                var run = GetLastMessageRun(convdic[friendNumber]);
+
+                if (run != null)
+                {
+                    if (((MessageData)run.Tag).Username == data.Username)
+                        convdic[friendNumber].AddNewMessageRow(tox, data, true);
+                    else
+                        convdic[friendNumber].AddNewMessageRow(tox, data, false);
+                }
+                else
+                {
+                    convdic[friendNumber].AddNewMessageRow(tox, data, false);
+                }
+            }
+            else
+            {
+                FlowDocument document = GetNewFlowDocument();
+                convdic.Add(friendNumber, document);
+                convdic[friendNumber].AddNewMessageRow(tox, data, false);
+            }
+        }
+
+        private void AddActionToView(int friendNumber, MessageData data)
+        {
+            if (convdic.ContainsKey(friendNumber))
+            {
+                convdic[friendNumber].AddNewMessageRow(tox, data, false);
+            }
+            else
+            {
+                FlowDocument document = GetNewFlowDocument();
+                convdic.Add(friendNumber, document);
+                convdic[friendNumber].AddNewMessageRow(tox, data, false);
+            }
+        }
+
         private async void initDatabase()
         {
             dbConnection = new SQLiteAsyncConnection("database");
@@ -857,24 +858,33 @@ namespace Toxy
 
             await dbConnection.Table<Tables.ToxMessage>().ToListAsync().ContinueWith((task) =>
             {
+                var publicKey = tox.Keys.PublicKey.GetString();
                 foreach(Tables.ToxMessage msg in task.Result)
                 {
                     int friendNumber = GetFriendByPublicKey(msg.PublicKey);
                     if (friendNumber == -1)
                         continue;
 
-                    Dispatcher.BeginInvoke(((Action)(() => AddFriendMessageToView(friendNumber, new MessageData() { Username = tox.GetName(friendNumber), Message = msg.Message, IsAction = msg.IsAction }))));
+                    Dispatcher.BeginInvoke(((Action)(() =>
+                    {
+                        var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.PublicKey == publicKey };
+
+                        if (!msg.IsAction)
+                            AddMessageToView(friendNumber, messageData);
+                        else
+                            AddActionToView(friendNumber, messageData);
+                    })));
                 }
             });
         }
 
         private int GetFriendByPublicKey(string publicKey)
         {
-            foreach (int friend in tox.FriendList)
-                if (tox.GetClientId(friend).GetString() == publicKey)
-                    return friend;
-
-            return -1;
+            var friends = tox.FriendList.Where(num => tox.GetClientId(num).ToString() == publicKey);
+            if (friends.Count() != 1)
+                return -1;
+            else
+                return friends.First();
         }
 
         private void loadAvatars()
@@ -1942,16 +1952,8 @@ namespace Toxy
 
                     if (ViewModel.IsFriendSelected)
                     {
-                        if (convdic.ContainsKey(selectedChatNumber))
-                        {
-                            convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
-                        }
-                        else
-                        {
-                            FlowDocument document = GetNewFlowDocument();
-                            convdic.Add(selectedChatNumber, document);
-                            convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
-                        }
+                        AddActionToView(selectedChatNumber, data);
+                        dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
                     }
                 }
                 else
@@ -1970,25 +1972,8 @@ namespace Toxy
 
                         if (ViewModel.IsFriendSelected)
                         {
-                            if (convdic.ContainsKey(selectedChatNumber))
-                            {
-                                var run = GetLastMessageRun(convdic[selectedChatNumber]);
-                                if (run != null)
-                                {
-                                    if (((MessageData)run.Tag).Username == data.Username)
-                                        convdic[selectedChatNumber].AddNewMessageRow(tox, data, true);
-                                    else
-                                        convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
-                                }
-                                else
-                                    convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
-                            }
-                            else
-                            {
-                                FlowDocument document = GetNewFlowDocument();
-                                convdic.Add(selectedChatNumber, document);
-                                convdic[selectedChatNumber].AddNewMessageRow(tox, data, false);
-                            }
+                            AddMessageToView(selectedChatNumber, data);
+                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
                         }
                     }
                 }

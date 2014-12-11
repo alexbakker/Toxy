@@ -13,6 +13,8 @@ namespace Toxy.Tables
         [MaxLength(ToxConstants.ClientIdSize * 2)]
         public string PublicKey { get; set; }
 
+        public string Name { get; set; }
+
         [MaxLength(ToxConstants.MaxMessageLength)]
         public string Message { get; set; }
 

@@ -70,7 +70,7 @@ namespace Toxy
                 if (!config.Portable)
                     return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
                 else
-                    return "";
+                    return Environment.CurrentDirectory;
             }
         }
 

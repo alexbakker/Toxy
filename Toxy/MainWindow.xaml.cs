@@ -858,11 +858,10 @@ namespace Toxy
             dbConnection = new SQLiteAsyncConnection("database");
             await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
 
-            if (!config.EnableChatLogging)
+            if (config.EnableChatLogging)
             {
                 await dbConnection.Table<Tables.ToxMessage>().ToListAsync().ContinueWith((task) =>
                 {
-                    var publicKey = tox.Keys.PublicKey.GetString();
                     foreach (Tables.ToxMessage msg in task.Result)
                     {
                         int friendNumber = GetFriendByPublicKey(msg.PublicKey);
@@ -871,7 +870,7 @@ namespace Toxy
 
                         Dispatcher.BeginInvoke(((Action)(() =>
                         {
-                            var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.PublicKey == publicKey };
+                            var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.IsSelf };
 
                             if (!msg.IsAction)
                                 AddMessageToView(friendNumber, messageData);
@@ -1962,7 +1961,7 @@ namespace Toxy
                         AddActionToView(selectedChatNumber, data);
 
                         if (config.EnableChatLogging)
-                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
                     }
                 }
                 else
@@ -1984,14 +1983,14 @@ namespace Toxy
                             AddMessageToView(selectedChatNumber, data);
 
                             if (config.EnableChatLogging)
-                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
                         }
                     }
                 }
 
                 ScrollChatBox();
 
-                TextToSend.Text = "";
+                TextToSend.Text = string.Empty;
                 e.Handled = true;
             }
             else if (e.Key == Key.Tab && ViewModel.IsGroupSelected)

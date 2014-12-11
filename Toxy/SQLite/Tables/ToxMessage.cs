@@ -20,6 +20,8 @@ namespace Toxy.Tables
 
         public bool IsAction { get; set; }
 
+        public bool IsSelf { get; set; }
+
         public DateTime Timestamp { get; set; }
     }
 }

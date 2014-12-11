@@ -653,7 +653,8 @@ namespace Toxy
             nIcon.Icon = newMessageNotifyIcon;
             ViewModel.HasNewMessage = true;
 
-            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+            if (config.EnableChatLogging)
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
         }
 
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
@@ -675,7 +676,8 @@ namespace Toxy
             nIcon.Icon = newMessageNotifyIcon;
             ViewModel.HasNewMessage = true;
 
-            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+            if (config.EnableChatLogging)
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
         }
 
         private void tox_OnNameChange(object sender, ToxEventArgs.NameChangeEventArgs e)
@@ -856,26 +858,29 @@ namespace Toxy
             dbConnection = new SQLiteAsyncConnection("database");
             await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
 
-            await dbConnection.Table<Tables.ToxMessage>().ToListAsync().ContinueWith((task) =>
+            if (!config.EnableChatLogging)
             {
-                var publicKey = tox.Keys.PublicKey.GetString();
-                foreach(Tables.ToxMessage msg in task.Result)
+                await dbConnection.Table<Tables.ToxMessage>().ToListAsync().ContinueWith((task) =>
                 {
-                    int friendNumber = GetFriendByPublicKey(msg.PublicKey);
-                    if (friendNumber == -1)
-                        continue;
-
-                    Dispatcher.BeginInvoke(((Action)(() =>
+                    var publicKey = tox.Keys.PublicKey.GetString();
+                    foreach (Tables.ToxMessage msg in task.Result)
                     {
-                        var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.PublicKey == publicKey };
+                        int friendNumber = GetFriendByPublicKey(msg.PublicKey);
+                        if (friendNumber == -1)
+                            continue;
 
-                        if (!msg.IsAction)
-                            AddMessageToView(friendNumber, messageData);
-                        else
-                            AddActionToView(friendNumber, messageData);
-                    })));
-                }
-            });
+                        Dispatcher.BeginInvoke(((Action)(() =>
+                        {
+                            var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.PublicKey == publicKey };
+
+                            if (!msg.IsAction)
+                                AddMessageToView(friendNumber, messageData);
+                            else
+                                AddActionToView(friendNumber, messageData);
+                        })));
+                    }
+                });
+            }
         }
 
         private int GetFriendByPublicKey(string publicKey)
@@ -1748,6 +1753,7 @@ namespace Toxy
                 if (OutputDevicesComboBox.Items.Count - 1 >= config.OutputDevice)
                     OutputDevicesComboBox.SelectedIndex = config.OutputDevice;
 
+                ChatLogCheckBox.IsChecked = config.EnableChatLogging;
                 HideInTrayCheckBox.IsChecked = config.HideInTray;
                 PortableCheckBox.IsChecked = config.Portable;
                 AudioNotificationCheckBox.IsChecked = config.EnableAudioNotifications;
@@ -1879,6 +1885,7 @@ namespace Toxy
             if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
                 config.OutputDevice = index - 1;
 
+            config.EnableChatLogging = (bool)ChatLogCheckBox.IsChecked;
             config.Portable = (bool)PortableCheckBox.IsChecked;
             config.EnableAudioNotifications = (bool)AudioNotificationCheckBox.IsChecked;
             config.AlwaysNotify = (bool)AlwaysNotifyCheckBox.IsChecked;
@@ -1953,7 +1960,9 @@ namespace Toxy
                     if (ViewModel.IsFriendSelected)
                     {
                         AddActionToView(selectedChatNumber, data);
-                        dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+
+                        if (config.EnableChatLogging)
+                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
                     }
                 }
                 else
@@ -1973,7 +1982,9 @@ namespace Toxy
                         if (ViewModel.IsFriendSelected)
                         {
                             AddMessageToView(selectedChatNumber, data);
-                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+
+                            if (config.EnableChatLogging)
+                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.Keys.PublicKey.GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
                         }
                     }
                 }

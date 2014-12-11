@@ -171,7 +171,7 @@ namespace Toxy
             if (peer != null && peer.Ignored)
                 return;
 
-            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), e.Action), IsAction = true };
+            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), e.Action), IsAction = true, Timestamp = DateTime.Now };
 
             if (groupdic.ContainsKey(e.GroupNumber))
             {
@@ -203,7 +203,7 @@ namespace Toxy
             if (peer != null && peer.Ignored)
                 return;
 
-            MessageData data = new MessageData() { Username = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), Message = e.Message };
+            MessageData data = new MessageData() { Username = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), Message = e.Message, Timestamp = DateTime.Now };
 
             if (groupdic.ContainsKey(e.GroupNumber))
             {
@@ -637,7 +637,7 @@ namespace Toxy
 
         private void tox_OnFriendAction(object sender, ToxEventArgs.FriendActionEventArgs e)
         {
-            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getFriendName(e.FriendNumber), e.Action), IsAction = true };
+            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getFriendName(e.FriendNumber), e.Action), IsAction = true, Timestamp = DateTime.Now };
             AddActionToView(e.FriendNumber, data);
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
@@ -660,7 +660,7 @@ namespace Toxy
 
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
         {
-            MessageData data = new MessageData() { Username = getFriendName(e.FriendNumber), Message = e.Message };
+            MessageData data = new MessageData() { Username = getFriendName(e.FriendNumber), Message = e.Message, Timestamp = DateTime.Now };
             AddMessageToView(e.FriendNumber, data);
 
             var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
@@ -871,7 +871,7 @@ namespace Toxy
 
                         Dispatcher.BeginInvoke(((Action)(() =>
                         {
-                            var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.IsSelf };
+                            var messageData = new MessageData() { Username = msg.Name, Message = msg.Message, IsAction = msg.IsAction, IsSelf = msg.IsSelf, Timestamp = msg.Timestamp };
 
                             if (!msg.IsAction)
                                 AddMessageToView(friendNumber, messageData);
@@ -1517,7 +1517,7 @@ namespace Toxy
             friendMV.IsRequest = true;
             friendMV.Name = id;
             friendMV.ToxStatus = ToxUserStatus.Invalid;
-            friendMV.RequestMessageData = new MessageData() { Message = message, Username = "Request Message" };
+            friendMV.RequestMessageData = new MessageData() { Message = message, Username = "Request Message", Timestamp = DateTime.Now };
             friendMV.RequestFlowDocument = GetNewFlowDocument();
             friendMV.SelectedAction = FriendRequestSelectedAction;
             friendMV.AcceptAction = FriendRequestAcceptAction;
@@ -1955,7 +1955,7 @@ namespace Toxy
                     else if (ViewModel.IsGroupSelected)
                         tox.SendGroupAction(selectedChatNumber, action);
 
-                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getSelfName(), action), IsAction = true, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
+                    MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getSelfName(), action), IsAction = true, Id = messageid, IsSelf = ViewModel.IsFriendSelected, Timestamp = DateTime.Now };
 
                     if (ViewModel.IsFriendSelected)
                     {
@@ -1977,7 +1977,7 @@ namespace Toxy
                         else if (ViewModel.IsGroupSelected)
                             tox.SendGroupMessage(selectedChatNumber, message);
 
-                        MessageData data = new MessageData() { Username = getSelfName(), Message = message, Id = messageid, IsSelf = ViewModel.IsFriendSelected };
+                        MessageData data = new MessageData() { Username = getSelfName(), Message = message, Id = messageid, IsSelf = ViewModel.IsFriendSelected, Timestamp = DateTime.Now };
 
                         if (ViewModel.IsFriendSelected)
                         {

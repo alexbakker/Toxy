@@ -39,10 +39,11 @@ Pre-compiled versions of Toxy can be found [here](https://jenkins.impy.me/ "Toxy
 Compiling Toxy
 ===
 You need:
-* The [SharpTox library](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies.
-* The [SharpTox.Av.Filter library](https://github.com/Impyy/SharpTox.Av.Filter "SharpTox.Av.Filter GitHub repo") and its dependencies.
+* [SharpTox](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies.
+* [SharpTox.Av.Filter](https://github.com/Impyy/SharpTox.Av.Filter "SharpTox.Av.Filter GitHub repo") and its dependencies.
+* [SQLite](https://www.sqlite.org/download.html). (Toxy uses [sqlite-net](https://github.com/praeclarum/sqlite-net) to access SQLite's functions.
 
-Once you have obtained those, place libtox.dll, filter_audio.dll, SharpTox.dll and SharpTox.Av.Filter.dll in the libs folder.
+Once you have obtained those, place sqlite3.dll, libtox.dll, filter_audio.dll, SharpTox.dll and SharpTox.Av.Filter.dll in the libs folder.
 All other dependencies can be found in the packages.config file and should be downloaded by Visual Studio automatically.
 This requires [NuGet](http://docs.nuget.org/docs/start-here/installing-nuget) to be installed.
 

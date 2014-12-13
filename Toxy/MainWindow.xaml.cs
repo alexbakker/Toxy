@@ -1683,12 +1683,12 @@ namespace Toxy
             }
             else
             {
-                KillTox();
+                KillTox(true);
                 nIcon.Dispose();
             }
         }
 
-        private void KillTox()
+        private void KillTox(bool save)
         {
             if (call != null)
             {
@@ -1715,7 +1715,9 @@ namespace Toxy
 
             if (tox != null)
             {
-                saveTox();
+                if (save)
+                    saveTox();
+
                 tox.Dispose();
             }
 
@@ -2701,7 +2703,7 @@ namespace Toxy
             if (!File.Exists(Path.Combine(toxDataDir, profile + ".tox")))
                 return false;
 
-            KillTox();
+            KillTox(false);
             ViewModel.ChatCollection.Clear();
 
             config.ProfileName = profile;

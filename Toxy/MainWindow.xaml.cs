@@ -1574,6 +1574,11 @@ namespace Toxy
             CallButton.Visibility = Visibility.Collapsed;
             FileButton.Visibility = Visibility.Collapsed;
 
+            if (tox.GetGroupType(group.ChatNumber) == ToxGroupType.Av)
+                MicButton.Visibility = Visibility.Visible;
+            else
+                MicButton.Visibility = Visibility.Collapsed;
+
             if (groupdic.ContainsKey(group.ChatNumber))
             {
                 ChatBox.Document = groupdic[group.ChatNumber];
@@ -1656,6 +1661,8 @@ namespace Toxy
                     FileButton.Visibility = Visibility.Visible;
                 }
             }
+
+            MicButton.Visibility = Visibility.Collapsed;
 
             if (convdic.ContainsKey(friend.ChatNumber))
             {
@@ -2738,6 +2745,15 @@ namespace Toxy
                 return;
 
             peer.Ignored = !peer.Ignored;
+        }
+
+        private void MicButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (call == null || call.GetType() != typeof(ToxGroupCall))
+                return;
+
+            var groupCall = (ToxGroupCall)call;
+            groupCall.Muted = !groupCall.Muted;
         }
     }
 }

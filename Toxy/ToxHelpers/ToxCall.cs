@@ -19,6 +19,24 @@ namespace Toxy.ToxHelpers
         private WaveOut wave_out_single;
         private BufferedWaveProvider wave_provider_single;
 
+        private bool muted = true;
+        public bool Muted
+        {
+            get { return muted; }
+            set 
+            {
+                if (wave_source != null)
+                {
+                    if (value)
+                        wave_source.StopRecording();
+                    else
+                        wave_source.StartRecording();
+                }
+
+                muted = value;
+            }
+        }
+
         public ToxGroupCall(ToxAv toxav, int groupNumber)
             : base(toxav)
         {
@@ -50,7 +68,7 @@ namespace Toxy.ToxHelpers
                 wave_source.DataAvailable += wave_source_DataAvailable;
                 wave_source.RecordingStopped += wave_source_RecordingStopped;
                 wave_source.BufferMilliseconds = ToxAv.DefaultCodecSettings.AudioFrameDuration;
-                wave_source.StartRecording();
+                //wave_source.StartRecording();
             }
 
             if (WaveOut.DeviceCount > 0)

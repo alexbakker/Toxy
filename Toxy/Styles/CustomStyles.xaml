@@ -152,6 +152,82 @@
         </Setter>
     </Style>
 
+    <Style x:Key="MetroCircleLovelyToggleButtonStyle"
+           TargetType="{x:Type ToggleButton}">
+        <Setter Property="FocusVisualStyle"
+                Value="{StaticResource MetroCircleButtonFocusVisual}" />
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="2" />
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource AccentColorBrush4}" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="Padding"
+                Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid>
+                        <Ellipse Fill="{TemplateBinding Background}"
+                                 Margin="4"
+                                 StrokeThickness="0" />
+                        <Ellipse x:Name="ellipsebg"
+                                 Fill="{DynamicResource AccentColorBrush2}"
+                                 Opacity="0"
+                                 Margin="4"
+                                 StrokeThickness="0" />
+                        <Ellipse x:Name="ellipse"
+                                 Margin="4"
+                                 Stroke="{TemplateBinding BorderBrush}"
+                                 StrokeThickness="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BorderThickness.Left}" />
+                        <ContentPresenter x:Name="content"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <EventTrigger RoutedEvent="Checked">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="ellipsebg"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         From="0"
+                                                         To="1"
+                                                         Duration="0:0:0.3" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="Unchecked">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="ellipsebg"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0"
+                                                         Duration="0:0:0.3" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <Trigger Property="IsEnabled"
+                                 Value="false">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource GrayBrush7}" />
+                            <Setter TargetName="ellipse"
+                                    Property="Opacity"
+                                    Value="0.3" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
     <Style TargetType="RepeatButton">
         <Setter Property="Template">
             <Setter.Value>

@@ -112,7 +112,7 @@ namespace Toxy.Views
 
             importHandler = (sender, e) =>
             {
-                /*OpenFileDialog dialog = new OpenFileDialog();
+                OpenFileDialog dialog = new OpenFileDialog();
                 dialog.InitialDirectory = Environment.CurrentDirectory;
                 dialog.Multiselect = false;
                 if (dialog.ShowDialog() != true)
@@ -120,13 +120,11 @@ namespace Toxy.Views
 
                 string fileName = dialog.FileName;
                 if (string.IsNullOrEmpty(fileName))
-                    return;*/
-
-                //show the 'give this profile a name' dialog
+                    return;
 
                 cleanUpHandlers();
 
-                tcs.TrySetResult(new SwitchProfileResult() { Input = string.Empty, Result = SwitchProfileDialogResult.Import });
+                tcs.TrySetResult(new SwitchProfileResult() { Input = fileName, Result = SwitchProfileDialogResult.Import });
 
                 e.Handled = true;
             };

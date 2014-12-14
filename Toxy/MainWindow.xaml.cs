@@ -2661,7 +2661,7 @@ namespace Toxy
             var result = await dialog.WaitForButtonPressAsync();
             await this.HideMetroDialogAsync(dialog);
 
-            if (result == null || result.Result == SwitchProfileDialogResult.Import)
+            if (result == null)
                 return;
 
             if (result.Result == SwitchProfileDialogResult.OK)
@@ -2681,6 +2681,38 @@ namespace Toxy
                 {
                     if (!CreateNewProfile(profile))
                         await this.ShowMessageAsync("Error", "Could not create profile, did you enter a valid name?");
+                }
+            }
+            else if (result.Result == SwitchProfileDialogResult.Import)
+            {
+                ToxData data = ToxData.FromDisk(result.Input);
+                Tox t = new Tox(new ToxOptions());
+
+                if (data == null || !t.Load(data))
+                {
+                    await this.ShowInputAsync("Error", "Could not load tox profile.");
+                }
+                else
+                {
+                    string profile = await this.ShowInputAsync("New Profile", "Enter a name for your new profile.");
+                    if (string.IsNullOrEmpty(profile))
+                        await this.ShowMessageAsync("Error", "Could not create profile, you must enter a name for your profile.");
+                    else
+                    {
+                        string path = Path.Combine(toxDataDir, profile + ".tox");
+                        if (!File.Exists(path))
+                        {
+                            t.Name = profile;
+
+                            if (t.GetData().Save(path))
+                                if (!LoadProfile(profile, false))
+                                    await this.ShowMessageAsync("Error", "Could not load profile, make sure it exists/is accessible.");
+                        }
+                        else
+                        {
+                            await this.ShowMessageAsync("Error", "Could not create profile, a profile with the same name already exists.");
+                        }
+                    }
                 }
             }
         }

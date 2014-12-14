@@ -1339,6 +1339,8 @@ namespace Toxy
 
             groupObject.SelectedAction = null;
             groupObject.DeleteAction = null;
+
+            MicButton.IsChecked = false;
         }
 
         private void GroupSelectedAction(IGroupObject groupObject, bool isSelected)

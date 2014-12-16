@@ -705,7 +705,7 @@ namespace Toxy
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
         {
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+            var group = Dispatcher.Invoke(new Func<IGroupObject>(() => ViewModel.GetGroupObjectByNumber(e.GroupNumber)));
             if (group == null)
                 return;
 

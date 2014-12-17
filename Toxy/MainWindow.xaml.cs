@@ -707,7 +707,7 @@ namespace Toxy
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
                 return;
 
-            call.ApplyCallType(toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType);
+            call.ApplySettings(toxav.GetPeerCodecSettings(e.CallIndex, 0));
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)

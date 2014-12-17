@@ -21,6 +21,12 @@ namespace Toxy
         {
             Dispatcher.Invoke((Action)(() =>
             {
+                if (this.Width != frame.Width)
+                    this.Width = frame.Width;
+
+                if (this.Height != frame.Height)
+                    this.Height = frame.Height;
+
                 CurrentVideoFrame.Source = BitmapToImageSource(frame, ImageFormat.Bmp);
                 frame.Dispose();
             }));

@@ -244,18 +244,6 @@ namespace Toxy.ToxHelpers
 
             if (settings.CallType == ToxAvCallType.Video)
             {
-                var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-                foreach (FilterInfo device in videoDevices)
-                {
-                    if (device.Name == videoDevice)
-                    {
-                        videoSource = new VideoCaptureDevice(device.MonikerString);
-                        videoSource.NewFrame += video_source_NewFrame;
-                        videoSource.Start();
-                        break;
-                    }
-                }
-
                 videoWindow = new VideoWindow();
                 videoWindow.Show();
             }
@@ -365,10 +353,7 @@ namespace Toxy.ToxHelpers
 
         public virtual void Answer()
         {
-            var settings = ToxAv.DefaultCodecSettings;
-            settings.CallType = ToxAvCallType.Video;
-
-            ToxAvError error = toxav.Answer(callIndex, settings);
+            ToxAvError error = toxav.Answer(callIndex, ToxAv.DefaultCodecSettings);
             if (error != ToxAvError.None)
                 throw new Exception("Could not answer call " + error.ToString());
         }
@@ -396,7 +381,8 @@ namespace Toxy.ToxHelpers
             Bitmap bitmap = Bitmap.FromHbitmap(GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject()));
             handle.Free();
 
-            videoWindow.PushVideoFrame(bitmap);
+            if (videoWindow != null)
+                videoWindow.PushVideoFrame(bitmap);
         }
 
         private void SendVideoFrame(Bitmap frame)
@@ -497,14 +483,14 @@ namespace Toxy.ToxHelpers
             }
         }
 
-        public void ApplyCallType(ToxAvCallType callType)
+        public void ApplySettings(ToxAvCodecSettings settings)
         {
-            if (videoWindow == null && callType == ToxAvCallType.Video)
+            if (videoWindow == null && settings.CallType == ToxAvCallType.Video)
             {
                 videoWindow = new VideoWindow();
                 videoWindow.Show();
             }
-            else if (videoWindow != null && callType == ToxAvCallType.Audio)
+            else if (videoWindow != null && settings.CallType == ToxAvCallType.Audio)
             {
                 videoWindow.Close();
                 videoWindow = null;

@@ -64,33 +64,27 @@ namespace Toxy.ViewModels
             this.AppThemes = ThemeManager.AppThemes
                                           .Select(a => new AppThemeMenuData() { Name = a.Name, BorderColorBrush = a.Resources["BlackColorBrush"] as Brush, ColorBrush = a.Resources["WhiteColorBrush"] as Brush })
                                           .ToList();
+
+            InputDevices = new ObservableCollection<InputDeviceMenuData>();
+            OutputDevices = new ObservableCollection<OutputDeviceMenuData>();
         }
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
 
-        public List<OutputDeviceMenuData> OutputDevices 
+        public ObservableCollection<OutputDeviceMenuData> OutputDevices { get; set; }
+        public ObservableCollection<InputDeviceMenuData> InputDevices { get; set; }
+
+        public void UpdateDevices()
         {
-            get
-            {
-                List<OutputDeviceMenuData> list = new List<OutputDeviceMenuData>();
-                for (int i = 0; i < WaveOut.DeviceCount; i++)
-                    list.Add(new OutputDeviceMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
+            InputDevices.Clear();
+            OutputDevices.Clear();
 
-                return list;
-            }
-        }
+            for (int i = 0; i < WaveIn.DeviceCount; i++)
+                InputDevices.Add(new InputDeviceMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
 
-        public List<InputDeviceMenuData> InputDevices
-        {
-            get
-            {
-                List<InputDeviceMenuData> list = new List<InputDeviceMenuData>();
-                for (int i = 0; i < WaveIn.DeviceCount; i++)
-                    list.Add(new InputDeviceMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
-
-                return list;
-            }
+            for (int i = 0; i < WaveOut.DeviceCount; i++)
+                OutputDevices.Add(new OutputDeviceMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
         }
 
         private UserModel mainToxyUser;

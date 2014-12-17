@@ -1767,6 +1767,8 @@ namespace Toxy
                 if (theme != null)
                     AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
 
+                ViewModel.UpdateDevices();
+
                 if (InputDevicesComboBox.Items.Count - 1 >= config.InputDevice)
                     InputDevicesComboBox.SelectedIndex = config.InputDevice;
 

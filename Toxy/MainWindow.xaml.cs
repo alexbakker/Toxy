@@ -707,9 +707,7 @@ namespace Toxy
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
                 return;
 
-            //we don't support video just yet
-            //if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType == ToxAvCallType.Video)
-            //    EndCall();
+            call.ApplyCallType(toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType);
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
@@ -739,6 +737,7 @@ namespace Toxy
             EndCall();
             CallButton.Visibility = Visibility.Visible;
             HangupButton.Visibility = Visibility.Collapsed;
+            VideoButton.Visibility = Visibility.Collapsed;
         }
 
         private void toxav_OnStart(object sender, ToxAvEventArgs.CallStateEventArgs e)
@@ -758,6 +757,7 @@ namespace Toxy
                 if (callingFriend.Selected)
                 {
                     HangupButton.Visibility = Visibility.Visible;
+                    VideoButton.Visibility = Visibility.Visible;
                 }
                 ViewModel.CallingFriend = callingFriend;
             }
@@ -1641,6 +1641,7 @@ namespace Toxy
             ViewModel.CallingFriend = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
+            VideoButton.Visibility = Visibility.Collapsed;
             CallButton.Visibility = Visibility.Visible;
         }
 
@@ -1655,9 +1656,15 @@ namespace Toxy
             if (call != null && call.GetType() != typeof(ToxGroupCall))
             {
                 if (call.FriendNumber != friendNumber)
+                {
                     HangupButton.Visibility = Visibility.Collapsed;
+                    VideoButton.Visibility = Visibility.Collapsed;
+                }
                 else
+                {
                     HangupButton.Visibility = Visibility.Visible;
+                    VideoButton.Visibility = Visibility.Visible;
+                }
             }
             else
             {
@@ -2236,6 +2243,8 @@ namespace Toxy
 
             CallButton.Visibility = Visibility.Collapsed;
             HangupButton.Visibility = Visibility.Visible;
+            VideoButton.Visibility = Visibility.Visible;
+
             var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (callingFriend != null)
             {
@@ -2813,6 +2822,14 @@ namespace Toxy
 
             var groupCall = (ToxGroupCall)call;
             groupCall.Muted = !groupCall.Muted;
+        }
+
+        private void VideoButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (call == null || call.GetType() == typeof(ToxGroupCall))
+                return;
+
+            call.ToggleVideo((bool)VideoButton.IsChecked, config.VideoDevice);
         }
     }
 }

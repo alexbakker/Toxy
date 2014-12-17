@@ -456,5 +456,59 @@ namespace Toxy.ToxHelpers
 
             frame.Dispose();
         }
+
+        public void ToggleVideo(bool enableVideo, string videoDevice)
+        {
+            if (enableVideo && videoSource != null)
+                return;
+
+            if (!enableVideo && videoSource == null)
+                return;
+
+            if (!enableVideo)
+            {
+                videoSource.SignalToStop();
+                videoSource.NewFrame -= video_source_NewFrame;
+                videoSource = null;
+
+                var settings = ToxAv.DefaultCodecSettings;
+                settings.CallType = ToxAvCallType.Audio;
+
+                toxav.ChangeSettings(CallIndex, settings);
+            }
+            else
+            {
+                var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+                foreach (FilterInfo device in videoDevices)
+                {
+                    if (device.Name == videoDevice)
+                    {
+                        videoSource = new VideoCaptureDevice(device.MonikerString);
+                        videoSource.NewFrame += video_source_NewFrame;
+                        videoSource.Start();
+
+                        var settings = ToxAv.DefaultCodecSettings;
+                        settings.CallType = ToxAvCallType.Video;
+
+                        toxav.ChangeSettings(CallIndex, settings);
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void ApplyCallType(ToxAvCallType callType)
+        {
+            if (videoWindow == null && callType == ToxAvCallType.Video)
+            {
+                videoWindow = new VideoWindow();
+                videoWindow.Show();
+            }
+            else if (videoWindow != null && callType == ToxAvCallType.Audio)
+            {
+                videoWindow.Close();
+                videoWindow = null;
+            }
+        }
     }
 }

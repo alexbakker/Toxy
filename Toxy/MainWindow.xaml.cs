@@ -746,7 +746,7 @@ namespace Toxy
             var settings = toxav.GetPeerCodecSettings(e.CallIndex, 0);
 
             if (call != null)
-                call.Start(config.InputDevice, config.OutputDevice, settings);
+                call.Start(config.InputDevice, config.OutputDevice, settings, config.VideoDevice);
 
             int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
             var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
@@ -1769,6 +1769,16 @@ namespace Toxy
 
                 ViewModel.UpdateDevices();
 
+                foreach(var item in VideoDevicesComboBox.Items)
+                {
+                    var device = (VideoDeviceMenuData)item;
+                    if (device.Name == config.VideoDevice)
+                    {
+                        VideoDevicesComboBox.SelectedItem = item;
+                        break;
+                    }
+                }
+
                 if (InputDevicesComboBox.Items.Count - 1 >= config.InputDevice)
                     InputDevicesComboBox.SelectedIndex = config.InputDevice;
 
@@ -1906,6 +1916,9 @@ namespace Toxy
             index = OutputDevicesComboBox.SelectedIndex + 1;
             if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
                 config.OutputDevice = index - 1;
+
+            if (VideoDevicesComboBox.SelectedItem != null)
+                config.VideoDevice = ((VideoDeviceMenuData)VideoDevicesComboBox.SelectedItem).Name;
 
             config.EnableChatLogging = (bool)ChatLogCheckBox.IsChecked;
             config.Portable = (bool)PortableCheckBox.IsChecked;

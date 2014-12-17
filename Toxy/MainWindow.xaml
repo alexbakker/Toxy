@@ -718,6 +718,13 @@
                                   HorizontalAlignment="Left"
                                   Margin="0,5,0,0"
                                   Width="275" />
+                            <ComboBox x:Name="VideoDevicesComboBox"
+                                  ItemsSource="{Binding VideoDevices}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Margin="0,5,0,0"
+                                  Width="275" />
                             <CheckBox x:Name="FilterAudioCheckbox" 
                                   Content="Filter input audio" 
                                   Margin="0 5" />

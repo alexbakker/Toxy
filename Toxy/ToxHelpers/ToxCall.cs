@@ -49,7 +49,7 @@ namespace Toxy.ToxHelpers
             GroupNumber = groupNumber;
         }
 
-        public override void Start(int input, int output, ToxAvCodecSettings settings)
+        public override void Start(int input, int output, ToxAvCodecSettings settings, string videoDevice = "")
         {
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, 2);
             WaveFormat outFormatSingle = new WaveFormat((int)settings.AudioSampleRate, 1);
@@ -205,7 +205,7 @@ namespace Toxy.ToxHelpers
             this.toxav = toxav;
         }
 
-        public virtual void Start(int input, int output, ToxAvCodecSettings settings)
+        public virtual void Start(int input, int output, ToxAvCodecSettings settings, string videoDevice = "")
         {
             toxav.PrepareTransmission(callIndex, true);
 
@@ -244,10 +244,17 @@ namespace Toxy.ToxHelpers
 
             if (settings.CallType == ToxAvCallType.Video)
             {
-                FilterInfoCollection list = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-                videoSource = new VideoCaptureDevice(list[0].MonikerString);
-                videoSource.NewFrame += video_source_NewFrame;
-                videoSource.Start();
+                var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+                foreach (FilterInfo device in videoDevices)
+                {
+                    if (device.Name == videoDevice)
+                    {
+                        videoSource = new VideoCaptureDevice(device.MonikerString);
+                        videoSource.NewFrame += video_source_NewFrame;
+                        videoSource.Start();
+                        break;
+                    }
+                }
 
                 videoWindow = new VideoWindow();
                 videoWindow.Show();

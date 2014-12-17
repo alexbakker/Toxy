@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using NAudio.Wave;
 
+using SharpTox.Core;
 using SharpTox.Av;
 using SharpTox.Av.Filter;
-using SharpTox.Core;
+using SharpTox.Vpx;
 
+using Toxy.Common;
 using Toxy.ViewModels;
+using AForge.Video.DirectShow;
+using AForge.Video;
 
 namespace Toxy.ToxHelpers
 {
@@ -160,6 +166,9 @@ namespace Toxy.ToxHelpers
         protected BufferedWaveProvider wave_provider;
         protected Timer timer;
 
+        private VideoCaptureDevice videoSource;
+        private VideoWindow videoWindow;
+
         public bool FilterAudio { get; set; }
 
         private int totalSeconds = 0;
@@ -198,7 +207,7 @@ namespace Toxy.ToxHelpers
 
         public virtual void Start(int input, int output, ToxAvCodecSettings settings)
         {
-            toxav.PrepareTransmission(callIndex, false);
+            toxav.PrepareTransmission(callIndex, true);
 
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
             wave_provider = new BufferedWaveProvider(outFormat);
@@ -232,6 +241,22 @@ namespace Toxy.ToxHelpers
                 wave_out.Init(wave_provider);
                 wave_out.Play();
             }
+
+            if (settings.CallType == ToxAvCallType.Video)
+            {
+                FilterInfoCollection list = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+                videoSource = new VideoCaptureDevice(list[0].MonikerString);
+                videoSource.NewFrame += video_source_NewFrame;
+                videoSource.Start();
+
+                videoWindow = new VideoWindow();
+                videoWindow.Show();
+            }
+        }
+
+        private void video_source_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            SendVideoFrame(eventArgs.Frame);
         }
 
         public virtual void SetTimerCallback(TimerCallback callback)
@@ -319,11 +344,24 @@ namespace Toxy.ToxHelpers
 
             if (timer != null)
                 timer.Dispose();
+
+            if (videoSource != null)
+            {
+                videoSource.SignalToStop();
+                videoSource.NewFrame -= video_source_NewFrame;
+                videoSource = null;
+            }
+
+            if (videoWindow != null)
+                videoWindow.Close();
         }
 
         public virtual void Answer()
         {
-            ToxAvError error = toxav.Answer(callIndex, ToxAv.DefaultCodecSettings);
+            var settings = ToxAv.DefaultCodecSettings;
+            settings.CallType = ToxAvCallType.Video;
+
+            ToxAvError error = toxav.Answer(callIndex, settings);
             if (error != ToxAvError.None)
                 throw new Exception("Could not answer call " + error.ToString());
         }
@@ -331,6 +369,85 @@ namespace Toxy.ToxHelpers
         public virtual void Call(int current_number, ToxAvCodecSettings settings, int ringing_seconds)
         {
             toxav.Call(current_number, settings, ringing_seconds, out callIndex);
+        }
+
+        public void ProcessVideoFrame(IntPtr frame)
+        {
+            VpxImage image = VpxImage.FromPointer(frame);
+
+            if (videoWindow == null)
+            {
+                image.Free();
+                return;
+            }
+
+            byte[] dest = VpxHelper.Yuv420ToRgb(image, image.d_w * image.d_h * 4);
+
+            image.Free();
+
+            GCHandle handle = GCHandle.Alloc(dest, GCHandleType.Pinned);
+            Bitmap bitmap = Bitmap.FromHbitmap(GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject()));
+            handle.Free();
+
+            videoWindow.PushVideoFrame(bitmap);
+        }
+
+        private void SendVideoFrame(Bitmap frame)
+        {
+            GdiWrapper.BITMAPINFO info = new GdiWrapper.BITMAPINFO()
+            {
+                bmiHeader =
+                {
+                    biWidth = frame.Width,
+                    biHeight = -frame.Height,
+                    biPlanes = 1,
+                    biBitCount = 24,
+                    biCompression = GdiWrapper.BitmapCompressionMode.BI_RGB
+                }
+            };
+
+            info.bmiHeader.Init();
+
+            byte[] bytes = new byte[frame.Width * frame.Height * 3];
+            IntPtr context = GdiWrapper.CreateCompatibleDC(IntPtr.Zero);
+            IntPtr hbitmap = frame.GetHbitmap();
+
+            GdiWrapper.GetDIBits(context, hbitmap, 0, (uint)frame.Height, bytes, ref info, GdiWrapper.DIB_Color_Mode.DIB_RGB_COLORS);
+            GdiWrapper.DeleteObject(hbitmap);
+            GdiWrapper.DeleteDC(context);
+
+            byte[] dest = new byte[frame.Width * frame.Height * 4];
+
+            try
+            {
+                VpxImage img = VpxImage.Create(VpxImageFormat.VPX_IMG_FMT_I420, (ushort)frame.Width, (ushort)frame.Height, 1);
+
+                //fixed (byte* b = bytes)
+                VpxHelper.RgbToYuv420(img, bytes, (ushort)frame.Width, (ushort)frame.Height);
+
+                int length = ToxAvFunctions.PrepareVideoFrame(toxav.Handle, CallIndex, dest, dest.Length, (IntPtr)img.Pointer);
+                img.Free();
+
+                if (length > 0)
+                {
+                    byte[] bytesToSend = new byte[length];
+                    Array.Copy(dest, bytesToSend, length);
+
+                    ToxAvError error = ToxAvFunctions.SendVideo(toxav.Handle, CallIndex, bytesToSend, (uint)bytesToSend.Length);
+                    if (error != ToxAvError.None)
+                        Debug.WriteLine(string.Format("Could not send video frame: {0}, {1}", error, length));
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("Could not prepare frame: {0}", (ToxAvError)length));
+                }
+            }
+            catch
+            {
+                Debug.WriteLine(string.Format("Could not convert frame"));
+            }
+
+            frame.Dispose();
         }
     }
 }

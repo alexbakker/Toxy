@@ -693,14 +693,23 @@ namespace Toxy
         #endregion
 
         #region ToxAv EventHandlers
+
+        private void toxav_OnReceivedVideo(object sender, ToxAvEventArgs.VideoDataEventArgs e)
+        {
+            if (call == null && call.GetType() != typeof(ToxGroupCall))
+                return;
+
+            call.ProcessVideoFrame(e.Frame);
+        }
+
         private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
                 return;
 
             //we don't support video just yet
-            if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType == ToxAvCallType.Video)
-                EndCall();
+            //if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType == ToxAvCallType.Video)
+            //    EndCall();
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
@@ -776,12 +785,12 @@ namespace Toxy
             int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
 
             ToxAvCodecSettings settings = toxav.GetPeerCodecSettings(e.CallIndex, 0);
-            if (settings.CallType == ToxAvCallType.Video)
-            {
+            //if (settings.CallType == ToxAvCallType.Video)
+            //{
                 //we don't support video calls, just reject this and return.
-                toxav.Reject(e.CallIndex, "Toxy does not support video calls.");
-                return;
-            }
+             //   toxav.Reject(e.CallIndex, "Toxy does not support video calls.");
+               // return;
+            //}
 
             var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (friend != null)
@@ -857,7 +866,7 @@ namespace Toxy
         private async void initDatabase()
         {
             dbConnection = new SQLiteAsyncConnection(dbPath);
-            await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
+            await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Debug.WriteLine("Created ToxMessage table"); });
 
             if (config.EnableChatLogging)
             {
@@ -2592,6 +2601,7 @@ namespace Toxy
             toxav.OnReject += toxav_OnEnd;
             toxav.OnCancel += toxav_OnEnd;
             toxav.OnReceivedAudio += toxav_OnReceivedAudio;
+            toxav.OnReceivedVideo += toxav_OnReceivedVideo;
             toxav.OnPeerCodecSettingsChanged += toxav_OnPeerCodecSettingsChanged;
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 

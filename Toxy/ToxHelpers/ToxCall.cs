@@ -167,7 +167,6 @@ namespace Toxy.ToxHelpers
         protected Timer timer;
 
         private VideoCaptureDevice videoSource;
-        private VideoWindow videoWindow;
 
         public bool FilterAudio { get; set; }
 
@@ -240,12 +239,6 @@ namespace Toxy.ToxHelpers
 
                 wave_out.Init(wave_provider);
                 wave_out.Play();
-            }
-
-            if (settings.CallType == ToxAvCallType.Video)
-            {
-                videoWindow = new VideoWindow();
-                videoWindow.Show();
             }
         }
 
@@ -346,9 +339,6 @@ namespace Toxy.ToxHelpers
                 videoSource.NewFrame -= video_source_NewFrame;
                 videoSource = null;
             }
-
-            if (videoWindow != null)
-                videoWindow.Close();
         }
 
         public virtual void Answer()
@@ -361,28 +351,6 @@ namespace Toxy.ToxHelpers
         public virtual void Call(int current_number, ToxAvCodecSettings settings, int ringing_seconds)
         {
             toxav.Call(current_number, settings, ringing_seconds, out callIndex);
-        }
-
-        public void ProcessVideoFrame(IntPtr frame)
-        {
-            VpxImage image = VpxImage.FromPointer(frame);
-
-            if (videoWindow == null)
-            {
-                image.Free();
-                return;
-            }
-
-            byte[] dest = VpxHelper.Yuv420ToRgb(image, image.d_w * image.d_h * 4);
-
-            image.Free();
-
-            GCHandle handle = GCHandle.Alloc(dest, GCHandleType.Pinned);
-            Bitmap bitmap = Bitmap.FromHbitmap(GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject()));
-            handle.Free();
-
-            if (videoWindow != null)
-                videoWindow.PushVideoFrame(bitmap);
         }
 
         private void SendVideoFrame(Bitmap frame)
@@ -480,20 +448,6 @@ namespace Toxy.ToxHelpers
                         break;
                     }
                 }
-            }
-        }
-
-        public void ApplySettings(ToxAvCodecSettings settings)
-        {
-            if (videoWindow == null && settings.CallType == ToxAvCallType.Video)
-            {
-                videoWindow = new VideoWindow();
-                videoWindow.Show();
-            }
-            else if (videoWindow != null && settings.CallType == ToxAvCallType.Audio)
-            {
-                videoWindow.Close();
-                videoWindow = null;
             }
         }
     }

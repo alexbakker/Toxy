@@ -353,8 +353,9 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
@@ -594,9 +595,9 @@
                     </StackPanel>
                 </Grid>
             </Border>
-
-            <FlowDocumentScrollViewer Grid.Row="1"
-                                      Margin="5,5,10,0"
+            <Image x:Name="VideoChatImage" Grid.Row="1"/>
+            <GridSplitter IsEnabled="True" Grid.Row="2" Height="1" HorizontalAlignment="Stretch" Background="{DynamicResource AccentColorBrush}"/>
+            <FlowDocumentScrollViewer Grid.Row="3"
                                       IsEnabled="True"
                                       x:Name="ChatBox"
                                       BorderThickness="0"
@@ -604,30 +605,30 @@
                                       IsHitTestVisible="True"
                                       ClipToBounds="True"
                                       MaxZoom="100"
-                                      MinZoom="100" />
-            <Label Grid.Row="2"
-                   x:Name="TypingStatusLabel"
-                   Margin="5,1,5,1"
-                   Content=""
-                   Height="26" />
+                                      MinZoom="100"/>
+            
+            <Label Grid.Row="4"
+                x:Name="TypingStatusLabel"
+                Margin="5,1,5,65"
+                Content=""
+                Height="26" />
 
-            <TextBox Grid.Row="3"
-                     Margin="10,0,15,10"
-                     x:Name="TextToSend"
-                     Height="55"
-                     BorderBrush="{DynamicResource AccentColorBrush}"
-                     TextWrapping="Wrap"
-                     KeyDown="TextToSend_KeyDown"
-                     KeyUp="TextToSend_KeyUp"
-                     LostFocus="TextToSend_OnLostFocus"
-                     GotFocus="TextToSend_OnGotFocus"
-                     TextChanged="TextToSend_TextChanged"
-                     AcceptsReturn="False"
-                     SelectionBrush="{DynamicResource AccentColorBrush}"
-                     SpellCheck.IsEnabled="True"/>
+            <TextBox Grid.Row="5"
+                         Margin="10,25,15,10"
+                         x:Name="TextToSend"
+                         Height="55"
+                         BorderBrush="{DynamicResource AccentColorBrush}"
+                         TextWrapping="Wrap"
+                         KeyDown="TextToSend_KeyDown"
+                         KeyUp="TextToSend_KeyUp"
+                         LostFocus="TextToSend_OnLostFocus"
+                         GotFocus="TextToSend_OnGotFocus"
+                         TextChanged="TextToSend_TextChanged"
+                         AcceptsReturn="False"
+                         SelectionBrush="{DynamicResource AccentColorBrush}"
+                         SpellCheck.IsEnabled="True"/>
             <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
                       Width="1"
-
                       HorizontalAlignment="Center"
                       Background="{DynamicResource AccentColorBrush}"/>
             <Grid x:Name="GroupListGrid" 

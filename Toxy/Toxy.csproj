@@ -151,9 +151,6 @@
     <Compile Include="SQLite\SQLite.cs" />
     <Compile Include="SQLite\SQLiteAsync.cs" />
     <Compile Include="SQLite\Tables\ToxMessage.cs" />
-    <Compile Include="VideoWindow.xaml.cs">
-      <DependentUpon>VideoWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\BaseChatModelView.cs" />
     <Compile Include="ViewModels\FriendControlModelView.cs" />
     <Compile Include="ViewModels\GroupControlModelView.cs" />
@@ -176,10 +173,6 @@
     <Compile Include="Views\SwitchProfileDialog.xaml.cs">
       <DependentUpon>SwitchProfileDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="VideoWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\CallControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

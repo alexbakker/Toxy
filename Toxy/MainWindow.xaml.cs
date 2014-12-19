@@ -35,6 +35,8 @@ using Brushes = System.Windows.Media.Brushes;
 
 using SQLite;
 using NAudio.Wave;
+using SharpTox.Vpx;
+using System.Runtime.InteropServices;
 
 namespace Toxy
 {
@@ -699,7 +701,7 @@ namespace Toxy
             if (call == null && call.GetType() != typeof(ToxGroupCall))
                 return;
 
-            call.ProcessVideoFrame(e.Frame);
+            ProcessVideoFrame(e.Frame);
         }
 
         private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
@@ -707,7 +709,7 @@ namespace Toxy
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
                 return;
 
-            call.ApplySettings(toxav.GetPeerCodecSettings(e.CallIndex, 0));
+            //call.ApplySettings(toxav.GetPeerCodecSettings(e.CallIndex, 0));
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
@@ -2830,6 +2832,24 @@ namespace Toxy
                 return;
 
             call.ToggleVideo((bool)VideoButton.IsChecked, config.VideoDevice);
+        }
+
+        private void ProcessVideoFrame(IntPtr frame)
+        {
+            VpxImage image = VpxImage.FromPointer(frame);
+            byte[] dest = VpxHelper.Yuv420ToRgb(image, image.d_w * image.d_h * 4);
+
+            image.Free();
+
+            GCHandle handle = GCHandle.Alloc(dest, GCHandleType.Pinned);
+            Bitmap bitmap = Bitmap.FromHbitmap(GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject()));
+            handle.Free();
+
+            Dispatcher.Invoke((Action)(() =>
+            {
+                VideoChatImage.Source = BitmapToImageSource(bitmap, ImageFormat.Bmp);
+                bitmap.Dispose();
+            }));
         }
     }
 }

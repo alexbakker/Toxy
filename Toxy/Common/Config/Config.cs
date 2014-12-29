@@ -1,4 +1,5 @@
 ﻿using System;
+using SharpTox.Core;
 
 namespace Toxy.Common
 {
@@ -53,12 +54,12 @@ namespace Toxy.Common
             set { remindAboutProxy = value; }
         }
 
-        private bool proxyEnabled = false;
+        private ToxProxyType proxyType = ToxProxyType.None;
 
-        public bool ProxyEnabled
+        public ToxProxyType ProxyType
         {
-            get { return proxyEnabled; }
-            set { proxyEnabled = value; }
+            get { return proxyType; }
+            set { proxyType = value; }
         }
 
         private string proxyAddress = "";

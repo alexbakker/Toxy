@@ -1777,7 +1777,14 @@ namespace Toxy
                 if (config.ProxyPort != 0)
                     SettingsProxyPort.Text = config.ProxyPort.ToString();
 
-                EnableProxyCheckbox.IsChecked = config.ProxyEnabled;
+                foreach (ComboBoxItem item in ProxyTypeComboBox.Items)
+                {
+                    if ((ToxProxyType)int.Parse((string)item.Tag) == config.ProxyType)
+                    {
+                        ProxyTypeComboBox.SelectedItem = item;
+                        break;
+                    }
+                }
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1794,7 +1801,7 @@ namespace Toxy
 
             if (friendID.Contains("@"))
             {
-                if (config.ProxyEnabled && config.RemindAboutProxy)
+                if (config.ProxyType != ToxProxyType.None && config.RemindAboutProxy)
                 {
                     MessageDialogResult result = await this.ShowMessageAsync("Warning", "You're about to submit a dns lookup query, the configured proxy will not be used for this.\nDo you wish to continue?", MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { AffirmativeButtonText = "Yes, don't remind me again", NegativeButtonText = "Yes", FirstAuxiliaryButtonText = "No" });
                     if (result == MessageDialogResult.Affirmative)
@@ -1911,10 +1918,12 @@ namespace Toxy
             config.FilterAudio = filterAudio;
 
             bool proxyConfigChanged = false;
-            if (config.ProxyEnabled != EnableProxyCheckbox.IsChecked || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)
+            var proxyType = (ToxProxyType)int.Parse((string)((ComboBoxItem)ProxyTypeComboBox.SelectedItem).Tag);
+
+            if (config.ProxyType != proxyType || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)
                 proxyConfigChanged = true;
 
-            config.ProxyEnabled = (bool)EnableProxyCheckbox.IsChecked;
+            config.ProxyType = proxyType;
             config.ProxyAddress = SettingsProxyAddress.Text;
 
             int proxyPort;
@@ -2552,8 +2561,8 @@ namespace Toxy
         private async void mv_Loaded(object sender, RoutedEventArgs e)
         {
             ToxOptions options;
-            if (config.ProxyEnabled)
-                options = new ToxOptions(config.Ipv6Enabled, config.ProxyAddress, config.ProxyPort);
+            if (config.ProxyType != ToxProxyType.None)
+                options = new ToxOptions(config.Ipv6Enabled, config.ProxyType, config.ProxyAddress, config.ProxyPort);
             else
                 options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
 

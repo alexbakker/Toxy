@@ -555,6 +555,7 @@ namespace Toxy
 
             if (e.Status == ToxFriendConnectionStatus.Offline)
             {
+                
                 DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(e.FriendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
 
                 if (lastOnline.Year == 1970) //quick and dirty way to check if we're dealing with epoch 0
@@ -568,7 +569,9 @@ namespace Toxy
                 {
                     CallButton.Visibility = Visibility.Collapsed;
                     FileButton.Visibility = Visibility.Collapsed;
+                    TypingStatusLabel.Content = "";
                 }
+
             }
             else if (e.Status == ToxFriendConnectionStatus.Online)
             {
@@ -1507,7 +1510,7 @@ namespace Toxy
 
             if (isSelected)
             {
-                if (!tox.GetIsTyping(friendObject.ChatNumber))
+                if (!tox.GetIsTyping(friendObject.ChatNumber) || tox.GetUserStatus(friendObject.ChatNumber) == ToxUserStatus.None)
                     TypingStatusLabel.Content = "";
                 else
                     TypingStatusLabel.Content = getFriendName(friendObject.ChatNumber) + " is typing...";

@@ -585,6 +585,8 @@ namespace Toxy
                 //kinda ugly to do this every time, I guess we don't really have a choice
                 tox.RequestAvatarInfo(e.FriendNumber);
             }
+
+            RearrangeChatList();
         }
 
         private void tox_OnTypingChange(object sender, ToxEventArgs.TypingStatusEventArgs e)
@@ -618,6 +620,8 @@ namespace Toxy
             {
                 friend.ToxStatus = e.UserStatus;
             }
+
+            RearrangeChatList();
         }
 
         private void tox_OnFriendRequest(object sender, ToxEventArgs.FriendRequestEventArgs e)
@@ -823,6 +827,29 @@ namespace Toxy
             }
 
             group.PeerList = new GroupPeerCollection(peers.OrderBy(p => p.Name).ToList());
+        }
+
+        private void RearrangeChatList()
+        {
+            ViewModel.UpdateChatCollection(new ObservableCollection<IChatObject>(ViewModel.ChatCollection.OrderBy(chat => chat.GetType() == typeof(GroupControlModelView) ? 3 : getStatusPriority(tox.GetFriendConnectionStatus(chat.ChatNumber), tox.GetUserStatus(chat.ChatNumber))).ThenBy(chat => chat.Name)));
+        }
+
+        private int getStatusPriority(ToxFriendConnectionStatus connStatus, ToxUserStatus status)
+        {
+            if (connStatus == ToxFriendConnectionStatus.Offline)
+                return 4;
+
+            switch (status)
+            {
+                case ToxUserStatus.None:
+                    return 0;
+                case ToxUserStatus.Away:
+                    return 1;
+                case ToxUserStatus.Busy:
+                    return 2;
+                default:
+                    return 3;
+            }
         }
 
         private void AddMessageToView(int friendNumber, MessageData data)
@@ -1313,6 +1340,7 @@ namespace Toxy
             groupMV.ChangeTitleAction = ChangeTitleAction;
 
             ViewModel.ChatCollection.Add(groupMV);
+            RearrangeChatList();
         }
 
         private async void ChangeTitleAction(IGroupObject groupObject)
@@ -1428,6 +1456,7 @@ namespace Toxy
             friendMV.HangupAction = FriendHangupAction;
 
             ViewModel.ChatCollection.Add(friendMV);
+            RearrangeChatList();
         }
 
         private void FriendHangupAction(IFriendObject friendObject)
@@ -1807,7 +1836,14 @@ namespace Toxy
                 if (config.ProxyPort != 0)
                     SettingsProxyPort.Text = config.ProxyPort.ToString();
 
-                EnableProxyCheckbox.IsChecked = config.ProxyEnabled;
+                foreach (ComboBoxItem item in ProxyTypeComboBox.Items)
+                {
+                    if ((ToxProxyType)int.Parse((string)item.Tag) == config.ProxyType)
+                    {
+                        ProxyTypeComboBox.SelectedItem = item;
+                        break;
+                    }
+                }
             }
 
             SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
@@ -1824,7 +1860,7 @@ namespace Toxy
 
             if (friendID.Contains("@"))
             {
-                if (config.ProxyEnabled && config.RemindAboutProxy)
+                if (config.ProxyType != ToxProxyType.None && config.RemindAboutProxy)
                 {
                     MessageDialogResult result = await this.ShowMessageAsync("Warning", "You're about to submit a dns lookup query, the configured proxy will not be used for this.\nDo you wish to continue?", MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings() { AffirmativeButtonText = "Yes, don't remind me again", NegativeButtonText = "Yes", FirstAuxiliaryButtonText = "No" });
                     if (result == MessageDialogResult.Affirmative)
@@ -1944,10 +1980,12 @@ namespace Toxy
             config.FilterAudio = filterAudio;
 
             bool proxyConfigChanged = false;
-            if (config.ProxyEnabled != EnableProxyCheckbox.IsChecked || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)
+            var proxyType = (ToxProxyType)int.Parse((string)((ComboBoxItem)ProxyTypeComboBox.SelectedItem).Tag);
+
+            if (config.ProxyType != proxyType || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)
                 proxyConfigChanged = true;
 
-            config.ProxyEnabled = (bool)EnableProxyCheckbox.IsChecked;
+            config.ProxyType = proxyType;
             config.ProxyAddress = SettingsProxyAddress.Text;
 
             int proxyPort;
@@ -2587,8 +2625,8 @@ namespace Toxy
         private async void mv_Loaded(object sender, RoutedEventArgs e)
         {
             ToxOptions options;
-            if (config.ProxyEnabled)
-                options = new ToxOptions(config.Ipv6Enabled, config.ProxyAddress, config.ProxyPort);
+            if (config.ProxyType != ToxProxyType.None)
+                options = new ToxOptions(config.Ipv6Enabled, config.ProxyType, config.ProxyAddress, config.ProxyPort);
             else
                 options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
 

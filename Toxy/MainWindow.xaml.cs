@@ -2880,7 +2880,9 @@ namespace Toxy
             image.Free();
 
             GCHandle handle = GCHandle.Alloc(dest, GCHandleType.Pinned);
-            Bitmap bitmap = Bitmap.FromHbitmap(GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject()));
+            IntPtr hBitmap = GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject());
+            Bitmap bitmap = Bitmap.FromHbitmap(hBitmap);
+            GdiWrapper.DeleteObject(hBitmap);
             handle.Free();
 
             Dispatcher.Invoke((Action)(() =>

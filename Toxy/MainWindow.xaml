@@ -593,7 +593,7 @@
                         <converter:IgnoreStatusToStringConverter x:Key="IgnoreStatusConverter" />
                         <converter:MuteStatusToStringConverter x:Key="MuteStatusConverter" />
                         <ContextMenu x:Key="GroupPeerContextMenu" Name="GroupPeerContextMenu">
-                            <MenuItem Header="Copy Key" Click="GroupPeerCopyKey_Click"/>
+                            <MenuItem Header="Copy Public Key" Click="GroupPeerCopyKey_Click"/>
                             <MenuItem Header="{Binding Muted, Mode=OneWay, Converter={StaticResource MuteStatusConverter}}" Click="GroupPeerMute_Click"/>
                             <MenuItem Header="{Binding Ignored, Mode=OneWay, Converter={StaticResource IgnoreStatusConverter}}" Click="GroupPeerIgnore_Click"/>
                         </ContextMenu>

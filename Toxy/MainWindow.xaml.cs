@@ -2874,21 +2874,20 @@ namespace Toxy
 
         private void ProcessVideoFrame(IntPtr frame)
         {
-            VpxImage image = VpxImage.FromPointer(frame);
-            byte[] dest = VpxHelper.Yuv420ToRgb(image, image.d_w * image.d_h * 4);
+            var vpxImage = VpxImage.FromPointer(frame);
+            byte[] dest = VpxHelper.Yuv420ToRgb(vpxImage, vpxImage.d_w * vpxImage.d_h * 4);
 
-            image.Free();
+            vpxImage.Free();
 
-            GCHandle handle = GCHandle.Alloc(dest, GCHandleType.Pinned);
-            IntPtr hBitmap = GdiWrapper.CreateBitmap((int)image.d_w, (int)image.d_h, 1, 32, handle.AddrOfPinnedObject());
-            Bitmap bitmap = Bitmap.FromHbitmap(hBitmap);
-            GdiWrapper.DeleteObject(hBitmap);
-            handle.Free();
+            int bytesPerPixel = (PixelFormats.Bgra32.BitsPerPixel + 7) / 8;
+            int stride = 4 * (((int)vpxImage.d_w * bytesPerPixel + 3) / 4);
+
+            var source = BitmapSource.Create((int)vpxImage.d_w, (int)vpxImage.d_h, 96d, 96d, PixelFormats.Bgra32, null, dest, stride);
+            source.Freeze();
 
             Dispatcher.Invoke((Action)(() =>
             {
-                VideoChatImage.Source = BitmapToImageSource(bitmap, ImageFormat.Bmp);
-                bitmap.Dispose();
+                VideoChatImage.Source = source;
             }));
         }
     }

@@ -135,7 +135,6 @@
     <Compile Include="Common\BitmapExtension.cs" />
     <Compile Include="Common\Config\Config.cs" />
     <Compile Include="Common\Config\ConfigTools.cs" />
-    <Compile Include="Common\GdiWrapper.cs" />
     <Compile Include="Common\MenuItemEnums.cs" />
     <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
     <Compile Include="Common\StringExtensions.cs" />

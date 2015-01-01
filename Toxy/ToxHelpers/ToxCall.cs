@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 using NAudio.Wave;
@@ -355,35 +356,16 @@ namespace Toxy.ToxHelpers
 
         private void SendVideoFrame(Bitmap frame)
         {
-            GdiWrapper.BITMAPINFO info = new GdiWrapper.BITMAPINFO()
-            {
-                bmiHeader =
-                {
-                    biWidth = frame.Width,
-                    biHeight = -frame.Height,
-                    biPlanes = 1,
-                    biBitCount = 24,
-                    biCompression = GdiWrapper.BitmapCompressionMode.BI_RGB
-                }
-            };
+            var bitmapData = frame.LockBits(new Rectangle(0, 0, frame.Width, frame.Height), ImageLockMode.ReadOnly, frame.PixelFormat);
+            byte[] bytes = new byte[bitmapData.Stride * frame.Height];
 
-            info.bmiHeader.Init();
-
-            byte[] bytes = new byte[frame.Width * frame.Height * 3];
-            IntPtr context = GdiWrapper.CreateCompatibleDC(IntPtr.Zero);
-            IntPtr hbitmap = frame.GetHbitmap();
-
-            GdiWrapper.GetDIBits(context, hbitmap, 0, (uint)frame.Height, bytes, ref info, GdiWrapper.DIB_Color_Mode.DIB_RGB_COLORS);
-            GdiWrapper.DeleteObject(hbitmap);
-            GdiWrapper.DeleteDC(context);
-
-            byte[] dest = new byte[frame.Width * frame.Height * 4];
+            Marshal.Copy(bitmapData.Scan0, bytes, 0, bytes.Length);
 
             try
             {
                 VpxImage img = VpxImage.Create(VpxImageFormat.VPX_IMG_FMT_I420, (ushort)frame.Width, (ushort)frame.Height, 1);
 
-                //fixed (byte* b = bytes)
+                byte[] dest = new byte[frame.Width * frame.Height * 4];
                 VpxHelper.RgbToYuv420(img, bytes, (ushort)frame.Width, (ushort)frame.Height);
 
                 int length = ToxAvFunctions.PrepareVideoFrame(toxav.Handle, CallIndex, dest, dest.Length, (IntPtr)img.Pointer);

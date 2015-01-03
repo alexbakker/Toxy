@@ -2393,7 +2393,7 @@ namespace Toxy
         private void changeAvatar()
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Image files (*.png) | *.png";
+            dialog.Filter = "Image files (*.png, *.gif, *.jpeg, *.jpg) | *.png;*.gif;*.jpeg;*.jpg";
             dialog.InitialDirectory = Environment.CurrentDirectory;
             dialog.Multiselect = false;
 
@@ -2402,10 +2402,22 @@ namespace Toxy
 
             string filename = dialog.FileName;
             FileInfo info = new FileInfo(filename);
+          
             byte[] avatarBytes = File.ReadAllBytes(filename);
             MemoryStream stream = new MemoryStream(avatarBytes);
             Bitmap bmp = new Bitmap(stream);
 
+            if(bmp.RawFormat != ImageFormat.Png)
+            {
+                var memStream = new MemoryStream();
+                bmp.Save(memStream, ImageFormat.Png);
+                bmp.Dispose();
+
+                stream = memStream;
+                bmp = new Bitmap(stream);
+                avatarBytes = avatarBitmapToBytes(bmp);
+            }
+            
             if (info.Length > 0x4000)
             {
                 //TODO: maintain aspect ratio

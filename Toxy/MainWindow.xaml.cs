@@ -713,7 +713,8 @@ namespace Toxy
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
                 return;
 
-            //call.ApplySettings(toxav.GetPeerCodecSettings(e.CallIndex, 0));
+            if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType != ToxAvCallType.Video)
+                VideoChatImage.Source = null;
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
@@ -788,17 +789,7 @@ namespace Toxy
             if (call != null)
                 return;
 
-            int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
-
-            ToxAvCodecSettings settings = toxav.GetPeerCodecSettings(e.CallIndex, 0);
-            //if (settings.CallType == ToxAvCallType.Video)
-            //{
-                //we don't support video calls, just reject this and return.
-             //   toxav.Reject(e.CallIndex, "Toxy does not support video calls.");
-               // return;
-            //}
-
-            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(toxav.GetPeerID(e.CallIndex, 0));
             if (friend != null)
             {
                 friend.CallIndex = e.CallIndex;
@@ -1670,6 +1661,7 @@ namespace Toxy
             }
 
             ViewModel.CallingFriend = null;
+            VideoChatImage.Source = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
             VideoButton.Visibility = Visibility.Collapsed;

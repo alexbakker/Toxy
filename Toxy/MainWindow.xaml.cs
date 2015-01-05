@@ -2422,8 +2422,8 @@ namespace Toxy
                 bmp.Save(memStream, ImageFormat.Png);
                 bmp.Dispose();
 
-                bmp = new Bitmap(stream);
-                avatarBytes = avatarBitmapToBytes(bmp);
+                bmp = new Bitmap(memStream);
+                avatarBytes = memStream.ToArray();
             }
             
             if (avatarBytes.Length > 0x4000)

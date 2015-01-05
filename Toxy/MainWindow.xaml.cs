@@ -44,6 +44,8 @@ namespace Toxy
         private ToxAv toxav;
         private ToxCall call;
 
+        private ToxKey selfPublicKey;
+
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
@@ -671,7 +673,7 @@ namespace Toxy
             ViewModel.HasNewMessage = true;
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
         }
 
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
@@ -694,7 +696,7 @@ namespace Toxy
             ViewModel.HasNewMessage = true;
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
         }
 
         private void tox_OnNameChange(object sender, ToxEventArgs.NameChangeEventArgs e)
@@ -904,6 +906,9 @@ namespace Toxy
                 {
                     foreach (Tables.ToxMessage msg in task.Result)
                     {
+                        if (string.IsNullOrEmpty(msg.ProfilePublicKey) || msg.ProfilePublicKey != selfPublicKey.GetString())
+                            continue;
+
                         int friendNumber = GetFriendByPublicKey(msg.PublicKey);
                         if (friendNumber == -1)
                             continue;
@@ -2029,7 +2034,7 @@ namespace Toxy
                         AddActionToView(selectedChatNumber, data);
 
                         if (config.EnableChatLogging)
-                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
                     }
                 }
                 else
@@ -2051,7 +2056,7 @@ namespace Toxy
                             AddMessageToView(selectedChatNumber, data);
 
                             if (config.EnableChatLogging)
-                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
                         }
                     }
                 }
@@ -2663,6 +2668,7 @@ namespace Toxy
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 
             await loadTox();
+            selfPublicKey = tox.Keys.PublicKey;
 
             bool bootstrap_success = false;
             foreach (ToxConfigNode node in config.Nodes)

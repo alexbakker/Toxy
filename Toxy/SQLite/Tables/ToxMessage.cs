@@ -23,5 +23,8 @@ namespace Toxy.Tables
         public bool IsSelf { get; set; }
 
         public DateTime Timestamp { get; set; }
+
+        [MaxLength(ToxConstants.ClientIdSize * 2)]
+        public string ProfilePublicKey { get; set; }
     }
 }

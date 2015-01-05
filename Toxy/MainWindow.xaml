@@ -46,7 +46,7 @@
 
         <Grid.ColumnDefinitions>
             <!-- left side of the grid splitter -->
-            <ColumnDefinition Width="1*"
+            <ColumnDefinition Width="1"
                               MinWidth="250"
                               MaxWidth="{Binding ElementName=RootGrid, Path=ActualWidth, Mode=OneWay, Converter={StaticResource MaxWidthConverter}, ConverterParameter='250'}" />
             <!-- the grid splitter -->

@@ -64,7 +64,6 @@ namespace Toxy
         private Icon newMessageNotifyIcon;
 
         private SQLiteAsyncConnection dbConnection;
-        private string dbPath = "chatlogs.db";
 
         private string toxDataDir
         {
@@ -93,6 +92,16 @@ namespace Toxy
             }
         }
 
+        private string configFilename = "config.xml";
+
+        private string dbFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, "toxy.db");
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -100,14 +109,14 @@ namespace Toxy
             DataContext = new MainWindowViewModel();
             Debug.AutoFlush = true;
 
-            if (File.Exists("config.xml"))
+            if (File.Exists(configFilename))
             {
-                config = ConfigTools.Load("config.xml");
+                config = ConfigTools.Load(configFilename);
             }
             else
             {
                 config = new Config();
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
             }
 
             applyConfig();
@@ -886,7 +895,7 @@ namespace Toxy
 
         private async void initDatabase()
         {
-            dbConnection = new SQLiteAsyncConnection(dbPath);
+            dbConnection = new SQLiteAsyncConnection(dbFilename);
             await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
 
             if (config.EnableChatLogging)
@@ -1084,7 +1093,7 @@ namespace Toxy
                     config.ProfileName = tox.Keys.PublicKey.GetString().Substring(0, 10);
 
                 File.Move(toxOldDataFilename, toxDataFilename);
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
 
                 ToxData data = ToxData.FromDisk(toxDataFilename);
                 if (data == null || !tox.Load(data))
@@ -1103,7 +1112,7 @@ namespace Toxy
 
                 tox.Name = config.ProfileName;
                 tox.GetData().Save(toxDataFilename);
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
             }
         }
 
@@ -1763,7 +1772,7 @@ namespace Toxy
             }
 
             if (config != null)
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
         }
 
         private void OpenAddFriend_Click(object sender, RoutedEventArgs e)
@@ -1839,7 +1848,7 @@ namespace Toxy
                     if (result == MessageDialogResult.Affirmative)
                     {
                         config.RemindAboutProxy = false;
-                        ConfigTools.Save(config, "config.xml");
+                        ConfigTools.Save(config, configFilename);
                     }
                     else if (result == MessageDialogResult.FirstAuxiliary)
                     {
@@ -1962,7 +1971,7 @@ namespace Toxy
             if (int.TryParse(SettingsProxyPort.Text, out proxyPort))
                 config.ProxyPort = proxyPort;
 
-            ConfigTools.Save(config, "config.xml");
+            ConfigTools.Save(config, configFilename);
             saveTox();
 
             savingSettings = true;

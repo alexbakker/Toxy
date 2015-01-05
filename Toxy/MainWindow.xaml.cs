@@ -2413,12 +2413,11 @@ namespace Toxy
                 bmp.Save(memStream, ImageFormat.Png);
                 bmp.Dispose();
 
-                stream = memStream;
                 bmp = new Bitmap(stream);
                 avatarBytes = avatarBitmapToBytes(bmp);
             }
             
-            if (info.Length > 0x4000)
+            if (avatarBytes.Length > 0x4000)
             {
                 //TODO: maintain aspect ratio
                 Bitmap newBmp = new Bitmap(64, 64);

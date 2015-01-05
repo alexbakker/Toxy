@@ -1124,6 +1124,9 @@ namespace Toxy
             if (accent != null && theme != null)
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme);
 
+            Width = config.WindowSize.Width;
+            Height = config.WindowSize.Height;
+
             ExecuteActionsOnNotifyIcon();
         }
 
@@ -1772,7 +1775,10 @@ namespace Toxy
             }
 
             if (config != null)
+            {
+                config.WindowSize = new System.Windows.Size(this.Width, this.Height);
                 ConfigTools.Save(config, configFilename);
+            }
         }
 
         private void OpenAddFriend_Click(object sender, RoutedEventArgs e)

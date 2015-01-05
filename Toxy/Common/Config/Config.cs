@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using SharpTox.Core;
 
 namespace Toxy.Common
@@ -140,6 +141,14 @@ namespace Toxy.Common
         {
             get { return enableChatLogging; }
             set { enableChatLogging = value; }
+        }
+
+        private Size windowSize = new Size(700, 600);
+        
+        public Size WindowSize
+        {
+            get { return windowSize; }
+            set { windowSize = value; }
         }
 
         private ToxConfigNode[] nodes = new ToxConfigNode[] 

@@ -188,6 +188,8 @@ namespace Toxy.ToxHelpers
         
         public int FriendNumber { get; private set; }
 
+        public bool Ended { get; private set; }
+
         public ToxCall(ToxAv toxav, int callindex, int friendnumber)
         {
             this.toxav = toxav;
@@ -245,7 +247,8 @@ namespace Toxy.ToxHelpers
 
         private void video_source_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            SendVideoFrame(eventArgs.Frame);
+            if (!Ended)
+                SendVideoFrame(eventArgs.Frame);
         }
 
         public virtual void SetTimerCallback(TimerCallback callback)
@@ -315,6 +318,8 @@ namespace Toxy.ToxHelpers
         public virtual void Stop()
         {
             //TODO: we might want to block here until RecordingStopped and PlaybackStopped are fired
+
+            Ended = true;
 
             if (wave_source != null)
             {

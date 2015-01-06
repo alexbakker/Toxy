@@ -716,7 +716,7 @@ namespace Toxy
 
         private void toxav_OnReceivedVideo(object sender, ToxAvEventArgs.VideoDataEventArgs e)
         {
-            if (call == null && call.GetType() != typeof(ToxGroupCall))
+            if (call == null || call.GetType() == typeof(ToxGroupCall) || call.Ended)
                 return;
 
             ProcessVideoFrame(e.Frame);

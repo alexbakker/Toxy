@@ -756,9 +756,11 @@ namespace Toxy
         private void toxav_OnEnd(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             EndCall();
+
             CallButton.Visibility = Visibility.Visible;
             HangupButton.Visibility = Visibility.Collapsed;
             VideoButton.Visibility = Visibility.Collapsed;
+            VideoButton.IsChecked = false;
         }
 
         private void toxav_OnStart(object sender, ToxAvEventArgs.CallStateEventArgs e)

@@ -46,6 +46,8 @@ namespace Toxy
         private ToxAv toxav;
         private ToxCall call;
 
+        private ToxKey selfPublicKey;
+
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
@@ -66,7 +68,6 @@ namespace Toxy
         private Icon newMessageNotifyIcon;
 
         private SQLiteAsyncConnection dbConnection;
-        private string dbPath = "chatlogs.db";
 
         private string toxDataDir
         {
@@ -95,6 +96,16 @@ namespace Toxy
             }
         }
 
+        private string configFilename = "config.xml";
+
+        private string dbFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, "toxy.db");
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -102,14 +113,14 @@ namespace Toxy
             DataContext = new MainWindowViewModel();
             Debug.AutoFlush = true;
 
-            if (File.Exists("config.xml"))
+            if (File.Exists(configFilename))
             {
-                config = ConfigTools.Load("config.xml");
+                config = ConfigTools.Load(configFilename);
             }
             else
             {
                 config = new Config();
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
             }
 
             applyConfig();
@@ -557,6 +568,7 @@ namespace Toxy
 
             if (e.Status == ToxFriendConnectionStatus.Offline)
             {
+                
                 DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(e.FriendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
 
                 if (lastOnline.Year == 1970) //quick and dirty way to check if we're dealing with epoch 0
@@ -570,7 +582,9 @@ namespace Toxy
                 {
                     CallButton.Visibility = Visibility.Collapsed;
                     FileButton.Visibility = Visibility.Collapsed;
+                    TypingStatusLabel.Content = "";
                 }
+
             }
             else if (e.Status == ToxFriendConnectionStatus.Online)
             {
@@ -661,7 +675,7 @@ namespace Toxy
             ViewModel.HasNewMessage = true;
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
         }
 
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
@@ -684,7 +698,7 @@ namespace Toxy
             ViewModel.HasNewMessage = true;
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
         }
 
         private void tox_OnNameChange(object sender, ToxEventArgs.NameChangeEventArgs e)
@@ -885,8 +899,8 @@ namespace Toxy
 
         private async void initDatabase()
         {
-            dbConnection = new SQLiteAsyncConnection(dbPath);
-            await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Debug.WriteLine("Created ToxMessage table"); });
+            dbConnection = new SQLiteAsyncConnection(dbFilename);
+            await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
 
             if (config.EnableChatLogging)
             {
@@ -894,6 +908,9 @@ namespace Toxy
                 {
                     foreach (Tables.ToxMessage msg in task.Result)
                     {
+                        if (string.IsNullOrEmpty(msg.ProfilePublicKey) || msg.ProfilePublicKey != selfPublicKey.GetString())
+                            continue;
+
                         int friendNumber = GetFriendByPublicKey(msg.PublicKey);
                         if (friendNumber == -1)
                             continue;
@@ -1083,7 +1100,7 @@ namespace Toxy
                     config.ProfileName = tox.Keys.PublicKey.GetString().Substring(0, 10);
 
                 File.Move(toxOldDataFilename, toxDataFilename);
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
 
                 ToxData data = ToxData.FromDisk(toxDataFilename);
                 if (data == null || !tox.Load(data))
@@ -1102,7 +1119,7 @@ namespace Toxy
 
                 tox.Name = config.ProfileName;
                 tox.GetData().Save(toxDataFilename);
-                ConfigTools.Save(config, "config.xml");
+                ConfigTools.Save(config, configFilename);
             }
         }
 
@@ -1113,6 +1130,9 @@ namespace Toxy
 
             if (accent != null && theme != null)
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme);
+
+            Width = config.WindowSize.Width;
+            Height = config.WindowSize.Height;
 
             ExecuteActionsOnNotifyIcon();
         }
@@ -1509,7 +1529,7 @@ namespace Toxy
 
             if (isSelected)
             {
-                if (!tox.GetIsTyping(friendObject.ChatNumber))
+                if (!tox.GetIsTyping(friendObject.ChatNumber) || tox.GetUserStatus(friendObject.ChatNumber) == ToxUserStatus.None)
                     TypingStatusLabel.Content = "";
                 else
                     TypingStatusLabel.Content = getFriendName(friendObject.ChatNumber) + " is typing...";
@@ -1770,7 +1790,10 @@ namespace Toxy
             }
 
             if (config != null)
-                ConfigTools.Save(config, "config.xml");
+            {
+                config.WindowSize = new System.Windows.Size(this.Width, this.Height);
+                ConfigTools.Save(config, configFilename);
+            }
         }
 
         private void OpenAddFriend_Click(object sender, RoutedEventArgs e)
@@ -1858,7 +1881,7 @@ namespace Toxy
                     if (result == MessageDialogResult.Affirmative)
                     {
                         config.RemindAboutProxy = false;
-                        ConfigTools.Save(config, "config.xml");
+                        ConfigTools.Save(config, configFilename);
                     }
                     else if (result == MessageDialogResult.FirstAuxiliary)
                     {
@@ -1984,7 +2007,7 @@ namespace Toxy
             if (int.TryParse(SettingsProxyPort.Text, out proxyPort))
                 config.ProxyPort = proxyPort;
 
-            ConfigTools.Save(config, "config.xml");
+            ConfigTools.Save(config, configFilename);
             saveTox();
 
             savingSettings = true;
@@ -2036,7 +2059,7 @@ namespace Toxy
                         AddActionToView(selectedChatNumber, data);
 
                         if (config.EnableChatLogging)
-                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username });
+                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
                     }
                 }
                 else
@@ -2058,7 +2081,7 @@ namespace Toxy
                             AddMessageToView(selectedChatNumber, data);
 
                             if (config.EnableChatLogging)
-                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username });
+                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
                         }
                     }
                 }
@@ -2417,7 +2440,7 @@ namespace Toxy
         private void changeAvatar()
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Image files (*.png) | *.png";
+            dialog.Filter = "Image files (*.png, *.gif, *.jpeg, *.jpg) | *.png;*.gif;*.jpeg;*.jpg";
             dialog.InitialDirectory = Environment.CurrentDirectory;
             dialog.Multiselect = false;
 
@@ -2426,11 +2449,22 @@ namespace Toxy
 
             string filename = dialog.FileName;
             FileInfo info = new FileInfo(filename);
+          
             byte[] avatarBytes = File.ReadAllBytes(filename);
             MemoryStream stream = new MemoryStream(avatarBytes);
             Bitmap bmp = new Bitmap(stream);
 
-            if (info.Length > 0x4000)
+            if(bmp.RawFormat != ImageFormat.Png)
+            {
+                var memStream = new MemoryStream();
+                bmp.Save(memStream, ImageFormat.Png);
+                bmp.Dispose();
+
+                bmp = new Bitmap(memStream);
+                avatarBytes = memStream.ToArray();
+            }
+            
+            if (avatarBytes.Length > 0x4000)
             {
                 //TODO: maintain aspect ratio
                 Bitmap newBmp = new Bitmap(64, 64);
@@ -2662,6 +2696,7 @@ namespace Toxy
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 
             await loadTox();
+            selfPublicKey = tox.Keys.PublicKey;
 
             bool bootstrap_success = false;
             foreach (ToxConfigNode node in config.Nodes)

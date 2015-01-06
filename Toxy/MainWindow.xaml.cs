@@ -716,12 +716,12 @@ namespace Toxy
 
         private void toxav_OnReceivedVideo(object sender, ToxAvEventArgs.VideoDataEventArgs e)
         {
-            if (call == null || call.GetType() == typeof(ToxGroupCall) || call.Ended)
+            if (Dispatcher.Invoke<bool>(() => (call == null || call.GetType() == typeof(ToxGroupCall) || call.Ended || ViewModel.IsGroupSelected || call.FriendNumber != ViewModel.SelectedChatNumber)))
                 return;
 
             ProcessVideoFrame(e.Frame);
         }
-
+        
         private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
@@ -1704,11 +1704,14 @@ namespace Toxy
                 {
                     HangupButton.Visibility = Visibility.Collapsed;
                     VideoButton.Visibility = Visibility.Collapsed;
+                    VideoImageRow.Height = new GridLength(0);
+                    VideoChatImage.Source = null;
                 }
                 else
                 {
                     HangupButton.Visibility = Visibility.Visible;
                     VideoButton.Visibility = Visibility.Visible;
+                    VideoImageRow.Height = new GridLength(200);
                 }
             }
             else
@@ -1723,6 +1726,8 @@ namespace Toxy
                     CallButton.Visibility = Visibility.Visible;
                     FileButton.Visibility = Visibility.Visible;
                 }
+
+                VideoImageRow.Height = GridLength.Auto;
             }
 
             MicButton.Visibility = Visibility.Collapsed;

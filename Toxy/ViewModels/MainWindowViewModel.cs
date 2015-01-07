@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+
 using MahApps.Metro;
 using Toxy.MVVM;
 using NAudio.Wave;
+using AForge.Video.DirectShow;
 
 namespace Toxy.ViewModels
 {
@@ -33,13 +35,14 @@ namespace Toxy.ViewModels
         }
     }
 
-    public class AudioDeviceMenuData
+    public class DeviceMenuData
     {
         public string Name { get; set; }
     }
 
-    public class OutputDeviceMenuData : AudioDeviceMenuData { }
-    public class InputDeviceMenuData : AudioDeviceMenuData { }
+    public class OutputDeviceMenuData : DeviceMenuData { }
+    public class InputDeviceMenuData : DeviceMenuData { }
+    public class VideoDeviceMenuData : DeviceMenuData { }
 
     public class MainWindowViewModel : ViewModelBase
     {
@@ -58,33 +61,34 @@ namespace Toxy.ViewModels
             this.AppThemes = ThemeManager.AppThemes
                                           .Select(a => new AppThemeMenuData() { Name = a.Name, BorderColorBrush = a.Resources["BlackColorBrush"] as Brush, ColorBrush = a.Resources["WhiteColorBrush"] as Brush })
                                           .ToList();
+
+            InputDevices = new ObservableCollection<InputDeviceMenuData>();
+            OutputDevices = new ObservableCollection<OutputDeviceMenuData>();
+            VideoDevices = new ObservableCollection<VideoDeviceMenuData>();
         }
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
 
-        public List<OutputDeviceMenuData> OutputDevices 
+        public ObservableCollection<OutputDeviceMenuData> OutputDevices { get; set; }
+        public ObservableCollection<InputDeviceMenuData> InputDevices { get; set; }
+        public ObservableCollection<VideoDeviceMenuData> VideoDevices { get; set; }
+
+        public void UpdateDevices()
         {
-            get
-            {
-                List<OutputDeviceMenuData> list = new List<OutputDeviceMenuData>();
-                for (int i = 0; i < WaveOut.DeviceCount; i++)
-                    list.Add(new OutputDeviceMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
+            InputDevices.Clear();
+            OutputDevices.Clear();
+            VideoDevices.Clear();
 
-                return list;
-            }
-        }
+            for (int i = 0; i < WaveIn.DeviceCount; i++)
+                InputDevices.Add(new InputDeviceMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
 
-        public List<InputDeviceMenuData> InputDevices
-        {
-            get
-            {
-                List<InputDeviceMenuData> list = new List<InputDeviceMenuData>();
-                for (int i = 0; i < WaveIn.DeviceCount; i++)
-                    list.Add(new InputDeviceMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
+            for (int i = 0; i < WaveOut.DeviceCount; i++)
+                OutputDevices.Add(new OutputDeviceMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
 
-                return list;
-            }
+            var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach (FilterInfo device in videoDevices)
+                VideoDevices.Add(new VideoDeviceMenuData { Name = device.Name });
         }
 
         private UserModel mainToxyUser;

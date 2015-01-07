@@ -35,6 +35,8 @@ using Brushes = System.Windows.Media.Brushes;
 
 using SQLite;
 using NAudio.Wave;
+using SharpTox.Vpx;
+using System.Runtime.InteropServices;
 
 namespace Toxy
 {
@@ -711,14 +713,29 @@ namespace Toxy
         #endregion
 
         #region ToxAv EventHandlers
+
+        private void toxav_OnReceivedVideo(object sender, ToxAvEventArgs.VideoDataEventArgs e)
+        {
+            if (Dispatcher.Invoke<bool>(() => (call == null || call.GetType() == typeof(ToxGroupCall) || call.Ended || ViewModel.IsGroupSelected || call.FriendNumber != ViewModel.SelectedChatNumber)))
+                return;
+
+            ProcessVideoFrame(e.Frame);
+        }
+        
         private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
                 return;
 
-            //we don't support video just yet
-            if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType == ToxAvCallType.Video)
-                EndCall();
+            if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType != ToxAvCallType.Video)
+            {
+                VideoImageRow.Height = new GridLength(0);
+                VideoChatImage.Source = null;
+            }
+            else
+            {
+                VideoImageRow.Height = new GridLength(300);
+            }
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
@@ -746,8 +763,11 @@ namespace Toxy
         private void toxav_OnEnd(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             EndCall();
+
             CallButton.Visibility = Visibility.Visible;
             HangupButton.Visibility = Visibility.Collapsed;
+            VideoButton.Visibility = Visibility.Collapsed;
+            VideoButton.IsChecked = false;
         }
 
         private void toxav_OnStart(object sender, ToxAvEventArgs.CallStateEventArgs e)
@@ -755,7 +775,7 @@ namespace Toxy
             var settings = toxav.GetPeerCodecSettings(e.CallIndex, 0);
 
             if (call != null)
-                call.Start(config.InputDevice, config.OutputDevice, settings);
+                call.Start(config.InputDevice, config.OutputDevice, settings, config.VideoDevice);
 
             int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
             var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
@@ -767,6 +787,7 @@ namespace Toxy
                 if (callingFriend.Selected)
                 {
                     HangupButton.Visibility = Visibility.Visible;
+                    VideoButton.Visibility = Visibility.Visible;
                 }
                 ViewModel.CallingFriend = callingFriend;
             }
@@ -791,17 +812,7 @@ namespace Toxy
             if (call != null)
                 return;
 
-            int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
-
-            ToxAvCodecSettings settings = toxav.GetPeerCodecSettings(e.CallIndex, 0);
-            if (settings.CallType == ToxAvCallType.Video)
-            {
-                //we don't support video calls, just reject this and return.
-                toxav.Reject(e.CallIndex, "Toxy does not support video calls.");
-                return;
-            }
-
-            var friend = ViewModel.GetFriendObjectByNumber(friendnumber);
+            var friend = ViewModel.GetFriendObjectByNumber(toxav.GetPeerID(e.CallIndex, 0));
             if (friend != null)
             {
                 friend.CallIndex = e.CallIndex;
@@ -1641,6 +1652,9 @@ namespace Toxy
                 ChatBox.Document = groupdic[group.ChatNumber];
             }
 
+            VideoImageRow.Height = new GridLength(0);
+            VideoChatImage.Source = null;
+
             GroupListGrid.Visibility = System.Windows.Visibility.Visible;
             PeerColumn.Width = new GridLength(150);
         }
@@ -1679,8 +1693,11 @@ namespace Toxy
             }
 
             ViewModel.CallingFriend = null;
+            VideoImageRow.Height = new GridLength(0);
+            VideoChatImage.Source = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
+            VideoButton.Visibility = Visibility.Collapsed;
             CallButton.Visibility = Visibility.Visible;
         }
 
@@ -1695,9 +1712,20 @@ namespace Toxy
             if (call != null && call.GetType() != typeof(ToxGroupCall))
             {
                 if (call.FriendNumber != friendNumber)
+                {
                     HangupButton.Visibility = Visibility.Collapsed;
+                    VideoButton.Visibility = Visibility.Collapsed;
+                    VideoImageRow.Height = new GridLength(0);
+                    VideoChatImage.Source = null;
+                }
                 else
+                {
                     HangupButton.Visibility = Visibility.Visible;
+                    VideoButton.Visibility = Visibility.Visible;
+
+                    if (toxav.GetPeerCodecSettings(call.CallIndex, 0).CallType == ToxAvCallType.Video)
+                        VideoImageRow.Height = new GridLength(300);
+                }
             }
             else
             {
@@ -1711,6 +1739,8 @@ namespace Toxy
                     CallButton.Visibility = Visibility.Visible;
                     FileButton.Visibility = Visibility.Visible;
                 }
+
+                VideoImageRow.Height = GridLength.Auto;
             }
 
             MicButton.Visibility = Visibility.Collapsed;
@@ -1809,6 +1839,18 @@ namespace Toxy
                 oldAppTheme = theme;
                 if (theme != null)
                     AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
+
+                ViewModel.UpdateDevices();
+
+                foreach(var item in VideoDevicesComboBox.Items)
+                {
+                    var device = (VideoDeviceMenuData)item;
+                    if (device.Name == config.VideoDevice)
+                    {
+                        VideoDevicesComboBox.SelectedItem = item;
+                        break;
+                    }
+                }
 
                 if (InputDevicesComboBox.Items.Count - 1 >= config.InputDevice)
                     InputDevicesComboBox.SelectedIndex = config.InputDevice;
@@ -1954,6 +1996,9 @@ namespace Toxy
             index = OutputDevicesComboBox.SelectedIndex + 1;
             if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
                 config.OutputDevice = index - 1;
+
+            if (VideoDevicesComboBox.SelectedItem != null)
+                config.VideoDevice = ((VideoDeviceMenuData)VideoDevicesComboBox.SelectedItem).Name;
 
             config.EnableChatLogging = (bool)ChatLogCheckBox.IsChecked;
             config.Portable = (bool)PortableCheckBox.IsChecked;
@@ -2273,6 +2318,8 @@ namespace Toxy
 
             CallButton.Visibility = Visibility.Collapsed;
             HangupButton.Visibility = Visibility.Visible;
+            VideoButton.Visibility = Visibility.Visible;
+
             var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (callingFriend != null)
             {
@@ -2664,6 +2711,7 @@ namespace Toxy
             toxav.OnReject += toxav_OnEnd;
             toxav.OnCancel += toxav_OnEnd;
             toxav.OnReceivedAudio += toxav_OnReceivedAudio;
+            toxav.OnReceivedVideo += toxav_OnReceivedVideo;
             toxav.OnPeerCodecSettingsChanged += toxav_OnPeerCodecSettingsChanged;
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 
@@ -2861,6 +2909,33 @@ namespace Toxy
 
             var groupCall = (ToxGroupCall)call;
             groupCall.Muted = !groupCall.Muted;
+        }
+
+        private void VideoButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (call == null || call.GetType() == typeof(ToxGroupCall))
+                return;
+
+            call.ToggleVideo((bool)VideoButton.IsChecked, config.VideoDevice);
+        }
+
+        private void ProcessVideoFrame(IntPtr frame)
+        {
+            var vpxImage = VpxImage.FromPointer(frame);
+            byte[] dest = VpxHelper.Yuv420ToRgb(vpxImage, vpxImage.d_w * vpxImage.d_h * 4);
+
+            vpxImage.Free();
+
+            int bytesPerPixel = (PixelFormats.Bgra32.BitsPerPixel + 7) / 8;
+            int stride = 4 * (((int)vpxImage.d_w * bytesPerPixel + 3) / 4);
+
+            var source = BitmapSource.Create((int)vpxImage.d_w, (int)vpxImage.d_h, 96d, 96d, PixelFormats.Bgra32, null, dest, stride);
+            source.Freeze();
+
+            Dispatcher.Invoke((Action)(() =>
+            {
+                VideoChatImage.Source = source;
+            }));
         }
     }
 }

@@ -103,6 +103,14 @@ namespace Toxy.Common
             set { inputDevice = value; }
         }
 
+        private string videoDevice = "";
+
+        public string VideoDevice
+        {
+            get { return videoDevice; }
+            set { videoDevice = value; }
+        }
+
         private string accentColor = "Blue";
 
         public string AccentColor

@@ -19,6 +19,7 @@ Feel free to contribute.
 * Avatars
 * Group chats
 * Voice chats
+* Video chats
 * Group voice chats
 * Inline images
 * Proxy support (SOCKS 5)
@@ -40,10 +41,13 @@ Compiling Toxy
 ===
 You need:
 * [SharpTox](https://github.com/Impyy/SharpTox "SharpTox GitHub repo") and its dependencies.
+* [SharpTox.Vpx](https://github.com/Impyy/SharpTox.Vpx "SharpTox.Vpx GitHub repo")
 * [SharpTox.Av.Filter](https://github.com/Impyy/SharpTox.Av.Filter "SharpTox.Av.Filter GitHub repo") and its dependencies.
-* [SQLite](https://www.sqlite.org/download.html). (Toxy uses [sqlite-net](https://github.com/praeclarum/sqlite-net) to access SQLite's functions.
+* [SQLite](https://www.sqlite.org/download.html). (Toxy uses [sqlite-net](https://github.com/praeclarum/sqlite-net) to access SQLite's functions).
+* [AForge.NET](https://github.com/andrewkirillov/AForge.NET). (AForge, AForge.Video, AForge.Video.DirectShow)
 
-Once you have obtained those, place sqlite3.dll, libtox.dll, filter_audio.dll, SharpTox.dll and SharpTox.Av.Filter.dll in the libs folder.
+Once you have obtained those, place sqlite3.dll, libtox.dll, filter_audio.dll, SharpTox.dll, SharpTox.Vpx.dll, SharpTox.Av.Filter.dll, AForge.dll, AForge.Video.dll and AForge.Video.DirectShow.dll in the libs folder.
+
 All other dependencies can be found in the packages.config file and should be downloaded by Visual Studio automatically.
 This requires [NuGet](http://docs.nuget.org/docs/start-here/installing-nuget) to be installed.
 

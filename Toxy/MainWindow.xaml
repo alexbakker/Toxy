@@ -353,8 +353,9 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Name="VideoImageRow" Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
@@ -503,6 +504,50 @@
                                 </Rectangle>
                             </Grid>
                         </Button>
+                        <ToggleButton Name="VideoButton"
+                                Visibility="Collapsed"
+                                Style="{DynamicResource MetroCircleLovelyToggleButtonStyle}"
+                                Height="37"
+                                Width="37"
+                                Click="VideoButton_OnClick">
+                            <Grid>
+                                <Rectangle Width="15"
+                                           Height="15"
+                                           Grid.ZIndex="1"
+                                           Margin="0,-1"
+                                           RenderTransformOrigin="0.5,0.5"
+                                           Style="{StaticResource ButtonRectangleStyle}">
+                                    <Rectangle.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_webcam}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <Rectangle Width="15"
+                                           Height="15"
+                                           Margin="0,-1"
+                                           RenderTransformOrigin="0.5,0.5"
+                                           Fill="{DynamicResource WhiteColorBrush}">
+                                    <Rectangle.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform />
+                                            <SkewTransform />
+                                            <TranslateTransform />
+                                        </TransformGroup>
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{DynamicResource appbar_webcam}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Grid>
+                        </ToggleButton>
                         <ToggleButton Name="MicButton"
                                 Visibility="Collapsed"
                                 Style="{DynamicResource MetroCircleLovelyToggleButtonStyle}"
@@ -550,9 +595,9 @@
                     </StackPanel>
                 </Grid>
             </Border>
-
-            <FlowDocumentScrollViewer Grid.Row="1"
-                                      Margin="5,5,10,0"
+            <Image x:Name="VideoChatImage" Grid.Row="1"/>
+            <GridSplitter IsEnabled="True" Grid.Row="2" Height="1" HorizontalAlignment="Stretch" Background="{DynamicResource AccentColorBrush}"/>
+            <FlowDocumentScrollViewer Grid.Row="3"
                                       IsEnabled="True"
                                       x:Name="ChatBox"
                                       BorderThickness="0"
@@ -560,30 +605,30 @@
                                       IsHitTestVisible="True"
                                       ClipToBounds="True"
                                       MaxZoom="100"
-                                      MinZoom="100" />
-            <Label Grid.Row="2"
-                   x:Name="TypingStatusLabel"
-                   Margin="5,1,5,1"
-                   Content=""
-                   Height="26" />
+                                      MinZoom="100"/>
+            
+            <Label Grid.Row="4"
+                x:Name="TypingStatusLabel"
+                Margin="5,1,5,65"
+                Content=""
+                Height="26" />
 
-            <TextBox Grid.Row="3"
-                     Margin="10,0,15,10"
-                     x:Name="TextToSend"
-                     Height="55"
-                     BorderBrush="{DynamicResource AccentColorBrush}"
-                     TextWrapping="Wrap"
-                     KeyDown="TextToSend_KeyDown"
-                     KeyUp="TextToSend_KeyUp"
-                     LostFocus="TextToSend_OnLostFocus"
-                     GotFocus="TextToSend_OnGotFocus"
-                     TextChanged="TextToSend_TextChanged"
-                     AcceptsReturn="False"
-                     SelectionBrush="{DynamicResource AccentColorBrush}"
-                     SpellCheck.IsEnabled="True"/>
+            <TextBox Grid.Row="5"
+                         Margin="10,25,15,10"
+                         x:Name="TextToSend"
+                         Height="55"
+                         BorderBrush="{DynamicResource AccentColorBrush}"
+                         TextWrapping="Wrap"
+                         KeyDown="TextToSend_KeyDown"
+                         KeyUp="TextToSend_KeyUp"
+                         LostFocus="TextToSend_OnLostFocus"
+                         GotFocus="TextToSend_OnGotFocus"
+                         TextChanged="TextToSend_TextChanged"
+                         AcceptsReturn="False"
+                         SelectionBrush="{DynamicResource AccentColorBrush}"
+                         SpellCheck.IsEnabled="True"/>
             <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
                       Width="1"
-
                       HorizontalAlignment="Center"
                       Background="{DynamicResource AccentColorBrush}"/>
             <Grid x:Name="GroupListGrid" 
@@ -702,7 +747,7 @@
                                   Margin="0,5,0,0"
                                   HorizontalAlignment="Left"
                                   Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
-                            <Label Content="Choose which devices should be used"
+                            <Label Content="Audio"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="InputDevicesComboBox"
@@ -721,9 +766,20 @@
                             <CheckBox x:Name="FilterAudioCheckbox" 
                                   Content="Filter input audio" 
                                   Margin="0 5" />
+                            <Label Content="Video"
+                               Margin="0 10 0 0"
+                               HorizontalAlignment="Left" />
+                            <ComboBox x:Name="VideoDevicesComboBox"
+                                  ItemsSource="{Binding VideoDevices}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  Width="275" />
+                            <Label Content="Miscellaneous settings"
+                               Margin="0 10 0 0"
+                               HorizontalAlignment="Left" />
                             <CheckBox x:Name="HideInTrayCheckBox"
                                   VerticalAlignment="Top"
-                                  Margin="0,15,0,0"
                                   HorizontalAlignment="Left"
                                   Content="Hide in tray"
                                   ToolTip="Minimize to system tray instead of closing Toxy."

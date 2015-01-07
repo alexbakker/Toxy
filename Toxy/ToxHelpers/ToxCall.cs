@@ -1,14 +1,21 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 using NAudio.Wave;
 
+using SharpTox.Core;
 using SharpTox.Av;
 using SharpTox.Av.Filter;
-using SharpTox.Core;
+using SharpTox.Vpx;
 
+using Toxy.Common;
 using Toxy.ViewModels;
+using AForge.Video.DirectShow;
+using AForge.Video;
 
 namespace Toxy.ToxHelpers
 {
@@ -43,7 +50,7 @@ namespace Toxy.ToxHelpers
             GroupNumber = groupNumber;
         }
 
-        public override void Start(int input, int output, ToxAvCodecSettings settings)
+        public override void Start(int input, int output, ToxAvCodecSettings settings, string videoDevice = "")
         {
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, 2);
             WaveFormat outFormatSingle = new WaveFormat((int)settings.AudioSampleRate, 1);
@@ -160,6 +167,8 @@ namespace Toxy.ToxHelpers
         protected BufferedWaveProvider wave_provider;
         protected Timer timer;
 
+        private VideoCaptureDevice videoSource;
+
         public bool FilterAudio { get; set; }
 
         private int totalSeconds = 0;
@@ -179,6 +188,8 @@ namespace Toxy.ToxHelpers
         
         public int FriendNumber { get; private set; }
 
+        public bool Ended { get; private set; }
+
         public ToxCall(ToxAv toxav, int callindex, int friendnumber)
         {
             this.toxav = toxav;
@@ -196,9 +207,9 @@ namespace Toxy.ToxHelpers
             this.toxav = toxav;
         }
 
-        public virtual void Start(int input, int output, ToxAvCodecSettings settings)
+        public virtual void Start(int input, int output, ToxAvCodecSettings settings, string videoDevice = "")
         {
-            toxav.PrepareTransmission(callIndex, false);
+            toxav.PrepareTransmission(callIndex, true);
 
             WaveFormat outFormat = new WaveFormat((int)settings.AudioSampleRate, (int)settings.AudioChannels);
             wave_provider = new BufferedWaveProvider(outFormat);
@@ -232,6 +243,12 @@ namespace Toxy.ToxHelpers
                 wave_out.Init(wave_provider);
                 wave_out.Play();
             }
+        }
+
+        private void video_source_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            if (!Ended)
+                SendVideoFrame(eventArgs.Frame);
         }
 
         public virtual void SetTimerCallback(TimerCallback callback)
@@ -302,6 +319,8 @@ namespace Toxy.ToxHelpers
         {
             //TODO: we might want to block here until RecordingStopped and PlaybackStopped are fired
 
+            Ended = true;
+
             if (wave_source != null)
             {
                 wave_source.StopRecording();
@@ -319,6 +338,13 @@ namespace Toxy.ToxHelpers
 
             if (timer != null)
                 timer.Dispose();
+
+            if (videoSource != null)
+            {
+                videoSource.SignalToStop();
+                videoSource.NewFrame -= video_source_NewFrame;
+                videoSource = null;
+            }
         }
 
         public virtual void Answer()
@@ -331,6 +357,85 @@ namespace Toxy.ToxHelpers
         public virtual void Call(int current_number, ToxAvCodecSettings settings, int ringing_seconds)
         {
             toxav.Call(current_number, settings, ringing_seconds, out callIndex);
+        }
+
+        private void SendVideoFrame(Bitmap frame)
+        {
+            var bitmapData = frame.LockBits(new Rectangle(0, 0, frame.Width, frame.Height), ImageLockMode.ReadOnly, frame.PixelFormat);
+            byte[] bytes = new byte[bitmapData.Stride * frame.Height];
+
+            Marshal.Copy(bitmapData.Scan0, bytes, 0, bytes.Length);
+
+            try
+            {
+                VpxImage img = VpxImage.Create(VpxImageFormat.VPX_IMG_FMT_I420, (ushort)frame.Width, (ushort)frame.Height, 1);
+
+                byte[] dest = new byte[frame.Width * frame.Height * 4];
+                VpxHelper.RgbToYuv420(img, bytes, (ushort)frame.Width, (ushort)frame.Height);
+
+                int length = ToxAvFunctions.PrepareVideoFrame(toxav.Handle, CallIndex, dest, dest.Length, (IntPtr)img.Pointer);
+                img.Free();
+
+                if (length > 0)
+                {
+                    byte[] bytesToSend = new byte[length];
+                    Array.Copy(dest, bytesToSend, length);
+
+                    ToxAvError error = ToxAvFunctions.SendVideo(toxav.Handle, CallIndex, bytesToSend, (uint)bytesToSend.Length);
+                    if (error != ToxAvError.None)
+                        Debug.WriteLine(string.Format("Could not send video frame: {0}, {1}", error, length));
+                }
+                else
+                {
+                    Debug.WriteLine(string.Format("Could not prepare frame: {0}", (ToxAvError)length));
+                }
+            }
+            catch
+            {
+                Debug.WriteLine(string.Format("Could not convert frame"));
+            }
+
+            frame.Dispose();
+        }
+
+        public void ToggleVideo(bool enableVideo, string videoDevice)
+        {
+            if (enableVideo && videoSource != null)
+                return;
+
+            if (!enableVideo && videoSource == null)
+                return;
+
+            if (!enableVideo)
+            {
+                videoSource.SignalToStop();
+                videoSource.NewFrame -= video_source_NewFrame;
+                videoSource = null;
+
+                var settings = ToxAv.DefaultCodecSettings;
+                settings.CallType = ToxAvCallType.Audio;
+
+                toxav.ChangeSettings(CallIndex, settings);
+            }
+            else
+            {
+                var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+                foreach (FilterInfo device in videoDevices)
+                {
+                    if (device.Name == videoDevice)
+                    {
+                        videoSource = new VideoCaptureDevice(device.MonikerString);
+                        videoSource.NewFrame += video_source_NewFrame;
+                        videoSource.Start();
+
+                        var settings = ToxAv.DefaultCodecSettings;
+                        settings.CallType = ToxAvCallType.Video;
+
+                        toxav.ChangeSettings(CallIndex, settings);
+                        break;
+                    }
+                }
+            }
         }
     }
 }

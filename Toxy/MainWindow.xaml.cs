@@ -779,6 +779,12 @@ namespace Toxy
             if (call != null)
                 call.Start(config.InputDevice, config.OutputDevice, settings, config.VideoDevice);
 
+            if (settings.CallType == ToxAvCallType.Video)
+            {
+                VideoImageRow.Height = new GridLength(300);
+                VideoGridSplitter.IsEnabled = true;
+            }
+
             int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
             var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
             if (callingFriend != null)

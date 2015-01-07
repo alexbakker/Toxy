@@ -596,7 +596,7 @@
                 </Grid>
             </Border>
             <Image x:Name="VideoChatImage" Grid.Row="1"/>
-            <GridSplitter IsEnabled="True" Grid.Row="2" Height="1" HorizontalAlignment="Stretch" Background="{DynamicResource AccentColorBrush}"/>
+            <GridSplitter Name="VideoGridSplitter" IsEnabled="False" Grid.Row="2" Height="1" HorizontalAlignment="Stretch" Background="{DynamicResource AccentColorBrush}"/>
             <FlowDocumentScrollViewer Grid.Row="3"
                                       IsEnabled="True"
                                       x:Name="ChatBox"

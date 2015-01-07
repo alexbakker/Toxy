@@ -721,7 +721,7 @@ namespace Toxy
 
             ProcessVideoFrame(e.Frame);
         }
-        
+
         private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
             if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
@@ -730,11 +730,13 @@ namespace Toxy
             if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType != ToxAvCallType.Video)
             {
                 VideoImageRow.Height = new GridLength(0);
+                VideoGridSplitter.IsEnabled = false;
                 VideoChatImage.Source = null;
             }
-            else
+            else if (ViewModel.IsFriendSelected && toxav.GetPeerID(e.CallIndex, 0) == ViewModel.SelectedChatNumber)
             {
                 VideoImageRow.Height = new GridLength(300);
+                VideoGridSplitter.IsEnabled = true;
             }
         }
 
@@ -1653,6 +1655,7 @@ namespace Toxy
             }
 
             VideoImageRow.Height = new GridLength(0);
+            VideoGridSplitter.IsEnabled = false;
             VideoChatImage.Source = null;
 
             GroupListGrid.Visibility = System.Windows.Visibility.Visible;
@@ -1694,6 +1697,7 @@ namespace Toxy
 
             ViewModel.CallingFriend = null;
             VideoImageRow.Height = new GridLength(0);
+            VideoGridSplitter.IsEnabled = false;
             VideoChatImage.Source = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
@@ -1716,6 +1720,7 @@ namespace Toxy
                     HangupButton.Visibility = Visibility.Collapsed;
                     VideoButton.Visibility = Visibility.Collapsed;
                     VideoImageRow.Height = new GridLength(0);
+                    VideoGridSplitter.IsEnabled = false;
                     VideoChatImage.Source = null;
                 }
                 else
@@ -1724,7 +1729,10 @@ namespace Toxy
                     VideoButton.Visibility = Visibility.Visible;
 
                     if (toxav.GetPeerCodecSettings(call.CallIndex, 0).CallType == ToxAvCallType.Video)
+                    {
                         VideoImageRow.Height = new GridLength(300);
+                        VideoGridSplitter.IsEnabled = true;
+                    }
                 }
             }
             else

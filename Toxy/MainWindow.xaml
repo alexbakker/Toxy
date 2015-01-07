@@ -747,7 +747,7 @@
                                   Margin="0,5,0,0"
                                   HorizontalAlignment="Left"
                                   Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
-                            <Label Content="Choose which devices should be used"
+                            <Label Content="Audio"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="InputDevicesComboBox"
@@ -763,19 +763,23 @@
                                   HorizontalAlignment="Left"
                                   Margin="0,5,0,0"
                                   Width="275" />
+                            <CheckBox x:Name="FilterAudioCheckbox" 
+                                  Content="Filter input audio" 
+                                  Margin="0 5" />
+                            <Label Content="Video"
+                               Margin="0 10 0 0"
+                               HorizontalAlignment="Left" />
                             <ComboBox x:Name="VideoDevicesComboBox"
                                   ItemsSource="{Binding VideoDevices}"
                                   DisplayMemberPath="Name"
                                   VerticalAlignment="Top"
                                   HorizontalAlignment="Left"
-                                  Margin="0,5,0,0"
                                   Width="275" />
-                            <CheckBox x:Name="FilterAudioCheckbox" 
-                                  Content="Filter input audio" 
-                                  Margin="0 5" />
+                            <Label Content="Miscellaneous settings"
+                               Margin="0 10 0 0"
+                               HorizontalAlignment="Left" />
                             <CheckBox x:Name="HideInTrayCheckBox"
                                   VerticalAlignment="Top"
-                                  Margin="0,15,0,0"
                                   HorizontalAlignment="Left"
                                   Content="Hide in tray"
                                   ToolTip="Minimize to system tray instead of closing Toxy."

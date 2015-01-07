@@ -728,7 +728,14 @@ namespace Toxy
                 return;
 
             if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType != ToxAvCallType.Video)
+            {
+                VideoImageRow.Height = new GridLength(0);
                 VideoChatImage.Source = null;
+            }
+            else
+            {
+                VideoImageRow.Height = new GridLength(300);
+            }
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
@@ -1645,6 +1652,9 @@ namespace Toxy
                 ChatBox.Document = groupdic[group.ChatNumber];
             }
 
+            VideoImageRow.Height = new GridLength(0);
+            VideoChatImage.Source = null;
+
             GroupListGrid.Visibility = System.Windows.Visibility.Visible;
             PeerColumn.Width = new GridLength(150);
         }
@@ -1683,6 +1693,7 @@ namespace Toxy
             }
 
             ViewModel.CallingFriend = null;
+            VideoImageRow.Height = new GridLength(0);
             VideoChatImage.Source = null;
 
             HangupButton.Visibility = Visibility.Collapsed;
@@ -1711,7 +1722,9 @@ namespace Toxy
                 {
                     HangupButton.Visibility = Visibility.Visible;
                     VideoButton.Visibility = Visibility.Visible;
-                    VideoImageRow.Height = new GridLength(200);
+
+                    if (toxav.GetPeerCodecSettings(call.CallIndex, 0).CallType == ToxAvCallType.Video)
+                        VideoImageRow.Height = new GridLength(300);
                 }
             }
             else

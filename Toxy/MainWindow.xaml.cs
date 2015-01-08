@@ -2732,15 +2732,30 @@ namespace Toxy
             await loadTox();
             selfPublicKey = tox.Keys.PublicKey;
 
-            bool bootstrap_success = false;
-            foreach (ToxConfigNode node in config.Nodes)
+            if (config.Nodes.Length >= 4)
             {
-                if (tox.BootstrapFromNode(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId))))
-                    bootstrap_success = true;
-            }
+                var random = new Random();
+                var indices = new List<int>();
 
-            if (!bootstrap_success)
-                Debug.WriteLine("Could not bootstrap from any node!");
+                for (int i = 0; i < 4; )
+                {
+                    int index = random.Next(config.Nodes.Length);
+                    if (indices.Contains(index))
+                        continue;
+
+                    var node = config.Nodes[index];
+                    if (bootstrap(config.Nodes[index]))
+                    {
+                        indices.Add(index);
+                        i++;
+                    }
+                }
+            }
+            else
+            {
+                foreach(var node in config.Nodes)
+                    bootstrap(node);
+            }
 
             tox.Start();
             toxav.Start();
@@ -2770,6 +2785,17 @@ namespace Toxy
 
             initDatabase();
             loadAvatars();
+        }
+
+        private bool bootstrap(ToxConfigNode node)
+        {
+            bool success = tox.BootstrapFromNode(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId)));
+            if (success)
+                Debug.WriteLine("Bootstrapped off of {0}:{1}", node.Address, node.Port);
+            else
+                Debug.WriteLine("Could not bootstrap off of {0}:{1}", node.Address, node.Port);
+
+            return success;
         }
 
         private string[] GetProfileNames(string path)

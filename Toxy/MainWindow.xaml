@@ -143,12 +143,14 @@
                     <TextBlock Grid.Row="0"
                                Text="{Binding MainToxyUser.Name, Mode=OneWay}"
                                FontSize="25"
-                               TextTrimming="CharacterEllipsis" />
+                               TextTrimming="CharacterEllipsis" 
+                               MouseDown="NameTextBlock_MouseDown"/>
 
                     <TextBlock Grid.Row="1"
                                Text="{Binding MainToxyUser.StatusMessage, Mode=OneWay}"
                                FontSize="14"
-                               TextTrimming="CharacterEllipsis" />
+                               TextTrimming="CharacterEllipsis"
+                               MouseDown="StatusTextBlock_MouseDown"/>
                 </Grid>
             </Grid>
 

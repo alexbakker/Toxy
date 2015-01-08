@@ -2951,5 +2951,47 @@ namespace Toxy
                 VideoChatImage.Source = source;
             }));
         }
+
+        private void NameTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount != 2)
+                return;
+
+            OpenSettings_Click(null, null);
+
+            RoutedEventHandler handler = null;
+            handler = (s, args) =>
+            {
+                if (SettingsFlyout.IsOpen)
+                {
+                    Keyboard.Focus(SettingsUsername);
+                    SettingsUsername.SelectAll();
+                    SettingsFlyout.IsOpenChanged -= handler;
+                }
+            };
+
+            SettingsFlyout.IsOpenChanged += handler;
+        }
+
+        private void StatusTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount != 2)
+                return;
+
+            OpenSettings_Click(null, null);
+
+            RoutedEventHandler handler = null;
+            handler = (s, args) =>
+            {
+                if (SettingsFlyout.IsOpen)
+                {
+                    Keyboard.Focus(SettingsStatus);
+                    SettingsStatus.SelectAll();
+                    SettingsFlyout.IsOpenChanged -= handler;
+                }
+            };
+
+            SettingsFlyout.IsOpenChanged += handler;
+        }
     }
 }

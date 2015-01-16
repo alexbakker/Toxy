@@ -1869,6 +1869,7 @@ namespace Toxy
                 return;
 
             string friendID = AddFriendID.Text.Trim();
+            int tries = 0;
 
             if (friendID.Contains("@"))
             {
@@ -1886,8 +1887,10 @@ namespace Toxy
                     }
                 }
 
+            discover:
                 try
                 {
+                    tries++;
                     string id = DnsTools.DiscoverToxID(friendID, config.NameServices);
 
                     if (string.IsNullOrEmpty(id))
@@ -1897,6 +1900,11 @@ namespace Toxy
                 }
                 catch (Exception ex)
                 {
+                    Debug.WriteLine(string.Format("Could not resolve {0}: {1}", friendID, ex.ToString()));
+
+                    if (tries < 3)
+                        goto discover;
+
                     this.ShowMessageAsync("Could not find a tox id", ex.Message.ToString());
                 }
 

@@ -132,13 +132,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Common\BitmapExtension.cs" />
+    <Compile Include="Extensions\BitmapExtension.cs" />
     <Compile Include="Common\Config\Config.cs" />
     <Compile Include="Common\Config\ConfigTools.cs" />
     <Compile Include="Common\MenuItemEnums.cs" />
     <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
-    <Compile Include="Common\StringExtensions.cs" />
-    <Compile Include="Common\VisualExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\VisualExtensions.cs" />
     <Compile Include="Common\Winmm.cs" />
     <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\IgnoreStatusToStringConverter.cs" />
@@ -162,7 +162,7 @@
       <DependentUpon>CallControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
-    <Compile Include="Common\FlowDocumentExtensions.cs" />
+    <Compile Include="Extensions\FlowDocumentExtensions.cs" />
     <Compile Include="Common\Classes.cs" />
     <Compile Include="MVVM\DelegateCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />

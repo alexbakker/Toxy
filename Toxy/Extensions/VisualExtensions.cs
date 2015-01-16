@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace Toxy.Common
+namespace Toxy.Extenstions
 {
     public static class VisualExtensions
     {

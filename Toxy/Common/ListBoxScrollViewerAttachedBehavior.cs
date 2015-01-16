@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using Toxy.Extenstions;
+
 namespace Toxy.Common
 {
     public class ListBoxScrollViewerAttachedBehavior

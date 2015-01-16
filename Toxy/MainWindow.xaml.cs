@@ -29,6 +29,7 @@ using Toxy.Views;
 using Toxy.Common;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
+using Toxy.Extenstions;
 
 using Path = System.IO.Path;
 using Brushes = System.Windows.Media.Brushes;
@@ -36,7 +37,6 @@ using Brushes = System.Windows.Media.Brushes;
 using SQLite;
 using NAudio.Wave;
 using SharpTox.Vpx;
-using System.Runtime.InteropServices;
 
 namespace Toxy
 {
@@ -192,7 +192,7 @@ namespace Toxy
             }
             else
             {
-                FlowDocument document = GetNewFlowDocument();
+                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
                 groupdic.Add(e.GroupNumber, document);
                 groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
             }
@@ -220,7 +220,7 @@ namespace Toxy
 
             if (groupdic.ContainsKey(e.GroupNumber))
             {
-                var run = GetLastMessageRun(groupdic[e.GroupNumber]);
+                var run = groupdic[e.GroupNumber].GetLastMessageRun();
 
                 if (run != null)
                 {
@@ -236,7 +236,7 @@ namespace Toxy
             }
             else
             {
-                FlowDocument document = GetNewFlowDocument();
+                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
                 groupdic.Add(e.GroupNumber, document);
                 groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
             }
@@ -494,7 +494,7 @@ namespace Toxy
         private void tox_OnFileSendRequest(object sender, ToxEventArgs.FileSendRequestEventArgs e)
         {
             if (!convdic.ContainsKey(e.FriendNumber))
-                convdic.Add(e.FriendNumber, GetNewFlowDocument());
+                convdic.Add(e.FriendNumber, FlowDocumentExtensions.CreateNewDocument());
 
             FileTransfer transfer = convdic[e.FriendNumber].AddNewFileTransfer(tox, e.FriendNumber, e.FileNumber, e.FileName, e.FileSize, false);
 
@@ -878,7 +878,7 @@ namespace Toxy
         {
             if (convdic.ContainsKey(friendNumber))
             {
-                var run = GetLastMessageRun(convdic[friendNumber]);
+                var run = convdic[friendNumber].GetLastMessageRun();
 
                 if (run != null)
                 {
@@ -894,7 +894,7 @@ namespace Toxy
             }
             else
             {
-                FlowDocument document = GetNewFlowDocument();
+                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
                 convdic.Add(friendNumber, document);
                 convdic[friendNumber].AddNewMessageRow(tox, data, false);
             }
@@ -908,7 +908,7 @@ namespace Toxy
             }
             else
             {
-                FlowDocument document = GetNewFlowDocument();
+                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
                 convdic.Add(friendNumber, document);
                 convdic[friendNumber].AddNewMessageRow(tox, data, false);
             }
@@ -976,7 +976,7 @@ namespace Toxy
 
                     using (Bitmap bmp = new Bitmap(stream))
                     {
-                        ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
+                        ViewModel.MainToxyUser.Avatar = bmp.ToBitmapImage(ImageFormat.Png);
                     }
                 }
             }
@@ -1000,7 +1000,7 @@ namespace Toxy
 
                         using (Bitmap bmp = new Bitmap(stream))
                         {
-                            obj.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
+                            obj.Avatar = bmp.ToBitmapImage(ImageFormat.Png);
                         }
                     }
                 }
@@ -1037,7 +1037,7 @@ namespace Toxy
 
                 using (Bitmap bmp = new Bitmap(stream))
                 {
-                    var result = BitmapToImageSource(bmp, ImageFormat.Png);
+                    var result = bmp.ToBitmapImage(ImageFormat.Png);
                     Dispatcher.BeginInvoke(((Action)(() => friend.Avatar = result)));
 
                     Debug.WriteLine(string.Format("Done applying avatar ({0})", friend.ChatNumber));
@@ -1290,50 +1290,13 @@ namespace Toxy
             return null;
         }
 
-        private FlowDocument GetNewFlowDocument()
-        {
-            Stream doc_stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Toxy.Message.xaml");
-            FlowDocument doc = (FlowDocument)XamlReader.Load(doc_stream);
-            doc.IsEnabled = true;
-
-            return doc;
-        }
-
         private void ScrollChatBox()
         {
-            ScrollViewer viewer = FindScrollViewer(ChatBox);
+            ScrollViewer viewer = ChatBox.FindScrollViewer();
 
             if (viewer != null)
                 if (viewer.ScrollableHeight == viewer.VerticalOffset)
                     viewer.ScrollToBottom();
-        }
-
-        private static ScrollViewer FindScrollViewer(FlowDocumentScrollViewer viewer)
-        {
-            if (VisualTreeHelper.GetChildrenCount(viewer) == 0)
-                return null;
-
-            DependencyObject first = VisualTreeHelper.GetChild(viewer, 0);
-            if (first == null)
-                return null;
-
-            Decorator border = (Decorator)VisualTreeHelper.GetChild(first, 0);
-            if (border == null)
-                return null;
-
-            return (ScrollViewer)border.Child;
-        }
-
-        private TableRow GetLastMessageRun(FlowDocument doc)
-        {
-            try
-            {
-                return doc.FindChildren<TableRow>().Last(t => t.Tag.GetType() != typeof(FileTransfer));
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         private void NewGroupButton_Click(object sender, RoutedEventArgs e)
@@ -1588,7 +1551,7 @@ namespace Toxy
             friendMV.Name = id;
             friendMV.ToxStatus = ToxUserStatus.Invalid;
             friendMV.RequestMessageData = new MessageData() { Message = message, Username = "Request Message", Timestamp = DateTime.Now };
-            friendMV.RequestFlowDocument = GetNewFlowDocument();
+            friendMV.RequestFlowDocument = FlowDocumentExtensions.CreateNewDocument();
             friendMV.SelectedAction = FriendRequestSelectedAction;
             friendMV.AcceptAction = FriendRequestAcceptAction;
             friendMV.DeclineAction = FriendRequestDeclineAction;
@@ -1655,7 +1618,7 @@ namespace Toxy
             }
             else
             {
-                FlowDocument document = GetNewFlowDocument();
+                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
                 groupdic.Add(group.ChatNumber, document);
                 ChatBox.Document = groupdic[group.ChatNumber];
             }
@@ -1765,7 +1728,7 @@ namespace Toxy
             }
             else
             {
-                FlowDocument document = GetNewFlowDocument();
+                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
                 convdic.Add(friend.ChatNumber, document);
                 ChatBox.Document = convdic[friend.ChatNumber];
             }
@@ -2252,7 +2215,7 @@ namespace Toxy
                     byte[] bytes = bmp.GetBytes();
 
                     if (!convdic.ContainsKey(ViewModel.SelectedChatNumber))
-                        convdic.Add(ViewModel.SelectedChatNumber, GetNewFlowDocument());
+                        convdic.Add(ViewModel.SelectedChatNumber, FlowDocumentExtensions.CreateNewDocument());
 
                     int filenumber = tox.NewFileSender(ViewModel.SelectedChatNumber, (ulong)bytes.Length, "image.bmp");
 
@@ -2520,7 +2483,7 @@ namespace Toxy
                 }
             }
 
-            ViewModel.MainToxyUser.Avatar = BitmapToImageSource(bmp, ImageFormat.Png);
+            ViewModel.MainToxyUser.Avatar = bmp.ToBitmapImage(ImageFormat.Png);
             bmp.Dispose();
 
             if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
@@ -2550,25 +2513,6 @@ namespace Toxy
             {
                 bmp.Save(stream, ImageFormat.Png);
                 return stream.ToArray();
-            }
-        }
-
-        private BitmapImage BitmapToImageSource(Bitmap bmp, ImageFormat format)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                bmp.Save(stream, format);
-
-                stream.Position = 0;
-
-                BitmapImage newBmp = new BitmapImage();
-                newBmp.BeginInit();
-                newBmp.StreamSource = stream;
-                newBmp.CacheOption = BitmapCacheOption.OnLoad;
-                newBmp.EndInit();
-                newBmp.Freeze();
-
-                return newBmp;
             }
         }
 

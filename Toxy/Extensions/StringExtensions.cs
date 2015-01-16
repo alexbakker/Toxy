@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 
-namespace Toxy.Common
+namespace Toxy.Extenstions
 {
     public static class StringExtensions
     {

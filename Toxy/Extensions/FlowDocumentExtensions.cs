@@ -1,14 +1,24 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using SharpTox.Core;
-using Toxy.Views;
+using System.Windows.Controls;
+using System.IO;
+using System.Reflection;
+using System.Windows.Markup;
 
-namespace Toxy.Common
+using MahApps.Metro.Controls;
+using SharpTox.Core;
+
+using Toxy.Common;
+using Toxy.Views;
+using Toxy.Extenstions;
+
+namespace Toxy.Extenstions
 {
     static class FlowDocumentExtensions
     {
@@ -151,6 +161,43 @@ namespace Toxy.Common
                 else
                     messageParagraph.Inlines.Add("\n" + data.Message);
             }
+        }
+
+        public static TableRow GetLastMessageRun(this FlowDocument doc)
+        {
+            try
+            {
+                return doc.FindChildren<TableRow>().Last(t => t.Tag.GetType() != typeof(FileTransfer));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static ScrollViewer FindScrollViewer(this FlowDocumentScrollViewer viewer)
+        {
+            if (VisualTreeHelper.GetChildrenCount(viewer) == 0)
+                return null;
+
+            DependencyObject first = VisualTreeHelper.GetChild(viewer, 0);
+            if (first == null)
+                return null;
+
+            Decorator border = (Decorator)VisualTreeHelper.GetChild(first, 0);
+            if (border == null)
+                return null;
+
+            return (ScrollViewer)border.Child;
+        }
+
+        public static FlowDocument CreateNewDocument()
+        {
+            Stream doc_stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Toxy.Message.xaml");
+            FlowDocument doc = (FlowDocument)XamlReader.Load(doc_stream);
+            doc.IsEnabled = true;
+
+            return doc;
         }
     }
 }

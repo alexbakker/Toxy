@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
+
 using Toxy.Common;
+using Toxy.Extenstions;
 
 namespace Toxy.Views
 {

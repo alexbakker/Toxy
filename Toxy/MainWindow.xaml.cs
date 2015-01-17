@@ -56,6 +56,7 @@ namespace Toxy
         private bool focusTextbox;
         private bool typing;
         private bool savingSettings;
+        private bool forceClose;
 
         private Accent oldAccent;
         private AppTheme oldAppTheme;
@@ -1222,7 +1223,7 @@ namespace Toxy
 
         private void closeMenuItem_Click(object sender, EventArgs eventArgs)
         {
-            config.HideInTray = false;
+            forceClose = true;
             Close();
         }
 
@@ -1739,7 +1740,7 @@ namespace Toxy
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (config.HideInTray)
+            if (config.HideInTray && !forceClose)
             {
                 e.Cancel = true;
                 ShowInTaskbar = false;
@@ -1950,7 +1951,7 @@ namespace Toxy
             ViewModel.MainToxyUser.Name = getSelfName();
             ViewModel.MainToxyUser.StatusMessage = getSelfStatusMessage();
 
-            config.HideInTray = HideInTrayCheckBox.IsChecked ?? false;
+            config.HideInTray = (bool)HideInTrayCheckBox.IsChecked;
 
             SettingsFlyout.IsOpen = false;
 

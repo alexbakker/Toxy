@@ -540,7 +540,7 @@ namespace Toxy
 
             control.OnFolderOpen += delegate()
             {
-                Process.Start("explorer.exe", @"/select, " + transfer.FileName);
+                Process.Start("explorer.exe", @"/select, " + transfer.Path);
             };
 
             transfers.Add(transfer);

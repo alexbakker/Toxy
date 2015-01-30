@@ -398,7 +398,7 @@ namespace Toxy
             if (!convdic.ContainsKey(e.FriendNumber))
                 return;
 
-            Paragraph para = (Paragraph)convdic[e.FriendNumber].FindChildren<TableRow>().Where(r => r.Tag.GetType() != typeof(FileTransfer) && ((MessageData)(r.Tag)).Id == e.Receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
+            Paragraph para = (Paragraph)convdic[e.FriendNumber].FindChildren<TableRow>().Where(r => r.Tag is FileTransfer && ((MessageData)(r.Tag)).Id == e.Receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
 
             if (para == null)
                 return; //row or cell doesn't exist? odd, just return

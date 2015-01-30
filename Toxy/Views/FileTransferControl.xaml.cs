@@ -7,6 +7,7 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 using Toxy.Common;
+using Toxy.Common.Transfers;
 using Toxy.Extenstions;
 
 namespace Toxy.Views
@@ -16,16 +17,13 @@ namespace Toxy.Views
     /// </summary>
     public partial class FileTransferControl : UserControl
     {
-        private int filenumber;
-        private int friendnumber;
-        private string filename;
-        private ulong filesize;
+        private FileTransfer transfer;
         private TableCell fileTableCell;
 
-        public delegate void OnAcceptDelegate(int friendnumber, int filenumber);
+        public delegate void OnAcceptDelegate(FileTransfer transfer);
         public event OnAcceptDelegate OnAccept;
 
-        public delegate void OnDeclineDelegate(int friendnumber, int filenumber);
+        public delegate void OnDeclineDelegate(FileTransfer transfer);
         public event OnDeclineDelegate OnDecline;
 
         public delegate void OnFileOpenDelegate();
@@ -36,18 +34,15 @@ namespace Toxy.Views
 
         public string FilePath { get; set; }
 
-        public FileTransferControl(int friendnumber, int filenumber, string filename, ulong filesize, TableCell fileTableCell)
+        public FileTransferControl(FileTransfer transfer, TableCell fileTableCell)
         {
-            this.filenumber = filenumber;
-            this.friendnumber = friendnumber;
-            this.filesize = filesize;
-            this.filename = filename;
+            this.transfer = transfer;
             this.fileTableCell = fileTableCell;
 
             InitializeComponent();
 
-            SizeLabel.Content = filesize.ToString() + " bytes";
-            MessageLabel.Content = string.Format(filename);
+            SizeLabel.Content = transfer.FileSize.ToString() + " bytes";
+            MessageLabel.Content = string.Format(transfer.FileName);
         }
 
         public void SetStatus(string status)
@@ -61,6 +56,7 @@ namespace Toxy.Views
             DeclineButton.Visibility = Visibility.Collapsed;
             FileOpenButton.Visibility = Visibility.Visible;
             FolderOpenButton.Visibility = Visibility.Visible;
+
             if (complete)
             {
                 SetProgress(100);
@@ -81,16 +77,16 @@ namespace Toxy.Views
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
             if (OnAccept != null)
-                OnAccept(friendnumber, filenumber);
+                OnAccept(transfer);
 
             AcceptButton.Visibility = Visibility.Collapsed;
-            MessageLabel.Content = filename;
+            MessageLabel.Content = transfer.FileName;
         }
 
         private void DeclineButton_Click(object sender, RoutedEventArgs e)
         {
             if (OnDecline != null)
-                OnDecline(friendnumber, filenumber);
+                OnDecline(transfer);
 
             MessageLabel.Content = "Canceled";
 

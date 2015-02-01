@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using Toxy.Common;
 using Toxy.Common.Transfers;
 using Toxy.Extenstions;
+using Toxy.ToxHelpers;
 
 namespace Toxy.Views
 {
@@ -41,7 +42,7 @@ namespace Toxy.Views
 
             InitializeComponent();
 
-            SizeLabel.Content = transfer.FileSize.ToString() + " bytes";
+            SizeLabel.Content = Tools.GetSizeString(transfer.FileSize);
             MessageLabel.Content = string.Format(transfer.FileName);
         }
 

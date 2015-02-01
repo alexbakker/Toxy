@@ -468,8 +468,8 @@ namespace Toxy
 
                 case ToxFileControl.ResumeBroken:
                     {
-                        var transfer = (FileSender)GetFileTransfer(e.FriendNumber, e.FileNumber);
-                        if (transfer == null || transfer.GetType() != typeof(FileSender))
+                        var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber) as FileSender;
+                        if (transfer == null)
                             break;
 
                         long index = (long)BitConverter.ToUInt64(e.Data, 0);
@@ -497,7 +497,7 @@ namespace Toxy
 
         private void tox_OnFileData(object sender, ToxEventArgs.FileDataEventArgs e)
         {
-            var transfer = (FileReceiver)GetFileTransfer(e.FriendNumber, e.FileNumber);
+            var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber) as FileReceiver;
             if (transfer == null)
             {
                 Debug.WriteLine("Hoooold your horses, we don't know about this file transfer!");

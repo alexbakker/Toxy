@@ -21,17 +21,12 @@ namespace Toxy.Views
         private FileTransfer transfer;
         private TableCell fileTableCell;
 
-        public delegate void OnAcceptDelegate(FileTransfer transfer);
-        public event OnAcceptDelegate OnAccept;
-
-        public delegate void OnDeclineDelegate(FileTransfer transfer);
-        public event OnDeclineDelegate OnDecline;
-
-        public delegate void OnFileOpenDelegate();
-        public event OnFileOpenDelegate OnFileOpen;
-
-        public delegate void OnFolderOpenDelegate();
-        public event OnFolderOpenDelegate OnFolderOpen;
+        public delegate void FileTransferEventDelegate(FileTransfer transfer);
+        public event FileTransferEventDelegate OnAccept;
+        public event FileTransferEventDelegate OnPause;
+        public event FileTransferEventDelegate OnDecline;
+        public event FileTransferEventDelegate OnFileOpen;
+        public event FileTransferEventDelegate OnFolderOpen;
 
         public string FilePath { get; set; }
 
@@ -57,6 +52,8 @@ namespace Toxy.Views
             DeclineButton.Visibility = Visibility.Collapsed;
             FileOpenButton.Visibility = Visibility.Visible;
             FolderOpenButton.Visibility = Visibility.Visible;
+            ResumeButton.Visibility = Visibility.Collapsed;
+            PauseButton.Visibility = Visibility.Collapsed;
 
             if (complete)
             {
@@ -97,13 +94,13 @@ namespace Toxy.Views
         private void FileOpenButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (OnFileOpen != null)
-                OnFileOpen();
+                OnFileOpen(transfer);
         }
 
         private void FolderOpenButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (OnFolderOpen != null)
-                OnFolderOpen();
+                OnFolderOpen(transfer);
         }
 
         public void HideAllButtons()
@@ -113,6 +110,8 @@ namespace Toxy.Views
                 DeclineButton.Visibility = Visibility.Collapsed;
                 FileOpenButton.Visibility = Visibility.Collapsed;
                 FolderOpenButton.Visibility = Visibility.Collapsed;
+                ResumeButton.Visibility = Visibility.Collapsed;
+                PauseButton.Visibility = Visibility.Collapsed;
             })));
         }
 
@@ -147,6 +146,29 @@ namespace Toxy.Views
                 }
             });
             task.Start();
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            transfer.Paused = !transfer.Paused;
+            if (transfer.Paused)
+            {
+                ResumeButton.Visibility = Visibility.Visible;
+                PauseButton.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                ResumeButton.Visibility = Visibility.Hidden;
+                PauseButton.Visibility = Visibility.Visible;
+            }
+
+            if (OnPause != null)
+                OnPause(transfer);
+        }
+
+        public void StartTransfer()
+        {
+            PauseButton.Visibility = Visibility.Visible;
         }
     }
 }

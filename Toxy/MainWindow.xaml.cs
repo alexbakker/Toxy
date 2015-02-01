@@ -439,6 +439,7 @@ namespace Toxy
                             if (transfer.GetType() == typeof(FileSender))
                             {
                                 FileSender ft = (FileSender)transfer;
+                                ft.Tag.StartTransfer();
                                 ft.Start();
                             }
                             else if (transfer.Broken && transfer.GetType() == typeof(FileReceiver))
@@ -536,6 +537,8 @@ namespace Toxy
                     control.FilePath = dialog.FileName;
                     tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
                 }
+
+                transfer.Tag.StartTransfer();
             };
 
             control.OnDecline += delegate(FileTransfer ft)
@@ -546,15 +549,23 @@ namespace Toxy
                     transfers.Remove(ft);
             };
 
-            control.OnFileOpen += delegate()
+            control.OnPause += delegate(FileTransfer ft)
             {
-                try { Process.Start(transfer.FileName); }
+                if (ft.Paused)
+                    tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
+                else
+                    tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
+            };
+
+            control.OnFileOpen += delegate(FileTransfer ft)
+            {
+                try { Process.Start(ft.FileName); }
                 catch { /*want to open a "choose program dialog" here*/ }
             };
 
-            control.OnFolderOpen += delegate()
+            control.OnFolderOpen += delegate(FileTransfer ft)
             {
-                Process.Start("explorer.exe", @"/select, " + transfer.Path);
+                Process.Start("explorer.exe", @"/select, " + ft.Path);
             };
 
             transfers.Add(transfer);
@@ -2326,6 +2337,14 @@ namespace Toxy
 
                 if (transfers.Contains(ft))
                     transfers.Remove(ft);
+            };
+
+            control.OnPause += delegate(FileTransfer ft)
+            {
+                if (ft.Paused)
+                    tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
+                else
+                    tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
             };
 
             transfers.Add(transfer);

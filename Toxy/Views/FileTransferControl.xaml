@@ -28,13 +28,6 @@
                Width="31"
                Source="/Resources/FileDownload.png"
                Margin="10,18,0,0" />
-        <controls:ProgressRing Name="TransferProgressRing"
-                               Visibility="Collapsed"
-                               IsActive="False"
-                               Margin="0,18,49,20"
-                               Height="32"
-                               Width="32"
-                               HorizontalAlignment="Right" />
         <Button Name="AcceptButton"
                 Margin="0,16,54,16"
                 IsEnabled="True"
@@ -66,6 +59,40 @@
                 <Rectangle.OpacityMask>
                     <VisualBrush Stretch="Fill"
                                  Visual="{DynamicResource appbar_folder_open}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Button Name="PauseButton"
+                Margin="0,16,54,16"
+                IsEnabled="True"
+                Style="{DynamicResource MetroCircleButtonStyle}"
+                HorizontalAlignment="Right"
+                Width="39"
+                Click="PauseButton_Click"
+                Visibility="Hidden">
+            <Rectangle Width="15"
+                       Height="15"
+                       Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                 Visual="{DynamicResource appbar_control_pause}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Button>
+        <Button Name="ResumeButton"
+                Margin="0,16,54,16"
+                IsEnabled="True"
+                Style="{DynamicResource MetroCircleButtonStyle}"
+                HorizontalAlignment="Right"
+                Width="39"
+                Visibility="Hidden"
+                Click="PauseButton_Click">
+            <Rectangle Width="15"
+                       Height="15"
+                       Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                 Visual="{DynamicResource appbar_control_play}" />
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Button>

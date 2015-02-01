@@ -24,5 +24,22 @@ namespace Toxy.ToxHelpers
                     return "An unknown error occurred";
             }
         }
+
+        public static string GetSizeString(long byteCount)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB" };
+            double length = byteCount;
+            int i;
+
+            for (i = 0; i < sizes.Length; i++)
+            {
+                if (length < 1024)
+                    break;
+
+                length = length / 1024;
+            }
+
+            return string.Format("{0:0.##}{1}", length, sizes[i]);
+        }
     }
 }

@@ -132,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Transfers\FileReceiver.cs" />
+    <Compile Include="Common\Transfers\FileSender.cs" />
+    <Compile Include="Common\Transfers\FileTransfer.cs" />
+    <Compile Include="Common\Transfers\FileTransferWorker.cs" />
     <Compile Include="Extensions\BitmapExtension.cs" />
     <Compile Include="Common\Config\Config.cs" />
     <Compile Include="Common\Config\ConfigTools.cs" />

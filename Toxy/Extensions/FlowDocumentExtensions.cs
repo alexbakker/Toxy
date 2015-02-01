@@ -17,6 +17,7 @@ using SharpTox.Core;
 using Toxy.Common;
 using Toxy.Views;
 using Toxy.Extenstions;
+using Toxy.Common.Transfers;
 
 namespace Toxy.Extenstions
 {
@@ -76,11 +77,10 @@ namespace Toxy.Extenstions
             MessageRows.Rows.Add(newTableRow);
         }
 
-        public static FileTransfer AddNewFileTransfer(this FlowDocument doc, Tox tox, int friendnumber, int filenumber, string filename, ulong filesize, bool is_sender)
+        public static FileTransferControl AddNewFileTransfer(this FlowDocument doc, Tox tox, FileTransfer transfer)
         {
             var fileTableCell = new TableCell();
-            var fileTransferControl = new FileTransferControl(friendnumber, filenumber, filename, filesize, fileTableCell);
-            var transfer = new FileTransfer() { FriendNumber = friendnumber, FileNumber = filenumber, FileName = filename, FileSize = filesize, IsSender = is_sender, Control = fileTransferControl };
+            var fileTransferControl = new FileTransferControl(transfer, fileTableCell);
 
             var usernameParagraph = new Section();
             var newTableRow = new TableRow();
@@ -103,7 +103,7 @@ namespace Toxy.Extenstions
             var MessageRows = (TableRowGroup)doc.FindName("MessageRows");
             MessageRows.Rows.Add(newTableRow);
 
-            return transfer;
+            return fileTransferControl;
         }
 
         static void ProcessMessage(MessageData data, Paragraph messageParagraph, bool append)
@@ -167,7 +167,7 @@ namespace Toxy.Extenstions
         {
             try
             {
-                return doc.FindChildren<TableRow>().Last(t => t.Tag.GetType() != typeof(FileTransfer));
+                return doc.FindChildren<TableRow>().Last(t => !(t.Tag is FileTransfer));
             }
             catch
             {

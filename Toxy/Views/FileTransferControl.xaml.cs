@@ -86,8 +86,6 @@ namespace Toxy.Views
             if (OnDecline != null)
                 OnDecline(transfer);
 
-            MessageLabel.Content = "Canceled";
-
             TransferFinished();
         }
 

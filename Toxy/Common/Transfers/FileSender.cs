@@ -47,6 +47,7 @@ namespace Toxy.Common.Transfers
             {
                 Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Kill, new byte[0]);
                 Tag.HideAllButtons();
+                Tag.SetStatus(FileName + " - Transfer killed");
             }
         }
 
@@ -146,9 +147,15 @@ namespace Toxy.Common.Transfers
                 _paused = value;
 
                 if (value)
+                {
                     FileTransferWorker.PauseTransfer(this);
+                    Tag.SetStatus(FileName + " - Paused");
+                }
                 else
+                {
                     FileTransferWorker.ResumeTransfer(this);
+                    Tag.SetStatus(FileName);
+                }
             }
         }
     }

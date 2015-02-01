@@ -167,7 +167,7 @@ namespace Toxy.Extenstions
         {
             try
             {
-                return doc.FindChildren<TableRow>().Last(t => t.Tag is FileTransfer);
+                return doc.FindChildren<TableRow>().Last(t => !(t.Tag is FileTransfer));
             }
             catch
             {

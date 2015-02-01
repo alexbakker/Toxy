@@ -25,13 +25,13 @@ namespace Toxy.Common.Transfers
 
         public void Start()
         {
-            FileTransferSender.StartTransfer(this);
+            FileTransferWorker.StartTransfer(this);
             Tag.SetStatus(FileName);
         }
 
         public override void Kill(bool finished)
         {
-            FileTransferSender.KillTransfer(this);
+            FileTransferWorker.KillTransfer(this);
 
             if (_stream != null)
                 _stream.Dispose();
@@ -46,6 +46,7 @@ namespace Toxy.Common.Transfers
             else
             {
                 Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Kill, new byte[0]);
+                Tag.HideAllButtons();
             }
         }
 
@@ -118,18 +119,18 @@ namespace Toxy.Common.Transfers
             }
             set
             {
+                _broken = value;
+
                 if (value)
                 {
-                    FileTransferSender.PauseTransfer(this);
+                    FileTransferWorker.PauseTransfer(this);
                     Tag.SetStatus("Waiting for friend to come back online");
                 }
                 else
                 {
-                    FileTransferSender.ResumeTransfer(this);
+                    FileTransferWorker.ResumeTransfer(this);
                     Tag.SetStatus(FileName);
                 }
-
-                _broken = value;
             }
         }
 
@@ -142,12 +143,12 @@ namespace Toxy.Common.Transfers
             }
             set
             {
-                if (value)
-                    FileTransferSender.PauseTransfer(this);
-                else
-                    FileTransferSender.ResumeTransfer(this);
-
                 _paused = value;
+
+                if (value)
+                    FileTransferWorker.PauseTransfer(this);
+                else
+                    FileTransferWorker.ResumeTransfer(this);
             }
         }
     }

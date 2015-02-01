@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Toxy.Common.Transfers
 {
-    static class FileTransferSender
+    static class FileTransferWorker
     {
         public static ConcurrentDictionary<int, FileSender> Senders { get; private set; }
         private static CancellationTokenSource _cancelTokenSource;
 
-        static FileTransferSender()
+        static FileTransferWorker()
         {
             Senders = new ConcurrentDictionary<int, FileSender>();
         }
@@ -63,9 +63,15 @@ namespace Toxy.Common.Transfers
                             break;
                         }
 
+                        bool fail = false;
+
                         foreach (FileSender sender in Senders.Values)
-                            if (!sender.SendNextChunk())
-                                Thread.Sleep(50);
+                            if (!sender.Broken && !sender.Paused)
+                                if (!sender.SendNextChunk())
+                                    fail = true;
+
+                        if (fail)
+                            Thread.Sleep(50);
                     }
                 }, _cancelTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             }

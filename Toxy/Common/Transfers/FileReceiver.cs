@@ -38,6 +38,7 @@ namespace Toxy.Common.Transfers
 
                 Tag.AcceptButton.Visibility = Visibility.Collapsed;
                 Tag.DeclineButton.Visibility = Visibility.Collapsed;
+                Tag.PauseButton.Visibility = Visibility.Collapsed;
                 Tag.FileOpenButton.Visibility = Visibility.Visible;
                 Tag.FolderOpenButton.Visibility = Visibility.Visible;
             }

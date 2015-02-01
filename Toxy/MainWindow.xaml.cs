@@ -470,11 +470,11 @@ namespace Toxy
                 case ToxFileControl.ResumeBroken:
                     {
                         var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber) as FileSender;
-                        if (transfer == null)
+                        if (transfer == null || e.Data.Length != sizeof(long))
                             break;
 
                         long index = (long)BitConverter.ToUInt64(e.Data, 0);
-                        
+
                         transfer.RewindStream(index);
                         transfer.Broken = false;
                         tox.FileSendControl(e.FriendNumber, 0, transfer.FileNumber, ToxFileControl.Accept, new byte[0]);
@@ -504,6 +504,9 @@ namespace Toxy
                 Debug.WriteLine("Hoooold your horses, we don't know about this file transfer!");
                 return;
             }
+
+            if (transfer.Broken || transfer.Paused)
+                return;
 
             transfer.ProcessReceivedData(e.Data);
         }
@@ -559,7 +562,7 @@ namespace Toxy
 
             control.OnFileOpen += delegate(FileTransfer ft)
             {
-                try { Process.Start(ft.FileName); }
+                try { Process.Start(ft.Path); }
                 catch { /*want to open a "choose program dialog" here*/ }
             };
 
@@ -628,8 +631,13 @@ namespace Toxy
                 if (receivers.Count() > 0)
                 {
                     foreach (FileReceiver transfer in receivers)
+                    {
                         if (transfer.Broken)
+                        {
                             tox.FileSendControl(e.FriendNumber, 1, transfer.FileNumber, ToxFileControl.ResumeBroken, BitConverter.GetBytes(transfer.BytesReceived));
+                            Debug.WriteLine("File transfer broke, we've received {0} bytes so far", transfer.BytesReceived);
+                        }
+                    }
                 }
             }
 

@@ -434,15 +434,22 @@ namespace Toxy
                         if (transfer == null)
                             break;
 
-                        if (transfer.GetType() == typeof(FileSender))
+                        if (!transfer.Paused)
                         {
-                            FileSender ft = (FileSender)transfer;
-                            ft.Start();
+                            if (transfer.GetType() == typeof(FileSender))
+                            {
+                                FileSender ft = (FileSender)transfer;
+                                ft.Start();
+                            }
+                            else if (transfer.Broken && transfer.GetType() == typeof(FileReceiver))
+                            {
+                                transfer.Broken = false;
+                                Debug.WriteLine(string.Format("Received {0}, resuming broken file transfer", e.Control));
+                            }
                         }
-                        else if (transfer.Broken && transfer.GetType() == typeof(FileReceiver))
+                        else
                         {
-                            transfer.Broken = false;
-                            Debug.WriteLine(string.Format("Received {0}, resuming broken file transfer", e.Control));
+                            transfer.Paused = false;
                         }
 
                         break;
@@ -456,7 +463,6 @@ namespace Toxy
 
                         transfer.Kill(false);
                         transfers.Remove(transfer);
-
                         break;
                     }
 
@@ -473,7 +479,15 @@ namespace Toxy
                         tox.FileSendControl(e.FriendNumber, 0, transfer.FileNumber, ToxFileControl.Accept, new byte[0]);
 
                         Debug.WriteLine(string.Format("Received {0}, resuming at index: {1}", e.Control, index));
+                        break;
+                    }
+                case ToxFileControl.Pause:
+                    {
+                        var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber) as FileTransfer;
+                        if (transfer == null)
+                            break;
 
+                        transfer.Paused = true;
                         break;
                     }
             }

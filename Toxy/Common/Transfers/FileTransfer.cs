@@ -30,9 +30,10 @@ namespace Toxy.Common.Transfers
 
         public bool Finished { get; protected set; }
         public abstract bool Broken { get; set; }
+        public abstract bool Paused { get; set; }
 
         public FileTransferControl Tag { get; set; }
-        public Tox Tox { get; set; }
+        public Tox Tox { get; private set; }
 
         public abstract void Kill(bool finished);
 

@@ -64,5 +64,18 @@ namespace Toxy.Common.Transfers
                 _broken = value;
             }
         }
+
+        private bool _paused;
+        public override bool Paused
+        {
+            get
+            {
+                return _paused;
+            }
+            set
+            {
+                _paused = value;
+            }
+        }
     }
 }

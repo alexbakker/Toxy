@@ -9,7 +9,13 @@ namespace Toxy.Common.Transfers
     {
         private FileStream _stream;
 
-        public long SentBytes { get; set; }
+        public long SentBytes
+        {
+            get
+            {
+                return _stream.Position;
+            }
+        }
 
         public FileSender(Tox tox, int fileNumber, int friendNumber, long fileSize, string fileName, string path)
             : base(tox, fileNumber, friendNumber, fileSize, fileName, path) 
@@ -97,7 +103,6 @@ namespace Toxy.Common.Transfers
                 Kill(true);
             }
 
-            SentBytes += chunk_size;
             double value = (double)remaining / (double)FileSize;
             Progress = 100 - (int)(value * 100);
 
@@ -125,6 +130,24 @@ namespace Toxy.Common.Transfers
                 }
 
                 _broken = value;
+            }
+        }
+
+        private bool _paused;
+        public override bool Paused
+        {
+            get
+            {
+                return _paused;
+            }
+            set
+            {
+                if (value)
+                    FileTransferSender.PauseTransfer(this);
+                else
+                    FileTransferSender.ResumeTransfer(this);
+
+                _paused = value;
             }
         }
     }

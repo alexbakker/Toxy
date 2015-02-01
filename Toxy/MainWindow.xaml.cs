@@ -2045,7 +2045,16 @@ namespace Toxy
 
                 var selectedChatNumber = ViewModel.SelectedChatNumber;
                 if (!tox.IsOnline(selectedChatNumber) && ViewModel.IsFriendSelected)
+                {
+                    MessageData data = new MessageData() { Username = getSelfName(), Message = "Your Friend is not online", Id = 0, IsSelf = ViewModel.IsFriendSelected, Timestamp = DateTime.Now };
+
+                    if (ViewModel.IsFriendSelected)
+                    {
+                        AddMessageToView(selectedChatNumber, data);
+                    }
+
                     return;
+                }
 
                 if (text.StartsWith("/me "))
                 {

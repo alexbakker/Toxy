@@ -276,18 +276,10 @@
     <Resource Include="Resources\FileDownload.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Icons\Away.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Icons\Busy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Icons\Offline.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Icons\Online.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Resources\Icons\Away.png" />
+    <Resource Include="Resources\Icons\Busy.png" />
+    <Resource Include="Resources\Icons\Offline.png" />
+    <Resource Include="Resources\Icons\Online.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\libs\libtox.dll">

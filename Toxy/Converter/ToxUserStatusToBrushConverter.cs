@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -16,21 +17,35 @@ namespace Toxy.Converter
         private Brush ToxUserStatusINVALID;
         public ToxUserStatusToBrushConverter()
         {
-            ToxUserStatusNONE = new ImageBrush(){
-                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Online.png", UriKind.Relative))
+            ToxUserStatusNONE = new ImageBrush()
+            {
+                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Online)
             };
             ToxUserStatusAWAY = new ImageBrush()
             {
-                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Away.png", UriKind.Relative))
+                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Away)
             };
             ToxUserStatusBUSY = new ImageBrush()
             {
-                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Busy.png", UriKind.Relative))
+                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Busy)
             };
             ToxUserStatusINVALID = new ImageBrush()
             {
-                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Offline.png", UriKind.Relative))
+                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Offline)
             };
+        }
+
+        private BitmapImage ImageSourceFromRessource(System.Drawing.Bitmap ressource)
+        {
+            var ms = new MemoryStream();
+            ((System.Drawing.Bitmap)ressource).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            var image = new BitmapImage();
+            image.BeginInit();
+            ms.Seek(0, SeekOrigin.Begin);
+            image.StreamSource = ms;
+            image.EndInit();
+
+            return image; 
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

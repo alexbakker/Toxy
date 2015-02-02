@@ -1668,6 +1668,8 @@ namespace Toxy
 
             CallButton.Visibility = Visibility.Collapsed;
             FileButton.Visibility = Visibility.Collapsed;
+            HangupButton.Visibility = Visibility.Collapsed;
+            VideoButton.Visibility = Visibility.Collapsed;
 
             if (tox.GetGroupType(group.ChatNumber) == ToxGroupType.Av)
                 MicButton.Visibility = Visibility.Visible;
@@ -1750,6 +1752,18 @@ namespace Toxy
                 {
                     HangupButton.Visibility = Visibility.Collapsed;
                     VideoButton.Visibility = Visibility.Collapsed;
+
+                    if (tox.IsOnline(friendNumber))
+                    {
+                        CallButton.Visibility = Visibility.Visible;
+                        FileButton.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        CallButton.Visibility = Visibility.Collapsed;
+                        FileButton.Visibility = Visibility.Collapsed;
+                    }
+
                     VideoImageRow.Height = new GridLength(0);
                     VideoGridSplitter.IsEnabled = false;
                     VideoChatImage.Source = null;
@@ -1758,6 +1772,7 @@ namespace Toxy
                 {
                     HangupButton.Visibility = Visibility.Visible;
                     VideoButton.Visibility = Visibility.Visible;
+                    CallButton.Visibility = Visibility.Collapsed;
 
                     if (toxav.GetPeerCodecSettings(call.CallIndex, 0).CallType == ToxAvCallType.Video)
                     {

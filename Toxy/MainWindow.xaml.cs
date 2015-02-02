@@ -2279,7 +2279,7 @@ namespace Toxy
 
         private void TextToSend_KeyUp(object sender, KeyEventArgs e)
         {
-            /*if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 if (Clipboard.ContainsImage())
                 {
@@ -2294,34 +2294,35 @@ namespace Toxy
                     if (filenumber == -1)
                         return;
 
-                    FileTransfer transfer = convdic[ViewModel.SelectedChatNumber].AddNewFileTransfer(tox, ViewModel.SelectedChatNumber, filenumber, "image.bmp", (ulong)bytes.Length, false);
-                    transfer.Stream = new MemoryStream(bytes);
+                    var transfer = new FileSender(tox, filenumber, ViewModel.SelectedChatNumber, bytes.Length, "image.bmp", new MemoryStream(bytes));
+                    var control = convdic[ViewModel.SelectedChatNumber].AddNewFileTransfer(tox, transfer);
+                    transfer.Tag = control;
+
                     transfer.Tag.SetStatus(string.Format("Waiting for {0} to accept...", getFriendName(ViewModel.SelectedChatNumber)));
                     transfer.Tag.AcceptButton.Visibility = Visibility.Collapsed;
                     transfer.Tag.DeclineButton.Visibility = Visibility.Visible;
 
-                    transfer.Control.OnDecline += delegate(int friendnum, int filenum)
+                    control.OnDecline += delegate(FileTransfer ft)
                     {
-                        if (transfer.Thread != null)
-                        {
-                            transfer.Thread.Abort();
-                            transfer.Thread.Join();
-                        }
+                        ft.Kill(false);
 
-                        if (transfer.Stream != null)
-                            transfer.Stream.Close();
+                        if (transfers.Contains(ft))
+                            transfers.Remove(ft);
+                    };
 
-                        if (!transfer.IsSender)
-                            tox.FileSendControl(transfer.FriendNumber, 1, filenumber, ToxFileControl.Kill, new byte[0]);
+                    control.OnPause += delegate(FileTransfer ft)
+                    {
+                        if (ft.Paused)
+                            tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
                         else
-                            tox.FileSendControl(transfer.FriendNumber, 0, filenumber, ToxFileControl.Kill, new byte[0]);
+                            tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
                     };
 
                     transfers.Add(transfer);
 
                     ScrollChatBox();
                 }
-            }*/
+            }
         }
 
         private void SetStatus(ToxUserStatus? newStatus, bool changeUserStatus)

@@ -7,7 +7,7 @@ namespace Toxy.Common.Transfers
 {
     public class FileSender : FileTransfer
     {
-        private FileStream _stream;
+        private Stream _stream;
 
         public long SentBytes
         {
@@ -21,6 +21,12 @@ namespace Toxy.Common.Transfers
             : base(tox, fileNumber, friendNumber, fileSize, fileName, path) 
         {
 
+        }
+
+        public FileSender(Tox tox, int fileNumber, int friendNumber, long fileSize, string fileName, Stream stream)
+            : base(tox, fileNumber, friendNumber, fileSize, fileName, string.Empty)
+        {
+            _stream = stream;
         }
 
         public void Start()

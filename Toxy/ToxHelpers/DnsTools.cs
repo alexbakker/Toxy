@@ -19,15 +19,30 @@ namespace Toxy.ToxHelpers
         [DllImport("dnsapi", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern void DnsRecordListFree(IntPtr pRecordList, int FreeType);
 
-        private static ToxNameService findNameService(ToxNameService[] services, string suffix)
+        private static ToxNameService FindNameServiceFromStore(ToxNameService[] services, string suffix)
         {
             return services.Where(s => s.Domain == suffix).First();
         }
 
+        public static ToxNameService FindNameService(string domain)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                string[] records = GetSPFRecords("_tox." + domain);
+
+                foreach (string record in records)
+                {
+                    if (!string.IsNullOrEmpty(record))
+                        return new ToxNameService() { Domain = domain, PublicKey = record };
+                }
+            }
+
+            return null;
+        }
+
         public static string DiscoverToxID(string domain, ToxNameService[] services)
         {
-            var service = findNameService(services, domain.Split('@')[1]);
-
+            var service = FindNameService(domain.Split('@')[1]) ?? FindNameServiceFromStore(services, domain.Split('@')[1]);
             if (service == null)
             {
                 //this name service does not use tox3, how unencrypted of them
@@ -57,9 +72,7 @@ namespace Toxy.ToxHelpers
             {
                 string public_key;
 
-                if (string.IsNullOrWhiteSpace(service.PublicKey) && !string.IsNullOrWhiteSpace(service.PublicKeyUrl))
-                    public_key = new WebClient().DownloadString(service.PublicKeyUrl);
-                else if (!string.IsNullOrWhiteSpace(service.PublicKey))
+                if (!string.IsNullOrWhiteSpace(service.PublicKey))
                     public_key = service.PublicKey;
                 else
                     return null;

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Drawing.Imaging;
 using System.Globalization;
-using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+
 using SharpTox.Core;
+using Toxy.Extenstions;
 
 namespace Toxy.Converter
 {
@@ -15,37 +16,25 @@ namespace Toxy.Converter
         private Brush ToxUserStatusBUSY;
         private Brush ToxUserStatusAWAY;
         private Brush ToxUserStatusINVALID;
+
         public ToxUserStatusToBrushConverter()
         {
             ToxUserStatusNONE = new ImageBrush()
             {
-                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Online)
+                ImageSource = Toxy.Properties.Resources.Online.ToBitmapImage(ImageFormat.Bmp)
             };
             ToxUserStatusAWAY = new ImageBrush()
             {
-                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Away)
+                ImageSource = Toxy.Properties.Resources.Away.ToBitmapImage(ImageFormat.Bmp)
             };
             ToxUserStatusBUSY = new ImageBrush()
             {
-                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Busy)
+                ImageSource = Toxy.Properties.Resources.Busy.ToBitmapImage(ImageFormat.Bmp)
             };
             ToxUserStatusINVALID = new ImageBrush()
             {
-                ImageSource = ImageSourceFromRessource(Toxy.Properties.Resources.Offline)
+                ImageSource = Toxy.Properties.Resources.Offline.ToBitmapImage(ImageFormat.Bmp)
             };
-        }
-
-        private BitmapImage ImageSourceFromRessource(System.Drawing.Bitmap ressource)
-        {
-            var ms = new MemoryStream();
-            ((System.Drawing.Bitmap)ressource).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            var image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
-
-            return image; 
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

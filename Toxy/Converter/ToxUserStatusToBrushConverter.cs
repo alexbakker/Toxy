@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+
 using SharpTox.Core;
+using Toxy.Extenstions;
 
 namespace Toxy.Converter
 {
@@ -13,16 +16,25 @@ namespace Toxy.Converter
         private Brush ToxUserStatusBUSY;
         private Brush ToxUserStatusAWAY;
         private Brush ToxUserStatusINVALID;
+
         public ToxUserStatusToBrushConverter()
         {
-            ToxUserStatusNONE = new SolidColorBrush(Color.FromRgb(6, 225, 1));
-            ToxUserStatusNONE.Freeze();
-            ToxUserStatusBUSY = new SolidColorBrush(Color.FromRgb(214, 43, 79));
-            ToxUserStatusBUSY.Freeze();
-            ToxUserStatusAWAY = new SolidColorBrush(Color.FromRgb(229, 222, 31));
-            ToxUserStatusAWAY.Freeze();
-            ToxUserStatusINVALID = new SolidColorBrush(Colors.Red);
-            ToxUserStatusINVALID.Freeze();
+            ToxUserStatusNONE = new ImageBrush()
+            {
+                ImageSource = Toxy.Properties.Resources.Online.ToBitmapImage(ImageFormat.Bmp)
+            };
+            ToxUserStatusAWAY = new ImageBrush()
+            {
+                ImageSource = Toxy.Properties.Resources.Away.ToBitmapImage(ImageFormat.Bmp)
+            };
+            ToxUserStatusBUSY = new ImageBrush()
+            {
+                ImageSource = Toxy.Properties.Resources.Busy.ToBitmapImage(ImageFormat.Bmp)
+            };
+            ToxUserStatusINVALID = new ImageBrush()
+            {
+                ImageSource = Toxy.Properties.Resources.Offline.ToBitmapImage(ImageFormat.Bmp)
+            };
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

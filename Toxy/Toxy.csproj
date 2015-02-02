@@ -282,6 +282,7 @@
   <ItemGroup>
     <Resource Include="Resources\Icons\Away.png" />
     <Resource Include="Resources\Icons\Busy.png" />
+    <Resource Include="Resources\Icons\Offline.png" />
     <Resource Include="Resources\Icons\Online.png" />
   </ItemGroup>
   <ItemGroup>

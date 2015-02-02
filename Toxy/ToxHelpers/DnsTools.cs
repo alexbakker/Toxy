@@ -40,9 +40,15 @@ namespace Toxy.ToxHelpers
             return null;
         }
 
-        public static string DiscoverToxID(string domain, ToxNameService[] services)
+        public static string DiscoverToxID(string domain, ToxNameService[] services, bool localStoreOnly)
         {
-            var service = FindNameService(domain.Split('@')[1]) ?? FindNameServiceFromStore(services, domain.Split('@')[1]);
+            ToxNameService service;
+
+            if (!localStoreOnly)
+                service = FindNameService(domain.Split('@')[1]) ?? FindNameServiceFromStore(services, domain.Split('@')[1]);
+            else
+                service = FindNameServiceFromStore(services, domain.Split('@')[1]);
+
             if (service == null)
             {
                 //this name service does not use tox3, how unencrypted of them

@@ -1961,7 +1961,7 @@ namespace Toxy
                 try
                 {
                     tries++;
-                    string id = DnsTools.DiscoverToxID(friendID, config.NameServices);
+                    string id = DnsTools.DiscoverToxID(friendID, config.NameServices, config.OnlyUseLocalNameServiceStore);
 
                     if (string.IsNullOrEmpty(id))
                         throw new Exception("The server returned an empty result");

@@ -17,7 +17,7 @@ namespace Toxy.Common.Transfers
         {
             get
             {
-                return Progress;
+                return _progress;
             }
             protected set
             {

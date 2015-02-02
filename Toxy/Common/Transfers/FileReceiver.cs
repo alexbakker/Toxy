@@ -36,11 +36,14 @@ namespace Toxy.Common.Transfers
                 Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Finished, new byte[0]);
                 Finished = true;
 
-                Tag.AcceptButton.Visibility = Visibility.Collapsed;
-                Tag.DeclineButton.Visibility = Visibility.Collapsed;
-                Tag.PauseButton.Visibility = Visibility.Collapsed;
-                Tag.FileOpenButton.Visibility = Visibility.Visible;
-                Tag.FolderOpenButton.Visibility = Visibility.Visible;
+                Tag.Dispatcher.BeginInvoke(((Action)(() =>
+                {
+                    Tag.AcceptButton.Visibility = Visibility.Collapsed;
+                    Tag.DeclineButton.Visibility = Visibility.Collapsed;
+                    Tag.PauseButton.Visibility = Visibility.Collapsed;
+                    Tag.FileOpenButton.Visibility = Visibility.Visible;
+                    Tag.FolderOpenButton.Visibility = Visibility.Visible;
+                })));
             }
             else
             {

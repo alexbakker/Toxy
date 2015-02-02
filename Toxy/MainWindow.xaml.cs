@@ -131,128 +131,140 @@ namespace Toxy
         #region Tox EventHandlers
         private void tox_OnGroupTitleChanged(object sender, ToxEventArgs.GroupTitleEventArgs e)
         {
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group == null)
-                return;
+            Dispatcher.BeginInvoke(((Action)(() =>
+            {
+                var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+                if (group == null)
+                    return;
 
-            group.Name = e.Title;
+                group.Name = e.Title;
 
-            if (e.PeerNumber != -1)
-                group.AdditionalInfo = string.Format("Topic set by: {0}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber));
+                if (e.PeerNumber != -1)
+                    group.AdditionalInfo = string.Format("Topic set by: {0}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber));
+            })));
         }
 
         private void tox_OnGroupNamelistChange(object sender, ToxEventArgs.GroupNamelistChangeEventArgs e)
         {
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                if (e.Change == ToxChatChange.PeerAdd || e.Change == ToxChatChange.PeerDel)
-                    group.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
-
-                switch (e.Change)
+                var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+                if (group != null)
                 {
-                    case ToxChatChange.PeerAdd:
-                        {
-                            RearrangeGroupPeerList(group);
-                            break;
-                        }
-                    case ToxChatChange.PeerDel:
-                        {
-                            RearrangeGroupPeerList(group);
-                            break;
-                        }
-                    case ToxChatChange.PeerName:
-                        {
-                            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
-                            if (peer != null)
-                            {
-                                peer.Name = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
-                                RearrangeGroupPeerList(group);
-                            }
+                    if (e.Change == ToxChatChange.PeerAdd || e.Change == ToxChatChange.PeerDel)
+                        group.StatusMessage = string.Format("Peers online: {0}", tox.GetGroupMemberCount(group.ChatNumber));
 
-                            break;
-                        }
+                    switch (e.Change)
+                    {
+                        case ToxChatChange.PeerAdd:
+                            {
+                                RearrangeGroupPeerList(group);
+                                break;
+                            }
+                        case ToxChatChange.PeerDel:
+                            {
+                                RearrangeGroupPeerList(group);
+                                break;
+                            }
+                        case ToxChatChange.PeerName:
+                            {
+                                var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+                                if (peer != null)
+                                {
+                                    peer.Name = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+                                    RearrangeGroupPeerList(group);
+                                }
+
+                                break;
+                            }
+                    }
                 }
-            }
+            })));
         }
 
         private void tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
         {
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group == null)
-                return;
-
-            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
-            if (peer != null && peer.Ignored)
-                return;
-
-            MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), e.Action), IsAction = true, Timestamp = DateTime.Now };
-
-            if (groupdic.ContainsKey(e.GroupNumber))
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
-            }
-            else
-            {
-                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
-                groupdic.Add(e.GroupNumber, document);
-                groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
-            }
+                var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+                if (group == null)
+                    return;
 
-            MessageAlertIncrement(group);
+                var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+                if (peer != null && peer.Ignored)
+                    return;
 
-            if (group.Selected)
-                ScrollChatBox();
+                MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), e.Action), IsAction = true, Timestamp = DateTime.Now };
 
-            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
-                this.Flash();
+                if (groupdic.ContainsKey(e.GroupNumber))
+                {
+                    groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
+                }
+                else
+                {
+                    FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
+                    groupdic.Add(e.GroupNumber, document);
+                    groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
+                }
+
+                MessageAlertIncrement(group);
+
+                if (group.Selected)
+                    ScrollChatBox();
+
+                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                    this.Flash();
+            })));
         }
 
         private void tox_OnGroupMessage(object sender, ToxEventArgs.GroupMessageEventArgs e)
         {
-            var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
-            if (group == null)
-                return;
-
-            var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
-            if (peer != null && peer.Ignored)
-                return;
-
-            MessageData data = new MessageData() { Username = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), Message = e.Message, Timestamp = DateTime.Now };
-
-            if (groupdic.ContainsKey(e.GroupNumber))
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                var run = groupdic[e.GroupNumber].GetLastMessageRun();
+                var group = ViewModel.GetGroupObjectByNumber(e.GroupNumber);
+                if (group == null)
+                    return;
 
-                if (run != null)
+                var peer = group.PeerList.GetPeerByPublicKey(tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+                if (peer != null && peer.Ignored)
+                    return;
+
+                MessageData data = new MessageData() { Username = tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber), Message = e.Message, Timestamp = DateTime.Now };
+
+                if (groupdic.ContainsKey(e.GroupNumber))
                 {
-                    if (((MessageData)run.Tag).Username == data.Username)
-                        groupdic[e.GroupNumber].AddNewMessageRow(tox, data, true);
+                    var run = groupdic[e.GroupNumber].GetLastMessageRun();
+
+                    if (run != null)
+                    {
+                        if (((MessageData)run.Tag).Username == data.Username)
+                            groupdic[e.GroupNumber].AddNewMessageRow(tox, data, true);
+                        else
+                            groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
+                    }
                     else
+                    {
                         groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
+                    }
                 }
                 else
                 {
+                    FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
+                    groupdic.Add(e.GroupNumber, document);
                     groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
                 }
-            }
-            else
-            {
-                FlowDocument document = FlowDocumentExtensions.CreateNewDocument();
-                groupdic.Add(e.GroupNumber, document);
-                groupdic[e.GroupNumber].AddNewMessageRow(tox, data, false);
-            }
 
-            MessageAlertIncrement(group);
+                MessageAlertIncrement(group);
 
-            if (group.Selected)
-                ScrollChatBox();
+                if (group.Selected)
+                    ScrollChatBox();
 
-            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
-                this.Flash();
+                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                    this.Flash();
 
-            nIcon.Icon = newMessageNotifyIcon;
-            ViewModel.HasNewMessage = true;
+                nIcon.Icon = newMessageNotifyIcon;
+                ViewModel.HasNewMessage = true;
+            })));
         }
 
         private async void tox_OnGroupInvite(object sender, ToxEventArgs.GroupInviteEventArgs e)
@@ -283,19 +295,22 @@ namespace Toxy
                 return;
             }
 
-            var group = ViewModel.GetGroupObjectByNumber(number);
+            Dispatcher.BeginInvoke(((Action)(() =>
+            {
+                var group = ViewModel.GetGroupObjectByNumber(number);
 
-            if (group != null)
-                SelectGroupControl(group);
-            else if (number != -1)
-                AddGroupToView(number, e.GroupType);
+                if (group != null)
+                    SelectGroupControl(group);
+                else if (number != -1)
+                    AddGroupToView(number, e.GroupType);
+            })));
         }
 
         private void tox_OnAvatarInfo(object sender, ToxEventArgs.AvatarInfoEventArgs e)
         {
             Debug.WriteLine(string.Format("Received avatar info from {0}", e.FriendNumber));
 
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+            var friend = Dispatcher.Invoke(() => ViewModel.GetFriendObjectByNumber(e.FriendNumber));
             if (friend == null)
                 return;
 
@@ -307,8 +322,11 @@ namespace Toxy
                 if (avatarExistsOnDisk(e.FriendNumber))
                     File.Delete(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientId(e.FriendNumber).GetString() + ".png"));
 
-                friend.AvatarBytes = null;
-                friend.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
+                Dispatcher.BeginInvoke(((Action)(() =>
+                {
+                    friend.AvatarBytes = null;
+                    friend.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
+                })));
             }
             else
             {
@@ -354,32 +372,35 @@ namespace Toxy
         {
             Debug.WriteLine(string.Format("Received avatar data from {0}", e.FriendNumber));
 
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend == null)
-                return;
-
-            if (friend.AvatarBytes != null && tox.GetHash(friend.AvatarBytes).SequenceEqual(e.Avatar.Hash))
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                //that's odd, why did we even receive this avatar?
-                //let's ignore ..
-                Debug.WriteLine("Received avatar data unexpectedly, ignoring");
-            }
-            else
-            {
-                try
-                {
-                    //note: this might be dangerous, maybe we need a way of verifying that this isn't malicious data (but how?)
-                    friend.AvatarBytes = e.Avatar.Data;
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend == null)
+                    return;
 
-                    Debug.WriteLine(string.Format("Starting task to apply the new avatar ({0})", e.FriendNumber));
-                    applyAvatar(friend, e.Avatar.Data);
-                }
-                catch
+                if (friend.AvatarBytes != null && tox.GetHash(friend.AvatarBytes).SequenceEqual(e.Avatar.Hash))
                 {
-                    //looks like someone sent invalid image data, what a troll
-                    Debug.WriteLine(string.Format("Received invalid avatar data ({0})", e.FriendNumber));
+                    //that's odd, why did we even receive this avatar?
+                    //let's ignore ..
+                    Debug.WriteLine("Received avatar data unexpectedly, ignoring");
                 }
-            }
+                else
+                {
+                    try
+                    {
+                        //note: this might be dangerous, maybe we need a way of verifying that this isn't malicious data (but how?)
+                        friend.AvatarBytes = e.Avatar.Data;
+
+                        Debug.WriteLine(string.Format("Starting task to apply the new avatar ({0})", e.FriendNumber));
+                        applyAvatar(friend, e.Avatar.Data);
+                    }
+                    catch
+                    {
+                        //looks like someone sent invalid image data, what a troll
+                        Debug.WriteLine(string.Format("Received invalid avatar data ({0})", e.FriendNumber));
+                    }
+                }
+            })));
         }
 
         private void tox_OnDisconnected(object sender, ToxEventArgs.ConnectionEventArgs e)
@@ -398,15 +419,18 @@ namespace Toxy
             if (!convdic.ContainsKey(e.FriendNumber))
                 return;
 
-            Paragraph para = (Paragraph)convdic[e.FriendNumber].FindChildren<TableRow>().Where(r => !(r.Tag is FileTransfer) && ((MessageData)(r.Tag)).Id == e.Receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
+            Dispatcher.BeginInvoke(((Action)(() =>
+            {
+                Paragraph para = (Paragraph)convdic[e.FriendNumber].FindChildren<TableRow>().Where(r => !(r.Tag is FileTransfer) && ((MessageData)(r.Tag)).Id == e.Receipt).First().FindChildren<TableCell>().ToArray()[1].Blocks.FirstBlock;
 
-            if (para == null)
-                return; //row or cell doesn't exist? odd, just return
+                if (para == null)
+                    return; //row or cell doesn't exist? odd, just return
 
-            if (config.Theme == "BaseDark")
-                para.Foreground = Brushes.White;
-            else
-                para.Foreground = Brushes.Black;
+                if (config.Theme == "BaseDark")
+                    para.Foreground = Brushes.White;
+                else
+                    para.Foreground = Brushes.Black;
+            })));
         }
 
         private void tox_OnFileControl(object sender, ToxEventArgs.FileControlEventArgs e)
@@ -517,17 +541,22 @@ namespace Toxy
                 convdic.Add(e.FriendNumber, FlowDocumentExtensions.CreateNewDocument());
 
             var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, e.FileName, e.FileName);
-            var control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            transfer.Tag = control;
+            FileTransferControl control = null;
 
-            if (friend != null)
+            Dispatcher.Invoke(() =>
             {
-                MessageAlertIncrement(friend);
+                control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                transfer.Tag = control;
 
-                if (friend.Selected)
-                    ScrollChatBox();
-            }
+                if (friend != null)
+                {
+                    MessageAlertIncrement(friend);
+
+                    if (friend.Selected)
+                        ScrollChatBox();
+                }
+            });
 
             control.OnAccept += delegate(FileTransfer ft)
             {
@@ -572,33 +601,40 @@ namespace Toxy
             };
 
             transfers.Add(transfer);
-            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
-                this.Flash();
+
+            Dispatcher.BeginInvoke(((Action)(() =>
+            {
+                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                    this.Flash();
+            })));
         }
 
         private void tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
         {
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+            var friend = Dispatcher.Invoke(() => ViewModel.GetFriendObjectByNumber(e.FriendNumber));
             if (friend == null)
                 return;
 
             if (e.Status == ToxFriendConnectionStatus.Offline)
             {
-                DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(e.FriendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
-
-                if (lastOnline.Year == 1970) //quick and dirty way to check if we're dealing with epoch 0
-                    friend.StatusMessage = "Friend request sent";
-                else
-                    friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
-
-                friend.ToxStatus = ToxUserStatus.Invalid; //not the proper way to do it, I know...
-
-                if (friend.Selected)
+                Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    CallButton.Visibility = Visibility.Collapsed;
-                    FileButton.Visibility = Visibility.Collapsed;
-                    TypingStatusLabel.Content = "";
-                }
+                    DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(e.FriendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
+
+                    if (lastOnline.Year == 1970) //quick and dirty way to check if we're dealing with epoch 0
+                        friend.StatusMessage = "Friend request sent";
+                    else
+                        friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+
+                    friend.ToxStatus = ToxUserStatus.Invalid; //not the proper way to do it, I know...
+
+                    if (friend.Selected)
+                    {
+                        CallButton.Visibility = Visibility.Collapsed;
+                        FileButton.Visibility = Visibility.Collapsed;
+                        TypingStatusLabel.Content = "";
+                    }
+                })));
 
                 var receivers = transfers.Where(t => t.GetType() == typeof(FileReceiver) && t.FriendNumber == e.FriendNumber && !t.Finished);
                 if (receivers.Count() > 0)
@@ -616,13 +652,16 @@ namespace Toxy
             }
             else if (e.Status == ToxFriendConnectionStatus.Online)
             {
-                friend.StatusMessage = getFriendStatusMessage(friend.ChatNumber);
-
-                if (friend.Selected)
+                Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    CallButton.Visibility = Visibility.Visible;
-                    FileButton.Visibility = Visibility.Visible;
-                }
+                    friend.StatusMessage = getFriendStatusMessage(friend.ChatNumber);
+
+                    if (friend.Selected)
+                    {
+                        CallButton.Visibility = Visibility.Visible;
+                        FileButton.Visibility = Visibility.Visible;
+                    }
+                })));
 
                 //kinda ugly to do this every time, I guess we don't really have a choice
                 tox.RequestAvatarInfo(e.FriendNumber);
@@ -641,42 +680,51 @@ namespace Toxy
                 }
             }
 
-            RearrangeChatList();
+            Dispatcher.BeginInvoke(((Action)(() => RearrangeChatList())));
         }
 
         private void tox_OnTypingChange(object sender, ToxEventArgs.TypingStatusEventArgs e)
         {
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend == null)
-                return;
-
-            if (friend.Selected)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                if (e.IsTyping)
-                    TypingStatusLabel.Content = getFriendName(e.FriendNumber) + " is typing...";
-                else
-                    TypingStatusLabel.Content = "";
-            }
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend == null)
+                    return;
+
+                if (friend.Selected)
+                {
+                    if (e.IsTyping)
+                        TypingStatusLabel.Content = getFriendName(e.FriendNumber) + " is typing...";
+                    else
+                        TypingStatusLabel.Content = "";
+                }
+            })));
         }
 
         private void tox_OnStatusMessage(object sender, ToxEventArgs.StatusMessageEventArgs e)
         {
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                friend.StatusMessage = getFriendStatusMessage(e.FriendNumber);
-            }
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend != null)
+                {
+                    friend.StatusMessage = getFriendStatusMessage(e.FriendNumber);
+                }
+            })));
         }
 
         private void tox_OnUserStatus(object sender, ToxEventArgs.UserStatusEventArgs e)
         {
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                friend.ToxStatus = e.UserStatus;
-            }
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend != null)
+                {
+                    friend.ToxStatus = e.UserStatus;
+                }
 
-            RearrangeChatList();
+                RearrangeChatList();
+            })));
         }
 
         private void tox_OnFriendRequest(object sender, ToxEventArgs.FriendRequestEventArgs e)
@@ -699,21 +747,25 @@ namespace Toxy
         private void tox_OnFriendAction(object sender, ToxEventArgs.FriendActionEventArgs e)
         {
             MessageData data = new MessageData() { Username = "*  ", Message = string.Format("{0} {1}", getFriendName(e.FriendNumber), e.Action), IsAction = true, Timestamp = DateTime.Now };
-            AddActionToView(e.FriendNumber, data);
 
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                MessageAlertIncrement(friend);
+                AddActionToView(e.FriendNumber, data);
 
-                if (friend.Selected)
-                    ScrollChatBox();
-            }
-            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
-                this.Flash();
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend != null)
+                {
+                    MessageAlertIncrement(friend);
 
-            nIcon.Icon = newMessageNotifyIcon;
-            ViewModel.HasNewMessage = true;
+                    if (friend.Selected)
+                        ScrollChatBox();
+                }
+                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                    this.Flash();
+
+                nIcon.Icon = newMessageNotifyIcon;
+                ViewModel.HasNewMessage = true;
+            })));
 
             if (config.EnableChatLogging)
                 dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
@@ -722,21 +774,25 @@ namespace Toxy
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
         {
             MessageData data = new MessageData() { Username = getFriendName(e.FriendNumber), Message = e.Message, Timestamp = DateTime.Now };
-            AddMessageToView(e.FriendNumber, data);
 
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                MessageAlertIncrement(friend);
+                AddMessageToView(e.FriendNumber, data);
 
-                if (friend.Selected)
-                    ScrollChatBox();
-            }
-            if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
-                this.Flash();
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend != null)
+                {
+                    MessageAlertIncrement(friend);
 
-            nIcon.Icon = newMessageNotifyIcon;
-            ViewModel.HasNewMessage = true;
+                    if (friend.Selected)
+                        ScrollChatBox();
+                }
+                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                    this.Flash();
+
+                nIcon.Icon = newMessageNotifyIcon;
+                ViewModel.HasNewMessage = true;
+            })));
 
             if (config.EnableChatLogging)
                 dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
@@ -744,11 +800,14 @@ namespace Toxy
 
         private void tox_OnNameChange(object sender, ToxEventArgs.NameChangeEventArgs e)
         {
-            var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-            if (friend != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                friend.Name = getFriendName(e.FriendNumber);
-            }
+                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                if (friend != null)
+                {
+                    friend.Name = getFriendName(e.FriendNumber);
+                }
+            })));
         }
 
         #endregion
@@ -757,7 +816,7 @@ namespace Toxy
 
         private void toxav_OnReceivedVideo(object sender, ToxAvEventArgs.VideoDataEventArgs e)
         {
-            if (Dispatcher.Invoke<bool>(() => (call == null || call.GetType() == typeof(ToxGroupCall) || call.Ended || ViewModel.IsGroupSelected || call.FriendNumber != ViewModel.SelectedChatNumber)))
+            if (Dispatcher.Invoke(() => (call == null || call.GetType() == typeof(ToxGroupCall) || call.Ended || ViewModel.IsGroupSelected || call.FriendNumber != ViewModel.SelectedChatNumber)))
                 return;
 
             ProcessVideoFrame(e.Frame);
@@ -765,25 +824,28 @@ namespace Toxy
 
         private void toxav_OnPeerCodecSettingsChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
-            if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
-                return;
+            Dispatcher.BeginInvoke(((Action)(() =>
+            {
+                if (call == null || call.GetType() == typeof(ToxGroupCall) || e.CallIndex != call.CallIndex)
+                    return;
 
-            if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType != ToxAvCallType.Video)
-            {
-                VideoImageRow.Height = new GridLength(0);
-                VideoGridSplitter.IsEnabled = false;
-                VideoChatImage.Source = null;
-            }
-            else if (ViewModel.IsFriendSelected && toxav.GetPeerID(e.CallIndex, 0) == ViewModel.SelectedChatNumber)
-            {
-                VideoImageRow.Height = new GridLength(300);
-                VideoGridSplitter.IsEnabled = true;
-            }
+                if (toxav.GetPeerCodecSettings(e.CallIndex, 0).CallType != ToxAvCallType.Video)
+                {
+                    VideoImageRow.Height = new GridLength(0);
+                    VideoGridSplitter.IsEnabled = false;
+                    VideoChatImage.Source = null;
+                }
+                else if (ViewModel.IsFriendSelected && toxav.GetPeerID(e.CallIndex, 0) == ViewModel.SelectedChatNumber)
+                {
+                    VideoImageRow.Height = new GridLength(300);
+                    VideoGridSplitter.IsEnabled = true;
+                }
+            })));
         }
 
         private void toxav_OnReceivedGroupAudio(object sender, ToxAvEventArgs.GroupAudioDataEventArgs e)
         {
-            var group = Dispatcher.Invoke(new Func<IGroupObject>(() => ViewModel.GetGroupObjectByNumber(e.GroupNumber)));
+            var group = Dispatcher.Invoke(() => ViewModel.GetGroupObjectByNumber(e.GroupNumber));
             if (group == null)
                 return;
 
@@ -805,12 +867,15 @@ namespace Toxy
 
         private void toxav_OnEnd(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
-            EndCall();
+            Dispatcher.BeginInvoke(((Action)(() =>
+            {
+                EndCall();
 
-            CallButton.Visibility = Visibility.Visible;
-            HangupButton.Visibility = Visibility.Collapsed;
-            VideoButton.Visibility = Visibility.Collapsed;
-            VideoButton.IsChecked = false;
+                CallButton.Visibility = Visibility.Visible;
+                HangupButton.Visibility = Visibility.Collapsed;
+                VideoButton.Visibility = Visibility.Collapsed;
+                VideoButton.IsChecked = false;
+            })));
         }
 
         private void toxav_OnStart(object sender, ToxAvEventArgs.CallStateEventArgs e)
@@ -820,26 +885,29 @@ namespace Toxy
             if (call != null)
                 call.Start(config.InputDevice, config.OutputDevice, settings, config.VideoDevice);
 
-            if (settings.CallType == ToxAvCallType.Video)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                VideoImageRow.Height = new GridLength(300);
-                VideoGridSplitter.IsEnabled = true;
-            }
-
-            int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
-            var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
-            if (callingFriend != null)
-            {
-                callingFriend.IsCalling = false;
-                callingFriend.IsCallingToFriend = false;
-                CallButton.Visibility = Visibility.Collapsed;
-                if (callingFriend.Selected)
+                if (settings.CallType == ToxAvCallType.Video)
                 {
-                    HangupButton.Visibility = Visibility.Visible;
-                    VideoButton.Visibility = Visibility.Visible;
+                    VideoImageRow.Height = new GridLength(300);
+                    VideoGridSplitter.IsEnabled = true;
                 }
-                ViewModel.CallingFriend = callingFriend;
-            }
+
+                int friendnumber = toxav.GetPeerID(e.CallIndex, 0);
+                var callingFriend = ViewModel.GetFriendObjectByNumber(friendnumber);
+                if (callingFriend != null)
+                {
+                    callingFriend.IsCalling = false;
+                    callingFriend.IsCallingToFriend = false;
+                    CallButton.Visibility = Visibility.Collapsed;
+                    if (callingFriend.Selected)
+                    {
+                        HangupButton.Visibility = Visibility.Visible;
+                        VideoButton.Visibility = Visibility.Visible;
+                    }
+                    ViewModel.CallingFriend = callingFriend;
+                }
+            })));
 
             call.SetTimerCallback(timerCallback);
         }
@@ -861,12 +929,15 @@ namespace Toxy
             if (call != null)
                 return;
 
-            var friend = ViewModel.GetFriendObjectByNumber(toxav.GetPeerID(e.CallIndex, 0));
-            if (friend != null)
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                friend.CallIndex = e.CallIndex;
-                friend.IsCalling = true;
-            }
+                var friend = ViewModel.GetFriendObjectByNumber(toxav.GetPeerID(e.CallIndex, 0));
+                if (friend != null)
+                {
+                    friend.CallIndex = e.CallIndex;
+                    friend.IsCalling = true;
+                }
+            })));
         }
 
         #endregion
@@ -2270,7 +2341,7 @@ namespace Toxy
                 }
             }
 
-            ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault();
+            Dispatcher.BeginInvoke(((Action)(() => ViewModel.MainToxyUser.ToxStatus = newStatus.GetValueOrDefault())));
         }
 
         private void CallButton_OnClick(object sender, RoutedEventArgs e)
@@ -2635,7 +2706,6 @@ namespace Toxy
                 options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
 
             tox = new Tox(options);
-            tox.Invoker = Dispatcher.BeginInvoke;
             tox.OnNameChange += tox_OnNameChange;
             tox.OnFriendMessage += tox_OnFriendMessage;
             tox.OnFriendAction += tox_OnFriendAction;
@@ -2660,7 +2730,6 @@ namespace Toxy
             tox.OnGroupNamelistChange += tox_OnGroupNamelistChange;
 
             toxav = new ToxAv(tox.Handle, 1);
-            toxav.Invoker = Dispatcher.BeginInvoke;
             toxav.OnInvite += toxav_OnInvite;
             toxav.OnStart += toxav_OnStart;
             toxav.OnEnd += toxav_OnEnd;
@@ -2916,10 +2985,7 @@ namespace Toxy
             var source = BitmapSource.Create((int)vpxImage.d_w, (int)vpxImage.d_h, 96d, 96d, PixelFormats.Bgra32, null, dest, stride);
             source.Freeze();
 
-            Dispatcher.Invoke((Action)(() =>
-            {
-                VideoChatImage.Source = source;
-            }));
+            Dispatcher.Invoke(() => VideoChatImage.Source = source);
         }
 
         private void NameTextBlock_MouseDown(object sender, MouseButtonEventArgs e)

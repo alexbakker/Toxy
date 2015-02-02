@@ -64,7 +64,7 @@ namespace Toxy.ToxHelpers
 
             if (WaveIn.DeviceCount > 0)
             {
-                wave_source = new WaveIn();
+                wave_source = new WaveInEvent();
 
                 if (input != -1)
                     wave_source.DeviceNumber = input - 1;
@@ -162,7 +162,7 @@ namespace Toxy.ToxHelpers
         protected ToxAv toxav;
         protected FilterAudio filterAudio;
 
-        protected WaveIn wave_source;
+        protected WaveInEvent wave_source;
         protected WaveOut wave_out;
         protected BufferedWaveProvider wave_provider;
         protected Timer timer;
@@ -219,7 +219,7 @@ namespace Toxy.ToxHelpers
 
             if (WaveIn.DeviceCount > 0)
             {
-                wave_source = new WaveIn();
+                wave_source = new WaveInEvent();
 
                 if (input != -1)
                     wave_source.DeviceNumber = input - 1;

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using SharpTox.Core;
 
 namespace Toxy.Converter
@@ -15,14 +16,21 @@ namespace Toxy.Converter
         private Brush ToxUserStatusINVALID;
         public ToxUserStatusToBrushConverter()
         {
-            ToxUserStatusNONE = new SolidColorBrush(Color.FromRgb(6, 225, 1));
-            ToxUserStatusNONE.Freeze();
-            ToxUserStatusBUSY = new SolidColorBrush(Color.FromRgb(214, 43, 79));
-            ToxUserStatusBUSY.Freeze();
-            ToxUserStatusAWAY = new SolidColorBrush(Color.FromRgb(229, 222, 31));
-            ToxUserStatusAWAY.Freeze();
-            ToxUserStatusINVALID = new SolidColorBrush(Colors.Red);
-            ToxUserStatusINVALID.Freeze();
+            ToxUserStatusNONE = new ImageBrush(){
+                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Online.png", UriKind.Relative))
+            };
+            ToxUserStatusAWAY = new ImageBrush()
+            {
+                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Away.png", UriKind.Relative))
+            };
+            ToxUserStatusBUSY = new ImageBrush()
+            {
+                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Busy.png", UriKind.Relative))
+            };
+            ToxUserStatusINVALID = new ImageBrush()
+            {
+                ImageSource = new BitmapImage(new Uri(@"Resources\Icons\Offline.png", UriKind.Relative))
+            };
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

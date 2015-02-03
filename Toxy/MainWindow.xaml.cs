@@ -2177,11 +2177,23 @@ namespace Toxy
 
                 foreach (string name in names)
                 {
-                    if (!name.ToLower().StartsWith(text.ToLower()))
+                    string lastPart = text.Split(' ').Last();
+                    if (!name.ToLower().StartsWith(lastPart.ToLower()))
                         continue;
 
-                    TextToSend.Text = string.Format("{0}, ", name);
-                    TextToSend.SelectionStart = TextToSend.Text.Length;
+                    if (text.Split(' ').Length > 1)
+                    {
+                        if (text.Last() != ' ')
+                        {
+                            TextToSend.Text = string.Format("{0}{1} ", text.Substring(0, text.Length - lastPart.Length), name);
+                            TextToSend.SelectionStart = TextToSend.Text.Length;
+                        }
+                    }
+                    else
+                    {
+                        TextToSend.Text = string.Format("{0}, ", name);
+                        TextToSend.SelectionStart = TextToSend.Text.Length;
+                    }
                 }
 
                 e.Handled = true;

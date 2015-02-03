@@ -729,19 +729,22 @@ namespace Toxy
 
         private void tox_OnFriendRequest(object sender, ToxEventArgs.FriendRequestEventArgs e)
         {
-            try
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                AddFriendRequestToView(e.Id, e.Message);
-                if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
-                    this.Flash();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
+                try
+                {
+                    AddFriendRequestToView(e.Id, e.Message);
+                    if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
+                        this.Flash();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
 
-            nIcon.Icon = newMessageNotifyIcon;
-            ViewModel.HasNewMessage = true;
+                nIcon.Icon = newMessageNotifyIcon;
+                ViewModel.HasNewMessage = true;
+            })));
         }
 
         private void tox_OnFriendAction(object sender, ToxEventArgs.FriendActionEventArgs e)

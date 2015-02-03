@@ -2546,12 +2546,23 @@ namespace Toxy
             
             if (avatarBytes.Length > 0x4000)
             {
-                //TODO: maintain aspect ratio
-                Bitmap newBmp = new Bitmap(64, 64);
+                double width = 64, height = 64;
+                Bitmap newBmp = new Bitmap((int)width, (int)height);
+
                 using (Graphics g = Graphics.FromImage(newBmp))
                 {
+                    double ratioX = width / (double)bmp.Width;
+                    double ratioY = height / (double)bmp.Height;
+                    double ratio = ratioX < ratioY ? ratioX : ratioY;
+
+                    int newWidth = (int)(bmp.Width * ratio);
+                    int newHeight = (int)(bmp.Height * ratio);
+
+                    int posX = (int)((width - (bmp.Width * ratio)) / 2);
+                    int posY = (int)((height - (bmp.Height * ratio)) / 2);
+                    
                     g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                    g.DrawImage(bmp, 0, 0, 64, 64);
+                    g.DrawImage(bmp, posX, posY, newWidth, newHeight);
                 }
 
                 bmp.Dispose();

@@ -102,8 +102,12 @@ namespace Toxy.ToxHelpers
         {
             if (wave_source != null)
             {
-                wave_source.StopRecording();
-                wave_source.Dispose();
+                try
+                {
+                    wave_source.StopRecording();
+                    wave_source.Dispose();
+                }
+                catch { }
             }
 
             if (wave_out != null)
@@ -323,8 +327,12 @@ namespace Toxy.ToxHelpers
 
             if (wave_source != null)
             {
-                wave_source.StopRecording();
-                wave_source.Dispose();
+                try
+                {
+                    wave_source.StopRecording();
+                    wave_source.Dispose();
+                }
+                catch { }
             }
 
             if (wave_out != null)

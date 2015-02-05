@@ -3068,5 +3068,14 @@ namespace Toxy
 
             SettingsFlyout.IsOpenChanged += handler;
         }
+
+        private void RandomNospamButton_Click(object sender, RoutedEventArgs e)
+        {
+            byte[] buffer = new byte[sizeof(uint)];
+            var random = new Random();
+
+            random.NextBytes(buffer);
+            SettingsNospam.Text = BitConverter.ToUInt32(buffer, 0).ToString();
+        }
     }
 }

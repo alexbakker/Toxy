@@ -143,7 +143,7 @@
                     <TextBlock Grid.Row="0"
                                Text="{Binding MainToxyUser.Name, Mode=OneWay}"
                                FontSize="25"
-                               TextTrimming="CharacterEllipsis" 
+                               TextTrimming="CharacterEllipsis"
                                MouseDown="NameTextBlock_MouseDown"/>
 
                     <TextBlock Grid.Row="1"
@@ -726,13 +726,20 @@
                             <Label Content="Change nospam (note: this will change your id)"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left"/>
-                            <TextBox x:Name="SettingsNospam"
-                                 AcceptsReturn="True"
-                                 HorizontalAlignment="Left"
-                                 Height="23"
-                                 TextWrapping="Wrap"
-                                 VerticalAlignment="Top"
-                                 Width="275" />
+                            <StackPanel Margin="0 0 0 0" Orientation="Horizontal">
+                                <TextBox x:Name="SettingsNospam"
+                                     AcceptsReturn="True"
+                                     HorizontalAlignment="Left"
+                                     Height="23"
+                                     TextWrapping="Wrap"
+                                     VerticalAlignment="Top"
+                                     Width="200" />
+                                <Button x:Name="RandomNospamButton"
+                                     Margin="5 0"
+                                     HorizontalAlignment="Left"
+                                     Content="Randomize"
+                                     Click="RandomNospamButton_Click"/>
+                            </StackPanel>
                             <Label Content="Pick an accent color"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />

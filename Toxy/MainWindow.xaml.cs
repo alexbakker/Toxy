@@ -1159,6 +1159,9 @@ namespace Toxy
 
         private async void Chat_Drop(object sender, DragEventArgs e)
         {
+            if (ViewModel.IsGroupSelected)
+                return;
+
             if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(ViewModel.SelectedChatNumber))
             {
                 var docPath = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -1185,7 +1188,7 @@ namespace Toxy
 
         private void Chat_DragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop) && tox.IsOnline(ViewModel.SelectedChatNumber))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && !ViewModel.IsGroupSelected && tox.IsOnline(ViewModel.SelectedChatNumber))
             {
                 e.Effects = DragDropEffects.All;
             }
@@ -1193,7 +1196,7 @@ namespace Toxy
             {
                 e.Effects = DragDropEffects.None;
             }
-            e.Handled = false;
+            e.Handled = true;
         }
 
         private async Task loadTox()
@@ -2302,6 +2305,9 @@ namespace Toxy
         {
             if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
             {
+                if (ViewModel.IsGroupSelected)
+                    return;
+
                 if (Clipboard.ContainsImage())
                 {
                     var bmp = (Bitmap)System.Windows.Forms.Clipboard.GetImage();

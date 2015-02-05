@@ -540,12 +540,10 @@ namespace Toxy
             if (!convdic.ContainsKey(e.FriendNumber))
                 convdic.Add(e.FriendNumber, FlowDocumentExtensions.CreateNewDocument());
 
-            var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, e.FileName, e.FileName);
-            FileTransferControl control = null;
-
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(((Action)(() =>
             {
-                control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
+                var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, e.FileName, e.FileName);
+                var control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
                 var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
                 transfer.Tag = control;
 
@@ -556,54 +554,51 @@ namespace Toxy
                     if (friend.Selected)
                         ScrollChatBox();
                 }
-            });
 
-            control.OnAccept += delegate(FileTransfer ft)
-            {
-                SaveFileDialog dialog = new SaveFileDialog();
-                dialog.FileName = e.FileName;
-
-                if (dialog.ShowDialog() == true)
+                control.OnAccept += delegate(FileTransfer ft)
                 {
-                    ft.Path = dialog.FileName;
-                    control.FilePath = dialog.FileName;
-                    tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
-                }
+                    SaveFileDialog dialog = new SaveFileDialog();
+                    dialog.FileName = e.FileName;
 
-                transfer.Tag.StartTransfer();
-            };
+                    if (dialog.ShowDialog() == true)
+                    {
+                        ft.Path = dialog.FileName;
+                        control.FilePath = dialog.FileName;
+                        tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
+                    }
 
-            control.OnDecline += delegate(FileTransfer ft)
-            {
-                ft.Kill(false);
+                    transfer.Tag.StartTransfer();
+                };
 
-                if (transfers.Contains(ft))
-                    transfers.Remove(ft);
-            };
+                control.OnDecline += delegate(FileTransfer ft)
+                {
+                    ft.Kill(false);
 
-            control.OnPause += delegate(FileTransfer ft)
-            {
-                if (ft.Paused)
-                    tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
-                else
-                    tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
-            };
+                    if (transfers.Contains(ft))
+                        transfers.Remove(ft);
+                };
 
-            control.OnFileOpen += delegate(FileTransfer ft)
-            {
-                try { Process.Start(ft.Path); }
-                catch { /*want to open a "choose program dialog" here*/ }
-            };
+                control.OnPause += delegate(FileTransfer ft)
+                {
+                    if (ft.Paused)
+                        tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
+                    else
+                        tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
+                };
 
-            control.OnFolderOpen += delegate(FileTransfer ft)
-            {
-                Process.Start("explorer.exe", @"/select, " + ft.Path);
-            };
+                control.OnFileOpen += delegate(FileTransfer ft)
+                {
+                    try { Process.Start(ft.Path); }
+                    catch { /*want to open a "choose program dialog" here*/ }
+                };
 
-            transfers.Add(transfer);
+                control.OnFolderOpen += delegate(FileTransfer ft)
+                {
+                    Process.Start("explorer.exe", @"/select, " + ft.Path);
+                };
 
-            Dispatcher.BeginInvoke(((Action)(() =>
-            {
+                transfers.Add(transfer);
+
                 if (ViewModel.MainToxyUser.ToxStatus != ToxUserStatus.Busy)
                     this.Flash();
             })));

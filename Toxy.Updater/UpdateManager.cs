@@ -8,6 +8,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
+
 using Ionic.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,34 +17,24 @@ namespace Toxy.Updater
 {
     class UpdateManager
     {
-        static Win32ProgressDialog _dialog;
-        public string _path = Environment.CurrentDirectory;
-        static string _updateFileName = "update.zip";
-        static string _publicKey = "3082010A0282010100F7E965CEDCC8B57C8849D68D0BA0E060A3E1EA952616D06A431B9D50D58F936ADEE71F7C15CC13C757F63766C750D180B4B868954D2C6A576CB27B9ECF4EE06FBEA54A8307973D56E468482966D6653B238BA681526AC01DDB5858FF0855896D9365E4007C0ED5A321E99F4210B3C976C383059E557056F0FA7311417273F04B8A207CDD8FF3DC89FDA505B337CE1C27BA46F176D5BA2B45BBAC35D06182909249BDEB835232B282B8F7FAB2C19720D90F1B3B677922C87DF503E86EADADC7C4CD63744F549279F9A4429CE4D745B0F36DDA2FA01107A1C142BE6C09AB58E631CC9756D831302044EACE9D71864E8566D95952A53880A64C875472F82E2251F90203010001";
+        private const string _updateFileName = "update.zip";
+        private const string _jsonUri = "http://toxy.content.impy.me/versions";
+        private const string _publicKey = "3082010A0282010100F7E965CEDCC8B57C8849D68D0BA0E060A3E1EA952616D06A431B9D50D58F936ADEE71F7C15CC13C757F63766C750D180B4B868954D2C6A576CB27B9ECF4EE06FBEA54A8307973D56E468482966D6653B238BA681526AC01DDB5858FF0855896D9365E4007C0ED5A321E99F4210B3C976C383059E557056F0FA7311417273F04B8A207CDD8FF3DC89FDA505B337CE1C27BA46F176D5BA2B45BBAC35D06182909249BDEB835232B282B8F7FAB2C19720D90F1B3B677922C87DF503E86EADADC7C4CD63744F549279F9A4429CE4D745B0F36DDA2FA01107A1C142BE6C09AB58E631CC9756D831302044EACE9D71864E8566D95952A53880A64C875472F82E2251F90203010001";
+        
+        private bool _finished = false;
+        private List<string> _extractedFiles = new List<string>();
 
-        public bool _forceNightly = false;
-        public bool _forceUpdate = false;
-        static bool _finished = false;
+        private Win32ProgressDialog _dialog;
+        public readonly string Dir = Environment.CurrentDirectory;
 
-        static List<string> _extractedFiles = new List<string>();
-        static string _jsonUri = "http://toxy.content.impy.me/versions";
+        public bool ForceNightly { get; private set; }
+        public bool ForceUpdate { get; private set; }
 
-        public bool _isX64
+        public string NightlyUri
         {
             get
             {
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432")))
-                    return true;
-                else
-                    return false;
-            }
-        }
-
-        public string _nightlyUri
-        {
-            get
-            {
-                if (_isX64)
+                if (Tools.IsX64)
                     return "https://jenkins.impy.me/job/Toxy%20x64/lastSuccessfulBuild/artifact/toxy_x64.zip";
                 else
                     return "https://jenkins.impy.me/job/Toxy%20x86/lastSuccessfulBuild/artifact/toxy_x86.zip";
@@ -96,8 +87,8 @@ namespace Toxy.Updater
             while (!_dialog.HasUserCancelled && !_finished) { }
             CleanUp(_dialog.HasUserCancelled);
 
-            if (File.Exists(Path.Combine(_path, "Toxy.exe")))
-                Process.Start(Path.Combine(_path, "Toxy.exe"));
+            if (File.Exists(Path.Combine(Dir, "Toxy.exe")))
+                Process.Start(Path.Combine(Dir, "Toxy.exe"));
         }
 
         public void ProcessArguments(string[] args)
@@ -108,16 +99,16 @@ namespace Toxy.Updater
                 {
                     case "/force":
                     case "/f":
-                        _forceUpdate = true;
+                        ForceUpdate = true;
                         break;
                     case "/nightly":
-                        _forceNightly = true;
+                        ForceNightly = true;
                         break;
                 }
             }
         }
 
-        void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             _dialog.Line2 = "Extracting";
 
@@ -128,7 +119,7 @@ namespace Toxy.Updater
                     foreach (ZipEntry entry in file)
                     {
                         _dialog.Line3 = entry.FileName;
-                        entry.Extract(this._path, ExtractExistingFileAction.OverwriteSilently);
+                        entry.Extract(Dir, ExtractExistingFileAction.OverwriteSilently);
                         _extractedFiles.Add(entry.FileName);
                     }
 
@@ -144,7 +135,7 @@ namespace Toxy.Updater
                         try
                         {
                             string status;
-                            if (!VerifyCertificate(X509Certificate.CreateFromSignedFile(entry.FileName).GetRawCertData(), out status))
+                            if (!Tools.VerifyCertificate(X509Certificate.CreateFromSignedFile(entry.FileName).GetRawCertData(), _publicKey, out status))
                             {
                                 ShowError(entry.FileName + " does not have a valid signature!\n\n" + status);
                                 CleanUp(true);
@@ -174,44 +165,17 @@ namespace Toxy.Updater
             _finished = true;
         }
 
-        static void ShowError(string message)
+        private static void ShowError(string message)
         {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        static bool VerifyCertificate(byte[] certData, out string message)
-        {
-            var chain = new X509Chain();
-
-            chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
-            chain.ChainPolicy.VerificationFlags = X509VerificationFlags.IgnoreWrongUsage;
-
-            var cert = new X509Certificate2(certData);
-            bool success = chain.Build(cert);
-
-            if (chain.ChainStatus.Count() > 0)
-                message = string.Format("{0}\n{1}", chain.ChainStatus[0].Status, chain.ChainStatus[0].StatusInformation);
-            else
-                message = string.Empty;
-
-            if (!success)
-                return false;
-
-            if (cert.GetPublicKeyString() != _publicKey)
-            {
-                message = "Public keys don't match";
-                return false;
-            }
-
-            return true;
-        }
-
-        static void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             _dialog.SetProgress(e.ProgressPercentage);
         }
 
-        static void CleanUp(bool clearFiles)
+        private void CleanUp(bool clearFiles)
         {
             try
             {
@@ -230,11 +194,11 @@ namespace Toxy.Updater
             catch { }
         }
 
-        public string GetToxyVersion()
+        public string GetCurrentVersion()
         {
             try
             {
-                return FileVersionInfo.GetVersionInfo(Path.Combine(_path, "Toxy.exe")).FileVersion;
+                return FileVersionInfo.GetVersionInfo(Path.Combine(Dir, "Toxy.exe")).FileVersion;
             }
             catch
             {

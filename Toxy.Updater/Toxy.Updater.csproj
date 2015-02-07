@@ -67,10 +67,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventArgs\ErrorEventArgs.cs" />
+    <Compile Include="Interfaces\IUpdateGui.cs" />
+    <Compile Include="Interfaces\IUpdateManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgressDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UpdateManager.cs" />
+    <Compile Include="GUI.cs" />
+    <Compile Include="Logic.cs" />
+    <Compile Include="UpdateParameterDescription.cs" />
+    <Compile Include="EventArgs\UpdateStartEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

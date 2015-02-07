@@ -2203,7 +2203,7 @@ namespace Toxy
 
         private void GithubButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/Reverp/Toxy-WPF");
+            Process.Start("https://github.com/Reverp/Toxy");
         }
 
         private void TextToSend_TextChanged(object sender, TextChangedEventArgs e)

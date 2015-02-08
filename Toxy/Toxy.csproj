@@ -132,6 +132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Properties\BuildInfo.cs" />
     <Compile Include="Common\Transfers\FileReceiver.cs" />
     <Compile Include="Common\Transfers\FileSender.cs" />
     <Compile Include="Common\Transfers\FileTransfer.cs" />
@@ -303,11 +304,37 @@
     <Resource Include="Resources\Icons\icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" Condition="Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')" />
+  <Target Name="BeforeBuild" Condition="'$(BUILD_NUMBER)' != '' And Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')">
+    <CreateItem Include="**\BuildInfo.cs">
+          <Output TaskParameter="Include" ItemName="BuildInfoFiles"/>
+    </CreateItem>
+    <PropertyGroup>
+      <build Condition="'$(BUILD_NUMBER)' == ''">Unknown</build>
+      <build Condition="'$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</build>
+      <commit Condition="'$(GIT_COMMIT)' == ''">Unknown</commit>
+      <commit Condition="'$(GIT_COMMIT)' != ''">$(GIT_COMMIT)</commit>
+      <CurrentDate>$([System.DateTime]::Now.ToString(MM.dd.yyyy hh:mm:ss))</CurrentDate>
+    </PropertyGroup>
+    <FileUpdate Files="@(BuildInfoFiles)"
+        Multiline="true"
+        Singleline="false"
+        Regex="public const string CommitHash = &quot;.*&quot;"
+        ReplacementText="public const string CommitHash = &quot;$(commit)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)"
+        Multiline="true"
+        Singleline="false"
+        Regex="public const string BuildNumber = &quot;.*&quot;"
+        ReplacementText="public const string BuildNumber = &quot;$(build)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)"
+        Multiline="true"
+        Singleline="false"
+        Regex="public const string Platform = &quot;.*&quot;"
+        ReplacementText="public const string Platform = &quot;$(Platform)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)"
+        Multiline="true"
+        Singleline="false"
+        Regex="public const string Date = &quot;.*&quot;"
+        ReplacementText="public const string Date = &quot;$(CurrentDate)&quot;" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

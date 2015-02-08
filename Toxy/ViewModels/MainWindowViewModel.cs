@@ -199,6 +199,11 @@ namespace Toxy.ViewModels
             get { return this.SelectedChatObject is IGroupObject; }
         }
 
+        public Visibility BuildInfoVisibility
+        {
+            get { return string.IsNullOrEmpty(BuildInfo.BuildNumber) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
         public int SelectedChatNumber
         {
             get

@@ -10,6 +10,7 @@
                       xmlns:converter="clr-namespace:Toxy.Converter"
                       xmlns:viewModels="clr-namespace:Toxy.ViewModels"
                       xmlns:views="clr-namespace:Toxy.Views"
+                      xmlns:root="clr-namespace:Toxy"
                       xmlns:common="clr-namespace:Toxy.Common"
                       xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       x:Class="Toxy.MainWindow"
@@ -861,6 +862,22 @@
                                 <ComboBoxItem Tag="1">SOCKS5</ComboBoxItem>
                                 <ComboBoxItem Tag="2">HTTP</ComboBoxItem>
                             </ComboBox>
+                            <TextBlock Text="{Binding Source={x:Static root:BuildInfo.BuildNumber}, StringFormat='Build number: {0}'}"
+                                Visibility="{Binding BuildInfoVisibility}"
+                                HorizontalAlignment="Left"
+                                Margin="5,15,0,0"/>
+                            <TextBlock Text="{Binding Source={x:Static root:BuildInfo.Date}, StringFormat='Build date: {0}'}"
+                                Visibility="{Binding BuildInfoVisibility}"
+                                HorizontalAlignment="Left"
+                                Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding Source={x:Static root:BuildInfo.Platform}, StringFormat='Platform: {0}'}"
+                                Visibility="{Binding BuildInfoVisibility}"
+                                HorizontalAlignment="Left"
+                                Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding Source={x:Static root:BuildInfo.CommitHash}, StringFormat='Commit hash: {0}'}"
+                                Visibility="{Binding BuildInfoVisibility}"
+                                HorizontalAlignment="Left"
+                                Margin="5,0,0,0"/>
                         </StackPanel>
                     </ScrollViewer>
                     <Grid VerticalAlignment="Bottom" Margin="0,0,10,10">

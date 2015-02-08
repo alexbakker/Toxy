@@ -733,12 +733,13 @@
                                      Height="23"
                                      TextWrapping="Wrap"
                                      VerticalAlignment="Top"
-                                     Width="200" />
+                                     Width="180" />
                                 <Button x:Name="RandomNospamButton"
                                      Margin="5 0"
                                      HorizontalAlignment="Left"
                                      Content="Randomize"
-                                     Click="RandomNospamButton_Click"/>
+                                     Click="RandomNospamButton_Click"
+                                     Width="90"/>
                             </StackPanel>
                             <Label Content="Pick an accent color"
                                Margin="0 10 0 0"

@@ -299,6 +299,8 @@
       <Link>sqlite3.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Icons\grouppicture.png" />
+    <Resource Include="Resources\Icons\grouppictureNormal.png" />
     <EmbeddedResource Include="Resources\Audio\Blop.wav" />
     <Resource Include="Resources\Icons\icon2.ico" />
     <Resource Include="Resources\Icons\icon.ico" />
@@ -307,7 +309,7 @@
   <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" Condition="Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')" />
   <Target Name="BeforeBuild" Condition="'$(BUILD_NUMBER)' != '' And Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')">
     <CreateItem Include="**\BuildInfo.cs">
-          <Output TaskParameter="Include" ItemName="BuildInfoFiles"/>
+      <Output TaskParameter="Include" ItemName="BuildInfoFiles" />
     </CreateItem>
     <PropertyGroup>
       <build Condition="'$(BUILD_NUMBER)' == ''">Unknown</build>
@@ -316,25 +318,9 @@
       <commit Condition="'$(GIT_COMMIT)' != ''">$(GIT_COMMIT)</commit>
       <CurrentDate>$([System.DateTime]::Now.ToString(MM.dd.yyyy hh:mm:ss))</CurrentDate>
     </PropertyGroup>
-    <FileUpdate Files="@(BuildInfoFiles)"
-        Multiline="true"
-        Singleline="false"
-        Regex="public const string CommitHash = &quot;.*&quot;"
-        ReplacementText="public const string CommitHash = &quot;$(commit)&quot;" />
-    <FileUpdate Files="@(BuildInfoFiles)"
-        Multiline="true"
-        Singleline="false"
-        Regex="public const string BuildNumber = &quot;.*&quot;"
-        ReplacementText="public const string BuildNumber = &quot;$(build)&quot;" />
-    <FileUpdate Files="@(BuildInfoFiles)"
-        Multiline="true"
-        Singleline="false"
-        Regex="public const string Platform = &quot;.*&quot;"
-        ReplacementText="public const string Platform = &quot;$(Platform)&quot;" />
-    <FileUpdate Files="@(BuildInfoFiles)"
-        Multiline="true"
-        Singleline="false"
-        Regex="public const string Date = &quot;.*&quot;"
-        ReplacementText="public const string Date = &quot;$(CurrentDate)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string CommitHash = &quot;.*&quot;" ReplacementText="public const string CommitHash = &quot;$(commit)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string BuildNumber = &quot;.*&quot;" ReplacementText="public const string BuildNumber = &quot;$(build)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string Platform = &quot;.*&quot;" ReplacementText="public const string Platform = &quot;$(Platform)&quot;" />
+    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string Date = &quot;.*&quot;" ReplacementText="public const string Date = &quot;$(CurrentDate)&quot;" />
   </Target>
 </Project>

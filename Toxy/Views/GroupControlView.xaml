@@ -37,7 +37,7 @@
               VerticalAlignment="Center">
             <Image Height="40"
                    Width="40"
-                   Source="pack://application:,,,/Resources/Icons/profilepicture.png" />
+                   Source="pack://application:,,,/Resources/Icons/grouppicture.png" />
             <!-- new message indicator -->
             
         </Grid>

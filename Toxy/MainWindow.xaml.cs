@@ -63,6 +63,7 @@ namespace Toxy
         private AppTheme oldAppTheme;
 
         private Config config;
+        private AvatarStore avatarStore;
 
         System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
 
@@ -125,6 +126,7 @@ namespace Toxy
                 ConfigTools.Save(config, configFilename);
             }
 
+            avatarStore = new AvatarStore(toxDataDir);
             applyConfig();
         }
 
@@ -317,10 +319,7 @@ namespace Toxy
             if (e.Format == ToxAvatarFormat.None)
             {
                 Debug.WriteLine(string.Format("Received ToxAvatarFormat.None ({0})", e.FriendNumber));
-
-                //friend removed avatar
-                if (avatarExistsOnDisk(e.FriendNumber))
-                    File.Delete(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientId(e.FriendNumber).GetString() + ".png"));
+                avatarStore.Delete(tox.GetClientId(e.FriendNumber));
 
                 Dispatcher.BeginInvoke(((Action)(() =>
                 {
@@ -334,33 +333,27 @@ namespace Toxy
 
                 if (friend.AvatarBytes == null || friend.AvatarBytes.Length == 0)
                 {
-                    //looks like we're still busy loading the avatar or we don't have it at all
-                    //let's see if we can find the avatar on the disk just to be sure
-
-                    if (!avatarExistsOnDisk(e.FriendNumber))
+                    if (!avatarStore.Contains(tox.GetClientId(e.FriendNumber)))
                     {
                         Debug.WriteLine(string.Format("Avatar ({0}) does not exist on disk, requesting data", e.FriendNumber));
 
                         if (!tox.RequestAvatarData(e.FriendNumber))
                             Debug.WriteLine(string.Format("Could not request avatar data from {0}: {1}", e.FriendNumber, getFriendName(e.FriendNumber)));
                     }
-
-                    //if the avatar DOES exist on disk we're probably still loading it
                 }
                 else
                 {
                     Debug.WriteLine(string.Format("Comparing given hash to the avatar we already have ({0})", e.FriendNumber));
-                    //let's compare this to the hash we have
+
                     if (tox.GetHash(friend.AvatarBytes).SequenceEqual(e.Hash))
                     {
                         Debug.WriteLine(string.Format("We already have this avatar, ignore ({0})", e.FriendNumber));
-                        //we already have this avatar, ignore
                         return;
                     }
                     else
                     {
                         Debug.WriteLine(string.Format("Hashes don't match, requesting avatar data... ({0})", e.FriendNumber));
-                        //that's interesting, let's ask for the avatar data
+
                         if (!tox.RequestAvatarData(e.FriendNumber))
                             Debug.WriteLine(string.Format("Could not request avatar date from {0}: {1}", e.FriendNumber, getFriendName(e.FriendNumber)));
                     }
@@ -380,15 +373,12 @@ namespace Toxy
 
                 if (friend.AvatarBytes != null && tox.GetHash(friend.AvatarBytes).SequenceEqual(e.Avatar.Hash))
                 {
-                    //that's odd, why did we even receive this avatar?
-                    //let's ignore ..
                     Debug.WriteLine("Received avatar data unexpectedly, ignoring");
                 }
                 else
                 {
                     try
                     {
-                        //note: this might be dangerous, maybe we need a way of verifying that this isn't malicious data (but how?)
                         friend.AvatarBytes = e.Avatar.Data;
 
                         Debug.WriteLine(string.Format("Starting task to apply the new avatar ({0})", e.FriendNumber));
@@ -396,7 +386,6 @@ namespace Toxy
                     }
                     catch
                     {
-                        //looks like someone sent invalid image data, what a troll
                         Debug.WriteLine(string.Format("Received invalid avatar data ({0})", e.FriendNumber));
                     }
                 }
@@ -1067,27 +1056,13 @@ namespace Toxy
 
         private void loadAvatars()
         {
-            string avatarsDir = Path.Combine(toxDataDir, "avatars");
-            if (!Directory.Exists(avatarsDir))
             {
-                Directory.CreateDirectory(avatarsDir);
-                return;
-            }
-
-            string selfAvatarFile = Path.Combine(avatarsDir, tox.Keys.PublicKey.GetString() + ".png");
-            if (File.Exists(selfAvatarFile))
-            {
-                byte[] bytes = File.ReadAllBytes(selfAvatarFile);
-                if (bytes.Length > 0)
+                byte[] bytes;
+                var avatar = avatarStore.Load(tox.Keys.PublicKey, out bytes);
+                if (avatar != null && bytes != null && bytes.Length > 0)
                 {
                     tox.SetAvatar(ToxAvatarFormat.Png, bytes);
-
-                    MemoryStream stream = new MemoryStream(bytes);
-
-                    using (Bitmap bmp = new Bitmap(stream))
-                    {
-                        ViewModel.MainToxyUser.Avatar = bmp.ToBitmapImage(ImageFormat.Png);
-                    }
+                    ViewModel.MainToxyUser.Avatar = avatar;
                 }
             }
 
@@ -1097,45 +1072,23 @@ namespace Toxy
                 if (obj == null)
                     continue;
 
-                ToxKey publicKey = tox.GetClientId(friend);
-                string avatarFilename = Path.Combine(avatarsDir, publicKey.GetString() + ".png");
-                if (File.Exists(avatarFilename))
+                byte[] bytes;
+                var avatar = avatarStore.Load(tox.GetClientId(friend), out bytes);
+
+                if (avatar != null && bytes != null && bytes.Length > 0)
                 {
-                    byte[] bytes = File.ReadAllBytes(avatarFilename);
-                    if (bytes.Length > 0)
-                    {
-                        obj.AvatarBytes = bytes;
-
-                        MemoryStream stream = new MemoryStream(bytes);
-
-                        using (Bitmap bmp = new Bitmap(stream))
-                        {
-                            obj.Avatar = bmp.ToBitmapImage(ImageFormat.Png);
-                        }
-                    }
+                    obj.AvatarBytes = bytes;
+                    obj.Avatar = avatar;
                 }
             }
-        }
-
-        private bool avatarExistsOnDisk(int friendnumber)
-        {
-            return File.Exists(Path.Combine(toxDataDir, "avatars\\" + tox.GetClientId(friendnumber).GetString() + ".png"));
         }
 
         private Task<bool> applyAvatar(IFriendObject friend, byte[] data)
         {
             return Task.Run(() =>
             {
-                try
-                {
-                    Debug.WriteLine(string.Format("Saving avatar to disk ({0})", friend.ChatNumber));
-                    string avatarsDir = Path.Combine(toxDataDir, "avatars");
-                    if (!Directory.Exists(avatarsDir))
-                        Directory.CreateDirectory(avatarsDir);
-
-                    File.WriteAllBytes(Path.Combine(avatarsDir, tox.GetClientId(friend.ChatNumber).GetString() + ".png"), data);
-                }
-                catch
+                Debug.WriteLine(string.Format("Saving avatar to disk ({0})", friend.ChatNumber));
+                if (!avatarStore.Save(data, tox.GetClientId(friend.ChatNumber)))
                 {
                     Debug.WriteLine(string.Format("Could not save avatar to disk ({0})", friend.ChatNumber));
                     return false;
@@ -1143,14 +1096,10 @@ namespace Toxy
 
                 MemoryStream stream = new MemoryStream(data);
 
-                Debug.WriteLine(string.Format("Created memory stream for avatar data ({0})", friend.ChatNumber));
-
                 using (Bitmap bmp = new Bitmap(stream))
                 {
                     var result = bmp.ToBitmapImage(ImageFormat.Png);
                     Dispatcher.BeginInvoke(((Action)(() => friend.Avatar = result)));
-
-                    Debug.WriteLine(string.Format("Done applying avatar ({0})", friend.ChatNumber));
                 }
 
                 return true;

@@ -132,6 +132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AvatarStore.cs" />
     <Compile Include="Properties\BuildInfo.cs" />
     <Compile Include="Common\Transfers\FileReceiver.cs" />
     <Compile Include="Common\Transfers\FileSender.cs" />

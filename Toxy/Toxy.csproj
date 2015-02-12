@@ -132,7 +132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AvatarStore.cs" />
+    <Compile Include="Common\AvatarStore.cs" />
     <Compile Include="Properties\BuildInfo.cs" />
     <Compile Include="Common\Transfers\FileReceiver.cs" />
     <Compile Include="Common\Transfers\FileSender.cs" />
@@ -169,7 +169,7 @@
     </Compile>
     <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
     <Compile Include="Extensions\FlowDocumentExtensions.cs" />
-    <Compile Include="Common\Classes.cs" />
+    <Compile Include="Common\MessageData.cs" />
     <Compile Include="MVVM\DelegateCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="ToxHelpers\Tools.cs" />
@@ -217,7 +217,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="Message.xaml">
+    <EmbeddedResource Include="Views\Message.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>

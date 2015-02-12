@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using SharpTox.Core;
 using Toxy.Extenstions;
 
-namespace Toxy
+namespace Toxy.Common
 {
     public class AvatarStore
     {

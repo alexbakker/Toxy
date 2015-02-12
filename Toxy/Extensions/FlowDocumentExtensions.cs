@@ -193,7 +193,7 @@ namespace Toxy.Extenstions
 
         public static FlowDocument CreateNewDocument()
         {
-            Stream doc_stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Toxy.Message.xaml");
+            Stream doc_stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Toxy.Views.Message.xaml");
             FlowDocument doc = (FlowDocument)XamlReader.Load(doc_stream);
             doc.IsEnabled = true;
 

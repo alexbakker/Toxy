@@ -56,6 +56,7 @@ namespace Toxy.ToxHelpers
             WaveFormat outFormatSingle = new WaveFormat((int)settings.AudioSampleRate, 1);
 
             filterAudio = new FilterAudio((int)settings.AudioSampleRate);
+            filterAudio.EchoFilterEnabled = false;
 
             wave_provider = new BufferedWaveProvider(outFormat);
             wave_provider.DiscardOnBufferOverflow = true;
@@ -220,6 +221,7 @@ namespace Toxy.ToxHelpers
             wave_provider.DiscardOnBufferOverflow = true;
 
             filterAudio = new FilterAudio((int)settings.AudioSampleRate);
+            filterAudio.EchoFilterEnabled = false;
 
             if (WaveIn.DeviceCount > 0)
             {

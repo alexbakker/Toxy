@@ -77,7 +77,6 @@
     <Compile Include="UpdateParameterDescription.cs" />
     <Compile Include="EventArgs\UpdateStartEventArgs.cs" />
     <Compile Include="Tools.cs" />
-    <Compile Include="UpdateManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

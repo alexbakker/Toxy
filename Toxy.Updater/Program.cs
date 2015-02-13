@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -7,52 +8,65 @@ using Newtonsoft.Json.Linq;
 
 namespace Toxy.Updater
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
-        {
-            var updateManager = new UpdateManager();
-            updateManager.ProcessArguments(args);
+        private static bool _finish;
 
-            string currentVersion = updateManager.GetCurrentVersion();
-            if (updateManager.ForceNightly)
+        private static void Main(string[] args)
+        {
+            var updateParamteterDescription = ProcessArguments(args);
+            var updateManger = new Logic(updateParamteterDescription);
+            var updateGui = new GUI();
+
+            updateManger.DownloadAvaible += updateGui.AskUserToDownload;
+            updateManger.StartDownloading += updateGui.DownloadStarted;
+            updateManger.ErrorOccurred += updateGui.ErrorOccurred;
+            updateManger.DownloadStatusChanged += updateGui.DownloadstatusChanged;
+            updateManger.Extracting += updateGui.Extracting;
+            updateManger.Finish += Finished;
+
+            updateGui.ConfirmDownload += updateManger.StartDownload;
+            updateGui.AbortDownload += Finished;
+
+            updateManger.Update();
+
+            // TODO: DIRTY
+            while (!_finish)
             {
-                updateManager.RunUpdate(updateManager.NightlyUri);
+                Thread.Sleep(100);
             }
-            else if (updateManager.ForceUpdate)
+        }
+
+        private static void Finished(object sender, EventArgs eventArgs)
+        {
+            _finish = true;
+        }
+
+
+        /// <summary>
+        /// parse the commandlinearguments
+        /// </summary>
+        /// <param name="args">string to parse</param>
+        /// <returns>UpdateDescription</returns>
+        private static UpdateParameterDescription ProcessArguments(string[] args)
+        {
+            var description = new UpdateParameterDescription();
+
+            foreach (string arg in args)
             {
-                var latest = updateManager.GetLatestVersion();
-                updateManager.RunUpdate(Tools.IsX64 ? (string)latest["url_x64"] : (string)latest["url_x86"]);
-            }
-            else if (string.IsNullOrEmpty(currentVersion))
-            {
-                var result = MessageBox.Show("Could not find Toxy in this directory. Do you want to download the latest version?", "Toxy not found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+                switch (arg)
                 {
-                    var latest = updateManager.GetLatestVersion();
-                    updateManager.RunUpdate(Tools.IsX64 ? (string)latest["url_x64"] : (string)latest["url_x86"]);
+                    case "/force":
+                    case "/f":
+                        description.ForceUpdate = true;
+                        break;
+                    case "/nightly":
+                        description.ForceNightly = true;
+                        break;
                 }
             }
-            else
-            {
-                var info = updateManager.GetVersionInfo();
-                if (info != null)
-                {
-                    var latest = updateManager.GetLatestVersion();
-                    if (new Version(currentVersion) < new Version((string)latest["version"]))
-                        updateManager.RunUpdate(Tools.IsX64 ? (string)latest["url_x64"] : (string)latest["url_x86"]);
-                    else
-                    {
-                        if (File.Exists(Path.Combine(updateManager.Dir, "Toxy.exe")))
-                            Process.Start(Path.Combine(updateManager.Dir, "Toxy.exe"));
-                    }
-                }
-                else
-                {
-                    if (File.Exists(Path.Combine(updateManager.Dir, "Toxy.exe")))
-                        Process.Start(Path.Combine(updateManager.Dir, "Toxy.exe"));
-                }
-            }
+
+            return description;
         }
     }
 }

@@ -47,8 +47,6 @@ namespace Toxy
         private ToxAv toxav;
         private ToxCall call;
 
-        private ToxKey selfPublicKey;
-
         private Dictionary<int, FlowDocument> convdic = new Dictionary<int, FlowDocument>();
         private Dictionary<int, FlowDocument> groupdic = new Dictionary<int, FlowDocument>();
         private List<FileTransfer> transfers = new List<FileTransfer>();
@@ -87,7 +85,7 @@ namespace Toxy
         {
             get
             {
-                return Path.Combine(toxDataDir, string.Format("{0}.tox", string.IsNullOrEmpty(config.ProfileName) ? tox.Keys.PublicKey.GetString().Substring(0, 10) : config.ProfileName));
+                return Path.Combine(toxDataDir, string.Format("{0}.tox", string.IsNullOrEmpty(config.ProfileName) ? tox.Id.PublicKey.GetString().Substring(0, 10) : config.ProfileName));
             }
         }
 
@@ -755,7 +753,7 @@ namespace Toxy
             })));
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
         }
 
         private void tox_OnFriendMessage(object sender, ToxEventArgs.FriendMessageEventArgs e)
@@ -782,7 +780,7 @@ namespace Toxy
             })));
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
+                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
         }
 
         private void tox_OnNameChange(object sender, ToxEventArgs.NameChangeEventArgs e)
@@ -1024,7 +1022,7 @@ namespace Toxy
                 {
                     foreach (Tables.ToxMessage msg in task.Result)
                     {
-                        if (string.IsNullOrEmpty(msg.ProfilePublicKey) || msg.ProfilePublicKey != selfPublicKey.GetString())
+                        if (string.IsNullOrEmpty(msg.ProfilePublicKey) || msg.ProfilePublicKey != tox.Id.PublicKey.GetString())
                             continue;
 
                         int friendNumber = GetFriendByPublicKey(msg.PublicKey);
@@ -1058,7 +1056,7 @@ namespace Toxy
         {
             {
                 byte[] bytes;
-                var avatar = avatarStore.Load(tox.Keys.PublicKey, out bytes);
+                var avatar = avatarStore.Load(tox.Id.PublicKey, out bytes);
                 if (avatar != null && bytes != null && bytes.Length > 0)
                 {
                     tox.SetAvatar(ToxAvatarFormat.Png, bytes);
@@ -1176,7 +1174,7 @@ namespace Toxy
                 if (!string.IsNullOrEmpty(profileName))
                     config.ProfileName = profileName;
                 else
-                    config.ProfileName = tox.Keys.PublicKey.GetString().Substring(0, 10);
+                    config.ProfileName = tox.Id.PublicKey.GetString().Substring(0, 10);
 
                 File.Move(toxOldDataFilename, toxDataFilename);
                 ConfigTools.Save(config, configFilename);
@@ -1194,7 +1192,7 @@ namespace Toxy
                 if (!string.IsNullOrEmpty(profileName))
                     config.ProfileName = profileName;
                 else
-                    config.ProfileName = tox.Keys.PublicKey.GetString().Substring(0, 10);
+                    config.ProfileName = tox.Id.PublicKey.GetString().Substring(0, 10);
 
                 tox.Name = config.ProfileName;
                 tox.GetData().Save(toxDataFilename);
@@ -2089,7 +2087,7 @@ namespace Toxy
                         AddActionToView(selectedChatNumber, data);
 
                         if (config.EnableChatLogging)
-                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
+                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
                     }
                 }
                 else
@@ -2111,7 +2109,7 @@ namespace Toxy
                             AddMessageToView(selectedChatNumber, data);
 
                             if (config.EnableChatLogging)
-                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = selfPublicKey.GetString() });
+                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetClientId(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
                         }
                     }
                 }
@@ -2548,7 +2546,7 @@ namespace Toxy
             if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
             {
                 string avatarsDir = Path.Combine(toxDataDir, "avatars");
-                string selfAvatarFile = Path.Combine(avatarsDir, tox.Keys.PublicKey.GetString() + ".png");
+                string selfAvatarFile = Path.Combine(avatarsDir, tox.Id.PublicKey.GetString() + ".png");
 
                 if (!Directory.Exists(avatarsDir))
                     Directory.CreateDirectory(avatarsDir);
@@ -2731,7 +2729,6 @@ namespace Toxy
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
 
             await loadTox();
-            selfPublicKey = tox.Keys.PublicKey;
 
             if (config.Nodes.Length >= 4)
             {

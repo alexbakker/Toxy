@@ -12,6 +12,7 @@ namespace Toxy.Common
         public int Id { get; set; }
         public bool IsAction { get; set; }
         public bool IsSelf { get; set; }
+        public bool IsGroupMsg { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }

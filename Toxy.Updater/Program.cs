@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Threading;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Toxy.Updater
 {
-    class Program
+    internal class Program
     {
         private static bool _finish;
 
@@ -19,7 +24,7 @@ namespace Toxy.Updater
             updateManger.DownloadStatusChanged += updateGui.DownloadstatusChanged;
             updateManger.Extracting += updateGui.Extracting;
             updateManger.Finish += Finished;
-            
+
             updateGui.ConfirmDownload += updateManger.StartDownload;
             updateGui.AbortDownload += Finished;
 
@@ -43,7 +48,7 @@ namespace Toxy.Updater
         /// </summary>
         /// <param name="args">string to parse</param>
         /// <returns>UpdateDescription</returns>
-        static UpdateParameterDescription ProcessArguments(string[] args)
+        private static UpdateParameterDescription ProcessArguments(string[] args)
         {
             var description = new UpdateParameterDescription();
 
@@ -60,6 +65,7 @@ namespace Toxy.Updater
                         break;
                 }
             }
+
             return description;
         }
     }

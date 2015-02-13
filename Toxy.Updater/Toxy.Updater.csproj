@@ -59,7 +59,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,6 +76,8 @@
     <Compile Include="Logic.cs" />
     <Compile Include="UpdateParameterDescription.cs" />
     <Compile Include="EventArgs\UpdateStartEventArgs.cs" />
+    <Compile Include="Tools.cs" />
+    <Compile Include="UpdateManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

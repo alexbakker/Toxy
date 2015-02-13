@@ -64,12 +64,14 @@ namespace Toxy.Updater
                         RunUpdate(_isX64 ? (string)latest["url_x64"] : (string)latest["url_x86"]);
                     else
                     {
+                        OnFinish();
                         if (File.Exists(System.IO.Path.Combine(Path, "Toxy.exe")))
                             Process.Start(System.IO.Path.Combine(Path, "Toxy.exe"));
                     }
                 }
                 else
                 {
+                    OnFinish();
                     if (File.Exists(System.IO.Path.Combine(Path, "Toxy.exe")))
                         Process.Start(System.IO.Path.Combine(Path, "Toxy.exe"));
                 }
@@ -291,7 +293,7 @@ namespace Toxy.Updater
 
         protected virtual void OnErrorOccurred(String Error)
         {
-            EventHandler handler = ErrorOccurred;
+            var handler = ErrorOccurred;
             if (handler != null) handler(this, new ErrorEventArgs()
             {
                 ErrorMessage = Error

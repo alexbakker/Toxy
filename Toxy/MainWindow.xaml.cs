@@ -1992,13 +1992,25 @@ namespace Toxy
                 config.Theme = themeName;
             }
 
-            int index = InputDevicesComboBox.SelectedIndex + 1;
-            if (index != 0 && WaveIn.DeviceCount > 0 && WaveIn.DeviceCount >= index)
-                config.InputDevice = index - 1;
+            int index = InputDevicesComboBox.SelectedIndex;
+            if (WaveIn.DeviceCount > 0 && WaveIn.DeviceCount >= index)
+            {
+                if (config.InputDevice != index)
+                    if (call != null)
+                        call.SwitchInputDevice(index);
 
-            index = OutputDevicesComboBox.SelectedIndex + 1;
-            if (index != 0 && WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
-                config.OutputDevice = index - 1;
+                config.InputDevice = index;
+            }
+
+            index = OutputDevicesComboBox.SelectedIndex;
+            if (WaveOut.DeviceCount > 0 && WaveOut.DeviceCount >= index)
+            {
+                if (config.OutputDevice != index)
+                    if (call != null)
+                        call.SwitchOutputDevice(index);
+
+                config.OutputDevice = index;
+            }
 
             if (VideoDevicesComboBox.SelectedItem != null)
                 config.VideoDevice = ((VideoDeviceMenuData)VideoDevicesComboBox.SelectedItem).Name;

@@ -279,7 +279,10 @@ namespace Toxy
             {
                 if (call != null)
                 {
-                    await this.ShowMessageAsync("Error", "Could not join audio groupchat, there's already a call in progress.");
+                    await Dispatcher.BeginInvoke(((Action)(() =>
+                    {
+                        this.ShowMessageAsync("Error", "Could not join audio groupchat, there's already a call in progress.");
+                    })));
                     return;
                 }
                 else

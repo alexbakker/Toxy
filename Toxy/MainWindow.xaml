@@ -12,7 +12,6 @@
                       xmlns:views="clr-namespace:Toxy.Views"
                       xmlns:root="clr-namespace:Toxy"
                       xmlns:common="clr-namespace:Toxy.Common"
-                      xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       x:Class="Toxy.MainWindow"
                       x:Name="mv"
                       Title="Toxy"

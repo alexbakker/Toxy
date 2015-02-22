@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:Toxy.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance viewModels:GroupControlModelView}"
+             d:DataContext="{}{d:DesignInstance viewModels:GroupControlModelView}"
              RenderOptions.ClearTypeHint="Enabled"
              TextOptions.TextRenderingMode="ClearType"
              TextOptions.TextFormattingMode="Display"
@@ -59,7 +58,7 @@
                        TextTrimming="CharacterEllipsis" />
 
         </Grid>
-        <Grid Grid.Column="3"
+        <Grid Grid.Column="1"
                 MinWidth="18"
                   MinHeight="18"
                   Visibility="{Binding HasNewMessage, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"

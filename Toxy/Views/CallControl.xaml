@@ -3,11 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:Toxy.ViewModels"
-             xmlns:converter="clr-namespace:Toxy.Converter"
              mc:Ignorable="d"
              d:DesignHeight="300"
-             d:DataContext="{d:DesignInstance viewModels:FriendControlModelView}"
+             d:DataContext="{}{d:DesignInstance viewModels:FriendControlModelView}"
              RenderOptions.ClearTypeHint="Enabled"
              TextOptions.TextRenderingMode="ClearType"
              TextOptions.TextFormattingMode="Display">

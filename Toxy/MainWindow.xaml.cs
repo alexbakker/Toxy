@@ -396,6 +396,7 @@ namespace Toxy
         private void tox_OnDisconnected(object sender, ToxEventArgs.ConnectionEventArgs e)
         {
             SetStatus(ToxUserStatus.Invalid, false);
+            DoBootstrap();
         }
 
         private void tox_OnConnected(object sender, ToxEventArgs.ConnectionEventArgs e)
@@ -2745,31 +2746,7 @@ namespace Toxy
 
             await loadTox();
 
-            if (config.Nodes.Length >= 4)
-            {
-                var random = new Random();
-                var indices = new List<int>();
-
-                for (int i = 0; i < 4; )
-                {
-                    int index = random.Next(config.Nodes.Length);
-                    if (indices.Contains(index))
-                        continue;
-
-                    var node = config.Nodes[index];
-                    if (bootstrap(config.Nodes[index]))
-                    {
-                        indices.Add(index);
-                        i++;
-                    }
-                }
-            }
-            else
-            {
-                foreach(var node in config.Nodes)
-                    bootstrap(node);
-            }
-
+            DoBootstrap();
             tox.Start();
             toxav.Start();
 
@@ -2798,6 +2775,34 @@ namespace Toxy
 
             initDatabase();
             loadAvatars();
+        }
+
+        private void DoBootstrap()
+        {
+            if (config.Nodes.Length >= 4)
+            {
+                var random = new Random();
+                var indices = new List<int>();
+
+                for (int i = 0; i < 4; )
+                {
+                    int index = random.Next(config.Nodes.Length);
+                    if (indices.Contains(index))
+                        continue;
+
+                    var node = config.Nodes[index];
+                    if (bootstrap(config.Nodes[index]))
+                    {
+                        indices.Add(index);
+                        i++;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var node in config.Nodes)
+                    bootstrap(node);
+            }
         }
 
         private bool bootstrap(ToxConfigNode node)

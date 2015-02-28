@@ -396,7 +396,7 @@ namespace Toxy
         private void tox_OnDisconnected(object sender, ToxEventArgs.ConnectionEventArgs e)
         {
             SetStatus(ToxUserStatus.Invalid, false);
-            DoBootstrap();
+            WaitAndBootstrap(2000);
         }
 
         private void tox_OnConnected(object sender, ToxEventArgs.ConnectionEventArgs e)
@@ -2803,6 +2803,23 @@ namespace Toxy
                 foreach (var node in config.Nodes)
                     bootstrap(node);
             }
+
+            WaitAndBootstrap(20000);
+        }
+
+        private async void WaitAndBootstrap(int delay)
+        {
+            await Task.Factory.StartNew(async() =>
+            {
+                //wait 'delay' seconds, check if we're connected, if not, bootstrap again
+                await Task.Delay(delay);
+
+                if (!tox.IsConnected)
+                {
+                    Debug.WriteLine("We're still not connected, bootstrapping again");
+                    DoBootstrap();
+                }
+            });
         }
 
         private bool bootstrap(ToxConfigNode node)

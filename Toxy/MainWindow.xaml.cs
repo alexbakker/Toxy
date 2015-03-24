@@ -2682,6 +2682,11 @@ namespace Toxy
                 options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
 
             tox = new Tox(options);
+
+            var data = await loadTox();
+            if (data != null)
+                tox = new Tox(options, data.Bytes);
+
             tox.OnFriendNameChanged += tox_OnFriendNameChanged;
             tox.OnFriendMessageReceived += tox_OnFriendMessageReceived;
             tox.OnFriendRequestReceived += tox_OnFriendRequestReceived;
@@ -2715,8 +2720,6 @@ namespace Toxy
             toxav.OnReceivedVideo += toxav_OnReceivedVideo;
             toxav.OnPeerCodecSettingsChanged += toxav_OnPeerCodecSettingsChanged;
             toxav.OnReceivedGroupAudio += toxav_OnReceivedGroupAudio;
-
-            await loadTox();
 
             DoBootstrap();
             tox.Start();

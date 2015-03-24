@@ -2679,7 +2679,7 @@ namespace Toxy
             if (config.ProxyType != ToxProxyType.None)
                 options = new ToxOptions(config.Ipv6Enabled, config.ProxyType, config.ProxyAddress, config.ProxyPort);
             else
-                options = new ToxOptions(config.Ipv6Enabled, config.UdpDisabled);
+                options = new ToxOptions(config.Ipv6Enabled, !config.UdpDisabled);
 
             tox = new Tox(options);
 
@@ -2799,11 +2799,12 @@ namespace Toxy
 
         private bool bootstrap(ToxConfigNode node)
         {
-            bool success = tox.Bootstrap(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId)));
+            var error = ToxErrorBootstrap.Ok;
+            bool success = tox.Bootstrap(new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.ClientId)), out error);
             if (success)
                 Debug.WriteLine("Bootstrapped off of {0}:{1}", node.Address, node.Port);
             else
-                Debug.WriteLine("Could not bootstrap off of {0}:{1}", node.Address, node.Port);
+                Debug.WriteLine("Could not bootstrap off of {0}:{1}, error: {2}", node.Address, node.Port, error);
 
             return success;
         }

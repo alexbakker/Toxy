@@ -1,4 +1,5 @@
 ﻿using SharpTox.Core;
+using Toxy.Common;
 
 namespace Toxy.ViewModels
 {
@@ -6,7 +7,7 @@ namespace Toxy.ViewModels
     {
         string Name { get; set; }
         int ChatNumber { get; set; }
-        ToxUserStatus ToxStatus { get; set; }
+        ToxStatus ToxStatus { get; set; }
         string StatusMessage { get; set; }
     }
 }

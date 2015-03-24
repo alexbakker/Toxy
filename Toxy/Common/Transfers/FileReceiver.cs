@@ -33,7 +33,7 @@ namespace Toxy.Common.Transfers
 
             if (finished)
             {
-                Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Finished, new byte[0]);
+                //Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Finished, new byte[0]);
                 Finished = true;
 
                 Tag.Dispatcher.BeginInvoke(((Action)(() =>
@@ -47,7 +47,7 @@ namespace Toxy.Common.Transfers
             }
             else
             {
-                Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Kill, new byte[0]);
+                //Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Kill, new byte[0]);
                 Tag.HideAllButtons();
                 Tag.SetStatus(FileName + " - Transfer killed");
             }

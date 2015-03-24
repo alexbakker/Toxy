@@ -7,31 +7,32 @@ using System.Windows.Media;
 
 using SharpTox.Core;
 using Toxy.Extenstions;
+using Toxy.Common;
 
 namespace Toxy.Converter
 {
     public class ToxUserStatusToBrushConverter : IValueConverter
     {
-        private Brush ToxUserStatusNONE;
-        private Brush ToxUserStatusBUSY;
-        private Brush ToxUserStatusAWAY;
-        private Brush ToxUserStatusINVALID;
+        private Brush ToxStatusNONE;
+        private Brush ToxStatusBUSY;
+        private Brush ToxStatusAWAY;
+        private Brush ToxStatusINVALID;
 
         public ToxUserStatusToBrushConverter()
         {
-            ToxUserStatusNONE = new ImageBrush()
+            ToxStatusNONE = new ImageBrush()
             {
                 ImageSource = Toxy.Properties.Resources.Online.ToBitmapImage(ImageFormat.Bmp)
             };
-            ToxUserStatusAWAY = new ImageBrush()
+            ToxStatusAWAY = new ImageBrush()
             {
                 ImageSource = Toxy.Properties.Resources.Away.ToBitmapImage(ImageFormat.Bmp)
             };
-            ToxUserStatusBUSY = new ImageBrush()
+            ToxStatusBUSY = new ImageBrush()
             {
                 ImageSource = Toxy.Properties.Resources.Busy.ToBitmapImage(ImageFormat.Bmp)
             };
-            ToxUserStatusINVALID = new ImageBrush()
+            ToxStatusINVALID = new ImageBrush()
             {
                 ImageSource = Toxy.Properties.Resources.Offline.ToBitmapImage(ImageFormat.Bmp)
             };
@@ -39,19 +40,19 @@ namespace Toxy.Converter
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ToxUserStatus)
+            if (value is ToxStatus)
             {
-                var status = (ToxUserStatus)value;
+                var status = (ToxStatus)value;
                 switch (status)
                 {
-                    case ToxUserStatus.None:
-                        return ToxUserStatusNONE;
-                    case ToxUserStatus.Busy:
-                        return ToxUserStatusBUSY;
-                    case ToxUserStatus.Away:
-                        return ToxUserStatusAWAY;
-                    case ToxUserStatus.Invalid:
-                        return ToxUserStatusINVALID;
+                    case ToxStatus.None:
+                        return ToxStatusNONE;
+                    case ToxStatus.Busy:
+                        return ToxStatusBUSY;
+                    case ToxStatus.Away:
+                        return ToxStatusAWAY;
+                    case ToxStatus.Invalid:
+                        return ToxStatusINVALID;
                 }
             }
             return Brushes.Transparent;

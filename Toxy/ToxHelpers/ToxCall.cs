@@ -392,7 +392,7 @@ namespace Toxy.ToxHelpers
                 byte[] dest = new byte[frame.Width * frame.Height * 4];
                 VpxHelper.RgbToYuv420(img, bytes, (ushort)frame.Width, (ushort)frame.Height);
 
-                int length = ToxAvFunctions.PrepareVideoFrame(toxav.Handle, CallIndex, dest, dest.Length, (IntPtr)img.Pointer);
+                int length = toxav.PrepareVideoFrame(CallIndex, dest, (IntPtr)img.Pointer);
                 img.Free();
 
                 if (length > 0)
@@ -400,7 +400,7 @@ namespace Toxy.ToxHelpers
                     byte[] bytesToSend = new byte[length];
                     Array.Copy(dest, bytesToSend, length);
 
-                    ToxAvError error = ToxAvFunctions.SendVideo(toxav.Handle, CallIndex, bytesToSend, (uint)bytesToSend.Length);
+                    ToxAvError error = toxav.SendVideo(CallIndex, bytesToSend);
                     if (error != ToxAvError.None)
                         Debug.WriteLine(string.Format("Could not send video frame: {0}, {1}", error, length));
                 }

@@ -44,14 +44,14 @@ namespace Toxy.Common.Transfers
 
             if (finished)
             {
-                Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Finished, new byte[0]);
+                //Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Finished, new byte[0]);
                 Finished = true;
 
                 Tag.HideAllButtons();
             }
             else
             {
-                Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Kill, new byte[0]);
+                //Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Kill, new byte[0]);
                 Tag.HideAllButtons();
                 Tag.SetStatus(FileName + " - Transfer killed");
             }
@@ -70,7 +70,8 @@ namespace Toxy.Common.Transfers
 
         public bool SendNextChunk()
         {
-            if (_stream == null)
+            return false;
+            /*if (_stream == null)
                 _stream = new FileStream(Path, FileMode.Open);
 
             int chunk_size = Tox.FileDataSize(FriendNumber);
@@ -114,7 +115,7 @@ namespace Toxy.Common.Transfers
             double value = (double)remaining / (double)FileSize;
             Progress = 100 - (int)(value * 100);
 
-            return true;
+            return true;*/
         }
 
         private bool _broken;

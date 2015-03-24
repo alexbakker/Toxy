@@ -2,6 +2,7 @@
 
 using SharpTox.Core;
 using Toxy.MVVM;
+using Toxy.Common;
 
 namespace Toxy.ViewModels
 {
@@ -37,9 +38,9 @@ namespace Toxy.ViewModels
             }
         }
 
-        private ToxUserStatus toxStatus;
+        private ToxStatus toxStatus;
 
-        public ToxUserStatus ToxStatus
+        public ToxStatus ToxStatus
         {
             get { return this.toxStatus; }
             set

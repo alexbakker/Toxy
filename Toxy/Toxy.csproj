@@ -133,6 +133,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\AvatarStore.cs" />
+    <Compile Include="Common\ToxStatus.cs" />
     <Compile Include="Properties\BuildInfo.cs" />
     <Compile Include="Common\Transfers\FileReceiver.cs" />
     <Compile Include="Common\Transfers\FileSender.cs" />

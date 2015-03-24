@@ -10,7 +10,7 @@ namespace Toxy.Tables
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        [MaxLength(ToxConstants.ClientIdSize * 2)]
+        [MaxLength(ToxConstants.PublicKeySize * 2)]
         public string PublicKey { get; set; }
 
         public string Name { get; set; }
@@ -24,7 +24,7 @@ namespace Toxy.Tables
 
         public DateTime Timestamp { get; set; }
 
-        [MaxLength(ToxConstants.ClientIdSize * 2)]
+        [MaxLength(ToxConstants.PublicKeySize * 2)]
         public string ProfilePublicKey { get; set; }
     }
 }

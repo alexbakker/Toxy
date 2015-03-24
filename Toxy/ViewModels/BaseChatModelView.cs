@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using Toxy.Common;
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels
@@ -45,9 +46,9 @@ namespace Toxy.ViewModels
             }
         }
         
-        private ToxUserStatus toxStatus;
+        private ToxStatus toxStatus;
 
-        public ToxUserStatus ToxStatus
+        public ToxStatus ToxStatus
         {
             get { return this.toxStatus; }
             set

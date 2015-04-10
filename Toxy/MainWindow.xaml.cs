@@ -660,12 +660,12 @@ namespace Toxy
             {
                 Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    /*DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(e.FriendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
+                    DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetFriendLastOnline(e.FriendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
 
                     if (lastOnline.Year == 1970) //quick and dirty way to check if we're dealing with epoch 0
                         friend.StatusMessage = "Friend request sent";
                     else
-                        friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());*/
+                        friend.StatusMessage = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
 
                     friend.ToxStatus = ToxStatus.Invalid; //not the proper way to do it, I know...
 
@@ -1447,7 +1447,7 @@ namespace Toxy
             }
             else
             {
-                /*DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
+                DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetFriendLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
 
                 if (lastOnline.Year == 1970)
                 {
@@ -1455,7 +1455,7 @@ namespace Toxy
                         friendStatus = "Friend request sent";
                 }
                 else
-                    friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());*/
+                    friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
             }
 
             string friendName = getFriendName(friendNumber);

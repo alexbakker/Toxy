@@ -33,23 +33,30 @@ namespace Toxy.Common.Transfers
 
             if (finished)
             {
-                //Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Finished, new byte[0]);
+                //Tox.FileSendControl(FriendNumber, FileNumber, ToxFileControl., new byte[0]);
                 Finished = true;
 
-                Tag.Dispatcher.BeginInvoke(((Action)(() =>
+                if (Tag != null)
                 {
-                    Tag.AcceptButton.Visibility = Visibility.Collapsed;
-                    Tag.DeclineButton.Visibility = Visibility.Collapsed;
-                    Tag.PauseButton.Visibility = Visibility.Collapsed;
-                    Tag.FileOpenButton.Visibility = Visibility.Visible;
-                    Tag.FolderOpenButton.Visibility = Visibility.Visible;
-                })));
+                    Tag.Dispatcher.BeginInvoke(((Action)(() =>
+                    {
+                        Tag.AcceptButton.Visibility = Visibility.Collapsed;
+                        Tag.DeclineButton.Visibility = Visibility.Collapsed;
+                        Tag.PauseButton.Visibility = Visibility.Collapsed;
+                        Tag.FileOpenButton.Visibility = Visibility.Visible;
+                        Tag.FolderOpenButton.Visibility = Visibility.Visible;
+                    })));
+                }
             }
             else
             {
-                //Tox.FileSendControl(FriendNumber, 1, FileNumber, ToxFileControl.Kill, new byte[0]);
-                Tag.HideAllButtons();
-                Tag.SetStatus(FileName + " - Transfer killed");
+                Tox.FileControl(FriendNumber, FileNumber, ToxFileControl.Cancel);
+
+                if (Tag != null)
+                {
+                    Tag.HideAllButtons();
+                    Tag.SetStatus(FileName + " - Transfer killed");
+                }
             }
         }
 
@@ -62,10 +69,13 @@ namespace Toxy.Common.Transfers
             }
             set
             {
-                if (value)
-                    Tag.SetStatus("Waiting for friend to come back online");
-                else
-                    Tag.SetStatus(FileName);
+                if (Tag != null)
+                {
+                    if (value)
+                        Tag.SetStatus("Waiting for friend to come back online");
+                    else
+                        Tag.SetStatus(FileName);
+                }
 
                 _broken = value;
             }
@@ -82,10 +92,13 @@ namespace Toxy.Common.Transfers
             {
                 _paused = value;
 
-                if (value)
-                    Tag.SetStatus(FileName + " - Paused");
-                else
-                    Tag.SetStatus(FileName);
+                if (Tag != null)
+                {
+                    if (value)
+                        Tag.SetStatus(FileName + " - Paused");
+                    else
+                        Tag.SetStatus(FileName);
+                }
             }
         }
     }

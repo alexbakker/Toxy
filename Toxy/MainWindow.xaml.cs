@@ -525,76 +525,116 @@ namespace Toxy
             if (transfer.Broken || transfer.Paused)
                 return;
 
-            transfer.ProcessReceivedData(e.Data);
+            if (e.Data != null)
+                transfer.ProcessReceivedData(e.Data);
         }
 
         private void tox_OnFileSendRequestReceived(object sender, ToxEventArgs.FileSendRequestEventArgs e)
         {
-            /*if (!convdic.ContainsKey(e.FriendNumber))
-                convdic.Add(e.FriendNumber, FlowDocumentExtensions.CreateNewDocument());
-
-            Dispatcher.BeginInvoke(((Action)(() =>
+            if (e.FileKind == ToxFileKind.Data)
             {
-                var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, e.FileName, e.FileName);
-                var control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
-                var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-                transfer.Tag = control;
+                if (!convdic.ContainsKey(e.FriendNumber))
+                    convdic.Add(e.FriendNumber, FlowDocumentExtensions.CreateNewDocument());
 
-                if (friend != null)
+                Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    MessageAlertIncrement(friend);
+                    var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, e.FileName, e.FileName);
+                    var control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
+                    var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                    transfer.Tag = control;
 
-                    if (friend.Selected)
-                        ScrollChatBox();
-                }
-
-                control.OnAccept += delegate(FileTransfer ft)
-                {
-                    SaveFileDialog dialog = new SaveFileDialog();
-                    dialog.FileName = e.FileName;
-
-                    if (dialog.ShowDialog() == true)
+                    if (friend != null)
                     {
-                        ft.Path = dialog.FileName;
-                        control.FilePath = dialog.FileName;
-                        tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
+                        MessageAlertIncrement(friend);
+
+                        if (friend.Selected)
+                            ScrollChatBox();
                     }
 
-                    transfer.Tag.StartTransfer();
-                };
+                    control.OnAccept += delegate(FileTransfer ft)
+                    {
+                        SaveFileDialog dialog = new SaveFileDialog();
+                        dialog.FileName = e.FileName;
 
-                control.OnDecline += delegate(FileTransfer ft)
+                        if (dialog.ShowDialog() == true)
+                        {
+                            ft.Path = dialog.FileName;
+                            control.FilePath = dialog.FileName;
+                            tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Resume);
+                        }
+
+                        transfer.Tag.StartTransfer();
+                    };
+
+                    control.OnDecline += delegate(FileTransfer ft)
+                    {
+                        ft.Kill(false);
+
+                        if (transfers.Contains(ft))
+                            transfers.Remove(ft);
+                    };
+
+                    control.OnPause += delegate(FileTransfer ft)
+                    {
+                        if (ft.Paused)
+                            tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Pause);
+                        else
+                            tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Resume);
+                    };
+
+                    control.OnFileOpen += delegate(FileTransfer ft)
+                    {
+                        try { Process.Start(ft.Path); }
+                        catch { }
+                    };
+
+                    control.OnFolderOpen += delegate(FileTransfer ft)
+                    {
+                        Process.Start("explorer.exe", @"/select, " + ft.Path);
+                    };
+
+                    transfers.Add(transfer);
+
+                    if (ViewModel.MainToxyUser.ToxStatus != ToxStatus.Busy)
+                        this.Flash();
+                })));
+            }
+            else if (e.FileKind == ToxFileKind.Avatar)
+            {
+                byte[] hash = tox.FileGetId(e.FriendNumber, e.FileNumber);
+                if (hash == null || hash.Length != ToxConstants.HashLength)
+                    return;
+
+                Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    ft.Kill(false);
+                    var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                    if (friend == null)
+                        return;
 
-                    if (transfers.Contains(ft))
-                        transfers.Remove(ft);
-                };
-
-                control.OnPause += delegate(FileTransfer ft)
-                {
-                    if (ft.Paused)
-                        tox.FileControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause);
+                    if (friend.AvatarBytes == null || friend.AvatarBytes.Length == 0)
+                    {
+                        if (!avatarStore.Contains(tox.GetFriendPublicKey(e.FriendNumber)))
+                        {
+                            tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume);
+                            string filename = tox.GetFriendPublicKey(e.FriendNumber).GetString();
+                            var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, filename, Path.Combine(avatarStore.Dir, filename + ".png"));
+                            transfers.Add(transfer);
+                        }
+                    }
                     else
-                        tox.FileControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept);
-                };
-
-                control.OnFileOpen += delegate(FileTransfer ft)
-                {
-                    try { Process.Start(ft.Path); }
-                    catch { }
-                };
-
-                control.OnFolderOpen += delegate(FileTransfer ft)
-                {
-                    Process.Start("explorer.exe", @"/select, " + ft.Path);
-                };
-
-                transfers.Add(transfer);
-
-                if (ViewModel.MainToxyUser.ToxStatus != ToxStatus.Busy)
-                    this.Flash();
-            })));*/
+                    {
+                        if (ToxTools.Hash(friend.AvatarBytes).SequenceEqual(hash))
+                            return;
+                        else
+                        {
+                            tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume);
+                            string filename = tox.GetFriendPublicKey(e.FriendNumber).GetString();
+                            var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, filename, Path.Combine(avatarStore.Dir, filename + ".png"));
+                            transfers.Add(transfer);
+                        }
+                    }
+                })));
+            }
         }
 
         private void tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
@@ -649,10 +689,10 @@ namespace Toxy
                         CallButton.Visibility = Visibility.Visible;
                         FileButton.Visibility = Visibility.Visible;
                     }
-                })));
 
-                //kinda ugly to do this every time, I guess we don't really have a choice
-                //tox.RequestAvatarInfo(e.FriendNumber);
+                    if (ViewModel.MainToxyUser.AvatarBytes != null)
+                        tox.FileSend(e.FriendNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, ToxTools.Hash(ViewModel.MainToxyUser.AvatarBytes));
+                })));
 
                 /*var receivers = transfers.Where(t => t.GetType() == typeof(FileReceiver) && t.FriendNumber == e.FriendNumber && !t.Finished);
                 if (receivers.Count() > 0)
@@ -2530,27 +2570,26 @@ namespace Toxy
                 }
             }
 
+            ViewModel.MainToxyUser.AvatarBytes = avatarBytes;
             ViewModel.MainToxyUser.Avatar = bmp.ToBitmapImage(ImageFormat.Png);
             bmp.Dispose();
 
-            /*if (tox.SetAvatar(ToxAvatarFormat.Png, avatarBytes))
-            {
-                string avatarsDir = Path.Combine(toxDataDir, "avatars");
-                string selfAvatarFile = Path.Combine(avatarsDir, tox.Id.PublicKey.GetString() + ".png");
+            string avatarsDir = Path.Combine(toxDataDir, "avatars");
+            string selfAvatarFile = Path.Combine(avatarsDir, tox.Id.PublicKey.GetString() + ".png");
 
-                if (!Directory.Exists(avatarsDir))
-                    Directory.CreateDirectory(avatarsDir);
+            if (!Directory.Exists(avatarsDir))
+                Directory.CreateDirectory(avatarsDir);
 
-                File.WriteAllBytes(selfAvatarFile, avatarBytes);
-            }*/
+            File.WriteAllBytes(selfAvatarFile, avatarBytes);
 
             //let's announce our new avatar
+            byte[] hash = ToxTools.Hash(avatarBytes);
             foreach (int friend in tox.Friends)
             {
                 if (!tox.IsFriendOnline(friend))
                     continue;
 
-                //tox.SendAvatarInfo(friend);
+                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, avatarBytes.Length, hash);
             }
         }
 
@@ -2685,7 +2724,7 @@ namespace Toxy
 
             var data = await loadTox();
             if (data != null)
-                tox = new Tox(options, data.Bytes);
+                tox = new Tox(options, data);
 
             tox.OnFriendNameChanged += tox_OnFriendNameChanged;
             tox.OnFriendMessageReceived += tox_OnFriendMessageReceived;
@@ -2858,7 +2897,7 @@ namespace Toxy
             else if (result.Result == SwitchProfileDialogResult.Import)
             {
                 ToxData data = ToxData.FromDisk(result.Input);
-                Tox t = new Tox(ToxOptions.Default, data.Bytes);
+                Tox t = new Tox(ToxOptions.Default, data);
 
                 if (data == null)
                 {

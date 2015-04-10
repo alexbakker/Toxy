@@ -437,8 +437,11 @@ namespace Toxy
                             break;
 
                         FileSender ft = (FileSender)transfer;
-                        ft.Tag.StartTransfer();
-                        ft.Start();
+                        if (ft.Tag != null)
+                        {
+                            ft.Tag.StartTransfer();
+                            ft.Start();
+                        }
                         break;
                     }
 
@@ -701,21 +704,16 @@ namespace Toxy
                     }
 
                     if (ViewModel.MainToxyUser.AvatarBytes != null)
-                        tox.FileSend(e.FriendNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, ToxTools.Hash(ViewModel.MainToxyUser.AvatarBytes));
-                })));
-
-                /*var receivers = transfers.Where(t => t.GetType() == typeof(FileReceiver) && t.FriendNumber == e.FriendNumber && !t.Finished);
-                if (receivers.Count() > 0)
-                {
-                    foreach (FileReceiver transfer in receivers)
                     {
-                        if (transfer.Broken)
-                        {
-                            tox.FileSendControl(e.FriendNumber, 1, transfer.FileNumber, ToxFileControl.ResumeBroken, BitConverter.GetBytes(transfer.BytesReceived));
-                            Debug.WriteLine("File transfer broke, we've received {0} bytes so far", transfer.BytesReceived);
-                        }
+                        string avatarsDir = Path.Combine(toxDataDir, "avatars");
+                        string selfAvatarFile = Path.Combine(avatarsDir, tox.Id.PublicKey.GetString() + ".png");
+
+                        var fileInfo = tox.FileSend(e.FriendNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, ToxTools.Hash(ViewModel.MainToxyUser.AvatarBytes));
+                        var transfer = new FileSender(tox, fileInfo.Number, friend.ChatNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, "", selfAvatarFile);
+
+                        transfers.Add(transfer);
                     }
-                }*/
+                })));
             }
 
             Dispatcher.BeginInvoke(((Action)(() => RearrangeChatList())));
@@ -2288,7 +2286,7 @@ namespace Toxy
 
         private void TextToSend_KeyUp(object sender, KeyEventArgs e)
         {
-            /*if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 if (ViewModel.IsGroupSelected)
                     return;
@@ -2301,12 +2299,12 @@ namespace Toxy
                     if (!convdic.ContainsKey(ViewModel.SelectedChatNumber))
                         convdic.Add(ViewModel.SelectedChatNumber, FlowDocumentExtensions.CreateNewDocument());
 
-                    int filenumber = tox.NewFileSender(ViewModel.SelectedChatNumber, (ulong)bytes.Length, "image.bmp");
+                    var fileInfo = tox.FileSend(ViewModel.SelectedChatNumber, ToxFileKind.Data, bytes.Length, "image.bmp");
 
-                    if (filenumber == -1)
+                    if (fileInfo.Number == -1)
                         return;
 
-                    var transfer = new FileSender(tox, filenumber, ViewModel.SelectedChatNumber, bytes.Length, "image.bmp", new MemoryStream(bytes));
+                    var transfer = new FileSender(tox, fileInfo.Number, ViewModel.SelectedChatNumber, ToxFileKind.Data, bytes.Length, "image.bmp", new MemoryStream(bytes));
                     var control = convdic[ViewModel.SelectedChatNumber].AddNewFileTransfer(tox, transfer);
                     transfer.Tag = control;
 
@@ -2325,16 +2323,16 @@ namespace Toxy
                     control.OnPause += delegate(FileTransfer ft)
                     {
                         if (ft.Paused)
-                            tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
+                            tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Pause);
                         else
-                            tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
+                            tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Resume);
                     };
 
                     transfers.Add(transfer);
 
                     ScrollChatBox();
                 }
-            }*/
+            }
         }
 
         private void SetStatus(ToxStatus? newStatus, bool changeUserStatus)
@@ -2598,6 +2596,8 @@ namespace Toxy
                     continue;
 
                 var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, avatarBytes.Length, hash);
+                var transfer = new FileSender(tox, fileInfo.Number, friend, ToxFileKind.Avatar, avatarBytes.Length, "", selfAvatarFile);
+                transfers.Add(transfer);
             }
         }
 
@@ -2612,23 +2612,28 @@ namespace Toxy
 
         private void removeAvatar()
         {
-            //if (tox.UnsetAvatar())
-            //{
-                ViewModel.MainToxyUser.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
+            ViewModel.MainToxyUser.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
 
-                if (!config.Portable)
-                {
-                    string path = Path.Combine(toxDataDir, "avatar.png");
+            if (!config.Portable)
+            {
+                string path = Path.Combine(toxDataDir, "avatar.png");
 
-                    if (File.Exists(path))
-                        File.Delete(path);
-                }
-                else
-                {
-                    if (File.Exists("avatar.png"))
-                        File.Delete("avatar.png");
-                }
-            //}
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+            else
+            {
+                if (File.Exists("avatar.png"))
+                    File.Delete("avatar.png");
+            }
+
+            foreach (int friend in tox.Friends)
+            {
+                if (!tox.IsFriendOnline(friend))
+                    continue;
+
+                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, 0, new byte[0]);
+            }
         }
 
         private void AvatarImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

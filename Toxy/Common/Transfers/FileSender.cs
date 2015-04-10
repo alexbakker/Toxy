@@ -42,13 +42,18 @@ namespace Toxy.Common.Transfers
             if (finished)
             {
                 Finished = true;
-                Tag.HideAllButtons();
+                if (Tag != null)
+                    Tag.HideAllButtons();
             }
             else
             {
                 Tox.FileControl(FriendNumber, FileNumber, ToxFileControl.Cancel);
-                Tag.HideAllButtons();
-                Tag.SetStatus(FileName + " - Transfer killed");
+
+                if (Tag != null)
+                {
+                    Tag.HideAllButtons();
+                    Tag.SetStatus(FileName + " - Transfer killed");
+                }
             }
         }
 

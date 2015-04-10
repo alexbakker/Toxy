@@ -31,27 +31,22 @@ namespace Toxy.Common.Transfers
 
         public void Start()
         {
-            FileTransferWorker.StartTransfer(this);
             Tag.SetStatus(FileName);
         }
 
         public override void Kill(bool finished)
         {
-            FileTransferWorker.KillTransfer(this);
-
             if (_stream != null)
                 _stream.Dispose();
 
             if (finished)
             {
-                //Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Finished, new byte[0]);
                 Finished = true;
-
                 Tag.HideAllButtons();
             }
             else
             {
-                //Tox.FileSendControl(FriendNumber, 0, FileNumber, ToxFileControl.Kill, new byte[0]);
+                Tox.FileControl(FriendNumber, FileNumber, ToxFileControl.Cancel);
                 Tag.HideAllButtons();
                 Tag.SetStatus(FileName + " - Transfer killed");
             }
@@ -68,17 +63,15 @@ namespace Toxy.Common.Transfers
             Progress = 100 - (int)(value * 100);
         }
 
-        public bool SendNextChunk()
+        public bool SendNextChunk(long position, int chunk_size)
         {
-            return false;
-            /*if (_stream == null)
+            if (_stream == null)
                 _stream = new FileStream(Path, FileMode.Open);
 
-            int chunk_size = Tox.FileDataSize(FriendNumber);
             byte[] buffer = new byte[chunk_size];
-            ulong remaining = Tox.FileDataRemaining(FriendNumber, FileNumber, 0);
+            long remaining = FileSize - position;
 
-            if (remaining > (ulong)chunk_size)
+            if (remaining >= chunk_size)
             {
                 if (_stream.Read(buffer, 0, chunk_size) == 0)
                 {
@@ -86,7 +79,8 @@ namespace Toxy.Common.Transfers
                     return false;
                 }
 
-                if (!Tox.FileSendData(FriendNumber, FileNumber, buffer))
+                var error = ToxErrorFileSendChunk.Ok;
+                if (!Tox.FileSendChunk(FriendNumber, FileNumber, position, buffer, out error))
                 {
                     _stream.Position -= chunk_size;
                     Debug.WriteLine("Could not send data, rewinding the stream");
@@ -96,7 +90,7 @@ namespace Toxy.Common.Transfers
 
                 Debug.WriteLine(string.Format("Data sent: {0} bytes", buffer.Length));
             }
-            else
+            /*else
             {
                 buffer = new byte[remaining];
 
@@ -110,12 +104,12 @@ namespace Toxy.Common.Transfers
                 Debug.WriteLine(string.Format("Sent the last chunk of data: {0} bytes", buffer.Length));
 
                 Kill(true);
-            }
+            }*/
 
             double value = (double)remaining / (double)FileSize;
             Progress = 100 - (int)(value * 100);
 
-            return true;*/
+            return true;
         }
 
         private bool _broken;
@@ -131,12 +125,12 @@ namespace Toxy.Common.Transfers
 
                 if (value)
                 {
-                    FileTransferWorker.PauseTransfer(this);
+                    //FileTransferWorker.PauseTransfer(this);
                     Tag.SetStatus("Waiting for friend to come back online");
                 }
                 else
                 {
-                    FileTransferWorker.ResumeTransfer(this);
+                    //FileTransferWorker.ResumeTransfer(this);
                     Tag.SetStatus(FileName);
                 }
             }
@@ -155,12 +149,12 @@ namespace Toxy.Common.Transfers
 
                 if (value)
                 {
-                    FileTransferWorker.PauseTransfer(this);
+                    //FileTransferWorker.PauseTransfer(this);
                     Tag.SetStatus(FileName + " - Paused");
                 }
                 else
                 {
-                    FileTransferWorker.ResumeTransfer(this);
+                    //FileTransferWorker.ResumeTransfer(this);
                     Tag.SetStatus(FileName);
                 }
             }

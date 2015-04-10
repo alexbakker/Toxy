@@ -428,52 +428,21 @@ namespace Toxy
 
         private void tox_OnFileControlReceived(object sender, ToxEventArgs.FileControlEventArgs e)
         {
-            /*switch (e.Control)
+            switch (e.Control)
             {
-                case ToxFileControl.Finished:
+                case ToxFileControl.Resume:
                     {
                         var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber);
                         if (transfer == null)
                             break;
 
-                        transfer.Kill(true);
-                        transfers.Remove(transfer);
-
-                        if (transfer.GetType() != typeof(FileSender))
-                            tox.FileSendControl(transfer.FriendNumber, 1, transfer.FileNumber, ToxFileControl.Finished, new byte[0]);
-
+                        FileSender ft = (FileSender)transfer;
+                        ft.Tag.StartTransfer();
+                        ft.Start();
                         break;
                     }
 
-                case ToxFileControl.Accept:
-                    {
-                        var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber);
-                        if (transfer == null)
-                            break;
-
-                        if (!transfer.Paused)
-                        {
-                            if (transfer.GetType() == typeof(FileSender))
-                            {
-                                FileSender ft = (FileSender)transfer;
-                                ft.Tag.StartTransfer();
-                                ft.Start();
-                            }
-                            else if (transfer.Broken && transfer.GetType() == typeof(FileReceiver))
-                            {
-                                transfer.Broken = false;
-                                Debug.WriteLine(string.Format("Received {0}, resuming broken file transfer", e.Control));
-                            }
-                        }
-                        else
-                        {
-                            transfer.Paused = false;
-                        }
-
-                        break;
-                    }
-
-                case ToxFileControl.Kill:
+                case ToxFileControl.Cancel:
                     {
                         var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber);
                         if (transfer == null)
@@ -481,22 +450,6 @@ namespace Toxy
 
                         transfer.Kill(false);
                         transfers.Remove(transfer);
-                        break;
-                    }
-
-                case ToxFileControl.ResumeBroken:
-                    {
-                        var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber) as FileSender;
-                        if (transfer == null || e.Data.Length != sizeof(long))
-                            break;
-
-                        long index = (long)BitConverter.ToUInt64(e.Data, 0);
-
-                        transfer.RewindStream(index);
-                        transfer.Broken = false;
-                        tox.FileSendControl(e.FriendNumber, 0, transfer.FileNumber, ToxFileControl.Accept, new byte[0]);
-
-                        Debug.WriteLine(string.Format("Received {0}, resuming at index: {1}", e.Control, index));
                         break;
                     }
                 case ToxFileControl.Pause:
@@ -508,7 +461,7 @@ namespace Toxy
                         transfer.Paused = true;
                         break;
                     }
-            }*/
+            }
 
             Debug.WriteLine(string.Format("Received file control: {0} from {1}", e.Control, getFriendName(e.FriendNumber)));
         }
@@ -555,6 +508,18 @@ namespace Toxy
                     })));
                 }
             }
+        }
+
+        private void tox_OnFileChunkRequested(object sender, ToxEventArgs.FileRequestChunkEventArgs e)
+        {
+            var transfer = GetFileTransfer(e.FriendNumber, e.FileNumber) as FileSender;
+            if (transfer == null)
+                return;
+
+            bool success = transfer.SendNextChunk(e.Position, e.Length);
+
+            if (e.Position + e.Length >= transfer.FileSize && success)
+                transfer.Kill(true);
         }
 
         private void tox_OnFileSendRequestReceived(object sender, ToxEventArgs.FileSendRequestEventArgs e)
@@ -2453,13 +2418,13 @@ namespace Toxy
 
         private void SendFile(int chatNumber, string filename)
         {
-            /*FileInfo info = new FileInfo(filename);
-            int filenumber = tox.NewFileSender(chatNumber, (ulong)info.Length, filename.Split('\\').Last<string>());
+            FileInfo info = new FileInfo(filename);
+            var fileInfo = tox.FileSend(chatNumber, ToxFileKind.Data, info.Length, filename.Split('\\').Last<string>());
 
-            if (filenumber == -1)
+            if (fileInfo.Number == -1)
                 return;
 
-            var transfer = new FileSender(tox, filenumber, chatNumber, info.Length, filename.Split('\\').Last<string>(), filename);
+            var transfer = new FileSender(tox, fileInfo.Number, chatNumber, ToxFileKind.Data, info.Length, filename.Split('\\').Last<string>(), filename);
             var control = convdic[chatNumber].AddNewFileTransfer(tox, transfer);
             transfer.Tag = control;
 
@@ -2478,13 +2443,13 @@ namespace Toxy
             control.OnPause += delegate(FileTransfer ft)
             {
                 if (ft.Paused)
-                    tox.FileSendControl(ft.FriendNumber, 1, ft.FileNumber, ToxFileControl.Pause, new byte[0]);
+                    tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Pause);
                 else
-                    tox.FileSendControl(ft.FriendNumber, 0, ft.FileNumber, ToxFileControl.Accept, new byte[0]);
+                    tox.FileControl(ft.FriendNumber, ft.FileNumber, ToxFileControl.Resume);
             };
 
             transfers.Add(transfer);
-            ScrollChatBox();*/
+            ScrollChatBox();
         }
 
         private void ExecuteActionsOnNotifyIcon()
@@ -2780,9 +2745,8 @@ namespace Toxy
             tox.OnFileSendRequestReceived += tox_OnFileSendRequestReceived;
             tox.OnFileChunkReceived += tox_OnFileChunkReceived;
             tox.OnFileControlReceived += tox_OnFileControlReceived;
+            tox.OnFileChunkRequested += tox_OnFileChunkRequested;
             tox.OnReadReceiptReceived += tox_OnReadReceiptReceived;
-            //tox.OnAvatarData += tox_OnAvatarData;
-            //tox.OnAvatarInfo += tox_OnAvatarInfo;
             tox.OnGroupTitleChanged += tox_OnGroupTitleChanged;
 
             tox.OnGroupInvite += tox_OnGroupInvite;

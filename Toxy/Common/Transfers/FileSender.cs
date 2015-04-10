@@ -17,14 +17,14 @@ namespace Toxy.Common.Transfers
             }
         }
 
-        public FileSender(Tox tox, int fileNumber, int friendNumber, long fileSize, string fileName, string path)
-            : base(tox, fileNumber, friendNumber, fileSize, fileName, path) 
+        public FileSender(Tox tox, int fileNumber, int friendNumber, ToxFileKind kind, long fileSize, string fileName, string path)
+            : base(tox, fileNumber, friendNumber, kind, fileSize, fileName, path) 
         {
 
         }
 
-        public FileSender(Tox tox, int fileNumber, int friendNumber, long fileSize, string fileName, Stream stream)
-            : base(tox, fileNumber, friendNumber, fileSize, fileName, string.Empty)
+        public FileSender(Tox tox, int fileNumber, int friendNumber, ToxFileKind kind, long fileSize, string fileName, Stream stream)
+            : base(tox, fileNumber, friendNumber, kind, fileSize, fileName, string.Empty)
         {
             _stream = stream;
         }

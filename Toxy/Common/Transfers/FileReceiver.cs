@@ -12,8 +12,8 @@ namespace Toxy.Common.Transfers
 
         public long BytesReceived { get; set; }
 
-        public FileReceiver(Tox tox, int fileNumber, int friendNumber, long fileSize, string fileName, string path)
-            : base(tox, fileNumber, friendNumber, fileSize, fileName, path) { }
+        public FileReceiver(Tox tox, int fileNumber, int friendNumber, ToxFileKind kind, long fileSize, string fileName, string path)
+            : base(tox, fileNumber, friendNumber, kind, fileSize, fileName, path) { }
 
         public void ProcessReceivedData(byte[] data)
         {

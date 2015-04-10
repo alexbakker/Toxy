@@ -525,8 +525,36 @@ namespace Toxy
             if (transfer.Broken || transfer.Paused)
                 return;
 
-            if (e.Data != null)
+            if (e.Data != null && e.Data.Length != 0)
+            {
                 transfer.ProcessReceivedData(e.Data);
+            }
+            else if (e.Position == transfer.FileSize)
+            {
+                transfer.Kill(true);
+                if (transfers.Contains(transfer))
+                    transfers.Remove(transfer);
+
+                if (transfer.Kind == ToxFileKind.Avatar)
+                {
+                    Dispatcher.BeginInvoke(((Action)(() =>
+                    {
+                        var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                        if (friend == null)
+                            return;
+
+                        try
+                        {
+                            //friend.AvatarBytes = e.Avatar.Data;
+                            applyAvatar(friend);
+                        }
+                        catch
+                        {
+                            Debug.WriteLine(string.Format("Received invalid avatar data ({0})", e.FriendNumber));
+                        }
+                    })));
+                }
+            }
         }
 
         private void tox_OnFileSendRequestReceived(object sender, ToxEventArgs.FileSendRequestEventArgs e)
@@ -538,7 +566,7 @@ namespace Toxy
 
                 Dispatcher.BeginInvoke(((Action)(() =>
                 {
-                    var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, e.FileName, e.FileName);
+                    var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, e.FileKind, (long)e.FileSize, e.FileName, e.FileName);
                     var control = convdic[e.FriendNumber].AddNewFileTransfer(tox, transfer);
                     var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
                     transfer.Tag = control;
@@ -601,39 +629,56 @@ namespace Toxy
             }
             else if (e.FileKind == ToxFileKind.Avatar)
             {
-                byte[] hash = tox.FileGetId(e.FriendNumber, e.FileNumber);
-                if (hash == null || hash.Length != ToxConstants.HashLength)
-                    return;
-
-                Dispatcher.BeginInvoke(((Action)(() =>
+                if (e.FileSize != 0)
                 {
-                    var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
-                    if (friend == null)
+                    byte[] hash = tox.FileGetId(e.FriendNumber, e.FileNumber);
+                    if (hash == null || hash.Length != ToxConstants.HashLength)
                         return;
 
-                    if (friend.AvatarBytes == null || friend.AvatarBytes.Length == 0)
+                    Dispatcher.BeginInvoke(((Action)(() =>
                     {
-                        if (!avatarStore.Contains(tox.GetFriendPublicKey(e.FriendNumber)))
-                        {
-                            tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume);
-                            string filename = tox.GetFriendPublicKey(e.FriendNumber).GetString();
-                            var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, filename, Path.Combine(avatarStore.Dir, filename + ".png"));
-                            transfers.Add(transfer);
-                        }
-                    }
-                    else
-                    {
-                        if (ToxTools.Hash(friend.AvatarBytes).SequenceEqual(hash))
+                        var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                        if (friend == null)
                             return;
+
+                        if (friend.AvatarBytes == null || friend.AvatarBytes.Length == 0)
+                        {
+                            if (!avatarStore.Contains(tox.GetFriendPublicKey(e.FriendNumber)))
+                            {
+                                tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume);
+                                string filename = tox.GetFriendPublicKey(e.FriendNumber).GetString();
+                                var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, e.FileKind, (long)e.FileSize, filename, Path.Combine(avatarStore.Dir, filename + ".png"));
+                                transfers.Add(transfer);
+                            }
+                        }
                         else
                         {
-                            tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume);
-                            string filename = tox.GetFriendPublicKey(e.FriendNumber).GetString();
-                            var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, (long)e.FileSize, filename, Path.Combine(avatarStore.Dir, filename + ".png"));
-                            transfers.Add(transfer);
+                            if (ToxTools.Hash(friend.AvatarBytes).SequenceEqual(hash))
+                                return;
+                            else
+                            {
+                                tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume);
+                                string filename = tox.GetFriendPublicKey(e.FriendNumber).GetString();
+                                var transfer = new FileReceiver(tox, e.FileNumber, e.FriendNumber, e.FileKind, (long)e.FileSize, filename, Path.Combine(avatarStore.Dir, filename + ".png"));
+                                transfers.Add(transfer);
+                            }
                         }
-                    }
-                })));
+                    })));
+                }
+                else //friend doesn't have an avatar
+                {
+                    avatarStore.Delete(tox.GetFriendPublicKey(e.FriendNumber));
+
+                    Dispatcher.BeginInvoke(((Action)(() =>
+                    {
+                        var friend = ViewModel.GetFriendObjectByNumber(e.FriendNumber);
+                        if (friend == null)
+                            return;
+
+                        friend.AvatarBytes = null;
+                        friend.Avatar = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/profilepicture.png"));
+                    })));
+                }
             }
         }
 
@@ -1077,15 +1122,17 @@ namespace Toxy
 
         private void loadAvatars()
         {
-            /*{
+            try
+            {
                 byte[] bytes;
                 var avatar = avatarStore.Load(tox.Id.PublicKey, out bytes);
                 if (avatar != null && bytes != null && bytes.Length > 0)
                 {
-                    tox.SetAvatar(ToxAvatarFormat.Png, bytes);
+                    //tox.SetAvatar(ToxAvatarFormat.Png, bytes);
                     ViewModel.MainToxyUser.Avatar = avatar;
                 }
-            }*/
+            }
+            catch { Debug.WriteLine("Could not load our own avatar, using default"); }
 
             foreach (int friend in tox.Friends)
             {
@@ -1093,35 +1140,31 @@ namespace Toxy
                 if (obj == null)
                     continue;
 
-                byte[] bytes;
-                var avatar = avatarStore.Load(tox.GetFriendPublicKey(friend), out bytes);
-
-                if (avatar != null && bytes != null && bytes.Length > 0)
+                try
                 {
-                    obj.AvatarBytes = bytes;
-                    obj.Avatar = avatar;
+                    byte[] bytes;
+                    var avatar = avatarStore.Load(tox.GetFriendPublicKey(friend), out bytes);
+
+                    if (avatar != null && bytes != null && bytes.Length > 0)
+                    {
+                        obj.AvatarBytes = bytes;
+                        obj.Avatar = avatar;
+                    }
                 }
+                catch { Debug.WriteLine("Could not load avatar of friend " + friend); }
             }
         }
 
-        private Task<bool> applyAvatar(IFriendObject friend, byte[] data)
+        private Task<bool> applyAvatar(IFriendObject friend)
         {
             return Task.Run(() =>
             {
-                Debug.WriteLine(string.Format("Saving avatar to disk ({0})", friend.ChatNumber));
+                byte[] data;
+                var img = avatarStore.Load(tox.GetFriendPublicKey(friend.ChatNumber), out data);
+                Dispatcher.BeginInvoke(((Action)(() => friend.Avatar = img)));
+
                 if (!avatarStore.Save(data, tox.GetFriendPublicKey(friend.ChatNumber)))
-                {
-                    Debug.WriteLine(string.Format("Could not save avatar to disk ({0})", friend.ChatNumber));
                     return false;
-                }
-
-                MemoryStream stream = new MemoryStream(data);
-
-                using (Bitmap bmp = new Bitmap(stream))
-                {
-                    var result = bmp.ToBitmapImage(ImageFormat.Png);
-                    Dispatcher.BeginInvoke(((Action)(() => friend.Avatar = result)));
-                }
 
                 return true;
             });

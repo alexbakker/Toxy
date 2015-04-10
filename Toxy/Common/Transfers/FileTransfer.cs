@@ -8,6 +8,7 @@ namespace Toxy.Common.Transfers
         public int FileNumber { get; private set; }
         public int FriendNumber { get; private set; }
         public long FileSize { get; private set; }
+        public ToxFileKind Kind { get; private set; }
 
         public string Path { get; set; }
         public string FileName { get; private set; }
@@ -37,11 +38,12 @@ namespace Toxy.Common.Transfers
 
         public abstract void Kill(bool finished);
 
-        public FileTransfer(Tox tox, int fileNumber, int friendNumber, long fileSize, string fileName, string path)
+        public FileTransfer(Tox tox, int fileNumber, int friendNumber, ToxFileKind kind, long fileSize, string fileName, string path)
         {
             Tox = tox;
             FileNumber = fileNumber;
             FriendNumber = friendNumber;
+            Kind = kind;
             FileSize = fileSize;
             FileName = fileName;
             Path = path;

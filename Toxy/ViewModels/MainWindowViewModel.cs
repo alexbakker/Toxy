@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 using MahApps.Metro;
 using Toxy.MVVM;
 using NAudio.Wave;
 using AForge.Video.DirectShow;
+using Toxy.Common;
 
 namespace Toxy.ViewModels
 {
@@ -62,6 +65,8 @@ namespace Toxy.ViewModels
                                           .Select(a => new AppThemeMenuData() { Name = a.Name, BorderColorBrush = a.Resources["BlackColorBrush"] as Brush, ColorBrush = a.Resources["WhiteColorBrush"] as Brush })
                                           .ToList();
 
+	        this.SpellcheckLanguages = Enum.GetNames(typeof(SpellcheckLanguage)).ToList();
+
             InputDevices = new ObservableCollection<InputDeviceMenuData>();
             OutputDevices = new ObservableCollection<OutputDeviceMenuData>();
             VideoDevices = new ObservableCollection<VideoDeviceMenuData>();
@@ -69,6 +74,7 @@ namespace Toxy.ViewModels
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
+		public List<string> SpellcheckLanguages { get; set; }
 
         public ObservableCollection<OutputDeviceMenuData> OutputDevices { get; set; }
         public ObservableCollection<InputDeviceMenuData> InputDevices { get; set; }
@@ -238,5 +244,37 @@ namespace Toxy.ViewModels
             };
             this.ChatCollection = chatObjects;
         }
+
+	    private bool spellcheckEnabled;
+
+	    public bool SpellcheckEnabled
+	    {
+			get { return this.spellcheckEnabled; }
+		    set
+		    {
+			    if (Equals(value, this.spellcheckEnabled))
+			    {
+				    return;
+			    }
+			    this.spellcheckEnabled = value;
+				this.OnPropertyChanged(() => this.SpellcheckEnabled);
+		    }
+	    }
+
+	    private string spellcheckLangCode;
+
+	    public string SpellcheckLangCode
+	    {
+			get { return this.spellcheckLangCode; }
+		    set
+		    {
+			    if (Equals(value, this.spellcheckLangCode))
+			    {
+				    return;
+			    }
+			    this.spellcheckLangCode = value;
+				this.OnPropertyChanged(() => this.SpellcheckLangCode);
+		    }
+	    }
     }
 }

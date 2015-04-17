@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 using System.Windows;
 using SharpTox.Core;
 
@@ -38,6 +39,22 @@ namespace Toxy.Common
             get { return alwaysNotify; }
             set { alwaysNotify = value; }
         }
+
+	    private bool enableSpellcheck = true;
+
+	    public bool EnableSpellcheck
+	    {
+			get { return this.enableSpellcheck; }
+			set { this.enableSpellcheck = value; }
+	    }
+
+	    private SpellcheckLanguage spellcheckLanguage;
+
+	    public SpellcheckLanguage SpellcheckLanguage
+	    {
+			get { return this.spellcheckLanguage; }
+			set { this.spellcheckLanguage = value; }
+	    }
 
        private bool ipv6Enabled = true;
 

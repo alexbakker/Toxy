@@ -1,43 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.IO;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using System.Drawing.Imaging;
-using Microsoft.Win32;
-
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-
-using SharpTox.Core;
+using NAudio.Wave;
 using SharpTox.Av;
-
-using Toxy.Views;
+using SharpTox.Core;
+using SharpTox.Vpx;
+using SQLite;
 using Toxy.Common;
+using Toxy.Common.Transfers;
+using Toxy.Extenstions;
+using Toxy.Tables;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
-using Toxy.Extenstions;
-using Toxy.Common.Transfers;
-
-using Path = System.IO.Path;
+using Toxy.Views;
+using Win32;
+using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
-
-using SQLite;
-using NAudio.Wave;
-using SharpTox.Vpx;
+using Clipboard = System.Windows.Clipboard;
+using ContextMenu = System.Windows.Forms.ContextMenu;
+using DataFormats = System.Windows.DataFormats;
+using DragDropEffects = System.Windows.DragDropEffects;
+using DragEventArgs = System.Windows.DragEventArgs;
+using DragEventHandler = System.Windows.DragEventHandler;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MenuItem = System.Windows.Forms.MenuItem;
+using MessageBox = System.Windows.MessageBox;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using Size = System.Windows.Size;
 
 namespace Toxy
 {
@@ -63,7 +72,7 @@ namespace Toxy
         private Config config;
         private AvatarStore avatarStore;
 
-        System.Windows.Forms.NotifyIcon nIcon = new System.Windows.Forms.NotifyIcon();
+        NotifyIcon nIcon = new NotifyIcon();
 
         private Icon notifyIcon;
         private Icon newMessageNotifyIcon;
@@ -124,6 +133,7 @@ namespace Toxy
                 ConfigTools.Save(config, configFilename);
             }
 
+            ViewModel.ChangeLanguage(getShortLanguageName(config.Language));
             avatarStore = new AvatarStore(toxDataDir);
             applyConfig();
         }
@@ -811,7 +821,7 @@ namespace Toxy
             })));
 
             if (config.EnableChatLogging)
-                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetFriendPublicKey(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
+                dbConnection.InsertAsync(new ToxMessage() { PublicKey = tox.GetFriendPublicKey(e.FriendNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
         }
 
         private void tox_OnFriendNameChanged(object sender, ToxEventArgs.NameChangeEventArgs e)
@@ -1045,13 +1055,13 @@ namespace Toxy
         private async void initDatabase()
         {
             dbConnection = new SQLiteAsyncConnection(dbFilename);
-            await dbConnection.CreateTableAsync<Tables.ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
+            await dbConnection.CreateTableAsync<ToxMessage>().ContinueWith((r) => { Console.WriteLine("Created ToxMessage table"); });
 
             if (config.EnableChatLogging)
             {
-                await dbConnection.Table<Tables.ToxMessage>().ToListAsync().ContinueWith((task) =>
+                await dbConnection.Table<ToxMessage>().ToListAsync().ContinueWith((task) =>
                 {
-                    foreach (Tables.ToxMessage msg in task.Result)
+                    foreach (ToxMessage msg in task.Result)
                     {
                         if (string.IsNullOrEmpty(msg.ProfilePublicKey) || msg.ProfilePublicKey != tox.Id.PublicKey.GetString())
                             continue;
@@ -1227,7 +1237,7 @@ namespace Toxy
             var theme = ThemeManager.GetAppTheme(config.Theme);
 
             if (accent != null && theme != null)
-                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme);
+                ThemeManager.ChangeAppStyle(Application.Current, accent, theme);
 
             Width = config.WindowSize.Width;
             Height = config.WindowSize.Height;
@@ -1237,8 +1247,8 @@ namespace Toxy
 
         private void InitializeNotifyIcon()
         {
-            Stream newMessageIconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon2.ico")).Stream;
-            Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
+            Stream newMessageIconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon2.ico")).Stream;
+            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Toxy;component/Resources/Icons/icon.ico")).Stream;
 
             notifyIcon = new Icon(iconStream);
             newMessageNotifyIcon = new Icon(newMessageIconStream);
@@ -1246,14 +1256,14 @@ namespace Toxy
             nIcon.Icon = notifyIcon;
             nIcon.MouseClick += nIcon_MouseClick;
 
-            var trayIconContextMenu = new System.Windows.Forms.ContextMenu();
-            var closeMenuItem = new System.Windows.Forms.MenuItem("Exit", closeMenuItem_Click);
-            var openMenuItem = new System.Windows.Forms.MenuItem("Open", openMenuItem_Click);
+            var trayIconContextMenu = new ContextMenu();
+            var closeMenuItem = new MenuItem("Exit", closeMenuItem_Click);
+            var openMenuItem = new MenuItem("Open", openMenuItem_Click);
 
-            var statusMenuItem = new System.Windows.Forms.MenuItem("Status");
-            var setOnlineMenuItem = new System.Windows.Forms.MenuItem("Online", setStatusMenuItem_Click);
-            var setAwayMenuItem = new System.Windows.Forms.MenuItem("Away", setStatusMenuItem_Click);
-            var setBusyMenuItem = new System.Windows.Forms.MenuItem("Busy", setStatusMenuItem_Click);
+            var statusMenuItem = new MenuItem("Status");
+            var setOnlineMenuItem = new MenuItem("Online", setStatusMenuItem_Click);
+            var setAwayMenuItem = new MenuItem("Away", setStatusMenuItem_Click);
+            var setBusyMenuItem = new MenuItem("Busy", setStatusMenuItem_Click);
 
             setOnlineMenuItem.Tag = 0; // Online
             setAwayMenuItem.Tag = 1; // Away
@@ -1269,9 +1279,9 @@ namespace Toxy
             nIcon.ContextMenu = trayIconContextMenu;
         }
 
-        private void nIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void nIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button != System.Windows.Forms.MouseButtons.Left)
+            if (e.Button != MouseButtons.Left)
                 return;
 
             if (WindowState != WindowState.Normal)
@@ -1291,7 +1301,7 @@ namespace Toxy
         private void setStatusMenuItem_Click(object sender, EventArgs eventArgs)
         {
             if (tox.IsConnected)
-                SetStatus((ToxStatus)((System.Windows.Forms.MenuItem)sender).Tag, true);
+                SetStatus((ToxStatus)((MenuItem)sender).Tag, true);
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)
@@ -1660,7 +1670,7 @@ namespace Toxy
             VideoGridSplitter.IsEnabled = false;
             VideoChatImage.Source = null;
 
-            GroupListGrid.Visibility = System.Windows.Visibility.Visible;
+            GroupListGrid.Visibility = Visibility.Visible;
             PeerColumn.Width = new GridLength(150);
         }
 
@@ -1779,11 +1789,11 @@ namespace Toxy
                 ChatBox.Document = convdic[friend.ChatNumber];
             }
 
-            GroupListGrid.Visibility = System.Windows.Visibility.Collapsed;
+            GroupListGrid.Visibility = Visibility.Collapsed;
             PeerColumn.Width = GridLength.Auto;
         }
 
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             if (config.HideInTray && !forceClose)
             {
@@ -1827,7 +1837,7 @@ namespace Toxy
 
             if (config != null)
             {
-                config.WindowSize = new System.Windows.Size(this.Width, this.Height);
+                config.WindowSize = new Size(this.Width, this.Height);
                 ConfigTools.Save(config, configFilename);
             }
         }
@@ -1845,13 +1855,13 @@ namespace Toxy
                 SettingsStatus.Text = getSelfStatusMessage();
                 SettingsNospam.Text = tox.GetNospam().ToString();
 
-                Tuple<AppTheme, Accent> style = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-                Accent accent = ThemeManager.GetAccent(style.Item2.Name);
+                var style = ThemeManager.DetectAppStyle(Application.Current);
+                var accent = ThemeManager.GetAccent(style.Item2.Name);
                 oldAccent = accent;
                 if (accent != null)
                     AccentComboBox.SelectedItem = AccentComboBox.Items.Cast<AccentColorMenuData>().Single(a => a.Name == style.Item2.Name);
 
-                AppTheme theme = ThemeManager.GetAppTheme(style.Item1.Name);
+                var theme = ThemeManager.GetAppTheme(style.Item1.Name);
                 oldAppTheme = theme;
                 if (theme != null)
                     AppThemeComboBox.SelectedItem = AppThemeComboBox.Items.Cast<AppThemeMenuData>().Single(a => a.Name == style.Item1.Name);
@@ -1860,7 +1870,7 @@ namespace Toxy
 
                 foreach(var item in VideoDevicesComboBox.Items)
                 {
-                    var device = (VideoDeviceMenuData)item;
+                    var device = (VideoMenuData)item;
                     if (device.Name == config.VideoDevice)
                     {
                         VideoDevicesComboBox.SelectedItem = item;
@@ -1897,7 +1907,7 @@ namespace Toxy
                 }
             }
 
-            SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
+            SettingsFlyout.IsOpen = true;
         }
 
         private async void AddFriend_Click(object sender, RoutedEventArgs e)
@@ -1999,9 +2009,9 @@ namespace Toxy
             if (AccentComboBox.SelectedItem != null)
             {
                 string accentName = ((AccentColorMenuData)AccentComboBox.SelectedItem).Name;
-                var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+                var theme = ThemeManager.DetectAppStyle(Application.Current);
                 var accent = ThemeManager.GetAccent(accentName);
-                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+                ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
 
                 config.AccentColor = accentName;
             }
@@ -2009,9 +2019,9 @@ namespace Toxy
             if (AppThemeComboBox.SelectedItem != null)
             {
                 string themeName = ((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name;
-                var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+                var theme = ThemeManager.DetectAppStyle(Application.Current);
                 var appTheme = ThemeManager.GetAppTheme(themeName);
-                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
+                ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme);
 
                 config.Theme = themeName;
             }
@@ -2037,7 +2047,7 @@ namespace Toxy
             }
 
             if (VideoDevicesComboBox.SelectedItem != null)
-                config.VideoDevice = ((VideoDeviceMenuData)VideoDevicesComboBox.SelectedItem).Name;
+                config.VideoDevice = ((VideoMenuData)VideoDevicesComboBox.SelectedItem).Name;
 
             config.EnableChatLogging = (bool)ChatLogCheckBox.IsChecked;
             config.Portable = (bool)PortableCheckBox.IsChecked;
@@ -2056,11 +2066,17 @@ namespace Toxy
             bool proxyConfigChanged = false;
             var proxyType = (ToxProxyType)int.Parse((string)((ComboBoxItem)ProxyTypeComboBox.SelectedItem).Tag);
 
-            if (config.ProxyType != proxyType || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text)
+            var language = LanguageComboBox.Text;
+            
+
+            if (config.ProxyType != proxyType || config.ProxyAddress != SettingsProxyAddress.Text || config.ProxyPort.ToString() != SettingsProxyPort.Text || config.Language != language)
                 proxyConfigChanged = true;
 
             config.ProxyType = proxyType;
             config.ProxyAddress = SettingsProxyAddress.Text;
+
+            if (language!="")
+                config.Language = language;
 
             int proxyPort;
             if (int.TryParse(SettingsProxyPort.Text, out proxyPort))
@@ -2123,7 +2139,7 @@ namespace Toxy
                         AddActionToView(selectedChatNumber, data);
 
                         if (config.EnableChatLogging)
-                            dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetFriendPublicKey(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
+                            dbConnection.InsertAsync(new ToxMessage() { PublicKey = tox.GetFriendPublicKey(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = true, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
                     }
                 }
                 else
@@ -2145,7 +2161,7 @@ namespace Toxy
                             AddMessageToView(selectedChatNumber, data);
 
                             if (config.EnableChatLogging)
-                                dbConnection.InsertAsync(new Tables.ToxMessage() { PublicKey = tox.GetFriendPublicKey(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
+                                dbConnection.InsertAsync(new ToxMessage() { PublicKey = tox.GetFriendPublicKey(selectedChatNumber).GetString(), Message = data.Message, Timestamp = DateTime.Now, IsAction = false, Name = data.Username, ProfilePublicKey = tox.Id.PublicKey.GetString() });
                         }
                     }
                 }
@@ -2280,7 +2296,7 @@ namespace Toxy
             if (!tox.IsConnected)
                 return;
 
-            MenuItem menuItem = (MenuItem)e.Source;
+            System.Windows.Controls.MenuItem menuItem = (System.Windows.Controls.MenuItem)e.Source;
             SetStatus((ToxStatus)int.Parse(menuItem.Tag.ToString()), true);
         }
 
@@ -2463,16 +2479,16 @@ namespace Toxy
 
         private void AccentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
             var accent = ThemeManager.GetAccent(((AccentColorMenuData)AccentComboBox.SelectedItem).Name);
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
         }
 
         private void SettingsFlyout_IsOpenChanged(object sender, RoutedEventArgs e)
         {
             if (!SettingsFlyout.IsOpen && !savingSettings)
             {
-                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, oldAccent, oldAppTheme);
+                ThemeManager.ChangeAppStyle(Application.Current, oldAccent, oldAppTheme);
             }
             else if (savingSettings)
             {
@@ -2482,9 +2498,9 @@ namespace Toxy
 
         private void AppThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
             var appTheme = ThemeManager.GetAppTheme(((AppThemeMenuData)AppThemeComboBox.SelectedItem).Name);
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, theme.Item2, appTheme);
+            ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme);
         }
 
         private void ExportDataButton_OnClick(object sender, RoutedEventArgs e)
@@ -2502,7 +2518,7 @@ namespace Toxy
 
         private void AvatarMenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)e.Source;
+            System.Windows.Controls.MenuItem menuItem = (System.Windows.Controls.MenuItem)e.Source;
             AvatarMenuItem item = (AvatarMenuItem)menuItem.Tag;
 
             switch (item)
@@ -2560,7 +2576,7 @@ namespace Toxy
                     int posX = (int)((width - (bmp.Width * ratio)) / 2);
                     int posY = (int)((height - (bmp.Height * ratio)) / 2);
                     
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     g.DrawImage(bmp, posX, posY, newWidth, newHeight);
                 }
 
@@ -2654,11 +2670,11 @@ namespace Toxy
             {
                 if (WindowState == WindowState.Normal && config.AlwaysNotify && !chat.Selected)
                 {
-                    Win32.Winmm.PlayMessageNotify();
+                    Winmm.PlayMessageNotify();
                 }
                 else if (WindowState == WindowState.Minimized || !IsActive)
                 {
-                    Win32.Winmm.PlayMessageNotify();
+                    Winmm.PlayMessageNotify();
                 }
             }
         }
@@ -2700,7 +2716,7 @@ namespace Toxy
 
         private async void GroupMenuItem_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)e.Source;
+            System.Windows.Controls.MenuItem menuItem = (System.Windows.Controls.MenuItem)e.Source;
             GroupMenuItem item = (GroupMenuItem)menuItem.Tag;
 
             if (item == GroupMenuItem.TextAudio && call != null)
@@ -3086,6 +3102,34 @@ namespace Toxy
 
             random.NextBytes(buffer);
             SettingsNospam.Text = BitConverter.ToUInt32(buffer, 0).ToString();
+        }
+
+        private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LanguageMenuData content = (LanguageMenuData) e.AddedItems[0];
+            var fileShortCut = getShortLanguageName(content.Name);
+            if (fileShortCut.Equals("fail"))
+                return;
+
+            ViewModel.ChangeLanguage(fileShortCut);
+        } 
+
+
+        private string getShortLanguageName(string LanguageDescriptor)
+        {
+            switch (LanguageDescriptor)
+            {
+                case "English":
+                    return "Eng";
+
+                case "Deutsch":
+                    return "Ger";
+
+                case "Dutch":
+                    return "Nl";
+            }
+
+            return "fail";
         }
     }
 }

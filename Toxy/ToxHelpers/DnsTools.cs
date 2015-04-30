@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 
 using Toxy.Common;
 using SharpTox.Dns;
+using SharpTox.Core;
 
 
 namespace Toxy.ToxHelpers
@@ -85,7 +86,7 @@ namespace Toxy.ToxHelpers
 
                 string[] split = domain.Split('@');
 
-                ToxDns tox_dns = new ToxDns(public_key);
+                ToxDns tox_dns = new ToxDns(new ToxKey(ToxKeyType.Public, public_key));
                 uint request_id;
                 string dns3_string = tox_dns.GenerateDns3String(split[0], out request_id);
 

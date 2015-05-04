@@ -38,6 +38,7 @@
         </ResourceDictionary>
     </controls:MetroWindow.Resources>
 
+
     <Grid x:Name="RootGrid"
           MouseLeftButtonUp="Grid_MouseLeftButtonUp">
         <Grid.Resources>
@@ -206,16 +207,15 @@
                                 <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
                                     <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
                                 </DataTemplate>
-                                <DataTemplate DataType="{x:Type viewModels:GroupControlModelView}">
+                                <!--<DataTemplate DataType="{x:Type viewModels:GroupControlModelView}">
                                     <views:GroupControlView DataContext="{Binding Mode=OneWay}" />
-                                </DataTemplate>
+                                </DataTemplate>-->
                             </ListBox.Resources>
                         </ListBox>
 
                     </Grid>
                 </TabItem>
-                <TabItem x:Name="RequestsTabItem"
-                         Header="Requests">
+                <TabItem x:Name="RequestsTabItem" Header="{DynamicResource Local_Requests_Header}">
 
                     <!-- bind to collection of friend requests -->
                     <ListBox x:Name="ChatRequestsListBox"
@@ -696,13 +696,13 @@
                 </Grid>
             </controls:Flyout>
             <controls:Flyout x:Name="SettingsFlyout"
-                             Header="Settings"
+                             Header="{DynamicResource Local_Settings_Title}"
                              Position="Right"
                              Width="300" IsOpenChanged="SettingsFlyout_IsOpenChanged">
                 <Grid>
                     <ScrollViewer VerticalAlignment="Top" Margin="0 0 0 50">
                         <StackPanel Margin="10,0,0,0">
-                            <Label Content="Enter your desired username"
+                            <Label Content="{DynamicResource Local_Enter_Username}"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top" />
                             <TextBox x:Name="SettingsUsername"
@@ -712,7 +712,7 @@
                                  Text=""
                                  VerticalAlignment="Top"
                                  Width="275"/>
-                            <Label Content="Enter your desired status message"
+                            <Label Content="{DynamicResource Local_Enter_Status}"
                                HorizontalAlignment="Left"
                                Margin="0 10 0 0"
                                VerticalAlignment="Top" />
@@ -723,7 +723,15 @@
                                  TextWrapping="Wrap"
                                  VerticalAlignment="Top"
                                  Width="275" />
-                            <Label Content="Change nospam (note: this will change your id)"
+                            <Label Content="{DynamicResource Local_Change_Language}" HorizontalAlignment="Left" Margin="0 10 0 0" VerticalAlignment="Top"/>
+                            <ComboBox x:Name="LanguageComboBox"
+                                  ItemsSource="{Binding Languages}"
+                                  DisplayMemberPath="Name"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Left"
+                                  SelectionChanged="OnLanguageChanged"
+                                  Width="275" />
+	                        <Label Content="{DynamicResource Local_Change_Nospam}"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left"/>
                             <StackPanel Margin="0 0 0 0" Orientation="Horizontal">
@@ -741,7 +749,7 @@
                                      Click="RandomNospamButton_Click"
                                      Width="90"/>
                             </StackPanel>
-                            <Label Content="Pick an accent color"
+                            <Label Content="{DynamicResource Local_Pick_Accent}"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="AccentComboBox"
@@ -774,7 +782,7 @@
                                   Margin="0,5,0,0"
                                   Width="275" />
                             <CheckBox x:Name="FilterAudioCheckbox" 
-                                  Content="Filter input audio" 
+                                  Content="{DynamicResource Local_Filter_Audio}" 
                                   Margin="0 5" />
                             <Label Content="Video"
                                Margin="0 10 0 0"
@@ -791,28 +799,28 @@
                             <CheckBox x:Name="HideInTrayCheckBox"
                                   VerticalAlignment="Top"
                                   HorizontalAlignment="Left"
-                                  Content="Hide in tray"
+                                  Content="{DynamicResource Local_Hide_In_Tray}"
                                   ToolTip="Minimize to system tray instead of closing Toxy."
                                   />
                             <CheckBox x:Name="PortableCheckBox"
                                   VerticalAlignment="Top"
                                   Margin="0,5,0,0"
                                   HorizontalAlignment="Left"
-                                  Content="Portable"
+                                  Content="{DynamicResource Local_Portable}"
                                   ToolTip="Save application settings in the executable folder."
                                   />
                             <CheckBox x:Name="ChatLogCheckBox"
                                   VerticalAlignment="Top"
                                   Margin="0,5,0,0"
                                   HorizontalAlignment="Left"
-                                  Content="Enable chat logging"
+                                  Content="{DynamicResource Local_Enable_Chat_Logging}"
                                   ToolTip="Chat logs get saved to a local database and are loaded at launch."
                                   />
                             <CheckBox x:Name="AudioNotificationCheckBox"
                                   VerticalAlignment="Top"
                                   HorizontalAlignment="Left"
                                   Margin="0,5,0,0"
-                                  Content="Enable audible message alerts"
+                                  Content="{DynamicResource Local_Enable_Audible_Alerts}"
                                   ToolTip="Beep on new message unless you are in a voice call."
                                   />
                             <CheckBox x:Name="AlwaysNotifyCheckBox"
@@ -820,13 +828,13 @@
                                       HorizontalAlignment="Left"
                                       Margin="0,5,0,0"
                                       IsEnabled="{Binding ElementName=AudioNotificationCheckBox, Path=IsChecked}"
-                                      Content="Always play sound, even when Toxy is open"
+                                      Content="{DynamicResource Local_Always_Play_Alert}"
                                       />
                             <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
-                                <Label Content="Proxy address"
+                                <Label Content="{DynamicResource Local_Proxy_Address}"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top" />
-                                <Label Content="Proxy port"
+                                <Label Content="{DynamicResource Local_Proxy_Port}"
                                     Margin="120 0 0 0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top" />
@@ -848,7 +856,7 @@
                                      Margin="5 0"
                                      Width="70" />
                             </StackPanel>
-                            <Label Content="Proxy type"
+                            <Label Content="{DynamicResource Local_Proxy_Type}"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Margin="0,5,0,0"/>
@@ -889,17 +897,17 @@
                             <ColumnDefinition Width="1*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="ExportDataButton"
-                                Content="Export"
+                                Content="{DynamicResource Local_Export_Profile}"
                                 Grid.Column="1"
                                 Width="75"
                                 Click="ExportDataButton_OnClick" />
                         <Button x:Name="SaveSettingsButton"
-                                Content="Save"
+                                Content="{DynamicResource Local_Save_Settings}"
                                 Grid.Column="3"
                                 Width="75"
                                 Click="SaveSettingsButton_OnClick" />
                         <Button x:Name="CopyIdButton"
-                                Content="Copy ID"
+                                Content="{DynamicResource Local_Copy_ID}"
                                 Width="75"
                                 Grid.Column="2"
                                 Click="CopyIDButton_Click" />

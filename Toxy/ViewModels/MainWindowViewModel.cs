@@ -3,11 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-
-using MahApps.Metro;
-using Toxy.MVVM;
-using NAudio.Wave;
 using AForge.Video.DirectShow;
+using MahApps.Metro;
+using NAudio.Wave;
+using Toxy.MVVM;
 
 namespace Toxy.ViewModels
 {
@@ -19,9 +18,9 @@ namespace Toxy.ViewModels
 
         protected virtual void DoChangeTheme(object sender)
         {
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-            var accent = ThemeManager.GetAccent(this.Name);
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, accent, theme.Item1);
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            var accent = ThemeManager.GetAccent(Name);
+            ThemeManager.ChangeAppStyle(Application.Current, accent, theme.Item1);
         }
     }
 
@@ -30,49 +29,64 @@ namespace Toxy.ViewModels
         protected override void DoChangeTheme(object sender)
         {
             var theme = ThemeManager.DetectAppStyle(Application.Current);
-            var appTheme = ThemeManager.GetAppTheme(this.Name);
+            var appTheme = ThemeManager.GetAppTheme(Name);
             ThemeManager.ChangeAppStyle(Application.Current, theme.Item2, appTheme);
         }
     }
 
-    public class DeviceMenuData
+    public class MenuData
     {
         public string Name { get; set; }
     }
 
-    public class OutputDeviceMenuData : DeviceMenuData { }
-    public class InputDeviceMenuData : DeviceMenuData { }
-    public class VideoDeviceMenuData : DeviceMenuData { }
+    public class OutputMenuData : MenuData { }
+    public class InputMenuData : MenuData { }
+    public class VideoMenuData : MenuData { }
+
+    public class LanguageMenuData : MenuData { }
 
     public class MainWindowViewModel : ViewModelBase
     {
         public MainWindowViewModel()
         {
-            this.MainToxyUser = new UserModel();
+            MainToxyUser = new UserModel();
 
             UpdateChatCollection();
-            this.ChatRequestCollection = new ObservableCollection<IChatObject>();
+            ChatRequestCollection = new ObservableCollection<IChatObject>();
 
             // create accent color menu items for the demo
-            this.AccentColors = ThemeManager.Accents
+            AccentColors = ThemeManager.Accents
                                             .Select(a => new AccentColorMenuData() { Name = a.Name, ColorBrush = a.Resources["AccentColorBrush"] as Brush })
                                             .ToList();
 
-            this.AppThemes = ThemeManager.AppThemes
+            AppThemes = ThemeManager.AppThemes
                                           .Select(a => new AppThemeMenuData() { Name = a.Name, BorderColorBrush = a.Resources["BlackColorBrush"] as Brush, ColorBrush = a.Resources["WhiteColorBrush"] as Brush })
                                           .ToList();
 
-            InputDevices = new ObservableCollection<InputDeviceMenuData>();
-            OutputDevices = new ObservableCollection<OutputDeviceMenuData>();
-            VideoDevices = new ObservableCollection<VideoDeviceMenuData>();
+            Languages = new ObservableCollection<LanguageMenuData>();
+            FillLanguages();
+
+
+            InputDevices = new ObservableCollection<InputMenuData>();
+            OutputDevices = new ObservableCollection<OutputMenuData>();
+            VideoDevices = new ObservableCollection<VideoMenuData>();
+        }
+
+        private void FillLanguages()
+        {
+            Languages.Add(new LanguageMenuData {Name = "English"});
+            Languages.Add(new LanguageMenuData { Name = "Dutch" });
+            Languages.Add(new LanguageMenuData { Name = "Deutsch" });
         }
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
 
-        public ObservableCollection<OutputDeviceMenuData> OutputDevices { get; set; }
-        public ObservableCollection<InputDeviceMenuData> InputDevices { get; set; }
-        public ObservableCollection<VideoDeviceMenuData> VideoDevices { get; set; }
+        public ObservableCollection<OutputMenuData> OutputDevices { get; set; }
+        public ObservableCollection<InputMenuData> InputDevices { get; set; }
+        public ObservableCollection<VideoMenuData> VideoDevices { get; set; }
+
+        public  ObservableCollection<LanguageMenuData> Languages { get; set; }
 
         public void UpdateDevices()
         {
@@ -81,29 +95,29 @@ namespace Toxy.ViewModels
             VideoDevices.Clear();
 
             for (int i = 0; i < WaveIn.DeviceCount; i++)
-                InputDevices.Add(new InputDeviceMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
+                InputDevices.Add(new InputMenuData { Name = WaveIn.GetCapabilities(i).ProductName });
 
             for (int i = 0; i < WaveOut.DeviceCount; i++)
-                OutputDevices.Add(new OutputDeviceMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
+                OutputDevices.Add(new OutputMenuData { Name = WaveOut.GetCapabilities(i).ProductName });
 
             var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             foreach (FilterInfo device in videoDevices)
-                VideoDevices.Add(new VideoDeviceMenuData { Name = device.Name });
+                VideoDevices.Add(new VideoMenuData { Name = device.Name });
         }
 
         private UserModel mainToxyUser;
 
         public UserModel MainToxyUser
         {
-            get { return this.mainToxyUser; }
+            get { return mainToxyUser; }
             set
             {
-                if (Equals(value, this.mainToxyUser))
+                if (Equals(value, mainToxyUser))
                 {
                     return;
                 }
-                this.mainToxyUser = value;
-                this.OnPropertyChanged(() => this.MainToxyUser);
+                mainToxyUser = value;
+                OnPropertyChanged(() => MainToxyUser);
             }
         }
 
@@ -111,15 +125,15 @@ namespace Toxy.ViewModels
 
         public ICollection<IChatObject> ChatCollection
         {
-            get { return this.chatCollection; }
+            get { return chatCollection; }
             set
             {
-                if (Equals(value, this.chatCollection))
+                if (Equals(value, chatCollection))
                 {
                     return;
                 }
-                this.chatCollection = value;
-                this.OnPropertyChanged(() => this.ChatCollection);
+                chatCollection = value;
+                OnPropertyChanged(() => ChatCollection);
             }
         }
 
@@ -127,8 +141,8 @@ namespace Toxy.ViewModels
         {
             get
             {
-                return this.ChatCollection != null
-                    ? this.ChatCollection.OfType<IGroupObject>().ToList()
+                return ChatCollection != null
+                    ? ChatCollection.OfType<IGroupObject>().ToList()
                     : Enumerable.Empty<IGroupObject>().ToList();
             }
         }
@@ -142,15 +156,15 @@ namespace Toxy.ViewModels
 
         public ICollection<IChatObject> ChatRequestCollection
         {
-            get { return this.chatRequestCollection; }
+            get { return chatRequestCollection; }
             set
             {
-                if (Equals(value, this.chatRequestCollection))
+                if (Equals(value, chatRequestCollection))
                 {
                     return;
                 }
-                this.chatRequestCollection = value;
-                this.OnPropertyChanged(() => this.ChatRequestCollection);
+                chatRequestCollection = value;
+                OnPropertyChanged(() => ChatRequestCollection);
             }
         }
 
@@ -158,18 +172,18 @@ namespace Toxy.ViewModels
 
         public IChatObject SelectedChatObject
         {
-            get { return this.selectedChatObject; }
+            get { return selectedChatObject; }
             set
             {
-                if (Equals(value, this.selectedChatObject))
+                if (Equals(value, selectedChatObject))
                 {
                     return;
                 }
-                this.selectedChatObject = value;
-                this.OnPropertyChanged(() => this.SelectedChatObject);
-                this.OnPropertyChanged(() => this.IsFriendSelected);
-                this.OnPropertyChanged(() => this.IsGroupSelected);
-                this.OnPropertyChanged(() => this.SelectedChatNumber);
+                selectedChatObject = value;
+                OnPropertyChanged(() => SelectedChatObject);
+                OnPropertyChanged(() => IsFriendSelected);
+                OnPropertyChanged(() => IsGroupSelected);
+                OnPropertyChanged(() => SelectedChatNumber);
             }
         }
 
@@ -177,26 +191,26 @@ namespace Toxy.ViewModels
 
         public IFriendObject CallingFriend
         {
-            get { return this.callingFriend; }
+            get { return callingFriend; }
             set
             {
-                if (Equals(value, this.callingFriend))
+                if (Equals(value, callingFriend))
                 {
                     return;
                 }
-                this.callingFriend = value;
-                this.OnPropertyChanged(() => this.CallingFriend);
+                callingFriend = value;
+                OnPropertyChanged(() => CallingFriend);
             }
         }
 
         public bool IsFriendSelected
         {
-            get { return this.SelectedChatObject is IFriendObject; }
+            get { return SelectedChatObject is IFriendObject; }
         }
 
         public bool IsGroupSelected
         {
-            get { return this.SelectedChatObject is IGroupObject; }
+            get { return SelectedChatObject is IGroupObject; }
         }
 
         public Visibility BuildInfoVisibility
@@ -208,7 +222,7 @@ namespace Toxy.ViewModels
         {
             get
             {
-                var chatObject = this.SelectedChatObject;
+                var chatObject = SelectedChatObject;
                 return chatObject != null ? chatObject.ChatNumber : -1;
             }
         }
@@ -229,14 +243,43 @@ namespace Toxy.ViewModels
 
         public void UpdateChatCollection(ObservableCollection<IChatObject> collection = null)
         {
-            var chatObjects = collection == null ? new ObservableCollection<IChatObject>() : collection;
+            var chatObjects = collection ?? new ObservableCollection<IChatObject>();
             // notify the GroupChatCollection property to (used for menu items)
             chatObjects.CollectionChanged += (sender, args) =>
             {
-                this.OnPropertyChanged(() => this.GroupChatCollection);
-                this.OnPropertyChanged(() => this.AnyGroupsExists);
+                OnPropertyChanged(() => GroupChatCollection);
+                OnPropertyChanged(() => AnyGroupsExists);
             };
-            this.ChatCollection = chatObjects;
+            ChatCollection = chatObjects;
+        }
+
+
+
+        public void ChangeLanguage(string fileShortCut)
+        {
+            // List all our resources      
+            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
+            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+            {
+                dictionaryList.Add(dictionary);
+            }
+
+            var requestedCulture = string.Format("Languages/{0}.xaml", fileShortCut);
+            ResourceDictionary resourceDictionary =
+                dictionaryList.FirstOrDefault(d => d.Source.OriginalString == requestedCulture);
+            if (resourceDictionary == null)
+            {
+                requestedCulture = "Languages/Eng.xaml";
+                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == requestedCulture);
+            }
+
+            // If we have the requested resource, remove it from the list and place at the end.\      
+            // Then this language will be our string table to use.      
+            if (resourceDictionary != null)
+            {
+                Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+                Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            }
         }
     }
 }

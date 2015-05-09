@@ -208,9 +208,9 @@
                                 <DataTemplate DataType="{x:Type viewModels:FriendControlModelView}">
                                     <views:FriendControlView DataContext="{Binding Mode=OneWay}" />
                                 </DataTemplate>
-                                <!--<DataTemplate DataType="{x:Type viewModels:GroupControlModelView}">
+                                <DataTemplate DataType="{x:Type viewModels:GroupControlModelView}">
                                     <views:GroupControlView DataContext="{Binding Mode=OneWay}" />
-                                </DataTemplate>-->
+                                </DataTemplate>
                             </ListBox.Resources>
                         </ListBox>
 

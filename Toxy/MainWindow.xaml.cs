@@ -31,6 +31,7 @@ using Toxy.Tables;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;
 using Toxy.Views;
+using Toxy.Extensions;
 using Win32;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
@@ -1242,6 +1243,9 @@ namespace Toxy
             Width = config.WindowSize.Width;
             Height = config.WindowSize.Height;
 
+	        ViewModel.SpellcheckEnabled = config.EnableSpellcheck;
+	        ViewModel.SpellcheckLangCode = config.SpellcheckLanguage.ToDescription();
+
             ExecuteActionsOnNotifyIcon();
         }
 
@@ -1889,6 +1893,8 @@ namespace Toxy
                 PortableCheckBox.IsChecked = config.Portable;
                 AudioNotificationCheckBox.IsChecked = config.EnableAudioNotifications;
                 AlwaysNotifyCheckBox.IsChecked = config.AlwaysNotify;
+	            SpellcheckCheckBox.IsChecked = config.EnableSpellcheck;
+				SpellcheckLanguageComboBox.SelectedItem = Enum.GetName(typeof(SpellcheckLanguage), config.SpellcheckLanguage);
                 FilterAudioCheckbox.IsChecked = config.FilterAudio;
 
                 if (!string.IsNullOrEmpty(config.ProxyAddress))
@@ -2053,6 +2059,11 @@ namespace Toxy
             config.Portable = (bool)PortableCheckBox.IsChecked;
             config.EnableAudioNotifications = (bool)AudioNotificationCheckBox.IsChecked;
             config.AlwaysNotify = (bool)AlwaysNotifyCheckBox.IsChecked;
+	        config.EnableSpellcheck = (bool)SpellcheckCheckBox.IsChecked;
+	        config.SpellcheckLanguage = (SpellcheckLanguage)Enum.Parse(typeof (SpellcheckLanguage), SpellcheckLanguageComboBox.SelectedItem.ToString());
+
+	        ViewModel.SpellcheckLangCode = config.SpellcheckLanguage.ToDescription();
+	        ViewModel.SpellcheckEnabled = config.EnableSpellcheck;
             ExecuteActionsOnNotifyIcon();
 
             bool filterAudio = (bool)FilterAudioCheckbox.IsChecked;

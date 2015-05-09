@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using AForge.Video.DirectShow;
 using MahApps.Metro;
 using NAudio.Wave;
+using Toxy.Common;
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels
@@ -66,6 +69,7 @@ namespace Toxy.ViewModels
             Languages = new ObservableCollection<LanguageMenuData>();
             FillLanguages();
 
+            this.SpellcheckLanguages = Enum.GetNames(typeof(SpellcheckLanguage)).ToList();
 
             InputDevices = new ObservableCollection<InputMenuData>();
             OutputDevices = new ObservableCollection<OutputMenuData>();
@@ -81,6 +85,7 @@ namespace Toxy.ViewModels
 
         public List<AccentColorMenuData> AccentColors { get; set; }
         public List<AppThemeMenuData> AppThemes { get; set; }
+		public List<string> SpellcheckLanguages { get; set; }
 
         public ObservableCollection<OutputMenuData> OutputDevices { get; set; }
         public ObservableCollection<InputMenuData> InputDevices { get; set; }
@@ -281,5 +286,37 @@ namespace Toxy.ViewModels
                 Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             }
         }
+
+	    private bool spellcheckEnabled;
+
+	    public bool SpellcheckEnabled
+	    {
+			get { return this.spellcheckEnabled; }
+		    set
+		    {
+			    if (Equals(value, this.spellcheckEnabled))
+			    {
+				    return;
+			    }
+			    this.spellcheckEnabled = value;
+				this.OnPropertyChanged(() => this.SpellcheckEnabled);
+		    }
+	    }
+
+	    private string spellcheckLangCode;
+
+	    public string SpellcheckLangCode
+	    {
+			get { return this.spellcheckLangCode; }
+		    set
+		    {
+			    if (Equals(value, this.spellcheckLangCode))
+			    {
+				    return;
+			    }
+			    this.spellcheckLangCode = value;
+				this.OnPropertyChanged(() => this.SpellcheckLangCode);
+		    }
+	    }
     }
 }

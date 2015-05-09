@@ -3,6 +3,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:globalization="clr-namespace:System.Globalization;assembly=mscorlib"
                       mc:Ignorable="d"
                       d:DesignHeight="400"
                       d:DesignWidth="600"
@@ -628,7 +629,9 @@
                          TextChanged="TextToSend_TextChanged"
                          AcceptsReturn="True"
                          SelectionBrush="{DynamicResource AccentColorBrush}"
-                         SpellCheck.IsEnabled="True"/>
+                         SpellCheck.IsEnabled="{Binding SpellcheckEnabled}"
+                         Language="{Binding SpellcheckLangCode, Converter={StaticResource IetfTagToXmlLanguageConverter}, ConverterCulture={x:Static globalization:CultureInfo.CurrentCulture}}"
+                     />
             <GridSplitter Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
                       Width="1"
                       HorizontalAlignment="Center"
@@ -829,6 +832,27 @@
                                       Margin="0,5,0,0"
                                       IsEnabled="{Binding ElementName=AudioNotificationCheckBox, Path=IsChecked}"
                                       Content="{DynamicResource Local_Always_Play_Alert}"
+                                      />
+                            <Label VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,10,0,0"
+                                   Content="Spellcheck settings"
+                                   />
+                            <CheckBox x:Name="SpellcheckCheckBox"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left"
+                                      Margin="0,5,0,0"
+                                      Content="Check my spelling"
+                                      ToolTip="Underlines misspelled words in the message box."
+                                      />
+                            <ComboBox x:Name="SpellcheckLanguageComboBox"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left"
+                                      Margin="0,5,0,0"
+                                      IsEnabled="{Binding ElementName=SpellcheckCheckBox, Path=IsChecked}"
+                                      ItemsSource="{Binding SpellcheckLanguages}"
+                                      ToolTip="The language in which spelling should be checked."
+                                      Width="275"
                                       />
                             <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
                                 <Label Content="{DynamicResource Local_Proxy_Address}"

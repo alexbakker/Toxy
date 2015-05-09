@@ -17,6 +17,7 @@
     <converter:BoolToVisibilityConverter x:Key="FalseToVisibilityConverter"
                                          TrueValue="Collapsed"
                                          FalseValue="Visible" />
+    <converter:IetfTagToXmlLanguageConverter x:Key="IetfTagToXmlLanguageConverter"/>
     <converter:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter" />
 
     <DataTemplate x:Key="WindowTitleDataTemplate">

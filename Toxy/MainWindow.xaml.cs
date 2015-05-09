@@ -1913,7 +1913,7 @@ namespace Toxy
                 }
             }
 
-            SettingsFlyout.IsOpen = true;
+            SettingsFlyout.IsOpen = !SettingsFlyout.IsOpen;
         }
 
         private async void AddFriend_Click(object sender, RoutedEventArgs e)

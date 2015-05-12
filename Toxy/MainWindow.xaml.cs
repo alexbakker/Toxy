@@ -956,6 +956,8 @@ namespace Toxy
             if (call != null)
                 return;
 
+            Winmm.StartCallingNotify();
+
             Dispatcher.BeginInvoke(((Action)(() =>
             {
                 var friend = ViewModel.GetFriendObjectByNumber(toxav.GetPeerID(e.CallIndex, 0));

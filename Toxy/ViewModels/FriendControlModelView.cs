@@ -54,47 +54,40 @@ namespace Toxy.ViewModels
 
         public ICommand AcceptCommand
         {
-            get
-            {
-                return this.acceptCommand ?? (this.acceptCommand = new DelegateCommand(() 
-                    => this.AcceptAction(this), () =>
-                    {
-                        Winmm.StopCallingNotify();
-                        return IsRequest && AcceptAction != null;
-                    }
-                ));
-            }
+            get { return this.acceptCommand ?? (this.acceptCommand = new DelegateCommand(() => this.AcceptAction(this), () => IsRequest && AcceptAction != null)); }
         }
 
         private ICommand declineCommand;
 
         public ICommand DeclineCommand
         {
-            get { return this.declineCommand ?? (this.declineCommand = new DelegateCommand(() 
-                => this.DeclineAction(this), () =>
-                {
-                    Winmm.StopCallingNotify();
-                    return IsRequest && this.DeclineAction != null;
-                }
-            )); }
+            get { return this.declineCommand ?? (this.declineCommand = new DelegateCommand(() => this.DeclineAction(this), () => IsRequest && this.DeclineAction != null)); }
         }
 
         private ICommand acceptCallCommand;
 
         public ICommand AcceptCallCommand
         {
-            get { return this.acceptCallCommand ?? (this.acceptCallCommand = new DelegateCommand(() => this.AcceptCallAction(this), () => IsCalling && AcceptCallAction != null)); }
+            get { return this.acceptCallCommand ?? (this.acceptCallCommand = new DelegateCommand(()
+                => this.AcceptCallAction(this), () =>
+                {
+                    Winmm.StopCallingNotify();
+                    return IsCalling && AcceptCallAction != null;
+                }
+            )); }
         }
 
         private ICommand denyCallCommand;
 
         public ICommand DenyCallCommand
         {
-            get
-            {
-                Winmm.StopCallingNotify();
-                return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(() => this.DenyCallAction(this), () => IsCalling && this.DenyCallAction != null));
-            }
+            get { return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(()
+                => this.DenyCallAction(this), () =>
+                {
+                    Winmm.StopCallingNotify();
+                    return IsCalling && this.DenyCallAction != null;
+                }
+            )); }
         }
 
         private ICommand groupInviteCommand;

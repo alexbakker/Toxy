@@ -315,7 +315,7 @@
       <Link>sqlite3.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Audio\PhoneCall1.wav" />
+    <EmbeddedResource Include="Resources\Audio\PhoneCall1.wav" />
     <Resource Include="Resources\Icons\grouppicture.png" />
     <Resource Include="Resources\Icons\grouppictureNormal.png" />
     <EmbeddedResource Include="Resources\Audio\Blop.wav" />

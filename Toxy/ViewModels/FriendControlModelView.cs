@@ -7,6 +7,7 @@ using SharpTox.Core;
 
 using Toxy.Common;
 using Toxy.MVVM;
+using Win32;
 
 namespace Toxy.ViewModels
 {
@@ -53,14 +54,29 @@ namespace Toxy.ViewModels
 
         public ICommand AcceptCommand
         {
-            get { return this.acceptCommand ?? (this.acceptCommand = new DelegateCommand(() => this.AcceptAction(this), () => IsRequest && AcceptAction != null)); }
+            get
+            {
+                return this.acceptCommand ?? (this.acceptCommand = new DelegateCommand(() 
+                    => this.AcceptAction(this), () =>
+                    {
+                        Winmm.StopCallingNotify();
+                        return IsRequest && AcceptAction != null;
+                    }
+                ));
+            }
         }
 
         private ICommand declineCommand;
 
         public ICommand DeclineCommand
         {
-            get { return this.declineCommand ?? (this.declineCommand = new DelegateCommand(() => this.DeclineAction(this), () => IsRequest && this.DeclineAction != null)); }
+            get { return this.declineCommand ?? (this.declineCommand = new DelegateCommand(() 
+                => this.DeclineAction(this), () =>
+                {
+                    Winmm.StopCallingNotify();
+                    return IsRequest && this.DeclineAction != null;
+                }
+            )); }
         }
 
         private ICommand acceptCallCommand;
@@ -74,7 +90,11 @@ namespace Toxy.ViewModels
 
         public ICommand DenyCallCommand
         {
-            get { return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(() => this.DenyCallAction(this), () => IsCalling && this.DenyCallAction != null)); }
+            get
+            {
+                Winmm.StopCallingNotify();
+                return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(() => this.DenyCallAction(this), () => IsCalling && this.DenyCallAction != null));
+            }
         }
 
         private ICommand groupInviteCommand;

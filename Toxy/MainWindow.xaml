@@ -89,10 +89,10 @@
                     <Image.ContextMenu>
                         <ContextMenu Name="AvatarContextMenu"
                                      MenuItem.Click="AvatarMenuItem_MouseLeftButtonDown">
-                            <MenuItem Header="Edit"
+                            <MenuItem Header="{DynamicResource Local_Edit_Avatar}"
                                       Tag="{x:Static common:AvatarMenuItem.ChangeAvatar}">
                             </MenuItem>
-                            <MenuItem Header="Remove Avatar"
+                            <MenuItem Header="{DynamicResource Local_Remove_Avatar}"
                                       Tag="{x:Static common:AvatarMenuItem.RemoveAvatar}">
                             </MenuItem>
                         </ContextMenu>
@@ -107,7 +107,7 @@
                     <Grid.ContextMenu>
                         <ContextMenu Name="StatusContextMenu"
                                      MenuItem.Click="MenuItem_MouseLeftButtonDown">
-                            <MenuItem Header="Online"
+                            <MenuItem Header="{DynamicResource Local_Status_Online}"
                                       Tag="0">
                                 <MenuItem.Icon>
                                     <Image Width="15"
@@ -115,7 +115,7 @@
                                            Source="Resources/Icons/Online.png"></Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Away"
+                            <MenuItem Header="{DynamicResource Local_Status_Away}"
                                       Tag="1">
                                 <MenuItem.Icon>
                                     <Image Width="15"
@@ -123,7 +123,7 @@
                                            Source="Resources/Icons/Away.png"></Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Busy"
+                            <MenuItem Header="{DynamicResource Local_Status_Busy}"
                                       Tag="2">
                                 <MenuItem.Icon>
                                     <Image Width="15"
@@ -173,7 +173,7 @@
                                  Grid.Row="0"
                                  Margin="0 3"
                                  TextChanged="SearchBox_TextChanged"
-                                 controls:TextBoxHelper.Watermark="Search for friends/groups"
+                                 controls:TextBoxHelper.Watermark="{DynamicResource Local_SearchFriendGroup}"
                                  BorderBrush="{DynamicResource AccentColorBrush}"/>
 
                         <views:CallControl Grid.Row="1"
@@ -836,14 +836,14 @@
                             <Label VerticalAlignment="Top"
                                    HorizontalAlignment="Left"
                                    Margin="0,10,0,0"
-                                   Content="Spellcheck settings"
+                                   Content="{DynamicResource Local_SpellcheckSetting}"
                                    />
                             <CheckBox x:Name="SpellcheckCheckBox"
                                       VerticalAlignment="Top"
                                       HorizontalAlignment="Left"
                                       Margin="0,5,0,0"
-                                      Content="Check my spelling"
-                                      ToolTip="Underlines misspelled words in the message box."
+                                      Content="{DynamicResource Local_SpellcheckSettingEnabled}"
+                                      ToolTip="{DynamicResource Local_SpellcheckTip}"
                                       />
                             <ComboBox x:Name="SpellcheckLanguageComboBox"
                                       VerticalAlignment="Top"
@@ -851,7 +851,7 @@
                                       Margin="0,5,0,0"
                                       IsEnabled="{Binding ElementName=SpellcheckCheckBox, Path=IsChecked}"
                                       ItemsSource="{Binding SpellcheckLanguages}"
-                                      ToolTip="The language in which spelling should be checked."
+                                      ToolTip="{DynamicResource Local_SpellLanguageTip}"
                                       Width="275"
                                       />
                             <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
@@ -958,7 +958,7 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button x:Name ="SwitchProfileButton" Click="SwitchProfileButton_Click">
-                <TextBlock VerticalAlignment="Center" Text="Switch Profile" />
+                <TextBlock VerticalAlignment="Center" Text="{DynamicResource Local_Switch_Profile}" />
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>

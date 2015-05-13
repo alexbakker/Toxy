@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     
-    
     <!-- Settings-->
     <system:String x:Key="Local_Settings_Title">Settings</system:String>
     <system:String x:Key="Local_Enter_Username">Enter your desired username</system:String>
@@ -24,6 +23,11 @@
     <system:String x:Key="Local_Export_Profile">Export</system:String>
     <system:String x:Key="Local_Save_Settings">Save</system:String>
     <system:String x:Key="Local_Copy_ID">Copy ID</system:String>
+    <system:String x:Key="Local_SpellcheckSetting">Spellcheck setting</system:String>
+    <system:String x:Key="Local_SpellcheckSettingEnabled">Check my spelling</system:String>
+    <system:String x:Key="Local_SpellcheckTip">Underlines misspelled words in the message box.</system:String>
+    <system:String x:Key="Local_SpellLanguageTip">The language in which spelling should be checked.</system:String>
+
 
     <!-- Avatars -->
     <system:String x:Key="Local_Edit_Avatar">Edit</system:String>
@@ -54,9 +58,19 @@
 
     <!-- Misc -->
     <system:String x:Key="Local_Switch_Profile">Switch Profile</system:String>
+    <system:String x:Key="Local_SearchFriendGroup">Search for friends/groups</system:String>
     <system:String x:Key="Local_Chats_Header">Chats</system:String>
     <system:String x:Key="Local_Requests_Header">Requests</system:String>
     <system:String x:Key="Local_Open">Open</system:String>
     <system:String x:Key="Local_Exit">Exit</system:String>
     <system:String x:Key="Local_Error">Error</system:String>
+    <system:String x:Key="Local_LastSeen">Last seen</system:String>
+    <system:String x:Key="Local_NotOnlineTip">your friend is currently not online</system:String>
+    
+    <!-- Switch Account-->
+    <system:String x:Key="Local_Import">Import</system:String>
+    <system:String x:Key="Local_New">New</system:String>
+    <system:String x:Key="Local_Ok">OK</system:String>
+    <system:String x:Key="Local_Cancle">Cancle</system:String>
+    <system:String x:Key="Local_SwitchUserGuide">Pick a profile to switch to. Clicking OK will apply this setting immediately.</system:String>
 </ResourceDictionary>

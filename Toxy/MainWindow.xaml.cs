@@ -1454,14 +1454,16 @@ namespace Toxy
 
         private void AddFriendToView(int friendNumber, bool sentRequest)
         {
-            string friendStatus = "";
+            var friendStatus = "";
+            var lastSeenInfo = (string) FindResource("Local_LastSeen");
+
             if (tox.IsFriendOnline(friendNumber))
             {
                 friendStatus = getFriendStatusMessage(friendNumber);
             }
             else
             {
-                DateTime lastOnline = TimeZoneInfo.ConvertTime(tox.GetFriendLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
+                var lastOnline = TimeZoneInfo.ConvertTime(tox.GetFriendLastOnline(friendNumber), TimeZoneInfo.Utc, TimeZoneInfo.Local);
 
                 if (lastOnline.Year == 1970)
                 {
@@ -1469,29 +1471,32 @@ namespace Toxy
                         friendStatus = "Friend request sent";
                 }
                 else
-                    friendStatus = string.Format("Last seen: {0} {1}", lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
+                    friendStatus = string.Format("{0}: {1} {2}", lastSeenInfo, lastOnline.ToShortDateString(), lastOnline.ToLongTimeString());
             }
+           
 
-            string friendName = getFriendName(friendNumber);
+            var friendName = getFriendName(friendNumber);
             if (string.IsNullOrEmpty(friendName))
             {
                 friendName = tox.GetFriendPublicKey(friendNumber).GetString();
             }
 
-            var friendMV = new FriendControlModelView(ViewModel);
-            friendMV.ChatNumber = friendNumber;
-            friendMV.Name = friendName;
-            friendMV.StatusMessage = friendStatus;
-            friendMV.ToxStatus = ToxStatus.Invalid;
-            friendMV.SelectedAction = FriendSelectedAction;
-            friendMV.DenyCallAction = FriendDenyCallAction;
-            friendMV.AcceptCallAction = FriendAcceptCallAction;
-            friendMV.CopyIDAction = FriendCopyIdAction;
-            friendMV.DeleteAction = FriendDeleteAction;
-            friendMV.GroupInviteAction = GroupInviteAction;
-            friendMV.HangupAction = FriendHangupAction;
+            var friendMv = new FriendControlModelView(ViewModel)
+            {
+                ChatNumber = friendNumber,
+                Name = friendName,
+                StatusMessage = friendStatus,
+                ToxStatus = ToxStatus.Invalid,
+                SelectedAction = FriendSelectedAction,
+                DenyCallAction = FriendDenyCallAction,
+                AcceptCallAction = FriendAcceptCallAction,
+                CopyIDAction = FriendCopyIdAction,
+                DeleteAction = FriendDeleteAction,
+                GroupInviteAction = GroupInviteAction,
+                HangupAction = FriendHangupAction
+            };
 
-            ViewModel.ChatCollection.Add(friendMV);
+            ViewModel.ChatCollection.Add(friendMv);
             RearrangeChatList();
         }
 
@@ -2106,7 +2111,7 @@ namespace Toxy
 
         private void TextToSend_KeyDown(object sender, KeyEventArgs e)
         {
-            string text = TextToSend.Text;
+            var text = TextToSend.Text;
 
             if (e.Key == Key.Enter)
             {
@@ -2122,12 +2127,14 @@ namespace Toxy
                 var selectedChatNumber = ViewModel.SelectedChatNumber;
                 if (!tox.IsFriendOnline(selectedChatNumber) && ViewModel.IsFriendSelected)
                 {
-                    MessageData data = new MessageData() { Username = getSelfName(), Message = "Your Friend is not online", Id = 0, IsSelf = true, Timestamp = DateTime.Now };
-
-                    if (ViewModel.IsFriendSelected)
+                    var friendOnlineTip = (string) FindResource("Local_NotOnlineTip");
+                    var data = new MessageData
                     {
-                        AddMessageToView(selectedChatNumber, data);
-                    }
+                        Username = getSelfName(),
+                        Message = friendOnlineTip,
+                        Id = 0, IsSelf = true, Timestamp = DateTime.Now
+                    };
+                    AddMessageToView(selectedChatNumber, data);
 
                     return;
                 }
@@ -2292,8 +2299,6 @@ namespace Toxy
 
         private void ListViewTabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (RequestsTabItem.IsSelected)
-                RequestsTabItem.Header = "Requests";
         }
 
         private void StatusRectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

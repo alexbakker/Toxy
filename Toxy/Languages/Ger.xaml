@@ -4,7 +4,7 @@
     
     <system:String x:Key="Local_Settings_Title">Einstellungen</system:String>
     <system:String x:Key="Local_Enter_Username">Gebe deinen Benutzernamen ein</system:String>
-    <system:String x:Key="Local_Enter_Status">Gebe gewünschte Statusbenachrichtigugn ein</system:String>
+    <system:String x:Key="Local_Enter_Status">Gebe gewünschte Statusbenachrichtigung ein</system:String>
     <system:String x:Key="Local_Change_Language">Sprache</system:String>
     <system:String x:Key="Local_Change_Nospam">Nospam verändern (beachte: dies ändert deine ID)</system:String>
     <system:String x:Key="Local_Pick_Accent">Wähle eine Akzentfarbe</system:String>
@@ -22,15 +22,19 @@
     <system:String x:Key="Local_Export_Profile">Exportieren</system:String>
     <system:String x:Key="Local_Save_Settings">Speichern</system:String>
     <system:String x:Key="Local_Copy_ID">ID kopieren</system:String>
-
+    <system:String x:Key="Local_SpellcheckSetting">Rechtschreibkorrektur Einstellungen</system:String>
+    <system:String x:Key="Local_SpellcheckSettingEnabled">Prüfe Rechtschreibung</system:String>
+    <system:String x:Key="Local_SpellcheckTip">Unterstreiche falsche Wörter in der Nachrichtenbox.</system:String>
+    <system:String x:Key="Local_SpellLanguageTip">Die zu überprüfende Sprache.</system:String>
+    
     <!-- Avatars -->
-    <system:String x:Key="Local_Edit_Avatar">Edit</system:String>
-    <system:String x:Key="Local_Remove_Avatar">Remove Avatar</system:String>
+    <system:String x:Key="Local_Edit_Avatar">Avatar bearbeiten</system:String>
+    <system:String x:Key="Local_Remove_Avatar">Avatar löschen</system:String>
     
     <!-- Status -->
     <system:String x:Key="Local_Status_Online">Online</system:String>
-    <system:String x:Key="Local_Status_Away">Away</system:String>
-    <system:String x:Key="Local_Status_Busy">Busy</system:String>
+    <system:String x:Key="Local_Status_Away">Abwesend</system:String>
+    <system:String x:Key="Local_Status_Busy">Beschäftigt</system:String>
 
     <!-- Friends -->
     <system:String x:Key="Local_Add_Friend_Title">Add a friend</system:String>
@@ -51,10 +55,20 @@
     <system:String x:Key="Local_Change_Title">Change Title</system:String>
 
     <!-- Misc -->
-    <system:String x:Key="Local_Switch_Profile">Switch Profile</system:String>
+    <system:String x:Key="Local_Switch_Profile">Benutzer wechseln</system:String>
+    <system:String x:Key="Local_SearchFriendGroup">Suche Freund/Gruppe</system:String>
     <system:String x:Key="Local_Chats_Header">Chats</system:String>
     <system:String x:Key="Local_Requests_Header">Anfragen</system:String>
     <system:String x:Key="Local_Open">Open</system:String>
     <system:String x:Key="Local_Exit">Exit</system:String>
     <system:String x:Key="Local_Error">Error</system:String>
+    <system:String x:Key="Local_LastSeen">zuletzt gesehen</system:String>
+    <system:String x:Key="Local_NotOnlineTip">Dein Freund ist zurzeit nicht online</system:String>
+    
+    <!-- Switch Account-->
+    <system:String x:Key="Local_Import">Importieren</system:String>
+    <system:String x:Key="Local_New">Erstellen</system:String>
+    <system:String x:Key="Local_Ok">LOS</system:String>
+    <system:String x:Key="Local_Cancle">Abbrechen</system:String>
+    <system:String x:Key="Local_SwitchUserGuide">Wähle ein Profil, zu dem Du wechseln möchtest. Klicke Ok um die Einstellung zu übernehmen.</system:String>
 </ResourceDictionary>

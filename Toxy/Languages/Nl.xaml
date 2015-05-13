@@ -23,7 +23,8 @@
     <system:String x:Key="Local_Export_Profile">Exporteren</system:String>
     <system:String x:Key="Local_Save_Settings">Opslaan</system:String>
     <system:String x:Key="Local_Copy_ID">ID kopiëren</system:String>
-
+    
+    
     <!-- Avatars -->
     <system:String x:Key="Local_Edit_Avatar">Bewerken</system:String>
     <system:String x:Key="Local_Remove_Avatar">Avatar verwijderen</system:String>
@@ -53,9 +54,19 @@
 
     <!-- Misc -->
     <system:String x:Key="Local_Switch_Profile">Profiel veranderen</system:String>
+    <system:String x:Key="Local_SearchFriendGroup">Search for friends/groups</system:String>
     <system:String x:Key="Local_Chats_Header">Gesprekken</system:String>
     <system:String x:Key="Local_Requests_Header">Verzoeken</system:String>
     <system:String x:Key="Local_Open">Openen</system:String>
     <system:String x:Key="Local_Exit">Afsluiten</system:String>
     <system:String x:Key="Local_Error">Fout</system:String>
+    <system:String x:Key="Local_LastSeen">Last seen</system:String>
+    <system:String x:Key="Local_NotOnlineTip">your friend is currently not online</system:String>
+
+    <!-- Switch Account-->
+    <system:String x:Key="Local_Import">Import</system:String>
+    <system:String x:Key="Local_New">New</system:String>
+    <system:String x:Key="Local_Ok">OK</system:String>
+    <system:String x:Key="Local_Cancle">Cancle</system:String>
+    <system:String x:Key="Local_SwitchUserGuide">Pick a profile to switch to. Clicking OK will apply this setting immediately.</system:String>
 </ResourceDictionary>

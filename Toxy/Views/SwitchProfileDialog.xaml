@@ -2,9 +2,8 @@
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                          xmlns:views="clr-namespace:Toxy.Views"
-                         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                          x:Class="Toxy.Views.SwitchProfileDialog"
-                         Title="Switch Profile"
+                         Title="{DynamicResource Local_Switch_Profile}"
                          Loaded="Dialog_Loaded">
     <Grid Margin="0 10 0 0">
         <Grid.RowDefinitions>
@@ -13,7 +12,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock TextWrapping="Wrap" Grid.Row="0" Height="30" Text="Pick a profile to switch to. Clicking OK will apply this setting immediately."/>
+        <TextBlock TextWrapping="Wrap" Grid.Row="0" Height="30" Text="{DynamicResource Local_SwitchUserGuide}"/>
         <ComboBox x:Name="PART_ProfileComboBox"
                   Grid.Row="1" 
                   SelectedItem="{Binding Input, RelativeSource={RelativeSource AncestorType=views:SwitchProfileDialog, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}">
@@ -26,23 +25,23 @@
                             Height="35"
                             HorizontalAlignment="Right"
                             MinWidth="80"
-                            Content="Import..."
+                            Content="{DynamicResource Local_Import}"
                             Margin="0 0 5 0"/>
             <Button x:Name="PART_NewProfileButton"
                             Height="35"
                             HorizontalAlignment="Right"
                             MinWidth="80"
-                            Content="New"
+                            Content="{DynamicResource Local_New}"
                             Margin="0 0 5 0"/>
             <Button x:Name="PART_AffirmativeButton"
                             Height="35"
                             MinWidth="80"
-                            Content="OK"
+                            Content="{DynamicResource Local_Ok}"
                             Margin="0 0 5 0" />
             <Button x:Name="PART_NegativeButton"
                             Height="35"
                             MinWidth="80"
-                            Content="Cancel"
+                            Content="{DynamicResource Local_Cancle}"
                             Margin="5 0 5 0" />
         </StackPanel>
     </Grid>

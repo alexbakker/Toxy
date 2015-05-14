@@ -7,6 +7,7 @@ using SharpTox.Core;
 
 using Toxy.Common;
 using Toxy.MVVM;
+using Win32;
 
 namespace Toxy.ViewModels
 {
@@ -67,14 +68,26 @@ namespace Toxy.ViewModels
 
         public ICommand AcceptCallCommand
         {
-            get { return this.acceptCallCommand ?? (this.acceptCallCommand = new DelegateCommand(() => this.AcceptCallAction(this), () => IsCalling && AcceptCallAction != null)); }
+            get { return this.acceptCallCommand ?? (this.acceptCallCommand = new DelegateCommand(()
+                => this.AcceptCallAction(this), () =>
+                {
+                    Winmm.StopCallingNotify();
+                    return IsCalling && AcceptCallAction != null;
+                }
+            )); }
         }
 
         private ICommand denyCallCommand;
 
         public ICommand DenyCallCommand
         {
-            get { return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(() => this.DenyCallAction(this), () => IsCalling && this.DenyCallAction != null)); }
+            get { return this.denyCallCommand ?? (this.denyCallCommand = new DelegateCommand(()
+                => this.DenyCallAction(this), () =>
+                {
+                    Winmm.StopCallingNotify();
+                    return IsCalling && this.DenyCallAction != null;
+                }
+            )); }
         }
 
         private ICommand groupInviteCommand;

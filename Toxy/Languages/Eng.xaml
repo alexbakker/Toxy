@@ -71,6 +71,6 @@
     <system:String x:Key="Local_Import">Import</system:String>
     <system:String x:Key="Local_New">New</system:String>
     <system:String x:Key="Local_Ok">OK</system:String>
-    <system:String x:Key="Local_Cancle">Cancle</system:String>
+    <system:String x:Key="Local_Cancel">Cancel</system:String>
     <system:String x:Key="Local_SwitchUserGuide">Pick a profile to switch to. Clicking OK will apply this setting immediately.</system:String>
 </ResourceDictionary>

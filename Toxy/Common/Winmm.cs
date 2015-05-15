@@ -9,14 +9,18 @@ namespace Win32
     {
         public static void PlayMessageNotify()
         {
-            using (UnmanagedMemoryStream sound = Toxy.Properties.Resources.Blop)
+            if (_soundData == null)
             {
-                byte[] soundData = new byte[sound.Length];
-                sound.Read(soundData, 0, (int) sound.Length);
-                PlaySound(soundData, IntPtr.Zero, SND_ASYNC | SND_MEMORY);
+                using (UnmanagedMemoryStream sound = Toxy.Properties.Resources.Blop)
+                {
+                    _soundData = new byte[sound.Length];
+                    sound.Read(_soundData, 0, (int)sound.Length);
+                }
             }
+            PlaySound(_soundData, IntPtr.Zero, SND_ASYNC | SND_MEMORY);
         }
 
+        private static byte[] _soundData;
         private const UInt32 SND_ASYNC = 1;
         private const UInt32 SND_MEMORY = 4;
         [DllImport("Winmm.dll")]

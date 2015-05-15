@@ -17,7 +17,10 @@ namespace Win32
                     sound.Read(_soundData, 0, (int)sound.Length);
                 }
             }
-            PlaySound(_soundData, IntPtr.Zero, SND_ASYNC | SND_MEMORY);
+            if (_soundData != null)
+            {
+                PlaySound(_soundData, IntPtr.Zero, SND_ASYNC | SND_MEMORY);
+            }
         }
 
         private static byte[] _soundData;

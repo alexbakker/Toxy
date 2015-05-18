@@ -3143,6 +3143,9 @@ namespace Toxy
 
                 case "Dutch":
                     return "Nl";
+
+                case "Pусский":
+                    return "Ru";
             }
 
             return "fail";

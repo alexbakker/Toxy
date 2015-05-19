@@ -1,0 +1,76 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Settings-->
+    <system:String x:Key="Local_Settings_Title">Настройки</system:String>
+    <system:String x:Key="Local_Enter_Username">Введите Ваше имя пользователя</system:String>
+    <system:String x:Key="Local_Enter_Status">Введите текст Вашего статуса</system:String>
+    <system:String x:Key="Local_Change_Language">Язык</system:String>
+    <system:String x:Key="Local_Change_Nospam">Изменить НетСпам (примечание: это изменит Ваш ID)</system:String>
+    <system:String x:Key="Local_Pick_Accent">Выберите оформление</system:String>
+    <system:String x:Key="Local_Pick_Devices">Выберите устройства вывода</system:String>
+    <system:String x:Key="Local_Filter_Audio">Фильтр аудио</system:String>
+    <system:String x:Key="Local_Hide_In_Tray">Скрыть в трее</system:String>
+    <system:String x:Key="Local_Portable">Портативный режим</system:String>
+    <system:String x:Key="Local_Enable_Chat_Logging">Включить ведение журнала чата</system:String>
+    <system:String x:Key="Local_Enable_Audible_Alerts">Включить звуковое оповещение</system:String>
+    <system:String x:Key="Local_Always_Play_Alert">Всегда воспроизводить звук, даже когда Toxy открыт.</system:String>
+    <system:String x:Key="Local_Proxy_Address">Адрес прокси</system:String>
+    <system:String x:Key="Local_Proxy_Port">Порт прокси</system:String>
+    <system:String x:Key="Local_Proxy_Type">Тип прокси</system:String>
+    <system:String x:Key="Local_Enable_Proxy">Вкл. прокси</system:String>
+    <system:String x:Key="Local_Export_Profile">Экспорт</system:String>
+    <system:String x:Key="Local_Save_Settings">Сохранить</system:String>
+    <system:String x:Key="Local_Copy_ID">Копировать ID</system:String>
+    <system:String x:Key="Local_SpellcheckSetting">Настройки проверки орфографии</system:String>
+    <system:String x:Key="Local_SpellcheckSettingEnabled">Проверить мою орфографию</system:String>
+    <system:String x:Key="Local_SpellcheckTip">Подчеркивает слова с ошибками в окне сообщения.</system:String>
+    <system:String x:Key="Local_SpellLanguageTip">Язык проверки орфографии.</system:String>
+
+
+    <!-- Avatars -->
+    <system:String x:Key="Local_Edit_Avatar">Изменить</system:String>
+    <system:String x:Key="Local_Remove_Avatar">Удалить аватар</system:String>
+    
+    <!-- Status -->
+    <system:String x:Key="Local_Status_Online">В сети</system:String>
+    <system:String x:Key="Local_Status_Away">Отсутствует</system:String>
+    <system:String x:Key="Local_Status_Busy">Занят</system:String>
+
+    <!-- Friends -->
+    <system:String x:Key="Local_Add_Friend_Title">Добавить друга</system:String>
+    <system:String x:Key="Local_Enter_ID">Введите Tox ID вашего друга</system:String>
+    <system:String x:Key="Local_Enter_Invite_Message">Введите текст приглашения</system:String>
+    <system:String x:Key="Local_Default_Invite_Message">Привет, я хотел бы добавить Вас в список друзей.</system:String>
+    <system:String x:Key="Local_Add_Friend_Button">Добавить</system:String>
+    <system:String x:Key="Local_Delete">Удалить</system:String>
+    <system:String x:Key="Local_Copy_Key">Копировать ключ</system:String>
+    <system:String x:Key="Local_Invite">Пригласить</system:String>
+
+    <!-- Groups -->
+    <system:String x:Key="Local_Groupchat">Групповой чат</system:String>
+    <system:String x:Key="Local_Mute">Отключить</system:String>
+    <system:String x:Key="Local_Unute">Активировать</system:String>
+    <system:String x:Key="Local_Ignore">Игнорировать</system:String>
+    <system:String x:Key="Local_Unignore">Не игнорировать</system:String>
+    <system:String x:Key="Local_Change_Title">Изменить название</system:String>
+
+    <!-- Misc -->
+    <system:String x:Key="Local_Switch_Profile">Сменить профиль</system:String>
+    <system:String x:Key="Local_SearchFriendGroup">Поиск друзей / групп</system:String>
+    <system:String x:Key="Local_Chats_Header">Чаты</system:String>
+    <system:String x:Key="Local_Requests_Header">Запросы</system:String>
+    <system:String x:Key="Local_Open">Открыть</system:String>
+    <system:String x:Key="Local_Exit">Выйти</system:String>
+    <system:String x:Key="Local_Error">Ошибка</system:String>
+    <system:String x:Key="Local_LastSeen">Последнее посещение</system:String>
+    <system:String x:Key="Local_NotOnlineTip">Ваш друг сейчас не в сети</system:String>
+    
+    <!-- Switch Account-->
+    <system:String x:Key="Local_Import">Импорт</system:String>
+    <system:String x:Key="Local_New">Новый</system:String>
+    <system:String x:Key="Local_Ok">OK</system:String>
+    <system:String x:Key="Local_Cancel">Отмена</system:String>
+    <system:String x:Key="Local_SwitchUserGuide">Выберите профиль, чтобы его сменить. Нажмите ОК чтобы применить настройки.</system:String>
+</ResourceDictionary>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 using SharpTox.Core;
-using Toxy.Extenstions;
+using Toxy.Extensions;
 
 namespace Toxy.Common
 {

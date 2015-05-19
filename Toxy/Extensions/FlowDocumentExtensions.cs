@@ -16,10 +16,9 @@ using SharpTox.Core;
 
 using Toxy.Common;
 using Toxy.Views;
-using Toxy.Extenstions;
 using Toxy.Common.Transfers;
 
-namespace Toxy.Extenstions
+namespace Toxy.Extensions
 {
     static class FlowDocumentExtensions
     {

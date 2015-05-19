@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 using SharpTox.Core;
-using Toxy.Extenstions;
+using Toxy.Extensions;
 using Toxy.Common;
 
 namespace Toxy.Converter

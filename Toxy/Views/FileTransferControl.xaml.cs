@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 using Toxy.Common;
 using Toxy.Common.Transfers;
-using Toxy.Extenstions;
+using Toxy.Extensions;
 using Toxy.ToxHelpers;
 
 namespace Toxy.Views

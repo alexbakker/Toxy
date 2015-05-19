@@ -26,7 +26,6 @@ using SharpTox.Vpx;
 using SQLite;
 using Toxy.Common;
 using Toxy.Common.Transfers;
-using Toxy.Extenstions;
 using Toxy.Tables;
 using Toxy.ToxHelpers;
 using Toxy.ViewModels;

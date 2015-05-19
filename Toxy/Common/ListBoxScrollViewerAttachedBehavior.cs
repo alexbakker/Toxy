@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using Toxy.Extenstions;
+using Toxy.Extensions;
 
 namespace Toxy.Common
 {

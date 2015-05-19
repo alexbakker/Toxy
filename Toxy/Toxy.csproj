@@ -193,6 +193,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Languages\Ru.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CallControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

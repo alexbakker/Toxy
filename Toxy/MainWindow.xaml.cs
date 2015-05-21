@@ -1509,8 +1509,12 @@ namespace Toxy
             tox.InviteFriend(friendObject.ChatNumber, groupObject.ChatNumber);
         }
 
-        private void FriendDeleteAction(IFriendObject friendObject)
+        private async void FriendDeleteAction(IFriendObject friendObject)
         {
+            var result = await this.ShowMessageAsync("Remove friend", string.Format("Are you sure you want to remove {0} from your friend list?", friendObject.Name), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings() { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (result != MessageDialogResult.Affirmative)
+                return;
+
             ViewModel.ChatCollection.Remove(friendObject);
             var friendNumber = friendObject.ChatNumber;
             if (convdic.ContainsKey(friendNumber))

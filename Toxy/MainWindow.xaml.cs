@@ -2981,7 +2981,7 @@ namespace Toxy
             if (File.Exists(path))
                 return false;
 
-            Tox t = new Tox(new ToxOptions());
+            Tox t = new Tox(ToxOptions.Default);
             t.Name = profileName;
 
             if (!t.GetData().Save(path))

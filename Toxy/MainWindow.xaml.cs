@@ -718,7 +718,7 @@ namespace Toxy
                         string avatarsDir = Path.Combine(toxDataDir, "avatars");
                         string selfAvatarFile = Path.Combine(avatarsDir, tox.Id.PublicKey.GetString() + ".png");
 
-                        var fileInfo = tox.FileSend(e.FriendNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, ToxTools.Hash(ViewModel.MainToxyUser.AvatarBytes));
+                        var fileInfo = tox.FileSend(e.FriendNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, "avatar.png", ToxTools.Hash(ViewModel.MainToxyUser.AvatarBytes));
                         var transfer = new FileSender(tox, fileInfo.Number, friend.ChatNumber, ToxFileKind.Avatar, ViewModel.MainToxyUser.AvatarBytes.Length, "", selfAvatarFile);
 
                         transfers.Add(transfer);
@@ -2630,7 +2630,7 @@ namespace Toxy
                 if (!tox.IsFriendOnline(friend))
                     continue;
 
-                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, avatarBytes.Length, hash);
+                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, avatarBytes.Length, "avatar.png", hash);
                 var transfer = new FileSender(tox, fileInfo.Number, friend, ToxFileKind.Avatar, avatarBytes.Length, "", selfAvatarFile);
                 transfers.Add(transfer);
             }
@@ -2667,7 +2667,7 @@ namespace Toxy
                 if (!tox.IsFriendOnline(friend))
                     continue;
 
-                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, 0, new byte[0]);
+                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, 0, "", new byte[0]);
             }
         }
 

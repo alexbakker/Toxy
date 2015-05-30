@@ -3149,6 +3149,10 @@ namespace Toxy
 
                 case "Pусский":
                     return "Ru";
+
+                case "한글":
+                    return "Kr";
+
             }
 
             return "fail";

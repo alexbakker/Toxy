@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
-    
+    <!-- ReSharper disable InconsistentNaming -->
     <system:String x:Key="Local_Settings_Title">Einstellungen</system:String>
     <system:String x:Key="Local_Enter_Username">Gebe deinen Benutzernamen ein</system:String>
     <system:String x:Key="Local_Enter_Status">Gebe gewünschte Statusbenachrichtigung ein</system:String>
@@ -26,6 +26,9 @@
     <system:String x:Key="Local_SpellcheckSettingEnabled">Prüfe Rechtschreibung</system:String>
     <system:String x:Key="Local_SpellcheckTip">Unterstreiche falsche Wörter in der Nachrichtenbox.</system:String>
     <system:String x:Key="Local_SpellLanguageTip">Die zu überprüfende Sprache.</system:String>
+    <system:String x:Key="Local_Header_Audio">Ton</system:String>
+    <system:String x:Key="Local_Header_Video">Video</system:String>
+    <system:String x:Key="Local_Header_Miscellaneous">Sonstige Einstellungen</system:String>
     
     <!-- Avatars -->
     <system:String x:Key="Local_Edit_Avatar">Avatar bearbeiten</system:String>

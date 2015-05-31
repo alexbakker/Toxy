@@ -391,6 +391,33 @@
                                 MinHeight="40"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right">
+                        <Button Name="ClearButton"
+                                Click="ClearButton_OnClick"
+                                Style="{DynamicResource MetroCircleLovelyButtonStyle}"
+                                Height="37"
+                                Width="37">
+                            <Grid>
+                                <Rectangle Width="10"
+                                       Height="17"
+                                       Margin="0,-1"
+                                       Grid.ZIndex="1"
+                                       Style="{StaticResource ButtonRectangleStyle}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <Rectangle Width="10"
+                                       Height="17"
+                                       Margin="0,-1"
+                                       Fill="{DynamicResource WhiteColorBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                 Visual="{DynamicResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Grid>
+                        </Button>
                         <Button Name="FileButton"
                                 Click="FileButton_OnClick"
                                 Style="{DynamicResource MetroCircleLovelyButtonStyle}"

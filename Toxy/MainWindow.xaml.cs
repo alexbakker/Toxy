@@ -3153,5 +3153,25 @@ namespace Toxy
 
             return "fail";
         }
+
+        private void ClearButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedChatNumber = ViewModel.SelectedChatNumber;
+            if (ViewModel.IsFriendSelected)
+            {
+                DeleteMessagesFromView(selectedChatNumber);
+            }
+        }
+
+        private void DeleteMessagesFromView(int friendNumber)
+        {
+            if (convdic.ContainsKey(friendNumber))
+            {
+                convdic.Remove(friendNumber);
+            }
+            var cleanDocument = FlowDocumentExtensions.CreateNewDocument();
+            convdic.Add(friendNumber, cleanDocument);
+            ChatBox.Document = cleanDocument;
+        }
     }
 }

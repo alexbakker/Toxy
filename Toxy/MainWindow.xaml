@@ -160,7 +160,7 @@
             <TabControl Grid.Row="1"
                         x:Name="ListViewTabControl"
                         SelectionChanged="ListViewTabControl_OnSelectionChanged">
-                <TabItem Header="Chats">
+                <TabItem Header="{DynamicResource Local_Chats_Header}">
                     <Grid>
 
                         <Grid.RowDefinitions>
@@ -768,7 +768,7 @@
                                   Margin="0,5,0,0"
                                   HorizontalAlignment="Left"
                                   Width="275" SelectionChanged="AppThemeComboBox_SelectionChanged" ></ComboBox>
-                            <Label Content="Audio"
+                            <Label Content="{DynamicResource Local_Header_Audio}"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="InputDevicesComboBox"
@@ -787,7 +787,7 @@
                             <CheckBox x:Name="FilterAudioCheckbox" 
                                   Content="{DynamicResource Local_Filter_Audio}" 
                                   Margin="0 5" />
-                            <Label Content="Video"
+                            <Label Content="{DynamicResource Local_Header_Video}"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <ComboBox x:Name="VideoDevicesComboBox"
@@ -796,7 +796,7 @@
                                   VerticalAlignment="Top"
                                   HorizontalAlignment="Left"
                                   Width="275" />
-                            <Label Content="Miscellaneous settings"
+                            <Label Content="{DynamicResource Local_Header_Miscellaneous}"
                                Margin="0 10 0 0"
                                HorizontalAlignment="Left" />
                             <CheckBox x:Name="HideInTrayCheckBox"

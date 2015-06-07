@@ -5,6 +5,7 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <!-- Settings-->
+        <!-- ReSharper disable InconsistentNaming -->
     <system:String x:Key="Local_Settings_Title">Настройки</system:String>
     <system:String x:Key="Local_Enter_Username">Введите Ваше имя пользователя</system:String>
     <system:String x:Key="Local_Enter_Status">Введите текст Вашего статуса</system:String>
@@ -29,7 +30,9 @@
     <system:String x:Key="Local_SpellcheckSettingEnabled">Проверить мою орфографию</system:String>
     <system:String x:Key="Local_SpellcheckTip">Подчеркивает слова с ошибками в окне сообщения.</system:String>
     <system:String x:Key="Local_SpellLanguageTip">Язык проверки орфографии.</system:String>
-
+    <system:String x:Key="Local_Header_Audio">Audio</system:String>
+    <system:String x:Key="Local_Header_Video">Video</system:String>
+    <system:String x:Key="Local_Header_Miscellaneous">Miscellaneous settings</system:String>
 
     <!-- Avatars -->
     <system:String x:Key="Local_Edit_Avatar">Изменить</system:String>

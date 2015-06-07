@@ -189,6 +189,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Languages\Kr.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Languages\Nl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

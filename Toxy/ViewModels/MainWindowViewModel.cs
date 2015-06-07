@@ -81,7 +81,8 @@ namespace Toxy.ViewModels
             Languages.Add(new LanguageMenuData {Name = "English"});
             Languages.Add(new LanguageMenuData { Name = "Dutch" });
             Languages.Add(new LanguageMenuData { Name = "Deutsch" });
-            Languages.Add(new LanguageMenuData {Name = "Pусский" });
+            Languages.Add(new LanguageMenuData { Name = "Pусский" });
+            Languages.Add(new LanguageMenuData { Name = "한글" });
         }
 
         public List<AccentColorMenuData> AccentColors { get; set; }

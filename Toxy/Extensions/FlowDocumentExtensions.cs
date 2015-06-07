@@ -108,15 +108,17 @@ namespace Toxy.Extensions
 
         static void ProcessMessage(MessageData data, Paragraph messageParagraph, bool append, bool isBold)
         {
-            List<string> urls = new List<string>();
             List<int> indices = new List<int>();
-            string[] parts = data.Message.Split(' ');
 
-            foreach (string part in parts)
-            {
-                if (Regex.IsMatch(part, @"(((file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp)://)|(www\.))+(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(/[a-zA-Z0-9\&amp;%_\./-~-]*)?", RegexOptions.IgnoreCase)/*Regex.IsMatch(part, @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$")*/)
-                    urls.Add(part);
-            }
+            List<string> urls =
+                data.Message.Split(' ')
+                    .Where(
+                        part =>
+                            (Regex.IsMatch(part,
+                                @"(((file|gopher|news|nntp|telnet|http|ftp|https|ftps|sftp)://)|(www\.))+(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(/[a-zA-Z0-9\&amp;%_\./-~-]*)?",
+                                RegexOptions.IgnoreCase)
+                                /*Regex.IsMatch(part, @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$")*/))
+                    .ToList();
 
             if (urls.Count > 0)
             {
@@ -139,10 +141,10 @@ namespace Toxy.Extensions
 
                     Hyperlink link = new Hyperlink(run, pointer.GetPositionAtOffset(index));
                     link.IsEnabled = true;
-                    link.Click += delegate(object sender, RoutedEventArgs args)
+                    link.Click += (sender, args) =>
                     {
-                        try { Process.Start(url); }
-                        catch { }
+                        try{ Process.Start(url); }
+                        catch{ }
                     };
                 }
             }

@@ -2667,7 +2667,7 @@ namespace Toxy
                 if (!tox.IsFriendOnline(friend))
                     continue;
 
-                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, 0, "", new byte[0]);
+                var fileInfo = tox.FileSend(friend, ToxFileKind.Avatar, 0, "");
             }
         }
 

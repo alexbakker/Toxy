@@ -1,21 +1,23 @@
-﻿using System.Windows.Media;
-
-using SharpTox.Core;
-using Toxy.Common;
+﻿using SharpTox.Core;
+using System.Windows.Media;
 
 namespace Toxy.ViewModels
 {
     public interface IChatObject
     {
         string Name { get; set; }
-        int ChatNumber { get; set; }
-        bool Selected { get; set; }
-        bool HasNewMessage { get; set; }
-        int NewMessageCount { get; set; }
         string StatusMessage { get; set; }
-        string AdditionalInfo { get; set; }
-        ToxStatus ToxStatus { get; set; }
+        ToxUserStatus UserStatus { get; set; }
+        ToxConnectionStatus ConnectionStatus { get; set; }
+        int ChatNumber { get; set; }
+        bool IsSelected { get; set; }
+        ConversationViewModel ConversationView { get; set; }
+        bool IsOnline { get; set; }
         ImageSource Avatar { get; set; }
-        byte[] AvatarBytes { get; set; }
+        bool HasUnreadMessages { get; set; }
+        void ChangeCallState(SharpTox.Av.ToxAvCallState toxAvCallState);
+        bool IsCalling { get; set; }
+        bool IsRinging { get; set; }
+        bool IsCallInProgress { get; set; }
     }
 }

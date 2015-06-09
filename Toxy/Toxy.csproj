@@ -33,26 +33,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -73,48 +53,18 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Resources\Icons\icon.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="NAudio">
-      <HintPath>..\packages\NAudio.1.7.2\lib\net35\NAudio.dll</HintPath>
+    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SharpTox, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\SharpTox.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpTox.Av.Filter, Version=1.0.0.0, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\SharpTox.Av.Filter.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpTox.Vpx, Version=1.0.0.0, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\SharpTox.Vpx.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.dll, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AForge.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.dll, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AForge.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Video.DirectShow.dll, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\AForge.Video.DirectShow.dll</HintPath>
+      <HintPath>..\..\..\GitHub\SharpTox\SharpTox\bin\x86\Debug\SharpTox.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.1.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -132,90 +82,80 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Common\AvatarStore.cs" />
-    <Compile Include="Common\SpellcheckLanguage.cs" />
-    <Compile Include="Common\ToxStatus.cs" />
-    <Compile Include="Converter\IetfTagToXmlLanguageConverter.cs" />
-    <Compile Include="Extensions\EnumExtensions.cs" />
-    <Compile Include="Properties\BuildInfo.cs" />
-    <Compile Include="Common\Transfers\FileReceiver.cs" />
-    <Compile Include="Common\Transfers\FileSender.cs" />
-    <Compile Include="Common\Transfers\FileTransfer.cs" />
-    <Compile Include="Extensions\BitmapExtension.cs" />
-    <Compile Include="Common\Config\Config.cs" />
-    <Compile Include="Common\Config\ConfigTools.cs" />
-    <Compile Include="Common\MenuItemEnums.cs" />
-    <Compile Include="Common\ListBoxScrollViewerAttachedBehavior.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\VisualExtensions.cs" />
-    <Compile Include="Common\Winmm.cs" />
-    <Compile Include="Converter\BoolToVisibilityConverter.cs" />
-    <Compile Include="Converter\IgnoreStatusToStringConverter.cs" />
-    <Compile Include="Converter\MuteStatusToStringConverter.cs" />
-    <Compile Include="Converter\NullToVisibilityConverter.cs" />
-    <Compile Include="Converter\ToxUserStatusToBrushConverter.cs" />
-    <Compile Include="Common\Groups\GroupPeer.cs" />
-    <Compile Include="Common\Groups\GroupPeerCollection.cs" />
-    <Compile Include="SQLite\SQLite.cs" />
-    <Compile Include="SQLite\SQLiteAsync.cs" />
-    <Compile Include="SQLite\Tables\ToxMessage.cs" />
-    <Compile Include="ViewModels\BaseChatModelView.cs" />
-    <Compile Include="ViewModels\FriendControlModelView.cs" />
-    <Compile Include="ViewModels\GroupControlModelView.cs" />
-    <Compile Include="ViewModels\IChatObject.cs" />
-    <Compile Include="ViewModels\IFriendObject.cs" />
-    <Compile Include="ViewModels\IGroupObject.cs" />
-    <Compile Include="ViewModels\IUserObject.cs" />
-    <Compile Include="ViewModels\UserModel.cs" />
-    <Compile Include="Views\CallControl.xaml.cs">
-      <DependentUpon>CallControl.xaml</DependentUpon>
+    <Compile Include="Converters\BoolToFillColorConverter.cs" />
+    <Compile Include="Converters\BoolToMessageForegroundConverter.cs" />
+    <Compile Include="Converters\BoolToNameForegroundConverter.cs" />
+    <Compile Include="Converters\BoolToPhoneButtonStyleConverter.cs" />
+    <Compile Include="Converters\BoolToStatusMessageForegroundConverter.cs" />
+    <Compile Include="Converters\ToxUserStatusToBrushConverter.cs" />
+    <Compile Include="Converters\ToxUserStatusToVisualConverter.cs" />
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Managers\AudioEngine.cs" />
+    <Compile Include="Managers\CallManager.cs" />
+    <Compile Include="Managers\Config.cs" />
+    <Compile Include="Managers\ConnectionManager.cs" />
+    <Compile Include="Managers\FileTransfer.cs" />
+    <Compile Include="Misc\QR\QRCoder.cs" />
+    <Compile Include="Tools\ToxSave.cs" />
+    <Compile Include="ViewModels\AddFriendViewModel.cs" />
+    <Compile Include="ViewModels\ConversationViewModel.cs" />
+    <Compile Include="ViewModels\FileTransferViewModel.cs" />
+    <Compile Include="ViewModels\FriendListViewModel.cs" />
+    <Compile Include="ViewModels\IMessage.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\ProfileViewModel.cs" />
+    <Compile Include="ViewModels\SelfViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\AddFriendView.xaml.cs">
+      <DependentUpon>AddFriendView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converter\GridColumnMaxWidthConverter.cs" />
-    <Compile Include="Extensions\FlowDocumentExtensions.cs" />
-    <Compile Include="Common\MessageData.cs" />
-    <Compile Include="MVVM\DelegateCommand.cs" />
+    <Compile Include="Views\ConversationView.xaml.cs">
+      <DependentUpon>ConversationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Debugging.cs" />
+    <Compile Include="Managers\AvatarManager.cs" />
+    <Compile Include="Managers\ProfileManager.cs" />
+    <Compile Include="Managers\TransferManager.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
-    <Compile Include="ToxHelpers\Tools.cs" />
-    <Compile Include="ToxHelpers\ToxCall.cs" />
+    <Compile Include="ViewModels\FriendControlViewModel.cs" />
+    <Compile Include="ViewModels\IChatObject.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Views\SwitchProfileDialog.xaml.cs">
-      <DependentUpon>SwitchProfileDialog.xaml</DependentUpon>
+    <Compile Include="Views\FileTransferView.xaml.cs">
+      <DependentUpon>FileTransferView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Languages\Ger.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Languages\Eng.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Languages\Kr.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Languages\Nl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Languages\Ru.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\CallControl.xaml">
+    <Compile Include="Views\FriendControlView.xaml.cs">
+      <DependentUpon>FriendControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FriendListView.xaml.cs">
+      <DependentUpon>FriendListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MessageView.xaml.cs">
+      <DependentUpon>MessageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProfileView.xaml.cs">
+      <DependentUpon>ProfileView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelfView.xaml.cs">
+      <DependentUpon>SelfView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Resources\Converters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FileTransferControl.xaml">
+    <Page Include="Resources\ScrollviewerStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FriendControlView.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\AddFriendView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GroupControlView.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\ConversationView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -225,34 +165,47 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ToxHelpers\DnsTools.cs" />
-    <Compile Include="Views\FileTransferControl.xaml.cs">
-      <DependentUpon>FileTransferControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common\FormExtensions.cs" />
-    <Compile Include="Views\FriendControlView.xaml.cs">
-      <DependentUpon>FriendControlView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GroupControlView.xaml.cs">
-      <DependentUpon>GroupControlView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="Views\Message.xaml">
+    <Page Include="Resources\Colors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
+    </Page>
     <Page Include="Resources\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\CustomStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SwitchProfileDialog.xaml">
+    <Page Include="Resources\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileTransferView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FriendControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FriendListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SelfView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -281,70 +234,19 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\WindowsIcons-license.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Entypo-license.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\profilepicture.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\profilepictureNormal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Divider.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\FileDownload.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\Away.png" />
-    <Resource Include="Resources\Icons\Busy.png" />
-    <Resource Include="Resources\Icons\Offline.png" />
-    <Resource Include="Resources\Icons\Online.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\libs\libtox.dll">
-      <Link>libtox.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libs\filter_audio.dll">
-      <Link>filter_audio.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\libs\sqlite3.dll">
-      <Link>sqlite3.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Resources\Icons\grouppicture.png" />
-    <Resource Include="Resources\Icons\grouppictureNormal.png" />
-    <EmbeddedResource Include="Resources\Audio\Blop.wav" />
-    <Resource Include="Resources\Icons\icon2.ico" />
-    <Resource Include="Resources\Icons\icon.ico" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" Condition="Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')" />
-  <Target Name="BeforeBuild" Condition="'$(BUILD_NUMBER)' != '' And Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')">
-    <CreateItem Include="**\BuildInfo.cs">
-      <Output TaskParameter="Include" ItemName="BuildInfoFiles" />
-    </CreateItem>
-    <PropertyGroup>
-      <build Condition="'$(BUILD_NUMBER)' == ''">Unknown</build>
-      <build Condition="'$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</build>
-      <commit Condition="'$(GIT_COMMIT)' == ''">Unknown</commit>
-      <commit Condition="'$(GIT_COMMIT)' != ''">$(GIT_COMMIT)</commit>
-      <CurrentDate>$([System.DateTime]::Now.ToString(MM.dd.yyyy hh:mm:ss))</CurrentDate>
-    </PropertyGroup>
-    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string CommitHash = &quot;.*&quot;" ReplacementText="public const string CommitHash = &quot;$(commit)&quot;" />
-    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string BuildNumber = &quot;.*&quot;" ReplacementText="public const string BuildNumber = &quot;$(build)&quot;" />
-    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string Platform = &quot;.*&quot;" ReplacementText="public const string Platform = &quot;$(Platform)&quot;" />
-    <FileUpdate Files="@(BuildInfoFiles)" Multiline="true" Singleline="false" Regex="public const string Date = &quot;.*&quot;" ReplacementText="public const string Date = &quot;$(CurrentDate)&quot;" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
   </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

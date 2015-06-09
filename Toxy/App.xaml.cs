@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Threading;
-using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
+using SharpTox.Core;
+using Toxy.Managers;
+using SharpTox.Av;
+using Toxy.ViewModels;
 
 namespace Toxy
 {
@@ -10,10 +13,25 @@ namespace Toxy
     /// </summary>
     public partial class App : Application
     {
-        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        //TODO: make this less accessible 
+        public static Tox Tox { get; set; }
+        public static ToxAv ToxAv { get; set; }
+
+        protected override void OnStartup(StartupEventArgs e)
         {
-            Debug.WriteLine("Toxy crashed: " + e.Exception.ToString());
-            e.Handled = false;
+            //TODO: load config from appdata
+            Debugging.Write("Tox version: " + ToxVersion.Current.ToString());
+
+            string toxProfilePath = System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox");
+            ProfileManager.Instance.SwitchTo(System.IO.File.Exists(toxProfilePath) ? new ProfileInfo(toxProfilePath) : null);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            System.IO.File.WriteAllBytes(System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox"), Tox.GetData().Bytes);
+
+            ToxAv.Dispose();
+            Tox.Dispose();
         }
     }
 }

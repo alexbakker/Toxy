@@ -1,0 +1,36 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="ToxGreen">#6bc260</Color>
+    <Color x:Key="ToxGreenHover">#76d46a</Color>
+    <Color x:Key="ToxGreenDisabled">#8cd483</Color>
+    <Color x:Key="ToxYellow">#cebf44</Color>
+    <Color x:Key="ToxRed">#c84e4e</Color>
+    <Color x:Key="ToxBlack">#000000</Color>
+    <Color x:Key="ToxDarkGrey">#1c1c1c</Color>
+    <Color x:Key="ToxMediumGrey">#414141</Color>
+    <Color x:Key="ToxMediumGreyHover">#4f4f4f</Color>
+    <Color x:Key="ToxLightGrey">#d1d1d1</Color>
+    <Color x:Key="ToxWhite">#ffffff</Color>
+    <Color x:Key="ToxDotBusy">#c94f50</Color>
+    <Color x:Key="ToxDotOnline">#6fc062</Color>
+    <Color x:Key="ToxDotOffline">#c94f50</Color>
+    <Color x:Key="ToxDotIdle">#cdbe41</Color>
+    <Color x:Key="ToxDotInvisible">#ffffff</Color>
+
+    <SolidColorBrush x:Key="ToxGreenBrush" Color="{StaticResource ToxGreen}"/>
+    <SolidColorBrush x:Key="ToxGreenHoverBrush" Color="{StaticResource ToxGreenHover}"/>
+    <SolidColorBrush x:Key="ToxGreenDisabledBrush" Color="{StaticResource ToxGreenDisabled}"/>
+    <SolidColorBrush x:Key="ToxYellowBrush" Color="{StaticResource ToxYellow}"/>
+    <SolidColorBrush x:Key="ToxRedBrush" Color="{StaticResource ToxRed}"/>
+    <SolidColorBrush x:Key="ToxBlackBrush" Color="{StaticResource ToxBlack}"/>
+    <SolidColorBrush x:Key="ToxDarkGreyBrush" Color="{StaticResource ToxDarkGrey}"/>
+    <SolidColorBrush x:Key="ToxMediumGreyBrush" Color="{StaticResource ToxMediumGrey}"/>
+    <SolidColorBrush x:Key="ToxMediumGreyHoverBrush" Color="{StaticResource ToxMediumGreyHover}"/>
+    <SolidColorBrush x:Key="ToxLightGreyBrush" Color="{StaticResource ToxLightGrey}"/>
+    <SolidColorBrush x:Key="ToxWhiteBrush" Color="{StaticResource ToxWhite}"/>
+    <SolidColorBrush x:Key="ToxDotBusyBrush" Color="{StaticResource ToxDotBusy}"/>
+    <SolidColorBrush x:Key="ToxDotOnlineBrush" Color="{StaticResource ToxDotOnline}"/>
+    <SolidColorBrush x:Key="ToxDotOfflineBrush" Color="{StaticResource ToxDotOffline}"/>
+    <SolidColorBrush x:Key="ToxDotIdleBrush" Color="{StaticResource ToxDotIdle}"/>
+    <SolidColorBrush x:Key="ToxDotInvisibleBrush" Color="{StaticResource ToxDotInvisible}"/>
+</ResourceDictionary>

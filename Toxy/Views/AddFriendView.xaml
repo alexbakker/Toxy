@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="Toxy.Views.AddFriendView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Border Height="72" VerticalAlignment="Top" BorderBrush="{StaticResource ToxLightGreyBrush}" BorderThickness="0 0 0 1">
+            <Grid>
+                <Border Width="50" Height="50" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Rectangle Width="30.615" Height="30.616" Fill="{StaticResource ToxBlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource tox_add}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Border>
+                <TextBlock FontWeight="Bold" FontSize="15" Text="Add a friend" Margin="60,24,-60,-24"/>
+            </Grid>
+        </Border>
+        <Border Margin="0,72,0,0">
+            <Grid>
+                <Label Content="Enter your friend's Tox ID. (Tip: you can also enter toxdns addresses)" Margin="5,10,-10,0" Height="25" VerticalAlignment="Top"/>
+                <TextBox Name="TextBoxFriendId" Margin="10,35,10,0" Height="18" VerticalAlignment="Top"/>
+                <Label Content="Enter a message. Your friend will be able to read this when he/she receives the friend request." Margin="5,58,10,0" Height="25" VerticalAlignment="Top"/>
+                <TextBox Name="TextBoxMessage" Margin="10,83,10,43"/>
+                <Button Name="ButtonAddFriend" Content="Send friend request" Click="ButtonAddFriend_Click" Margin="10,0,10,10" Height="25" VerticalAlignment="Bottom"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

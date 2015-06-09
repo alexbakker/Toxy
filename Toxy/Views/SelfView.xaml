@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="Toxy.Views.SelfView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
+             xmlns:Tox="clr-namespace:SharpTox.Core;assembly=SharpTox"
+             mc:Ignorable="d" 
+             d:DesignHeight="72" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance ViewModels:SelfViewModel}"
+             Loaded="SelfView_Loaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Edit" Click="EditAvatar_Click"/>
+            <MenuItem Header="Remove" Click="RemoveAvatar_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    <Grid>
+        <Border Width="40" Height="40" Margin="10,10,144,12" CornerRadius="5,5,5,5">
+            <Border.Background>
+                <ImageBrush ImageSource="{Binding Avatar, Mode=OneWay}"/>
+            </Border.Background>
+            <Rectangle Width="35" Height="38">
+                <Rectangle.Fill>
+                    <MultiBinding Converter="{StaticResource BoolToFillColorConverter}">
+                        <Binding Path="Avatar" Mode="OneWay"/>
+                        <Binding Path="IsSelected" Mode="OneWay"/>
+                    </MultiBinding>
+                </Rectangle.Fill>
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_blank_avatar}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Border>
+        <Label Content="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,11,0,0" Foreground="White" FontSize="14" FontWeight="Bold"/>
+        <Label Content="{Binding StatusMessage, Mode=OneWay}" HorizontalAlignment="Left" Margin="60,30,0,0" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource ToxLightGreyBrush}"/>
+        <Border Name="ButtonUserStatus" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="48" Width="25" CornerRadius="5,5,5,5" MouseDown="ButtonUserStatus_MouseDown" Style="{StaticResource ToxMediumGreyButtonStyle}">
+            <Border.ContextMenu>
+                <ContextMenu Placement="Bottom" MenuItem.Click="ContextMenuItemStatus_Click">
+                    <MenuItem Header="Online" Icon="{StaticResource tox_dot_online}" Tag="{x:Static Tox:ToxUserStatus.None}"/>
+                    <MenuItem Header="Away" Icon="{StaticResource tox_dot_idle}" Tag="{x:Static Tox:ToxUserStatus.Away}"/>
+                    <MenuItem Header="Busy" Icon="{StaticResource tox_dot_busy}" Tag="{x:Static Tox:ToxUserStatus.Busy}"/>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <Rectangle Width="12" Height="12">
+                <Rectangle.Fill>
+                    <MultiBinding Converter="{StaticResource ToxUserStatusToBrushConverter}">
+                        <Binding Path="UserStatus" Mode="OneWay"/>
+                        <Binding Path="ConnectionStatus" Mode="OneWay"/>
+                    </MultiBinding>
+                </Rectangle.Fill>
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="None">
+                        <VisualBrush.Visual>
+                            <MultiBinding Converter="{StaticResource ToxUserStatusToVisualConverter}">
+                                <Binding Path="UserStatus" Mode="OneWay"/>
+                                <Binding Path="ConnectionStatus" Mode="OneWay"/>
+                            </MultiBinding>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Rectangle.OpacityMask>
+            </Rectangle>
+        </Border>
+    </Grid>
+</UserControl>

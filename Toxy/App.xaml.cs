@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 
 namespace Toxy

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Markup;
+using System.Windows.Controls;
 using System.Windows.Media;
 using AForge.Video.DirectShow;
 using MahApps.Metro;
 using NAudio.Wave;
+using SharpTox.Core;
 using Toxy.Common;
 using Toxy.MVVM;
 
@@ -68,12 +70,99 @@ namespace Toxy.ViewModels
 
             Languages = new ObservableCollection<LanguageMenuData>();
             FillLanguages();
-
-            this.SpellcheckLanguages = Enum.GetNames(typeof(SpellcheckLanguage)).ToList();
+            if (File.Exists(configFilename))
+            {
+                config = ConfigTools.Load(configFilename);
+            }
+            else
+            {
+                config = new Config();
+                ConfigTools.Save(config, configFilename);
+            }
+            ChangeLanguage(getShortLanguageName(config.Language));
+            
+            SpellcheckLanguages = Enum.GetNames(typeof(SpellcheckLanguage)).ToList();
 
             InputDevices = new ObservableCollection<InputMenuData>();
             OutputDevices = new ObservableCollection<OutputMenuData>();
             VideoDevices = new ObservableCollection<VideoMenuData>();
+
+            AvatarStore = new AvatarStore(toxDataDir);
+            
+        }
+
+        internal Config config;
+        internal Tox tox;
+        private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LanguageMenuData content = (LanguageMenuData)e.AddedItems[0];
+            var fileShortCut = getShortLanguageName(content.Name);
+            if (fileShortCut.Equals("fail"))
+                return;
+
+            ChangeLanguage(fileShortCut);
+        }
+
+
+        internal string getShortLanguageName(string LanguageDescriptor)
+        {
+            switch (LanguageDescriptor)
+            {
+                case "English":
+                    return "Eng";
+
+                case "Deutsch":
+                    return "Ger";
+
+                case "Dutch":
+                    return "Nl";
+
+                case "Pусский":
+                    return "Ru";
+
+                case "한글":
+                    return "Kr";
+
+            }
+
+            return "fail";
+        }
+
+        internal string toxDataDir
+        {
+            get
+            {
+                if (!config.Portable)
+                    return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
+                else
+                    return Environment.CurrentDirectory;
+            }
+        }
+
+        internal string toxDataFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, string.Format("{0}.tox", string.IsNullOrEmpty(config.ProfileName) ? tox.Id.PublicKey.GetString().Substring(0, 10) : config.ProfileName));
+            }
+        }
+
+        internal string toxOldDataFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, "tox_save");
+            }
+        }
+
+        public string configFilename = "config.xml";
+
+        internal string dbFilename
+        {
+            get
+            {
+                return Path.Combine(toxDataDir, "toxy.db");
+            }
         }
 
         private void FillLanguages()
@@ -112,34 +201,34 @@ namespace Toxy.ViewModels
                 VideoDevices.Add(new VideoMenuData { Name = device.Name });
         }
 
-        private UserModel mainToxyUser;
+        private UserModel _mainToxyUser;
 
         public UserModel MainToxyUser
         {
-            get { return mainToxyUser; }
+            get { return _mainToxyUser; }
             set
             {
-                if (Equals(value, mainToxyUser))
+                if (Equals(value, _mainToxyUser))
                 {
                     return;
                 }
-                mainToxyUser = value;
+                _mainToxyUser = value;
                 OnPropertyChanged(() => MainToxyUser);
             }
         }
 
-        private ICollection<IChatObject> chatCollection;
+        private ICollection<IChatObject> _chatCollection;
 
         public ICollection<IChatObject> ChatCollection
         {
-            get { return chatCollection; }
+            get { return _chatCollection; }
             set
             {
-                if (Equals(value, chatCollection))
+                if (Equals(value, _chatCollection))
                 {
                     return;
                 }
-                chatCollection = value;
+                _chatCollection = value;
                 OnPropertyChanged(() => ChatCollection);
             }
         }
@@ -159,34 +248,34 @@ namespace Toxy.ViewModels
             get { return GroupChatCollection.Any(); }
         }
 
-        private ICollection<IChatObject> chatRequestCollection;
+        private ICollection<IChatObject> _chatRequestCollection;
 
         public ICollection<IChatObject> ChatRequestCollection
         {
-            get { return chatRequestCollection; }
+            get { return _chatRequestCollection; }
             set
             {
-                if (Equals(value, chatRequestCollection))
+                if (Equals(value, _chatRequestCollection))
                 {
                     return;
                 }
-                chatRequestCollection = value;
+                _chatRequestCollection = value;
                 OnPropertyChanged(() => ChatRequestCollection);
             }
         }
 
-        private IChatObject selectedChatObject;
+        private IChatObject _selectedChatObject;
 
         public IChatObject SelectedChatObject
         {
-            get { return selectedChatObject; }
+            get { return _selectedChatObject; }
             set
             {
-                if (Equals(value, selectedChatObject))
+                if (Equals(value, _selectedChatObject))
                 {
                     return;
                 }
-                selectedChatObject = value;
+                _selectedChatObject = value;
                 OnPropertyChanged(() => SelectedChatObject);
                 OnPropertyChanged(() => IsFriendSelected);
                 OnPropertyChanged(() => IsGroupSelected);
@@ -194,18 +283,18 @@ namespace Toxy.ViewModels
             }
         }
 
-        private IFriendObject callingFriend;
+        private IFriendObject _callingFriend;
 
         public IFriendObject CallingFriend
         {
-            get { return callingFriend; }
+            get { return _callingFriend; }
             set
             {
-                if (Equals(value, callingFriend))
+                if (Equals(value, _callingFriend))
                 {
                     return;
                 }
-                callingFriend = value;
+                _callingFriend = value;
                 OnPropertyChanged(() => CallingFriend);
             }
         }
@@ -289,35 +378,36 @@ namespace Toxy.ViewModels
             }
         }
 
-	    private bool spellcheckEnabled;
+	    private bool _spellcheckEnabled;
 
 	    public bool SpellcheckEnabled
 	    {
-			get { return this.spellcheckEnabled; }
+			get { return _spellcheckEnabled; }
 		    set
 		    {
-			    if (Equals(value, this.spellcheckEnabled))
+			    if (Equals(value, _spellcheckEnabled))
 			    {
 				    return;
 			    }
-			    this.spellcheckEnabled = value;
-				this.OnPropertyChanged(() => this.SpellcheckEnabled);
+			    _spellcheckEnabled = value;
+				OnPropertyChanged(() => SpellcheckEnabled);
 		    }
 	    }
 
-	    private string spellcheckLangCode;
+	    private string _spellcheckLangCode;
+        internal AvatarStore AvatarStore;
 
-	    public string SpellcheckLangCode
+        public string SpellcheckLangCode
 	    {
-			get { return this.spellcheckLangCode; }
+			get { return _spellcheckLangCode; }
 		    set
 		    {
-			    if (Equals(value, this.spellcheckLangCode))
+			    if (Equals(value, _spellcheckLangCode))
 			    {
 				    return;
 			    }
-			    this.spellcheckLangCode = value;
-				this.OnPropertyChanged(() => this.SpellcheckLangCode);
+			    _spellcheckLangCode = value;
+				OnPropertyChanged(() => SpellcheckLangCode);
 		    }
 	    }
     }

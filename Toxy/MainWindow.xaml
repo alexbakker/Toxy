@@ -14,7 +14,7 @@
                       xmlns:root="clr-namespace:Toxy"
                       xmlns:common="clr-namespace:Toxy.Common"
                       x:Class="Toxy.MainWindow"
-                      x:Name="mv"
+                      x:Name="Mv"
                       Title="Toxy"
                       MinWidth="700"
                       MinHeight="600"

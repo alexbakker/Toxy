@@ -8,4 +8,5 @@
     <Converters:BoolToFillColorConverter x:Key="BoolToFillColorConverter"/>
     <Converters:BoolToMessageForegroundConverter x:Key="BoolToMessageForegroundConverter"/>
     <Converters:BoolToPhoneButtonStyleConverter x:Key="BoolToPhoneButtonStyleConverter"/>
+    <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 </ResourceDictionary>

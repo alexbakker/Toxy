@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
-using SharpTox.Core;
-using Toxy.ViewModels;
+using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
+
+using Toxy.ViewModels;
+using SharpTox.Core;
 using SharpTox.Av;
 
 namespace Toxy.Managers
@@ -21,6 +24,22 @@ namespace Toxy.Managers
 
                 return _instance;
             }
+        }
+
+        public ProfileInfo CurrentProfile { get; private set; }
+
+        public ProfileInfo CreateNew(string profileName)
+        {
+            string path = Path.Combine(ProfileDataPath, profileName + ".tox");
+            var tox = new Tox(ToxOptions.Default);
+            tox.Name = profileName;
+            tox.StatusMessage = "Toxing on Toxy";
+
+            if (!tox.GetData().Save(path))
+                return null;
+
+            tox.Dispose();
+            return new ProfileInfo(path);
         }
 
         public void SwitchTo(ProfileInfo profile)
@@ -69,6 +88,8 @@ namespace Toxy.Managers
             App.Tox.Start();
             App.ToxAv.Start();
 
+            CurrentProfile = profile;
+
             MainWindow.Instance.Reload();
         }
 
@@ -91,5 +112,19 @@ namespace Toxy.Managers
                 }
             }
         }*/
+
+        public static IEnumerable<ProfileInfo> GetAllProfiles()
+        {
+            try
+            {
+                return Directory.GetFiles(ProfileManager.ProfileDataPath, "*.tox", SearchOption.TopDirectoryOnly).
+                        Where(s => s.EndsWith(".tox")).
+                        Select(p => new ProfileInfo(p));
+            }
+            catch
+            {
+                return new List<ProfileInfo>();
+            }
+        }
     }
 }

@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Toxy.Managers;
+using Toxy.ViewModels;
 
 namespace Toxy.Windows
 {
@@ -19,9 +10,68 @@ namespace Toxy.Windows
     /// </summary>
     public partial class LoginWindow : Window
     {
+        public LoginWindowViewModel Context { get { return DataContext as LoginWindowViewModel; } }
+
         public LoginWindow()
         {
             InitializeComponent();
+
+            DataContext = new LoginWindowViewModel();
+
+            Context.CurrentView = new LoginExistingViewModel();
+            (Context.CurrentView as LoginExistingViewModel).OnLoginButtonClicked += LoginWindow_OnLoginButtonClicked;
+        }
+
+        private void LoginWindow_OnLoginButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var model = Context.CurrentView as LoginExistingViewModel;
+            if (model == null)
+                return;
+
+            if (model.SelectedProfile != null)
+            {
+                ProfileManager.Instance.SwitchTo(model.SelectedProfile);
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Could not load existing profile. Unknown error.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LoginWindow_OnNewProfileButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var model = Context.CurrentView as LoginNewViewModel;
+            if (model == null)
+                return;
+
+            if (!string.IsNullOrEmpty(model.ProfileName))
+            {
+                var profile = ProfileManager.Instance.CreateNew(model.ProfileName);
+                if (profile != null)
+                {
+                    ProfileManager.Instance.SwitchTo(profile);
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("Could not create a new profile. Unknown error.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void NewUser_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var model = new LoginNewViewModel();
+            model.OnNewProfileButtonClicked += LoginWindow_OnNewProfileButtonClicked;
+            Context.CurrentView = model;
+        }
+
+        private void ExistingUser_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var model = new LoginExistingViewModel();
+            model.OnLoginButtonClicked += LoginWindow_OnLoginButtonClicked;
+            Context.CurrentView = model;
         }
     }
 }

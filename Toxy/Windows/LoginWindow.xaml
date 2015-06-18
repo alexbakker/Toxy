@@ -4,27 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Toxy.Windows"
+        xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
+        xmlns:Views="clr-namespace:Toxy.Views"
+        d:DataContext="{d:DesignInstance ViewModels:LoginWindowViewModel}"
         mc:Ignorable="d"
-        Title="Login" Height="300" Width="550" ResizeMode="NoResize">
+        Title="Login" Height="244" Width="550" ResizeMode="NoResize">
     <!-- TODO: link to a static resource -->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type ViewModels:LoginExistingViewModel}">
+                <Views:LoginExistingView DataContext="{Binding Mode=OneWay}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModels:LoginNewViewModel}">
+                <Views:LoginNewView DataContext="{Binding Mode=OneWay}" />
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Background="{StaticResource ToxDarkGreyBrush}">
                     <Rectangle Height="66" Fill="{StaticResource ToxWhiteBrush}" Margin="20,15,20,0" VerticalAlignment="Top">
@@ -33,22 +44,23 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <StackPanel VerticalAlignment="Bottom">
-                        <Border Height="40">
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="Existing User" Foreground="{StaticResource ToxLightGreyBrush}" FontWeight="Bold" FontSize="14"/>
+                        <Border Height="40" MouseDown="ExistingUser_Click" Background="Transparent">
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="Existing Profile" Foreground="{StaticResource ToxLightGreyBrush}" FontWeight="Bold" FontSize="14"/>
                         </Border>
-                        <Line StrokeThickness="0.5" Stroke="{StaticResource ToxMediumGreyBrush}" X1="10" X2="205"/>
-                        <Border Height="40" BorderThickness="0">
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="New User" Foreground="{StaticResource ToxLightGreyBrush}" FontWeight="Bold" FontSize="14"/>
+                        <Separator Width="195" Margin="10, 0" Background="{StaticResource ToxMediumGreyBrush}"/>
+                        <Border Height="40" BorderThickness="0" MouseDown="NewUser_Click" Background="Transparent">
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="New Profile" Foreground="{StaticResource ToxLightGreyBrush}" FontWeight="Bold" FontSize="14"/>
                         </Border>
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Column="1">
-                    <Polygon Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 30,25 0,50" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                </Grid>
+                <StackPanel Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                    <Polygon Visibility="{Binding IsLoginExistingSelected, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 15,20 0,40" />
+                    <Polygon Visibility="{Binding IsLoginNewSelected, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 15,20 0,40"/>
+                </StackPanel>
             </Grid>
         </Grid>
         <Grid Grid.Column="1">
-            
+            <ContentControl Content="{Binding CurrentView}"/>
         </Grid>
     </Grid>
 </Window>

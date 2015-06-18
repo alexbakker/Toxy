@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
+
 using SharpTox.Core;
-using Toxy.Managers;
 using SharpTox.Av;
+
+using Toxy.Managers;
+using Toxy.Windows;
 using Toxy.ViewModels;
 
 namespace Toxy
@@ -22,15 +25,15 @@ namespace Toxy
             //TODO: load config from appdata
             Debugging.Write("Tox version: " + ToxVersion.Current.ToString());
 
-            string toxProfilePath = System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox");
-            ProfileManager.Instance.SwitchTo(System.IO.File.Exists(toxProfilePath) ? new ProfileInfo(toxProfilePath) : null);
+            //string toxProfilePath = System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox");
+            //ProfileManager.Instance.SwitchTo(System.IO.File.Exists(toxProfilePath) ? new ProfileInfo(toxProfilePath) : null);
 
-            new Windows.LoginWindow().Show();
+            new LoginWindow().Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            System.IO.File.WriteAllBytes(System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox"), Tox.GetData().Bytes);
+            System.IO.File.WriteAllBytes(ProfileManager.Instance.CurrentProfile.Path, Tox.GetData().Bytes);
 
             ToxAv.Dispose();
             Tox.Dispose();

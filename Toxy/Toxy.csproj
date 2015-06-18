@@ -86,6 +86,7 @@
     <Compile Include="Converters\BoolToNameForegroundConverter.cs" />
     <Compile Include="Converters\BoolToPhoneButtonStyleConverter.cs" />
     <Compile Include="Converters\BoolToStatusMessageForegroundConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ToxUserStatusToBrushConverter.cs" />
     <Compile Include="Converters\ToxUserStatusToVisualConverter.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
@@ -101,6 +102,9 @@
     <Compile Include="ViewModels\FileTransferViewModel.cs" />
     <Compile Include="ViewModels\FriendListViewModel.cs" />
     <Compile Include="ViewModels\IMessage.cs" />
+    <Compile Include="ViewModels\LoginExistingViewModel.cs" />
+    <Compile Include="ViewModels\LoginNewViewModel.cs" />
+    <Compile Include="ViewModels\LoginWindowViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
     <Compile Include="ViewModels\SelfViewModel.cs" />
@@ -128,6 +132,12 @@
     <Compile Include="Views\FriendListView.xaml.cs">
       <DependentUpon>FriendListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\LoginExistingView.xaml.cs">
+      <DependentUpon>LoginExistingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginNewView.xaml.cs">
+      <DependentUpon>LoginNewView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MessageView.xaml.cs">
       <DependentUpon>MessageView.xaml</DependentUpon>
     </Compile>
@@ -153,6 +163,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConversationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginExistingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginNewView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

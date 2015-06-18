@@ -20,5 +20,7 @@ namespace Toxy.Managers
 
         public DeviceInfo RecordingDevice { get; set; }
         public DeviceInfo PlaybackDevice { get; set; }
+
+        public ProfileInfo CurrentProfile { get; set; }
     }
 }

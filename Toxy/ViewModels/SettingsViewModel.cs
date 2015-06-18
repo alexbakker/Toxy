@@ -47,9 +47,7 @@ namespace Toxy.ViewModels
         {
             get
             {
-                return new ObservableCollection<ProfileInfo>(Directory.GetFiles(ProfileManager.ProfileDataPath, "*.tox", SearchOption.TopDirectoryOnly).
-                    Where(s => s.EndsWith(".tox")).
-                    Select(p => new ProfileInfo(p)));
+                return new ObservableCollection<ProfileInfo>(ProfileManager.GetAllProfiles());
             }
         }
 

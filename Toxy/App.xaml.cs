@@ -24,6 +24,8 @@ namespace Toxy
 
             string toxProfilePath = System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox");
             ProfileManager.Instance.SwitchTo(System.IO.File.Exists(toxProfilePath) ? new ProfileInfo(toxProfilePath) : null);
+
+            new Windows.LoginWindow().Show();
         }
 
         protected override void OnExit(ExitEventArgs e)

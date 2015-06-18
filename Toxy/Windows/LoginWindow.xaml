@@ -1,0 +1,54 @@
+﻿<Window x:Class="Toxy.Windows.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Toxy.Windows"
+        mc:Ignorable="d"
+        Title="Login" Height="300" Width="550" ResizeMode="NoResize">
+    <!-- TODO: link to a static resource -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Background="{StaticResource ToxDarkGreyBrush}">
+                    <Rectangle Height="66" Fill="{StaticResource ToxWhiteBrush}" Margin="20,15,20,0" VerticalAlignment="Top">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource tox_logo}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <StackPanel VerticalAlignment="Bottom">
+                        <Border Height="40">
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="Existing User" Foreground="{StaticResource ToxLightGreyBrush}" FontWeight="Bold" FontSize="14"/>
+                        </Border>
+                        <Line StrokeThickness="0.5" Stroke="{StaticResource ToxMediumGreyBrush}" X1="10" X2="205"/>
+                        <Border Height="40" BorderThickness="0">
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Text="New User" Foreground="{StaticResource ToxLightGreyBrush}" FontWeight="Bold" FontSize="14"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Polygon Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 30,25 0,50" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="1">
+            
+        </Grid>
+    </Grid>
+</Window>

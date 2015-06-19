@@ -6,7 +6,7 @@
         <title>Toxy</title>
         <authors>Impyy,Tox Foundation</authors>
         <projectUrl>https://github.com/Reverp/Toxy</projectUrl>
-        <iconUrl>http://update.toxing.me/toxy/assets/icon.ico</iconUrl>
+        <iconUrl>http://update.toxing.me/assets/icon.ico</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Initial release of Toxy</description>
         <releaseNotes>None.</releaseNotes>
@@ -14,15 +14,15 @@
         <language>es-US</language>
     </metadata>
     <files>
-        <file src="Toxy\bin\x86\Release\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
-        <file src="Toxy\bin\x86\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
-        <file src="Toxy\bin\x86\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
-        <file src="Toxy\bin\x86\Release\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
-        <file src="Toxy\bin\x86\Release\libtox.dll" target="lib\net45\libtox.dll" />
-        <file src="Toxy\bin\x86\Release\NAudio.dll" target="lib\net45\NAudio.dll" />
-        <file src="Toxy\bin\x86\Release\SharpTox.dll" target="lib\net45\SharpTox.dll" />
-        <file src="Toxy\bin\x86\Release\Splat.dll" target="lib\net45\Splat.dll" />
-        <file src="Toxy\bin\x86\Release\Squirrel.dll" target="lib\net45\Squirrel.dll" />
-        <file src="Toxy\bin\x86\Release\Toxy.exe" target="lib\net45\Toxy.exe" />
+        <file src="Toxy\bin\x86\Debug\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
+        <file src="Toxy\bin\x86\Debug\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
+        <file src="Toxy\bin\x86\Debug\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
+        <file src="Toxy\bin\x86\Debug\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
+        <file src="Toxy\bin\x86\Debug\libtox.dll" target="lib\net45\libtox.dll" />
+        <file src="Toxy\bin\x86\Debug\NAudio.dll" target="lib\net45\NAudio.dll" />
+        <file src="Toxy\bin\x86\Debug\SharpTox.dll" target="lib\net45\SharpTox.dll" />
+        <file src="Toxy\bin\x86\Debug\Splat.dll" target="lib\net45\Splat.dll" />
+        <file src="Toxy\bin\x86\Debug\Squirrel.dll" target="lib\net45\Squirrel.dll" />
+        <file src="Toxy\bin\x86\Debug\Toxy.exe" target="lib\net45\Toxy.exe" />
     </files>
 </package>

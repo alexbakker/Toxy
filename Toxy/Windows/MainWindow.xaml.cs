@@ -19,6 +19,16 @@ namespace Toxy
     /// </summary>
     public partial class MainWindow : Window
     {
+#if X86 && !CANARY
+        private const string _updateUrl = "http://update.toxing.me/toxy/x86/stable/";
+#elif X64 && !CANARY
+        private const string _updateUrl = "http://update.toxing.me/toxy/x64/stable/";
+#elif X86 && CANARY
+        private const string _updateUrl = "http://update.toxing.me/toxy/x86/canary/";
+#elif X64 && CANARY
+        private const string _updateUrl = "http://update.toxing.me/toxy/x64/canary/";
+#endif
+
         private static MainWindow _instance;
         public static MainWindow Instance
         {
@@ -76,7 +86,7 @@ namespace Toxy
         {
             try
             {
-                using (var mgr = new UpdateManager("http://update.toxing.me/toxy"))
+                using (var mgr = new UpdateManager(_updateUrl))
                 {
                     //
                     if (!mgr.IsInstalledApp)

@@ -15,7 +15,8 @@
         RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextRenderingMode="ClearType"
         TextOptions.TextFormattingMode="Display"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Resources/Icons/64x64.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

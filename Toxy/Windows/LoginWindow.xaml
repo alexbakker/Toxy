@@ -8,8 +8,10 @@
         xmlns:Views="clr-namespace:Toxy.Views"
         d:DataContext="{d:DesignInstance ViewModels:LoginWindowViewModel}"
         mc:Ignorable="d"
-        Title="Login" Height="244" Width="550" ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen">
+        Title="Login" Height="244" Width="550" 
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Resources/Icons/64x64.ico">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

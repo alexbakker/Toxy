@@ -53,6 +53,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icons\64x64.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
@@ -263,6 +266,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\64x64.ico" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

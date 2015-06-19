@@ -23,9 +23,9 @@ namespace Toxy
             new LoginWindow().Show();
         }
 
-        protected override async void OnExit(ExitEventArgs e)
+        protected override void OnExit(ExitEventArgs e)
         {
-            await ProfileManager.Instance.SaveAsync();
+            ProfileManager.Instance.Save();
             ProfileManager.Instance.Dispose();
         }
     }

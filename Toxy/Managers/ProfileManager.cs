@@ -162,5 +162,24 @@ namespace Toxy.Managers
                 Debugging.Write("Tried to save profile but there is no profile in use!");
             }
         }
+
+        public void Save()
+        {
+            if (CurrentProfile != null && Tox != null)
+            {
+                try
+                {
+                    if (Tox.GetData().Save(CurrentProfile.Path))
+                        Debugging.Write("Saved profile to disk");
+                    else
+                        Debugging.Write("Could not save profile");
+                }
+                catch (Exception ex) { Debugging.Write("Could not save profile: " + ex.ToString()); }
+            }
+            else
+            {
+                Debugging.Write("Tried to save profile but there is no profile in use!");
+            }
+        }
     }
 }

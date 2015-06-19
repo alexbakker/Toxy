@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Toxy")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Tox Foundation")]
 [assembly: AssemblyProduct("Toxy")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]

@@ -9,6 +9,8 @@ using SharpTox.Core;
 using Toxy.ViewModels;
 using Toxy.Extensions;
 using Toxy.Managers;
+using System.Threading.Tasks;
+using Squirrel;
 
 namespace Toxy
 {
@@ -63,8 +65,58 @@ namespace Toxy
             InitializeComponent();
 
             DataContext = new MainWindowViewModel();
-
             ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
+
+            //only check for updates once at launch (TODO: check periodically?)
+            //TODO: move this someplace else
+            CheckForUpdates();
+        }
+
+        private async Task CheckForUpdates()
+        {
+            try
+            {
+                using (var mgr = new UpdateManager("http://update.toxing.me/toxy"))
+                {
+                    //
+                    if (!mgr.IsInstalledApp)
+                    {
+                        Debugging.Write("Skipping update check, this is not an installed application.");
+                        return;
+                    }
+
+                    var updateInfo = await mgr.CheckForUpdate();
+
+                    Debugging.Write("Currently installed: " + updateInfo.CurrentlyInstalledVersion.Version);
+                    Debugging.Write("Latest version: " + updateInfo.FutureReleaseEntry.Version);
+
+                    if (updateInfo.CurrentlyInstalledVersion.Version < updateInfo.FutureReleaseEntry.Version)
+                    {
+                        //download the latest release so we can retrieve the release notes
+                        await mgr.DownloadReleases(new[] { updateInfo.FutureReleaseEntry });
+
+                        string msg = string.Format("There is a new update available for installation. The latest version is {0}. Would you like to update?\n\nChanges:\n{1}", 
+                            updateInfo.FutureReleaseEntry.Version,
+                            updateInfo.FutureReleaseEntry.GetReleaseNotes(updateInfo.PackageDirectory));
+                        
+
+                        var result = MessageBox.Show(msg, "Updates available!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            await mgr.UpdateApp();
+
+                            result = MessageBox.Show("Toxy has to be restarted in order to apply the update. Restart now?", "Updates successfully installed", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            if (result == MessageBoxResult.Yes)
+                            {
+                                //eww
+                                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+                                Application.Current.Shutdown();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { Debugging.Write("Could not check for updates: " + ex.ToString()); }
         }
 
         private void Tox_OnFriendRequestReceived(object sender, ToxEventArgs.FriendRequestEventArgs e)

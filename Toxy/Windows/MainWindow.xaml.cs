@@ -100,12 +100,12 @@ namespace Toxy
                             updateInfo.FutureReleaseEntry.GetReleaseNotes(updateInfo.PackageDirectory));
                         
 
-                        var result = MessageBox.Show(msg, "Updates available!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        var result = MessageBox.Show(msg, "Update available", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (result == MessageBoxResult.Yes)
                         {
                             await mgr.UpdateApp();
 
-                            result = MessageBox.Show("Toxy has to be restarted in order to apply the update. Restart now?", "Updates successfully installed", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                            result = MessageBox.Show("Toxy has to be restarted in order to apply the update. Restart now?", "Update successfully installed", MessageBoxButton.YesNo, MessageBoxImage.Question);
                             if (result == MessageBoxResult.Yes)
                             {
                                 //eww

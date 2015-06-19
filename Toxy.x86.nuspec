@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Toxy</id>
+        <version>0.1.0</version>
+        <title>Toxy</title>
+        <authors>Impyy,Tox Foundation</authors>
+        <projectUrl>https://github.com/Reverp/Toxy</projectUrl>
+        <iconUrl>http://update.toxing.me/toxy/assets/icon.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Initial release of Toxy</description>
+        <releaseNotes>None.</releaseNotes>
+        <copyright>Copyright © 2015</copyright>
+        <language>es-US</language>
+    </metadata>
+    <files>
+        <file src="Toxy\bin\x86\Release\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
+        <file src="Toxy\bin\x86\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
+        <file src="Toxy\bin\x86\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
+        <file src="Toxy\bin\x86\Release\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
+        <file src="Toxy\bin\x86\Release\libtox.dll" target="lib\net45\libtox.dll" />
+        <file src="Toxy\bin\x86\Release\NAudio.dll" target="lib\net45\NAudio.dll" />
+        <file src="Toxy\bin\x86\Release\SharpTox.dll" target="lib\net45\SharpTox.dll" />
+        <file src="Toxy\bin\x86\Release\Splat.dll" target="lib\net45\Splat.dll" />
+        <file src="Toxy\bin\x86\Release\Squirrel.dll" target="lib\net45\Squirrel.dll" />
+        <file src="Toxy\bin\x86\Release\Toxy.exe" target="lib\net45\Toxy.exe" />
+    </files>
+</package>

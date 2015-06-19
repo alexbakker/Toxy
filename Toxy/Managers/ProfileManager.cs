@@ -29,7 +29,6 @@ namespace Toxy.Managers
 
         public Tox Tox { get; private set; }
         public ToxAv ToxAv { get; private set; }
-
         public ProfileInfo CurrentProfile { get; private set; }
 
         public ProfileInfo CreateNew(string profileName)

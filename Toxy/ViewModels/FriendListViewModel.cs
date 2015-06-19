@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.ObjectModel;
+
 using SharpTox.Core;
 using Toxy.MVVM;
+using Toxy.Managers;
+using Toxy.Extensions;
 
 namespace Toxy.ViewModels
 {
@@ -10,7 +13,14 @@ namespace Toxy.ViewModels
     {
         public FriendListViewModel(MainWindowViewModel model)
         {
-            MainWindow = model;
+            MainWindowView = model;
+
+            ProfileManager.Instance.Tox.OnFriendNameChanged += Tox_OnFriendNameChanged;
+            ProfileManager.Instance.Tox.OnFriendStatusMessageChanged += Tox_OnFriendStatusMessageChanged;
+            ProfileManager.Instance.Tox.OnFriendStatusChanged += Tox_OnFriendStatusChanged;
+            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
+            ProfileManager.Instance.Tox.OnReadReceiptReceived += Tox_OnReadReceiptReceived;
         }
 
         private ObservableCollection<IChatObject> _chatCollection = new ObservableCollection<IChatObject>();
@@ -30,7 +40,7 @@ namespace Toxy.ViewModels
         }
 
         //we have to keep a reference of the main view model in order to change the current view from here
-        public readonly MainWindowViewModel MainWindow;
+        public readonly MainWindowViewModel MainWindowView;
 
         private FriendControlViewModel _selectedChat;
         public FriendControlViewModel SelectedChat
@@ -56,28 +66,10 @@ namespace Toxy.ViewModels
                         _selectedChat.HasUnreadMessages = false;
 
                     _selectedChat.IsSelected = true;
-                    MainWindow.CurrentView = _selectedChat.ConversationView;
+                    MainWindowView.CurrentView = _selectedChat.ConversationView;
                 }
 
                 OnPropertyChanged(() => SelectedChat);
-            }
-        }
-
-        private static int GetStatusPriority(bool isOnline, ToxUserStatus status)
-        {
-            if (!isOnline)
-                return 4;
-
-            switch (status)
-            {
-                case ToxUserStatus.None:
-                    return 0;
-                case ToxUserStatus.Away:
-                    return 1;
-                case ToxUserStatus.Busy:
-                    return 2;
-                default:
-                    return 3;
             }
         }
 
@@ -90,9 +82,9 @@ namespace Toxy.ViewModels
         {
             var item = ChatCollection.FirstOrDefault();
             if (item != null)
-                MainWindow.CurrentView = item.ConversationView;
+                MainWindowView.CurrentView = item.ConversationView;
             else
-                MainWindow.CurrentView = new AddFriendViewModel();
+                MainWindowView.CurrentView = new AddFriendViewModel();
 
             return ChatCollection.Remove(obj);
         }
@@ -126,6 +118,139 @@ namespace Toxy.ViewModels
                     GetStatusPriority(chat.IsOnline, chat.UserStatus)).
                     ThenBy(chat => chat.Name)
                 );
+        }
+
+        private void Tox_OnReadReceiptReceived(object sender, ToxEventArgs.ReadReceiptEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                var msg = friend.ConversationView.Messages.FirstOrDefault(m => m.MessageType == MessageType.Message && m.MessageId == e.Receipt);
+                if (msg == null)
+                {
+                    Debugging.Write("Received a read receipt for a message we don't know about!");
+                    return;
+                }
+
+                msg.WasReceived = true;
+            });
+        }
+
+        private void Tox_OnFriendMessageReceived(object sender, ToxEventArgs.FriendMessageEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                var msg = new MessageViewModel(e.FriendNumber);
+                msg.FriendName = ProfileManager.Instance.Tox.GetFriendName(e.FriendNumber);
+                msg.Message = e.Message;
+                msg.Time = DateTime.Now.ToShortTimeString();
+
+                friend.ConversationView.AddMessage(msg);
+
+                //if this is the first unread message, set HasUnreadMessages to true to make sure the status indicator gets updated
+                if (!friend.HasUnreadMessages && !friend.IsSelected) friend.HasUnreadMessages = true;
+            });
+        }
+
+        private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                friend.ConnectionStatus = e.Status;
+                friend.IsOnline = e.Status != ToxConnectionStatus.None;
+
+                SortObject(friend);
+            });
+        }
+
+        private void Tox_OnFriendStatusChanged(object sender, ToxEventArgs.StatusEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                friend.UserStatus = e.Status;
+                SortObject(friend);
+            });
+        }
+
+        private void Tox_OnFriendStatusMessageChanged(object sender, ToxEventArgs.StatusMessageEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                friend.StatusMessage = e.StatusMessage;
+            });
+        }
+
+        private void Tox_OnFriendNameChanged(object sender, ToxEventArgs.NameChangeEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                friend.Name = e.Name;
+                SortObject(friend);
+            });
+        }
+
+        private IChatObject FindFriend(int friendNumber)
+        {
+            return ChatCollection.FirstOrDefault(f => f.ChatNumber == friendNumber);
+        }
+
+        private static int GetStatusPriority(bool isOnline, ToxUserStatus status)
+        {
+            if (!isOnline)
+                return 4;
+
+            switch (status)
+            {
+                case ToxUserStatus.None:
+                    return 0;
+                case ToxUserStatus.Away:
+                    return 1;
+                case ToxUserStatus.Busy:
+                    return 2;
+                default:
+                    return 3;
+            }
         }
     }
 }

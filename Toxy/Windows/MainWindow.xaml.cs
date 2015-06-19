@@ -3,11 +3,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ComponentModel;
 
+using SharpTox.Core;
 using Toxy.ViewModels;
 using Toxy.Extensions;
-using SharpTox.Core;
-using System.ComponentModel;
 using Toxy.Managers;
 
 namespace Toxy

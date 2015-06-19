@@ -20,18 +20,12 @@ namespace Toxy
         {
             //TODO: load config from appdata
             Debugging.Write("Tox version: " + ToxVersion.Current.ToString());
-
-            //string toxProfilePath = System.IO.Path.Combine(ProfileManager.ProfileDataPath, "Impy.tox");
-            //ProfileManager.Instance.SwitchTo(System.IO.File.Exists(toxProfilePath) ? new ProfileInfo(toxProfilePath) : null);
-
             new LoginWindow().Show();
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        protected override async void OnExit(ExitEventArgs e)
         {
-            //TODO: move this to the profilemanager
-            System.IO.File.WriteAllBytes(ProfileManager.Instance.CurrentProfile.Path, ProfileManager.Instance.Tox.GetData().Bytes);
-
+            await ProfileManager.Instance.SaveAsync();
             ProfileManager.Instance.Dispose();
         }
     }

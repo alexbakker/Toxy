@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Toxy.ViewModels;
 using SharpTox.Core;
 using SharpTox.Av;
+using System.Threading.Tasks;
 
 namespace Toxy.Managers
 {
@@ -138,6 +139,28 @@ namespace Toxy.Managers
 
             if (Tox != null)
                 Tox.Dispose();
+        }
+
+        public async Task SaveAsync()
+        {
+            if (CurrentProfile != null && Tox != null)
+            {
+                try
+                {
+                    using (var stream = new FileStream(CurrentProfile.Path, FileMode.Create))
+                    {
+                        byte[] data = Tox.GetData().Bytes;
+                        await stream.WriteAsync(data, 0, data.Length);
+
+                        Debugging.Write("Saved profile to disk");
+                    }
+                }
+                catch (Exception ex) { Debugging.Write("Could not save profile: " + ex.ToString()); }
+            }
+            else
+            {
+                Debugging.Write("Tried to save profile but there is no profile in use!");
+            }
         }
     }
 }

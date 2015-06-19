@@ -18,7 +18,7 @@ namespace Toxy.Views
             InitializeComponent();
         }
 
-        private void ButtonAddFriend_Click(object sender, RoutedEventArgs e)
+        private async void ButtonAddFriend_Click(object sender, RoutedEventArgs e)
         {
             string id = TextBoxFriendId.Text.Trim();
             string message = TextBoxMessage.Text.Trim();
@@ -58,6 +58,8 @@ namespace Toxy.Views
             MainWindow.Instance.ViewModel.CurrentFriendListView.AddObject(model);
             MainWindow.Instance.ViewModel.CurrentFriendListView.SortObject(model);
             MainWindow.Instance.ViewModel.CurrentFriendListView.SelectObject(model);
+
+            await ProfileManager.Instance.SaveAsync();
         }
 
         private void ShowError(string message)

@@ -21,7 +21,10 @@ namespace Toxy.ViewModels
 
                 //TODO: check to make sure changing the status message was successful
                 if (ProfileManager.Instance.Tox.Name != value)
+                {
                     ProfileManager.Instance.Tox.Name = value;
+                    ProfileManager.Instance.SaveAsync();
+                }
 
                 _name = value;
                 OnPropertyChanged(() => Name);
@@ -41,7 +44,10 @@ namespace Toxy.ViewModels
 
                 //TODO: check to make sure changing the status message was successful
                 if (ProfileManager.Instance.Tox.StatusMessage != value)
+                {
                     ProfileManager.Instance.Tox.StatusMessage = value;
+                    ProfileManager.Instance.SaveAsync();
+                }
 
                 _statusMessage = value;
                 OnPropertyChanged(() => StatusMessage);

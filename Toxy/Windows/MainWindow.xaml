@@ -14,7 +14,8 @@
         MinWidth="800"
         RenderOptions.ClearTypeHint="Enabled"
         TextOptions.TextRenderingMode="ClearType"
-        TextOptions.TextFormattingMode="Display">
+        TextOptions.TextFormattingMode="Display"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

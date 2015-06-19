@@ -92,7 +92,7 @@ namespace Toxy
                     MainWindow.Instance.ViewModel.CurrentFriendListView.SortObject(model);
 
                     //auto switch to converation view of this friend (?)
-                    MainWindow.Instance.ViewModel.CurrentFriendListView.Select(model);
+                    MainWindow.Instance.ViewModel.CurrentFriendListView.SelectObject(model);
                 }
             });
         }

@@ -8,8 +8,8 @@
         xmlns:Views="clr-namespace:Toxy.Views"
         d:DataContext="{d:DesignInstance ViewModels:LoginWindowViewModel}"
         mc:Ignorable="d"
-        Title="Login" Height="244" Width="550" ResizeMode="NoResize">
-    <!-- TODO: link to a static resource -->
+        Title="Login" Height="244" Width="550" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

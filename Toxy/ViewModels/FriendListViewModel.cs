@@ -113,7 +113,7 @@ namespace Toxy.ViewModels
                 ChatCollection.Move(oldIndex, newIndex);
         }
 
-        public void Select(FriendControlViewModel obj)
+        public void SelectObject(FriendControlViewModel obj)
         {
             SelectedChat = obj;
         }

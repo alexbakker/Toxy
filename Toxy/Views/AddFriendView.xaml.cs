@@ -54,8 +54,9 @@ namespace Toxy.Views
             model.Name = id;
             model.StatusMessage = "Friend request sent";
 
-            MainWindow.Instance.ViewModel.CurrentFriendListView.ChatCollection.Add(model);
-            MainWindow.Instance.ViewModel.CurrentFriendListView.Select(model);
+            MainWindow.Instance.ViewModel.CurrentFriendListView.AddObject(model);
+            MainWindow.Instance.ViewModel.CurrentFriendListView.SortObject(model);
+            MainWindow.Instance.ViewModel.CurrentFriendListView.SelectObject(model);
         }
 
         private void ShowError(string message)

@@ -8,6 +8,7 @@ using Toxy.ViewModels;
 using Toxy.Extensions;
 using SharpTox.Core;
 using System.ComponentModel;
+using Toxy.Managers;
 
 namespace Toxy
 {
@@ -63,7 +64,7 @@ namespace Toxy
 
             DataContext = new MainWindowViewModel();
 
-            App.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
+            ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
         }
 
         private void Tox_OnFriendRequestReceived(object sender, ToxEventArgs.FriendRequestEventArgs e)
@@ -75,7 +76,7 @@ namespace Toxy
                     return;
 
                 var error = ToxErrorFriendAdd.Ok;
-                int friendNumber = App.Tox.AddFriendNoRequest(e.PublicKey, out error);
+                int friendNumber = ProfileManager.Instance.Tox.AddFriendNoRequest(e.PublicKey, out error);
 
                 if (error != ToxErrorFriendAdd.Ok)
                 {
@@ -85,7 +86,7 @@ namespace Toxy
                 {
                     var model = new FriendControlViewModel();
                     model.ChatNumber = friendNumber;
-                    model.Name = App.Tox.GetFriendPublicKey(friendNumber).ToString();
+                    model.Name = ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber).ToString();
 
                     //add the friend to the list, sorted
                     MainWindow.Instance.ViewModel.CurrentFriendListView.AddObject(model);

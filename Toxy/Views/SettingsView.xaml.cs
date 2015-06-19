@@ -26,7 +26,7 @@ namespace Toxy.Views
 
         private void CopyIDButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(App.Tox.Id.ToString());
+            Clipboard.SetText(ProfileManager.Instance.Tox.Id.ToString());
         }
 
         private void LoadProfile_Click(object sender, RoutedEventArgs e)

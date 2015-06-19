@@ -16,10 +16,6 @@ namespace Toxy
     /// </summary>
     public partial class App : Application
     {
-        //TODO: make this less accessible 
-        public static Tox Tox { get; set; }
-        public static ToxAv ToxAv { get; set; }
-
         protected override void OnStartup(StartupEventArgs e)
         {
             //TODO: load config from appdata
@@ -33,10 +29,10 @@ namespace Toxy
 
         protected override void OnExit(ExitEventArgs e)
         {
-            System.IO.File.WriteAllBytes(ProfileManager.Instance.CurrentProfile.Path, Tox.GetData().Bytes);
+            //TODO: move this to the profilemanager
+            System.IO.File.WriteAllBytes(ProfileManager.Instance.CurrentProfile.Path, ProfileManager.Instance.Tox.GetData().Bytes);
 
-            ToxAv.Dispose();
-            Tox.Dispose();
+            ProfileManager.Instance.Dispose();
         }
     }
 }

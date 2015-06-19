@@ -24,7 +24,7 @@ namespace Toxy.Views
         {
             InitializeComponent();
 
-            App.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
+            ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
         }
 
         private void Tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
@@ -43,16 +43,16 @@ namespace Toxy.Views
 
         private void SelfView_Loaded(object sender, RoutedEventArgs e)
         {
-            Context.Name = App.Tox.Name;
-            Context.StatusMessage = App.Tox.StatusMessage;
-            Context.UserStatus = App.Tox.Status;
+            Context.Name = ProfileManager.Instance.Tox.Name;
+            Context.StatusMessage = ProfileManager.Instance.Tox.StatusMessage;
+            Context.UserStatus = ProfileManager.Instance.Tox.Status;
         }
 
         private void ContextMenuItemStatus_Click(object sender, RoutedEventArgs e)
         {
             var status = (ToxUserStatus)((MenuItem)e.Source).Tag; //king of casting
 
-            App.Tox.Status = status;
+            ProfileManager.Instance.Tox.Status = status;
             Context.UserStatus = status;
         }
 
@@ -79,10 +79,10 @@ namespace Toxy.Views
             bmp.EndInit();
             
             byte[] bytes = BitmapImageToBytes(bmp);
-            AvatarManager.Instance.SaveAvatar(App.Tox.Id.PublicKey.ToString(), bytes);
+            AvatarManager.Instance.SaveAvatar(ProfileManager.Instance.Tox.Id.PublicKey.ToString(), bytes);
 
-            foreach(int friend in App.Tox.Friends)
-                if (App.Tox.IsFriendOnline(friend))
+            foreach (int friend in ProfileManager.Instance.Tox.Friends)
+                if (ProfileManager.Instance.Tox.IsFriendOnline(friend))
                     TransferManager.SendAvatar(friend, bytes);
 
             MainWindow.Instance.ViewModel.CurrentSelfView.Avatar = bmp;

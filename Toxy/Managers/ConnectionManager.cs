@@ -11,7 +11,7 @@ namespace Toxy.Managers
 
         private ConnectionManager()
         {
-            App.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
+            ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
         }
 
         public static ConnectionManager Get()
@@ -39,7 +39,7 @@ namespace Toxy.Managers
                 //wait 'delay' seconds, check if we're connected, if not, bootstrap again
                 await Task.Delay(delay);
 
-                if (!App.Tox.IsConnected)
+                if (!ProfileManager.Instance.Tox.IsConnected)
                 {
                     Debugging.Write("We're still not connected, bootstrapping again");
                     DoBootstrap();
@@ -80,7 +80,7 @@ namespace Toxy.Managers
         private bool Bootstrap(ToxNode node)
         {
             var error = ToxErrorBootstrap.Ok;
-            bool success = App.Tox.Bootstrap(node, out error);
+            bool success = ProfileManager.Instance.Tox.Bootstrap(node, out error);
             if (success)
                 Debugging.Write(string.Format("Bootstrapped off of {0}:{1}", node.Address, node.Port));
             else

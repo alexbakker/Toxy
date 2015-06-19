@@ -24,12 +24,12 @@ namespace Toxy.Managers
 
         private CallManager() 
         {
-            App.ToxAv.OnAudioFrameReceived += ToxAv_OnAudioFrameReceived;
-            App.ToxAv.OnCallStateChanged += ToxAv_OnCallStateChanged;
-            App.ToxAv.OnCallRequestReceived += ToxAv_OnCallRequestReceived;
-            App.ToxAv.OnAudioBitrateChanged += ToxAv_OnAudioBitrateChanged;
-            App.ToxAv.OnVideoBitrateChanged += ToxAv_OnVideoBitrateChanged;
-            App.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            ProfileManager.Instance.ToxAv.OnAudioFrameReceived += ToxAv_OnAudioFrameReceived;
+            ProfileManager.Instance.ToxAv.OnCallStateChanged += ToxAv_OnCallStateChanged;
+            ProfileManager.Instance.ToxAv.OnCallRequestReceived += ToxAv_OnCallRequestReceived;
+            ProfileManager.Instance.ToxAv.OnAudioBitrateChanged += ToxAv_OnAudioBitrateChanged;
+            ProfileManager.Instance.ToxAv.OnVideoBitrateChanged += ToxAv_OnVideoBitrateChanged;
+            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
 
         private void Tox_OnFriendConnectionStatusChanged(object sender, SharpTox.Core.ToxEventArgs.FriendConnectionStatusEventArgs e)
@@ -58,7 +58,7 @@ namespace Toxy.Managers
             if (_callInfo != null)
             {
                 //TODO: notify the user there's yet another call incoming
-                App.ToxAv.SendControl(e.FriendNumber, ToxAvCallControl.Cancel);
+                ProfileManager.Instance.ToxAv.SendControl(e.FriendNumber, ToxAvCallControl.Cancel);
                 return;
             }
 
@@ -132,7 +132,7 @@ namespace Toxy.Managers
                 return;
 
             var error = ToxAvErrorSendFrame.Ok;
-            if (!App.ToxAv.SendAudioFrame(_callInfo.FriendNumber, new ToxAvAudioFrame(data, sampleRate, channels), out error))
+            if (!ProfileManager.Instance.ToxAv.SendAudioFrame(_callInfo.FriendNumber, new ToxAvAudioFrame(data, sampleRate, channels), out error))
             {
                 Debugging.Write("Failed to send audio frame: " + error);
             }
@@ -156,7 +156,7 @@ namespace Toxy.Managers
             }
 
             var error = ToxAvErrorAnswer.Ok;
-            if (!App.ToxAv.Answer(friendNumber, 48, 0, out error))
+            if (!ProfileManager.Instance.ToxAv.Answer(friendNumber, 48, 0, out error))
             {
                 Debugging.Write("Could not answer call for friend: " + error);
                 return false;
@@ -173,7 +173,7 @@ namespace Toxy.Managers
         public bool Hangup(int friendNumber)
         {
             var error = ToxAvErrorCallControl.Ok;
-            if (!App.ToxAv.SendControl(friendNumber, ToxAvCallControl.Cancel, out error))
+            if (!ProfileManager.Instance.ToxAv.SendControl(friendNumber, ToxAvCallControl.Cancel, out error))
             {
                 Debugging.Write("Could not answer call for friend: " + error);
                 return false;
@@ -193,7 +193,7 @@ namespace Toxy.Managers
             }
 
             var error = ToxAvErrorCall.Ok;
-            if (!App.ToxAv.Call(friendNumber, 48, 0, out error))
+            if (!ProfileManager.Instance.ToxAv.Call(friendNumber, 48, 0, out error))
             {
                 Debugging.Write("Could not send call request to friend: " + error);
                 return false;

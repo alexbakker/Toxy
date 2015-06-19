@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using Toxy.Managers;
 using Toxy.ViewModels;
 
 namespace Toxy.Views
@@ -19,7 +20,7 @@ namespace Toxy.Views
 
         private void CopyPubKey_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            Clipboard.SetText(App.Tox.GetFriendPublicKey(Context.ChatNumber).ToString());
+            Clipboard.SetText(ProfileManager.Instance.Tox.GetFriendPublicKey(Context.ChatNumber).ToString());
         }
 
         private void RemoveFriend_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -28,7 +29,7 @@ namespace Toxy.Views
             if (result != MessageBoxResult.Yes)
                 return;
 
-            if (!(MainWindow.Instance.ViewModel.CurrentFriendListView.RemoveObject(Context) && App.Tox.DeleteFriend(Context.ChatNumber)))
+            if (!(MainWindow.Instance.ViewModel.CurrentFriendListView.RemoveObject(Context) && ProfileManager.Instance.Tox.DeleteFriend(Context.ChatNumber)))
             {
                 Debugging.Write("Could not remove friend");
             }

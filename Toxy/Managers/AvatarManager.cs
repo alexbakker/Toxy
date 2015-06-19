@@ -28,7 +28,7 @@ namespace Toxy.Managers
 
         private AvatarManager()
         {
-            App.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
 
         private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
@@ -44,7 +44,7 @@ namespace Toxy.Managers
 
         public string GetAvatarFilename(int friendNumber)
         {
-            var publicKey = App.Tox.GetFriendPublicKey(friendNumber);
+            var publicKey = ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber);
             if (publicKey == null)
                 return null;
 
@@ -78,7 +78,7 @@ namespace Toxy.Managers
         {
             _avatars.Clear();
 
-            foreach (int friend in App.Tox.Friends)
+            foreach (int friend in ProfileManager.Instance.Tox.Friends)
                 Rehash(friend);
 
             LoadSelfAvatar();
@@ -137,7 +137,7 @@ namespace Toxy.Managers
         //TODO: refactor this crap too
         private bool LoadSelfAvatar()
         {
-            string filename = Path.Combine(AvatarDataPath, App.Tox.Id.PublicKey.ToString() + ".png");
+            string filename = Path.Combine(AvatarDataPath, ProfileManager.Instance.Tox.Id.PublicKey.ToString() + ".png");
             if (!File.Exists(filename))
                 return false;
 
@@ -182,13 +182,13 @@ namespace Toxy.Managers
             try
             {
                 _selfAvatar = null;
-                string filename = GetAvatarFilename(App.Tox.Id.PublicKey.ToString());
+                string filename = GetAvatarFilename(ProfileManager.Instance.Tox.Id.PublicKey.ToString());
 
                 if (File.Exists(filename))
                     File.Delete(filename);
 
-                foreach(int friend in App.Tox.Friends)
-                    if (App.Tox.IsFriendOnline(friend))
+                foreach(int friend in ProfileManager.Instance.Tox.Friends)
+                    if (ProfileManager.Instance.Tox.IsFriendOnline(friend))
                         TransferManager.SendAvatar(friend, null);
             }
             catch { }
@@ -201,7 +201,7 @@ namespace Toxy.Managers
                 if (_avatars.ContainsKey(friendNumber))
                     _avatars.Remove(friendNumber);
 
-                string filename = GetAvatarFilename(App.Tox.GetFriendPublicKey(friendNumber).ToString());
+                string filename = GetAvatarFilename(ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber).ToString());
 
                 if (File.Exists(filename))
                     File.Delete(filename);

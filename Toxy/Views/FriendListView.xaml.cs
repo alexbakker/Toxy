@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Toxy.ViewModels;
 using Toxy.Extensions;
 using SharpTox.Core;
+using Toxy.Managers;
 
 namespace Toxy.Views
 {
@@ -20,12 +21,12 @@ namespace Toxy.Views
             Loaded += FriendListView_Loaded;
             InitializeComponent();
 
-            App.Tox.OnFriendNameChanged += Tox_OnFriendNameChanged;
-            App.Tox.OnFriendStatusMessageChanged += Tox_OnFriendStatusMessageChanged;
-            App.Tox.OnFriendStatusChanged += Tox_OnFriendStatusChanged;
-            App.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
-            App.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
-            App.Tox.OnReadReceiptReceived += Tox_OnReadReceiptReceived;
+            ProfileManager.Instance.Tox.OnFriendNameChanged += Tox_OnFriendNameChanged;
+            ProfileManager.Instance.Tox.OnFriendStatusMessageChanged += Tox_OnFriendStatusMessageChanged;
+            ProfileManager.Instance.Tox.OnFriendStatusChanged += Tox_OnFriendStatusChanged;
+            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
+            ProfileManager.Instance.Tox.OnReadReceiptReceived += Tox_OnReadReceiptReceived;
         }
 
         private void Tox_OnReadReceiptReceived(object sender, ToxEventArgs.ReadReceiptEventArgs e)
@@ -62,7 +63,7 @@ namespace Toxy.Views
                 }
 
                 var msg = new MessageViewModel(e.FriendNumber);
-                msg.FriendName = App.Tox.GetFriendName(e.FriendNumber);
+                msg.FriendName = ProfileManager.Instance.Tox.GetFriendName(e.FriendNumber);
                 msg.Message = e.Message;
                 msg.Time = DateTime.Now.ToShortTimeString();
 
@@ -144,14 +145,14 @@ namespace Toxy.Views
             if (Context.ChatCollection.Count != 0)
                 return;
 
-            foreach (int friend in App.Tox.Friends)
+            foreach (int friend in ProfileManager.Instance.Tox.Friends)
             {
-                string name = App.Tox.GetFriendName(friend);
-                string statusMessage = App.Tox.GetFriendStatusMessage(friend);
+                string name = ProfileManager.Instance.Tox.GetFriendName(friend);
+                string statusMessage = ProfileManager.Instance.Tox.GetFriendStatusMessage(friend);
 
                 var model = new FriendControlViewModel();
                 model.ChatNumber = friend;
-                model.Name = string.IsNullOrEmpty(name) ? App.Tox.GetFriendPublicKey(friend).ToString() : name;
+                model.Name = string.IsNullOrEmpty(name) ? ProfileManager.Instance.Tox.GetFriendPublicKey(friend).ToString() : name;
                 model.StatusMessage = statusMessage;
 
                 Context.AddObject(model);

@@ -10,7 +10,7 @@ using SharpTox.Av;
 
 namespace Toxy.Managers
 {
-    public class ProfileManager
+    public class ProfileManager : IDisposable
     {
         public static string ProfileDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
 
@@ -25,6 +25,9 @@ namespace Toxy.Managers
                 return _instance;
             }
         }
+
+        public Tox Tox { get; private set; }
+        public ToxAv ToxAv { get; private set; }
 
         public ProfileInfo CurrentProfile { get; private set; }
 
@@ -65,14 +68,14 @@ namespace Toxy.Managers
 
             var newToxAv = new ToxAv(newTox);
 
-            if (App.Tox != null)
-                App.Tox.Dispose();
+            if (Tox != null)
+                Tox.Dispose();
 
-            if (App.ToxAv != null)
-                App.ToxAv.Dispose();
+            if (ToxAv != null)
+                ToxAv.Dispose();
 
-            App.Tox = newTox;
-            App.ToxAv = newToxAv;
+            Tox = newTox;
+            ToxAv = newToxAv;
 
             TransferManager.Get();
             CallManager.Get();
@@ -80,13 +83,13 @@ namespace Toxy.Managers
             ConnectionManager.Get().DoBootstrap();
 
             //TODO: move this someplace else and make it configurable
-            if (string.IsNullOrEmpty(App.Tox.Name))
-                App.Tox.Name = "Tox User";
-            if (string.IsNullOrEmpty(App.Tox.StatusMessage))
-                App.Tox.StatusMessage = "Toxing on Toxy";
+            if (string.IsNullOrEmpty(Tox.Name))
+                Tox.Name = "Tox User";
+            if (string.IsNullOrEmpty(Tox.StatusMessage))
+                Tox.StatusMessage = "Toxing on Toxy";
             
-            App.Tox.Start();
-            App.ToxAv.Start();
+            Tox.Start();
+            ToxAv.Start();
 
             CurrentProfile = profile;
 
@@ -125,6 +128,16 @@ namespace Toxy.Managers
             {
                 return new List<ProfileInfo>();
             }
+        }
+
+        //should only be used when the application closes
+        public void Dispose()
+        {
+            if (ToxAv != null)
+                ToxAv.Dispose();
+
+            if (Tox != null)
+                Tox.Dispose();
         }
     }
 }

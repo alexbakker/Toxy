@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using SharpTox.Core;
 using Toxy.ViewModels;
+using Toxy.Managers;
 
 namespace Toxy.Views
 {
@@ -41,7 +42,7 @@ namespace Toxy.Views
             }
 
             var error = ToxErrorFriendAdd.Ok;
-            int friendNumber = App.Tox.AddFriend(new ToxId(id), message, out error);
+            int friendNumber = ProfileManager.Instance.Tox.AddFriend(new ToxId(id), message, out error);
 
             if (error != ToxErrorFriendAdd.Ok)
             {

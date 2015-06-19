@@ -86,7 +86,7 @@ namespace Toxy.ViewModels
             }
         }
 
-        public string ToxID { get { return App.Tox.Id.ToString(); } }
+        public string ToxID { get { return ProfileManager.Instance.Tox.Id.ToString(); } }
 
         public ImageSource QRCode { get; private set; }
 
@@ -113,7 +113,7 @@ namespace Toxy.ViewModels
 
             //generate the qr code of our tox id beforehand
             var generator = new QRCodeGenerator();
-            var qrCode = generator.CreateQrCode(App.Tox.Id.ToString(), QRCodeGenerator.ECCLevel.H);
+            var qrCode = generator.CreateQrCode(ProfileManager.Instance.Tox.Id.ToString(), QRCodeGenerator.ECCLevel.H);
 
             //TODO: edit the source of QRCoder to directly create a BitmapSource so that we don't have to convert it
             using (var bitmap = qrCode.GetGraphic(20))

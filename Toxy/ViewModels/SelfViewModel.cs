@@ -1,6 +1,7 @@
 ﻿using SharpTox.Core;
 using System;
 using System.Windows.Media;
+using Toxy.Managers;
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels
@@ -19,8 +20,8 @@ namespace Toxy.ViewModels
                 }
 
                 //TODO: check to make sure changing the status message was successful
-                if (App.Tox.Name != value)
-                    App.Tox.Name = value;
+                if (ProfileManager.Instance.Tox.Name != value)
+                    ProfileManager.Instance.Tox.Name = value;
 
                 _name = value;
                 OnPropertyChanged(() => Name);
@@ -39,8 +40,8 @@ namespace Toxy.ViewModels
                 }
 
                 //TODO: check to make sure changing the status message was successful
-                if (App.Tox.StatusMessage != value)
-                    App.Tox.StatusMessage = value;
+                if (ProfileManager.Instance.Tox.StatusMessage != value)
+                    ProfileManager.Instance.Tox.StatusMessage = value;
 
                 _statusMessage = value;
                 OnPropertyChanged(() => StatusMessage);

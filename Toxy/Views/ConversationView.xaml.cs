@@ -50,18 +50,18 @@ namespace Toxy.Views
                 return;
 
             var chatNumber = Context.Friend.ChatNumber;
-            if (!App.Tox.IsFriendOnline(chatNumber))
+            if (!ProfileManager.Instance.Tox.IsFriendOnline(chatNumber))
                 return;
 
             var model = new MessageViewModel(-1);
-            model.FriendName = App.Tox.Name;
+            model.FriendName = ProfileManager.Instance.Tox.Name;
             model.Time = DateTime.Now.ToShortTimeString();
 
             if (text.StartsWith("/me "))
             {
                 //action
                 string action = text.Substring(4);
-                int messageid = App.Tox.SendMessage(chatNumber, action, ToxMessageType.Action);
+                int messageid = ProfileManager.Instance.Tox.SendMessage(chatNumber, action, ToxMessageType.Action);
 
                 model.Message = action;
                 model.MessageId = messageid;
@@ -72,7 +72,7 @@ namespace Toxy.Views
                 //regular message
                 //foreach (string message in text.WordWrap(ToxConstants.MaxMessageLength))
                 //{
-                int messageid = App.Tox.SendMessage(chatNumber, text, ToxMessageType.Message);
+                int messageid = ProfileManager.Instance.Tox.SendMessage(chatNumber, text, ToxMessageType.Message);
 
 
                 model.Message = text;

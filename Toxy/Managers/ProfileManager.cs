@@ -2,12 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Toxy.ViewModels;
 using SharpTox.Core;
 using SharpTox.Av;
-using System.Threading.Tasks;
 
 namespace Toxy.Managers
 {
@@ -26,6 +26,8 @@ namespace Toxy.Managers
                 return _instance;
             }
         }
+
+        private ProfileManager() { }
 
         public Tox Tox { get; private set; }
         public ToxAv ToxAv { get; private set; }
@@ -92,7 +94,6 @@ namespace Toxy.Managers
             ToxAv.Start();
 
             CurrentProfile = profile;
-
             MainWindow.Instance.Reload();
         }
 
@@ -146,6 +147,8 @@ namespace Toxy.Managers
             {
                 try
                 {
+                    Directory.CreateDirectory(ProfileDataPath);
+
                     using (var stream = new FileStream(CurrentProfile.Path, FileMode.Create))
                     {
                         byte[] data = Tox.GetData().Bytes;
@@ -168,6 +171,8 @@ namespace Toxy.Managers
             {
                 try
                 {
+                    Directory.CreateDirectory(ProfileDataPath);
+
                     if (Tox.GetData().Save(CurrentProfile.Path))
                         Debugging.Write("Saved profile to disk");
                     else

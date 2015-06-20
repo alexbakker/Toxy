@@ -141,12 +141,14 @@ namespace Toxy.ViewModels
         private static extern bool DeleteObject(IntPtr ptr);
     }
 
+    [Serializable]
     public class DeviceInfo
     {
         public int Number { get; set; }
         public string Name { get; set; }
     }
 
+    [Serializable]
     public class ProfileInfo
     {
         public string Name { get; private set; }

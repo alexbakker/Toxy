@@ -18,13 +18,25 @@ namespace Toxy
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            //TODO: load config from appdata
             Debugging.Write("Tox version: " + ToxVersion.Current.ToString());
-            new LoginWindow().Show();
+            Config.Instance.Reload();
+
+            if (string.IsNullOrEmpty(Config.Instance.ProfilePath))
+            {
+                Debugging.Write("Skipping login screen");
+                new LoginWindow().Show();
+            }
+            else
+            {
+                ProfileManager.Instance.SwitchTo(new ProfileInfo(Config.Instance.ProfilePath));
+            }
+
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Config.Instance.Save();
+
             ProfileManager.Instance.Save();
             ProfileManager.Instance.Dispose();
         }

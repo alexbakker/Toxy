@@ -19,10 +19,10 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Column="0" TextTrimming="CharacterEllipsis" Name="TextBoxName" Text="{Binding FriendName, Mode=OneTime}" HorizontalAlignment="Right" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
-        <TextBox Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Margin="10 0" Name="TextBoxMessage" Text="{Binding Message, Mode=OneTime}" Style="{StaticResource SelectableTextBlockLikeStyle}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
+        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="10 0" Name="TextBoxMessage" Text="{Binding Message, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
         <TextBlock Grid.Column="2" Margin="0 0 5 0" Name="TextBoxTime" Text="{Binding Time, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
     </Grid>
 </UserControl>

@@ -10,6 +10,7 @@ namespace Toxy.ViewModels
     {
         public ProfileInfo SelectedProfile { get; set; }
         public string Password { get; set; }
+        public bool RememberChoice { get; set; }
 
         public ObservableCollection<ProfileInfo> Profiles
         {

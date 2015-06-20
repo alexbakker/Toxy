@@ -31,6 +31,13 @@ namespace Toxy.Windows
             if (model.SelectedProfile != null)
             {
                 ProfileManager.Instance.SwitchTo(model.SelectedProfile);
+
+                if (model.RememberChoice)
+                {
+                    Config.Instance.ProfilePath = model.SelectedProfile.Path;
+                    Config.Instance.Save();
+                }
+
                 Close();
             }
             else

@@ -23,14 +23,13 @@ namespace Toxy
 
             if (string.IsNullOrEmpty(Config.Instance.ProfilePath))
             {
-                Debugging.Write("Skipping login screen");
                 new LoginWindow().Show();
             }
             else
             {
+                Debugging.Write("Skipping login screen");
                 ProfileManager.Instance.SwitchTo(new ProfileInfo(Config.Instance.ProfilePath));
             }
-
         }
 
         protected override void OnExit(ExitEventArgs e)

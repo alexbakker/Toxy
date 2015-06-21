@@ -164,10 +164,12 @@
                                 </Grid>
                                 <Grid>
                                     <Label Content="Video" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                    <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" Height="100" VerticalAlignment="Top">
-                                        <Grid>
-                                            
-                                        </Grid>
+                                    <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" Height="300" VerticalAlignment="Top">
+                                        <StackPanel Margin="10">
+                                            <Label Content="Video devices" HorizontalAlignment="Left" Margin="-5 0"/>
+                                            <ComboBox ItemsSource="{Binding VideoDevices, Mode=OneWay}" SelectedItem="{Binding SelectedVideoDevice}" DisplayMemberPath="Name" VerticalAlignment="Top"/>
+                                            <Image Stretch="Uniform" Margin="0,10" x:Name="CurrentFrame" Height="200"/>
+                                        </StackPanel>
                                     </Border>
                                 </Grid>
                             </StackPanel>

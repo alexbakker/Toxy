@@ -8,6 +8,9 @@ using Toxy.Managers;
 using Toxy.ViewModels;
 using Toxy.Extensions;
 using Toxy.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Toxy.Views
 {
@@ -19,6 +22,7 @@ namespace Toxy.Views
         public SettingsViewModel Context { get { return DataContext as SettingsViewModel; } }
 
         private AudioEngine _audioEngine;
+        private VideoEngine _videoEngine;
 
         public SettingsView()
         {
@@ -110,9 +114,16 @@ namespace Toxy.Views
                 if (_audioEngine != null)
                     _audioEngine.Dispose();
 
+                if (_videoEngine != null)
+                    _videoEngine.Dispose();
+
                 _audioEngine = new AudioEngine();
                 _audioEngine.OnMicVolumeChanged += AudioEngine_OnMicVolumeChanged;
                 _audioEngine.StartRecording();
+
+                _videoEngine = new VideoEngine();
+                _videoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
+                _videoEngine.StartRecording();
             }
             else
             {
@@ -121,8 +132,44 @@ namespace Toxy.Views
                     _audioEngine.Dispose();
                     _audioEngine = null;
                 }
+
+                if (_videoEngine != null)
+                {
+                    _videoEngine.Dispose();
+                    _videoEngine = null;
+                }
             }
         }
+
+        private void VideoEngine_OnFrameAvailable(System.Drawing.Bitmap frame)
+        {
+            var ptr = IntPtr.Zero;
+            ImageSource imgSource = null;
+
+            //TODO: move this whole process to an extension method
+            //TODO: edit aforge source code to create a bitmapsource direcrtly instead of converting (?)
+            try
+            {
+                ptr = frame.GetHbitmap();
+                imgSource = Imaging.CreateBitmapSourceFromHBitmap(ptr, IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(frame.Width, frame.Height));
+                imgSource.Freeze();
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero)
+                    DeleteObject(ptr);
+
+                frame.Dispose();
+            }
+
+            this.UInvoke(() =>
+            {
+                CurrentFrame.Source = imgSource;
+            });
+        }
+
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        private static extern bool DeleteObject(IntPtr ptr);
 
         private void AudioEngine_OnMicVolumeChanged(float volume)
         {

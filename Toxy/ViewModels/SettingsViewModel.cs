@@ -13,6 +13,7 @@ using Toxy.MVVM;
 using NAudio.Wave;
 using Toxy.Views;
 using Toxy.Tools;
+using AForge.Video.DirectShow;
 
 namespace Toxy.ViewModels
 {
@@ -20,6 +21,7 @@ namespace Toxy.ViewModels
     {
         public ObservableCollection<DeviceInfo> RecordingDevices { get; set; }
         public ObservableCollection<DeviceInfo> PlaybackDevices { get; set; }
+        public ObservableCollection<DeviceInfo> VideoDevices { get; set; }
 
         private DeviceInfo _selectedRecordingDevice;
         public DeviceInfo SelectedRecordingDevice
@@ -29,6 +31,17 @@ namespace Toxy.ViewModels
             {
                 _selectedRecordingDevice = value;
                 Config.Instance.RecordingDevice = _selectedRecordingDevice;
+            }
+        }
+
+        private DeviceInfo _selectedVideoDevice;
+        public DeviceInfo SelectedVideoDevice
+        {
+            get { return _selectedVideoDevice; }
+            set
+            {
+                _selectedVideoDevice = value;
+                Config.Instance.VideoDevice = _selectedVideoDevice;
             }
         }
 
@@ -98,6 +111,7 @@ namespace Toxy.ViewModels
 
             RecordingDevices = new ObservableCollection<DeviceInfo>();
             PlaybackDevices = new ObservableCollection<DeviceInfo>();
+            VideoDevices = new ObservableCollection<DeviceInfo>();
 
             for (int i = 0; i < WaveIn.DeviceCount; i++)
             {
@@ -110,6 +124,9 @@ namespace Toxy.ViewModels
                 var capabilities = WaveOut.GetCapabilities(i);
                 PlaybackDevices.Add(new DeviceInfo() { Number = i, Name = capabilities.ProductName });
             }
+
+            foreach (FilterInfo device in new FilterInfoCollection(FilterCategory.VideoInputDevice))
+                VideoDevices.Add(new DeviceInfo() { Name = device.Name });
 
             //generate the qr code of our tox id beforehand
             var generator = new QRCodeGenerator();

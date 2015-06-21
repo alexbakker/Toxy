@@ -426,4 +426,11 @@
             </Path>
         </Canvas>
     </Canvas>
+    <Canvas x:Key="tox_arrow" Width="7.145" Height="6.187" ClipToBounds="True" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <Path Fill="#FF636365">
+            <Path.Data>
+                <PathGeometry FillRule="Nonzero" Figures="M7.145,0L3.572,6.187 0,0z" />
+            </Path.Data>
+        </Path>
+    </Canvas>
 </ResourceDictionary>

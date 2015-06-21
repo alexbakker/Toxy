@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Toxy.Managers;
 using Toxy.ViewModels;
 using Toxy.Extensions;
+using Toxy.Windows;
 
 namespace Toxy.Views
 {
@@ -126,6 +127,11 @@ namespace Toxy.Views
         private void AudioEngine_OnMicVolumeChanged(float volume)
         {
             this.UInvoke(() => ProgressBarRecord.Value = volume * 100);
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            /* TODO */
         }
     }
 }

@@ -124,8 +124,9 @@
                                             <ListBox Grid.Row="0" Grid.Column="0" Height="200" ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}" DisplayMemberPath="Name"/>
                                             <ContentControl Grid.Row="0" Grid.Column="1" Content="{Binding CurrentProfileView}" BorderThickness="0"/>
                                             <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                                <Button Width="120" Margin="0,5,5,5" Content="Load" Click="LoadProfile_Click"/>
-                                                <Button Width="120" Margin="0,5,5,5" Content="Import" Click="ImportProfile_Click"/>
+                                                <Button Width="80" Margin="0,5,5,5" Content="Load" Click="LoadProfile_Click"/>
+                                                <Button Width="80" Margin="0,5,5,5" Content="Import" Click="ImportProfile_Click"/>
+                                                <Button Width="80" Margin="0,5,5,5" Content="Logout" Click="Logout_Click"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>

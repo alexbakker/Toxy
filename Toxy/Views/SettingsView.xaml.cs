@@ -7,10 +7,9 @@ using System.Windows.Controls;
 using Toxy.Managers;
 using Toxy.ViewModels;
 using Toxy.Extensions;
-using Toxy.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Toxy.Views
 {
@@ -141,35 +140,26 @@ namespace Toxy.Views
             }
         }
 
-        private void VideoEngine_OnFrameAvailable(System.Drawing.Bitmap frame)
+        private void VideoEngine_OnFrameAvailable(Bitmap frame)
         {
-            var ptr = IntPtr.Zero;
-            ImageSource imgSource = null;
-
             //TODO: move this whole process to an extension method
             //TODO: edit aforge source code to create a bitmapsource direcrtly instead of converting (?)
-            try
+            using (var stream = new MemoryStream())
             {
-                ptr = frame.GetHbitmap();
-                imgSource = Imaging.CreateBitmapSourceFromHBitmap(ptr, IntPtr.Zero, System.Windows.Int32Rect.Empty, BitmapSizeOptions.FromWidthAndHeight(frame.Width, frame.Height));
-                imgSource.Freeze();
-            }
-            finally
-            {
-                if (ptr != IntPtr.Zero)
-                    DeleteObject(ptr);
-
+                frame.Save(stream, ImageFormat.Bmp);
+                stream.Position = 0;
                 frame.Dispose();
+
+                var bitmapImg = new BitmapImage();
+                bitmapImg.BeginInit();
+                bitmapImg.StreamSource = stream;
+                bitmapImg.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImg.EndInit();
+                bitmapImg.Freeze();
+
+                this.UInvoke(() => CurrentFrame.Source = bitmapImg);
             }
-
-            this.UInvoke(() =>
-            {
-                CurrentFrame.Source = imgSource;
-            });
         }
-
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-        private static extern bool DeleteObject(IntPtr ptr);
 
         private void AudioEngine_OnMicVolumeChanged(float volume)
         {

@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -145,6 +146,7 @@
     <Compile Include="Converters\BoolToNameForegroundConverter.cs" />
     <Compile Include="Converters\BoolToPhoneButtonStyleConverter.cs" />
     <Compile Include="Converters\BoolToStatusMessageForegroundConverter.cs" />
+    <Compile Include="Converters\BoolToVideoButtonStyleConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ToxUserStatusToBrushConverter.cs" />
     <Compile Include="Converters\ToxUserStatusToVisualConverter.cs" />

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Documents;
 using Toxy.MVVM;
 using Toxy.Views;
+using System.Windows.Media;
 
 namespace Toxy.ViewModels
 {
@@ -38,6 +39,21 @@ namespace Toxy.ViewModels
                 }
                 _enteredText = value;
                 OnPropertyChanged(() => EnteredText);
+            }
+        }
+
+        private ImageSource _currentFrame;
+        public ImageSource CurrentFrame
+        {
+            get { return _currentFrame; }
+            set
+            {
+                if (Equals(value, _currentFrame))
+                {
+                    return;
+                }
+                _currentFrame = value;
+                OnPropertyChanged(() => CurrentFrame);
             }
         }
 

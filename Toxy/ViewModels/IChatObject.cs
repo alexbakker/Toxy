@@ -19,5 +19,6 @@ namespace Toxy.ViewModels
         bool IsCalling { get; set; }
         bool IsRinging { get; set; }
         bool IsCallInProgress { get; set; }
+        bool IsInVideoCall { get; set; }
     }
 }

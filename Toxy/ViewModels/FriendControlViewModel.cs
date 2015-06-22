@@ -121,6 +121,21 @@ namespace Toxy.ViewModels
             }
         }
 
+        private bool _isInVideoCall;
+        public bool IsInVideoCall
+        {
+            get { return _isInVideoCall; }
+            set
+            {
+                if (Equals(value, _isInVideoCall))
+                {
+                    return;
+                }
+                _isInVideoCall = value;
+                OnPropertyChanged(() => IsInVideoCall);
+            }
+        }
+
         private ImageSource _avatar;
         public ImageSource Avatar
         {

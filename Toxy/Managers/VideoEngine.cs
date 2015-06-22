@@ -25,6 +25,14 @@ namespace Toxy.Managers
             }
         }
 
+        public bool DisplayPropertyWindow(IntPtr handle)
+        {
+            try { _captureDevice.DisplayPropertyPage(handle); }
+            catch { return false; }
+
+            return true;
+        }
+
         private void CaptureDevice_NewFrame(object sender, AForge.Video.NewFrameEventArgs e)
         {
             if (OnFrameAvailable != null)

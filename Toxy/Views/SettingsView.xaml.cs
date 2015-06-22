@@ -170,5 +170,12 @@ namespace Toxy.Views
         {
             /* TODO */
         }
+
+        private void VideoProperties_Click(object sender, RoutedEventArgs e)
+        {
+            var handle = new System.Windows.Interop.WindowInteropHelper(MainWindow.Instance).Handle;
+            if (handle == IntPtr.Zero || !_videoEngine.DisplayPropertyWindow(handle))
+                MessageBox.Show("There is no property window available for this webcam", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

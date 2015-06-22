@@ -168,7 +168,10 @@
                                         <StackPanel Margin="10">
                                             <Label Content="Video devices" HorizontalAlignment="Left" Margin="-5 0"/>
                                             <ComboBox ItemsSource="{Binding VideoDevices, Mode=OneWay}" SelectedItem="{Binding SelectedVideoDevice}" DisplayMemberPath="Name" VerticalAlignment="Top"/>
-                                            <Image Stretch="Uniform" Margin="0,10" x:Name="CurrentFrame" Height="200"/>
+                                            <Grid>
+                                                <Image Stretch="Uniform" Margin="0,10" x:Name="CurrentFrame" Height="200" HorizontalAlignment="Left" Width="250"/>
+                                                <Button Click="VideoProperties_Click" Margin="10" Content="Properties" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                            </Grid>
                                         </StackPanel>
                                     </Border>
                                 </Grid>

@@ -14,6 +14,9 @@
         <language>es-US</language>
     </metadata>
     <files>
+        <file src="Toxy\bin\x86\Debug\AForge.Video.dll" target="lib\net45\AForge.Video.dll" />
+        <file src="Toxy\bin\x86\Debug\AForge.Video.DirectShow.dll" target="lib\net45\AForge.Video.DirectShow.dll" />
+        <file src="Toxy\bin\x86\Debug\AForge.dll" target="lib\net45\AForge.dll" />
         <file src="Toxy\bin\x86\Debug\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
         <file src="Toxy\bin\x86\Debug\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
         <file src="Toxy\bin\x86\Debug\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />

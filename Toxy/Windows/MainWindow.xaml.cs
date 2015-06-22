@@ -105,23 +105,15 @@ namespace Toxy
                         //download the latest release so we can retrieve the release notes
                         await mgr.DownloadReleases(new[] { updateInfo.FutureReleaseEntry });
 
-                        string msg = string.Format("There is a new update available for installation. The latest version is {0}. Would you like to update?\n\nChanges:\n{1}", 
+                        string msg = string.Format("There is a new update available for installation. The latest version is {0}. Would you like to update?\n\nChanges:\n{1}",
                             updateInfo.FutureReleaseEntry.Version,
                             updateInfo.FutureReleaseEntry.GetReleaseNotes(updateInfo.PackageDirectory));
-                        
 
                         var result = MessageBox.Show(msg, "Update available", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (result == MessageBoxResult.Yes)
                         {
                             await mgr.UpdateApp();
-
-                            result = MessageBox.Show("Toxy has to be restarted in order to apply the update. Restart now?", "Update successfully installed", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                            if (result == MessageBoxResult.Yes)
-                            {
-                                //eww
-                                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
-                                Application.Current.Shutdown();
-                            }
+                            MessageBox.Show("Toxy has been updated. This update will be activated after Toxy has been restarted.", "Update successfully installed", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                 }

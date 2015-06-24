@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -32,7 +33,7 @@
                 <Label Content="Enter your friend's Tox ID. (Tip: you can also enter toxdns addresses)" Margin="5,10,-10,0" Height="25" VerticalAlignment="Top"/>
                 <TextBox Name="TextBoxFriendId" Margin="10,35,10,0" Height="18" VerticalAlignment="Top"/>
                 <Label Content="Enter a message. Your friend will be able to read this when he/she receives the friend request." Margin="5,58,10,0" Height="25" VerticalAlignment="Top"/>
-                <TextBox Name="TextBoxMessage" Margin="10,83,10,43"/>
+                <TextBox Tag="Hello, I'd like to add you to my friend list." Name="TextBoxMessage" Margin="10,83,10,43" Style="{StaticResource PlaceholderTextBoxStyle}"/>
                 <Button Name="ButtonAddFriend" Content="Send friend request" Click="ButtonAddFriend_Click" Margin="10,0,10,10" Height="25" VerticalAlignment="Bottom"/>
             </Grid>
         </Border>

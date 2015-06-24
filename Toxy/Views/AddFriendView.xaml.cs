@@ -30,10 +30,7 @@ namespace Toxy.Views
             }
 
             if (string.IsNullOrEmpty(message))
-            {
-                ShowError("The message field is empty.");
-                return;
-            }
+                message = (string)TextBoxMessage.Tag;
 
             if (!ToxId.IsValid(id))
             {

@@ -22,7 +22,7 @@ namespace Toxy.Managers
 
                 //just pick the setting with the highest res for now
                 _captureDevice = new VideoCaptureDevice(device.MonikerString);
-                _captureDevice.VideoResolution = _captureDevice.VideoCapabilities.OrderBy(c => (c.FrameSize.Width * c.FrameSize.Height)).First();
+                _captureDevice.VideoResolution = _captureDevice.VideoCapabilities.OrderByDescending(c => (c.FrameSize.Width * c.FrameSize.Height)).First();
                 _captureDevice.NewFrame += CaptureDevice_NewFrame;
             }
         }

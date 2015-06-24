@@ -2,9 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Color x:Key="ToxGreen">#6bc260</Color>
     <Color x:Key="ToxGreenHover">#76d46a</Color>
+    <Color x:Key="ToxGreenClick">#62b058</Color>
     <Color x:Key="ToxGreenDisabled">#8cd483</Color>
     <Color x:Key="ToxYellow">#cebf44</Color>
+    <Color x:Key="ToxYellowHover">#decf57</Color>
+    <Color x:Key="ToxYellowClick">#c7b83c</Color>
+    <Color x:Key="ToxYellowDisabled">#ded273</Color>
     <Color x:Key="ToxRed">#c84e4e</Color>
+    <Color x:Key="ToxRedHover">#e36666</Color>
+    <Color x:Key="ToxRedClick">#bf3434</Color>
+    <Color x:Key="ToxRedDisabled">#e08282</Color>
     <Color x:Key="ToxBlack">#000000</Color>
     <Color x:Key="ToxDarkGrey">#1c1c1c</Color>
     <Color x:Key="ToxMediumGrey">#414141</Color>
@@ -19,9 +26,16 @@
 
     <SolidColorBrush x:Key="ToxGreenBrush" Color="{StaticResource ToxGreen}"/>
     <SolidColorBrush x:Key="ToxGreenHoverBrush" Color="{StaticResource ToxGreenHover}"/>
+    <SolidColorBrush x:Key="ToxGreenClickBrush" Color="{StaticResource ToxGreenClick}"/>
     <SolidColorBrush x:Key="ToxGreenDisabledBrush" Color="{StaticResource ToxGreenDisabled}"/>
     <SolidColorBrush x:Key="ToxYellowBrush" Color="{StaticResource ToxYellow}"/>
+    <SolidColorBrush x:Key="ToxYellowHoverBrush" Color="{StaticResource ToxYellowHover}"/>
+    <SolidColorBrush x:Key="ToxYellowClickBrush" Color="{StaticResource ToxYellowClick}"/>
+    <SolidColorBrush x:Key="ToxYellowDisabledBrush" Color="{StaticResource ToxYellowDisabled}"/>
     <SolidColorBrush x:Key="ToxRedBrush" Color="{StaticResource ToxRed}"/>
+    <SolidColorBrush x:Key="ToxRedHoverBrush" Color="{StaticResource ToxRedHover}"/>
+    <SolidColorBrush x:Key="ToxRedClickBrush" Color="{StaticResource ToxRedClick}"/>
+    <SolidColorBrush x:Key="ToxRedDisabledBrush" Color="{StaticResource ToxRedDisabled}"/>
     <SolidColorBrush x:Key="ToxBlackBrush" Color="{StaticResource ToxBlack}"/>
     <SolidColorBrush x:Key="ToxDarkGreyBrush" Color="{StaticResource ToxDarkGrey}"/>
     <SolidColorBrush x:Key="ToxMediumGreyBrush" Color="{StaticResource ToxMediumGrey}"/>

@@ -38,10 +38,9 @@ namespace Toxy.Views
             }
         }
 
-        private void ButtonSendMessage_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ButtonSendMessage_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left && e.ButtonState == MouseButtonState.Pressed)
-                SendMessage(TextBoxEnteredText.Text);
+            SendMessage(TextBoxEnteredText.Text);
         }
 
         private void SendMessage(string text)
@@ -85,7 +84,7 @@ namespace Toxy.Views
             TextBoxEnteredText.Text = string.Empty;
         }
 
-        private void Call_Click(object sender, MouseButtonEventArgs e)
+        private void Call_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (Context.Friend.IsCalling)
             {
@@ -122,7 +121,7 @@ namespace Toxy.Views
             }
         }
 
-        private void ButtonVideo_Click(object sender, MouseButtonEventArgs e)
+        private void ButtonVideo_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (Context.Friend.IsCalling)
             {

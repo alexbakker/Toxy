@@ -3,36 +3,94 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    <Style x:Key="ToxGreenButtonStyle">
-        <Setter Property="Border.Background" Value="{StaticResource ToxGreenBrush}"/>
+    <Style TargetType="{x:Type Button}" x:Key="ToxGreenButtonStyle">
+        <Setter Property="Background" Value="{StaticResource ToxGreenBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="5,5,5,5" Background="{TemplateBinding Background}"  BorderThickness="0" >
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
-            <Trigger Property="Border.IsMouseOver" Value="True">
-                <Setter Property="Border.Background" Value="{StaticResource ToxGreenHoverBrush}" />
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ToxGreenHoverBrush}" />
             </Trigger>
-            <Trigger Property="Border.IsEnabled" Value="False">
-                <Setter Property="Border.Background" Value="{StaticResource ToxGreenDisabledBrush}"/>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ToxGreenClickBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource ToxGreenDisabledBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
-    <Style x:Key="ToxYellowButtonStyle">
-        <Setter Property="Border.Background" Value="{StaticResource ToxYellowBrush}"/>
+    <Style TargetType="{x:Type Button}" x:Key="ToxGreenButtonTopRightStyle" BasedOn="{StaticResource ToxGreenButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="0,5,0,0" Background="{TemplateBinding Background}"  BorderThickness="0" >
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="ToxGreenButtonBottomRightStyle" BasedOn="{StaticResource ToxGreenButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="0,0,5,0" Background="{TemplateBinding Background}"  BorderThickness="0" >
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type Button}" x:Key="ToxYellowButtonStyle">
+        <Setter Property="Background" Value="{StaticResource ToxYellowBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="5,5,5,5" Background="{TemplateBinding Background}"  BorderThickness="0" >
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
-            <Trigger Property="Border.IsMouseOver" Value="True">
-                <Setter Property="Border.Background" Value="{StaticResource ToxYellowBrush}" />
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ToxYellowHoverBrush}" />
             </Trigger>
-            <Trigger Property="Border.IsEnabled" Value="False">
-                <Setter Property="Border.Background" Value="{StaticResource ToxYellowBrush}"/>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ToxYellowClickBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource ToxYellowDisabledBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
-    <Style x:Key="ToxRedButtonStyle">
+    <Style TargetType="{x:Type Button}" x:Key="ToxRedButtonStyle">
         <Setter Property="Border.Background" Value="{StaticResource ToxRedBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="5,5,5,5" Background="{TemplateBinding Background}"  BorderThickness="0" >
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
-            <Trigger Property="Border.IsMouseOver" Value="True">
-                <Setter Property="Border.Background" Value="{StaticResource ToxRedBrush}" />
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ToxRedHoverBrush}" />
             </Trigger>
-            <Trigger Property="Border.IsEnabled" Value="False">
-                <Setter Property="Border.Background" Value="{StaticResource ToxRedBrush}"/>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ToxRedClickBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource ToxRedDisabledBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

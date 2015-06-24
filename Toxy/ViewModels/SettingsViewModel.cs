@@ -23,37 +23,22 @@ namespace Toxy.ViewModels
         public ObservableCollection<DeviceInfo> PlaybackDevices { get; set; }
         public ObservableCollection<DeviceInfo> VideoDevices { get; set; }
 
-        private DeviceInfo _selectedRecordingDevice;
         public DeviceInfo SelectedRecordingDevice
         {
-            get { return _selectedRecordingDevice; }
-            set
-            {
-                _selectedRecordingDevice = value;
-                Config.Instance.RecordingDevice = _selectedRecordingDevice;
-            }
+            get { return Config.Instance.RecordingDevice; }
+            set { Config.Instance.RecordingDevice = value; }
         }
 
-        private DeviceInfo _selectedVideoDevice;
         public DeviceInfo SelectedVideoDevice
         {
-            get { return _selectedVideoDevice; }
-            set
-            {
-                _selectedVideoDevice = value;
-                Config.Instance.VideoDevice = _selectedVideoDevice;
-            }
+            get { return Config.Instance.VideoDevice; }
+            set { Config.Instance.VideoDevice = value; }
         }
 
-        private DeviceInfo _selectedPlaybackDevice;
         public DeviceInfo SelectedPlaybackDevice
         {
-            get { return _selectedPlaybackDevice; }
-            set
-            {
-                _selectedPlaybackDevice = value;
-                Config.Instance.PlaybackDevice = _selectedPlaybackDevice;
-            }
+            get { return Config.Instance.PlaybackDevice; }
+            set { Config.Instance.PlaybackDevice = value; }
         }
 
         public ObservableCollection<ProfileInfo> Profiles
@@ -163,6 +148,34 @@ namespace Toxy.ViewModels
     {
         public int Number { get; set; }
         public string Name { get; set; }
+
+        public static bool operator ==(DeviceInfo info1, DeviceInfo info2)
+        {
+            if (object.ReferenceEquals(info1, info2))
+                return true;
+
+            if ((object)info1 == null ^ (object)info2 == null)
+                return false;
+
+            return (info1.Name == info2.Name);
+        }
+
+        public static bool operator !=(DeviceInfo node1, DeviceInfo node2)
+        {
+            return !(node1 == node2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            DeviceInfo info = obj as DeviceInfo;
+            if ((object)info == null)
+                return false;
+
+            return this == info;
+        }
     }
 
     [Serializable]

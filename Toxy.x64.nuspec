@@ -14,18 +14,19 @@
         <language>es-US</language>
     </metadata>
     <files>
-        <file src="Toxy\bin\x86\Debug\AForge.Video.dll" target="lib\net45\AForge.Video.dll" />
-        <file src="Toxy\bin\x86\Debug\AForge.Video.DirectShow.dll" target="lib\net45\AForge.Video.DirectShow.dll" />
-        <file src="Toxy\bin\x86\Debug\AForge.dll" target="lib\net45\AForge.dll" />
-        <file src="Toxy\bin\x64\Debug\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
-        <file src="Toxy\bin\x64\Debug\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
-        <file src="Toxy\bin\x64\Debug\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
-        <file src="Toxy\bin\x64\Debug\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
-        <file src="Toxy\bin\x64\Debug\libtox.dll" target="lib\net45\libtox.dll" />
-        <file src="Toxy\bin\x64\Debug\NAudio.dll" target="lib\net45\NAudio.dll" />
-        <file src="Toxy\bin\x64\Debug\SharpTox.dll" target="lib\net45\SharpTox.dll" />
-        <file src="Toxy\bin\x64\Debug\Splat.dll" target="lib\net45\Splat.dll" />
-        <file src="Toxy\bin\x64\Debug\Squirrel.dll" target="lib\net45\Squirrel.dll" />
-        <file src="Toxy\bin\x64\Debug\Toxy.exe" target="lib\net45\Toxy.exe" />
+        <file src="Toxy\bin\x86\Release\AForge.Video.dll" target="lib\net45\AForge.Video.dll" />
+        <file src="Toxy\bin\x86\Release\AForge.Video.DirectShow.dll" target="lib\net45\AForge.Video.DirectShow.dll" />
+        <file src="Toxy\bin\x86\Release\AForge.dll" target="lib\net45\AForge.dll" />
+        <file src="Toxy\bin\x64\Release\DeltaCompressionDotNet.dll" target="lib\net45\DeltaCompressionDotNet.dll" />
+        <file src="Toxy\bin\x64\Release\DeltaCompressionDotNet.MsDelta.dll" target="lib\net45\DeltaCompressionDotNet.MsDelta.dll" />
+        <file src="Toxy\bin\x64\Release\DeltaCompressionDotNet.PatchApi.dll" target="lib\net45\DeltaCompressionDotNet.PatchApi.dll" />
+        <file src="Toxy\bin\x64\Release\ICSharpCode.SharpZipLib.dll" target="lib\net45\ICSharpCode.SharpZipLib.dll" />
+        <file src="Toxy\bin\x64\Release\libtox.dll" target="lib\net45\libtox.dll" />
+        <file src="Toxy\bin\x64\Release\Toxy.Tools.dll" target="lib\net45\Toxy.Tools.dll" />
+        <file src="Toxy\bin\x64\Release\NAudio.dll" target="lib\net45\NAudio.dll" />
+        <file src="Toxy\bin\x64\Release\SharpTox.dll" target="lib\net45\SharpTox.dll" />
+        <file src="Toxy\bin\x64\Release\Splat.dll" target="lib\net45\Splat.dll" />
+        <file src="Toxy\bin\x64\Release\Squirrel.dll" target="lib\net45\Squirrel.dll" />
+        <file src="Toxy\bin\x64\Release\Toxy.exe" target="lib\net45\Toxy.exe" />
     </files>
 </package>

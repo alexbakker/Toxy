@@ -20,10 +20,21 @@ namespace Toxy.Managers
                 if (Config.Instance.VideoDevice != null && device.Name != Config.Instance.VideoDevice.Name)
                     continue;
 
-                //just pick the setting with the highest res for now
-                _captureDevice = new VideoCaptureDevice(device.MonikerString);
-                _captureDevice.VideoResolution = _captureDevice.VideoCapabilities.OrderByDescending(c => (c.FrameSize.Width * c.FrameSize.Height)).First();
-                _captureDevice.NewFrame += CaptureDevice_NewFrame;
+                //aforge might throw an exception if it finds an unsupported format
+                //why does it not just exclude it from the list and fail silently? joost mag het weten
+                try
+                {
+                    _captureDevice = new VideoCaptureDevice(device.MonikerString);
+                    var capabilities = _captureDevice.VideoCapabilities;
+
+                    //apparently some webcams don't provide this
+                    if (capabilities.Length != 0)
+                        //just pick the setting with the highest res for now
+                        _captureDevice.VideoResolution = capabilities.OrderByDescending(c => (c.FrameSize.Width * c.FrameSize.Height)).First();
+
+                    _captureDevice.NewFrame += CaptureDevice_NewFrame;
+                }
+                catch { }
             }
         }
 

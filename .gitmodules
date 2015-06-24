@@ -1,0 +1,3 @@
+[submodule "SharpTox"]
+	path = SharpTox
+	url = https://github.com/Impyy/SharpTox

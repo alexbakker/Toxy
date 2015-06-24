@@ -12,6 +12,12 @@ namespace Toxy.Managers
         private ConnectionManager()
         {
             ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
+            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+        }
+
+        private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
+        {
+            Debugging.Write(string.Format("Friend {0} connnection status changed to: {1}", ProfileManager.Instance.Tox.GetFriendName(e.FriendNumber), e.Status));
         }
 
         public static ConnectionManager Get()

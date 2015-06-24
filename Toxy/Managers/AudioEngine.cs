@@ -84,17 +84,8 @@ namespace Toxy.Managers
             }
         }
 
-        private System.Diagnostics.Stopwatch _stopWatch = new System.Diagnostics.Stopwatch();
-        private int _received = 0;
-
         public void ProcessAudioFrame(ToxAvAudioFrame frame)
         {
-            if (!_stopWatch.IsRunning)
-                _stopWatch.Start();
-
-            _received++;
-            Console.WriteLine("Receiving {0} frames per second, {1} in total", _received / _stopWatch.Elapsed.TotalSeconds, _received);
-
             if (_waveOutProvider != null)
             {
                 byte[] bytes = ShortsToBytes(frame.Data);

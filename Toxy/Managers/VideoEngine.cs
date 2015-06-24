@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Drawing;
 
-using AForge.Video;
 using AForge.Video.DirectShow;
 
 namespace Toxy.Managers
@@ -20,7 +20,9 @@ namespace Toxy.Managers
                 if (Config.Instance.VideoDevice != null && device.Name != Config.Instance.VideoDevice.Name)
                     continue;
 
+                //just pick the setting with the highest res for now
                 _captureDevice = new VideoCaptureDevice(device.MonikerString);
+                _captureDevice.VideoResolution = _captureDevice.VideoCapabilities.OrderBy(c => (c.FrameSize.Width * c.FrameSize.Height)).First();
                 _captureDevice.NewFrame += CaptureDevice_NewFrame;
             }
         }

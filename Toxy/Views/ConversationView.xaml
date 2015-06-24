@@ -40,7 +40,7 @@
                 </Border>
                 <Label Content="{Binding Friend.Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,15,0,0" FontWeight="Bold" FontSize="12" Foreground="{StaticResource ToxDarkGreyBrush}"/>
                 <Label Content="{Binding Friend.StatusMessage, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,32,0,0" FontSize="11" Foreground="{StaticResource ToxMediumGreyBrush}"/>
-                <Border MouseDown="ButtonVideo_Click" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" CornerRadius="5,5,5,5">
+                <Border MouseDown="ButtonVideo_Click" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" CornerRadius="5,5,5,5" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}">
                     <Border.Style>
                         <MultiBinding Converter="{StaticResource BoolToVideoButtonStyleConverter}">
                             <Binding Path="Friend.IsCalling"/>

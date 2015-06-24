@@ -156,7 +156,7 @@ namespace Toxy.Managers
             });
         }
 
-        private unsafe void ToxAv_OnVideoFrameReceived(object sender, ToxAvEventArgs.VideoFrameEventArgs e)
+        private void ToxAv_OnVideoFrameReceived(object sender, ToxAvEventArgs.VideoFrameEventArgs e)
         {
             var source = VideoUtils.ToxAvFrameToBitmap(e.Frame);
 
@@ -170,7 +170,7 @@ namespace Toxy.Managers
             });
         }
 
-        private unsafe void VideoEngine_OnFrameAvailable(Bitmap bmp)
+        private void VideoEngine_OnFrameAvailable(Bitmap bmp)
         {
             if (_callInfo == null)
                 return;

@@ -1,1 +1,1 @@
-SharpTox.dll, SharpTox.Vpx.dll SharpTox.Av.Filter.dll, libtox.dll, AForge.dll, AForge.Video.dll, AForge.Video.DirectShow.dll, filter_audio.dll and sqlite3.dll should be placed here.
+libtox.dll should be placed here

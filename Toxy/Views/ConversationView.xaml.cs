@@ -86,26 +86,20 @@ namespace Toxy.Views
 
         private void Call_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (Context.Friend.IsCalling)
+            if ((Context.Friend.CallState & CallState.Calling) != 0)
             {
                 //answer the call
                 if (CallManager.Get().Answer(Context.Friend.ChatNumber, false))
                 {
-                    Context.Friend.IsCalling = false;
-                    Context.Friend.IsRinging = false;
-                    Context.Friend.IsInVideoCall = false;
-                    Context.Friend.IsCallInProgress = true;
+                    Context.Friend.CallState = CallState.InProgress;
                 }
             }
-            else if (Context.Friend.IsCallInProgress || Context.Friend.IsRinging)
+            else if ((Context.Friend.CallState & CallState.InProgress) != 0 || (Context.Friend.CallState & CallState.Ringing) != 0)
             {
                 //hang up
                 if (CallManager.Get().Hangup(Context.Friend.ChatNumber))
                 {
-                    Context.Friend.IsCalling = false;
-                    Context.Friend.IsRinging = false;
-                    Context.Friend.IsInVideoCall = false;
-                    Context.Friend.IsCallInProgress = false; //or should we set this once we receive the first callstate change? hmmm
+                    Context.Friend.CallState = CallState.None;
                 }
             }
             else
@@ -113,42 +107,33 @@ namespace Toxy.Views
                 //send call request
                 if (CallManager.Get().SendRequest(Context.Friend.ChatNumber, false))
                 {
-                    Context.Friend.IsRinging = true;
-                    Context.Friend.IsCalling = false;
-                    Context.Friend.IsInVideoCall = false;
-                    Context.Friend.IsCallInProgress = false;
+                    Context.Friend.CallState = CallState.Ringing;
                 }
             }
         }
 
         private void ButtonVideo_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (Context.Friend.IsCalling)
+            if ((Context.Friend.CallState & CallState.Calling) != 0)
             {
                 //answer the call
                 if (CallManager.Get().Answer(Context.Friend.ChatNumber, true))
                 {
-                    Context.Friend.IsCalling = false;
-                    Context.Friend.IsRinging = false;
-                    Context.Friend.IsInVideoCall = true;
-                    Context.Friend.IsCallInProgress = true;
+                    Context.Friend.CallState = CallState.SendingVideo | CallState.InProgress;
                 }
             }
-            else if (Context.Friend.IsCallInProgress || Context.Friend.IsRinging)
+            else if ((Context.Friend.CallState & CallState.InProgress) != 0)
             {
                 //toggle video
-                CallManager.Get().ToggleVideo(!Context.Friend.IsInVideoCall);
-                Context.Friend.IsInVideoCall = !Context.Friend.IsInVideoCall;
+                CallManager.Get().ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.SendingVideo));
+                Context.Friend.CallState = Context.Friend.CallState ^ CallState.SendingVideo;
             }
             else
             {
                 //send call request
                 if (CallManager.Get().SendRequest(Context.Friend.ChatNumber, true))
                 {
-                    Context.Friend.IsRinging = true;
-                    Context.Friend.IsCalling = false;
-                    Context.Friend.IsInVideoCall = true;
-                    Context.Friend.IsCallInProgress = false;
+                    Context.Friend.CallState = CallState.Ringing | CallState.SendingVideo;
                 }
             }
         }

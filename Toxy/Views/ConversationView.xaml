@@ -40,29 +40,14 @@
                 </Border>
                 <Label Content="{Binding Friend.Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,15,0,0" FontWeight="Bold" FontSize="12" Foreground="{StaticResource ToxDarkGreyBrush}"/>
                 <Label Content="{Binding Friend.StatusMessage, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,32,0,0" FontSize="11" Foreground="{StaticResource ToxMediumGreyBrush}"/>
-                <Button Click="ButtonVideo_Click" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}">
-                    <Button.Style>
-                        <MultiBinding Converter="{StaticResource BoolToVideoButtonStyleConverter}">
-                            <Binding Path="Friend.IsCalling"/>
-                            <Binding Path="Friend.IsRinging"/>
-                            <Binding Path="Friend.IsCallInProgress"/>
-                            <Binding Path="Friend.IsInVideoCall"/>
-                        </MultiBinding>
-                    </Button.Style>
+                <Button Click="ButtonVideo_Click" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToVideoButtonStyleConverter}}">
                     <Rectangle Width="22.625" Height="14.396" Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource tox_video}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
-                <Button Click="Call_Click" Margin="0,13,65,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}">
-                    <Button.Style>
-                        <MultiBinding Converter="{StaticResource BoolToPhoneButtonStyleConverter}">
-                            <Binding Path="Friend.IsCalling"/>
-                            <Binding Path="Friend.IsRinging"/>
-                            <Binding Path="Friend.IsCallInProgress"/>
-                        </MultiBinding>
-                    </Button.Style>
+                <Button Click="Call_Click" Margin="0,13,65,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
                     <Rectangle Width="21.2" Height="19.7" Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource tox_phone}" />
@@ -80,8 +65,8 @@
                             <RowDefinition Height="2"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Image Grid.Row="0" Source="{Binding CurrentFrame}" Visibility="{Binding Friend.IsInVideoCall, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        <GridSplitter IsEnabled="{Binding Friend.IsInVideoCall}" Visibility="{Binding Friend.IsInVideoCall, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
+                        <Image Grid.Row="0" Source="{Binding CurrentFrame}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
                         <ListBox Grid.Row="2" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.ScrollUnit="Item" ItemsSource="{Binding Messages, Mode=OneWay}">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListBoxItem}">

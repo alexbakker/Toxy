@@ -72,13 +72,4 @@ namespace Toxy.ViewModels
             Messages.Add(message);
         }
     }
-
-    public enum CallState
-    {
-        None = 1 << 0,
-        Ringing = 1 << 1,
-        InCall = 1 << 2,
-        AudioEnabled = 1 << 3,
-        VideoEnabled = 1 << 4
-    }
 }

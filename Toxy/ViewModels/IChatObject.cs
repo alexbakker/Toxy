@@ -1,5 +1,6 @@
 ﻿using SharpTox.Core;
 using System.Windows.Media;
+using Toxy.Managers;
 
 namespace Toxy.ViewModels
 {
@@ -15,10 +16,8 @@ namespace Toxy.ViewModels
         bool IsOnline { get; set; }
         ImageSource Avatar { get; set; }
         bool HasUnreadMessages { get; set; }
-        void ChangeCallState(SharpTox.Av.ToxAvCallState toxAvCallState);
-        bool IsCalling { get; set; }
-        bool IsRinging { get; set; }
-        bool IsCallInProgress { get; set; }
+        CallState CallState { get; set; }
         bool IsInVideoCall { get; set; }
+        bool IsReceivingVideo { get; set; }
     }
 }

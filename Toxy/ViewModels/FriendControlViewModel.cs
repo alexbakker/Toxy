@@ -4,6 +4,7 @@ using Toxy.MVVM;
 using System.Windows.Media;
 using System.Windows;
 using SharpTox.Av;
+using Toxy.Managers;
 
 namespace Toxy.ViewModels
 {
@@ -121,21 +122,6 @@ namespace Toxy.ViewModels
             }
         }
 
-        private bool _isInVideoCall;
-        public bool IsInVideoCall
-        {
-            get { return _isInVideoCall; }
-            set
-            {
-                if (Equals(value, _isInVideoCall))
-                {
-                    return;
-                }
-                _isInVideoCall = value;
-                OnPropertyChanged(() => IsInVideoCall);
-            }
-        }
-
         private ImageSource _avatar;
         public ImageSource Avatar
         {
@@ -166,54 +152,56 @@ namespace Toxy.ViewModels
             }
         }
 
-
-        public void ChangeCallState(ToxAvCallState toxAvCallState)
+        private CallState _callState;
+        public CallState CallState
         {
-            //check for different callstates here
-        }
-
-        private bool _isCalling;
-        public bool IsCalling
-        {
-            get { return _isCalling; }
+            get { return _callState; }
             set
             {
-                if (Equals(value, _isCalling))
+                if (Equals(value, _callState))
                 {
                     return;
                 }
-                _isCalling = value;
-                OnPropertyChanged(() => IsCalling);
+
+                //TODO: tidy up
+                if (value.HasFlag(CallState.SendingVideo) != _callState.HasFlag(CallState.SendingVideo))
+                    IsInVideoCall = value.HasFlag(CallState.SendingVideo);
+
+                if (value.HasFlag(CallState.ReceivingVideo) != _callState.HasFlag(CallState.ReceivingVideo))
+                    IsReceivingVideo = value.HasFlag(CallState.ReceivingVideo);
+
+                _callState = value;
+                OnPropertyChanged(() => CallState);
             }
         }
 
-        private bool _isRinging;
-        public bool IsRinging
+        private bool _isInVideoCall;
+        public bool IsInVideoCall
         {
-            get { return _isRinging; }
+            get { return _isInVideoCall; }
             set
             {
-                if (Equals(value, _isRinging))
+                if (Equals(value, _isInVideoCall))
                 {
                     return;
                 }
-                _isRinging = value;
-                OnPropertyChanged(() => IsRinging);
+                _isInVideoCall = value;
+                OnPropertyChanged(() => IsInVideoCall);
             }
         }
 
-        private bool _isCallInProgress;
-        public bool IsCallInProgress
+        private bool _isReceivingVideo;
+        public bool IsReceivingVideo
         {
-            get { return _isCallInProgress; }
+            get { return _isReceivingVideo; }
             set
             {
-                if (Equals(value, _isCallInProgress))
+                if (Equals(value, _isReceivingVideo))
                 {
                     return;
                 }
-                _isCallInProgress = value;
-                OnPropertyChanged(() => IsCallInProgress);
+                _isReceivingVideo = value;
+                OnPropertyChanged(() => IsReceivingVideo);
             }
         }
     }

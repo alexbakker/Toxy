@@ -13,6 +13,8 @@ namespace Toxy.Managers
         public delegate void VideoEngineFrameAvailable(Bitmap frame);
         public event VideoEngineFrameAvailable OnFrameAvailable;
 
+        public bool IsRecording { get; private set; }
+
         public VideoEngine()
         {
             foreach (FilterInfo device in new FilterInfoCollection(FilterCategory.VideoInputDevice))
@@ -55,7 +57,10 @@ namespace Toxy.Managers
         public void StartRecording()
         {
             if (_captureDevice != null && !_captureDevice.IsRunning)
+            {
                 _captureDevice.Start();
+                IsRecording = true;
+            }
         }
 
         public void Dispose()

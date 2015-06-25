@@ -26,8 +26,6 @@ namespace Toxy.Managers
             return _instance;
         }
 
-        public ToxAvCallState CallState { get; private set; }
-
         private CallManager() 
         {
             ProfileManager.Instance.ToxAv.OnAudioFrameReceived += ToxAv_OnAudioFrameReceived;
@@ -65,6 +63,8 @@ namespace Toxy.Managers
             if (_callInfo == null)
                 return;
 
+            ProfileManager.Instance.ToxAv.SetVideoBitrate(_callInfo.FriendNumber, enableVideo ? 3000 : 0, false);
+
             if (!enableVideo && _callInfo.VideoEngine != null)
                 _callInfo.VideoEngine.Dispose();
             else if (enableVideo)
@@ -96,16 +96,16 @@ namespace Toxy.Managers
                     return;
                 }
 
-                friend.IsCalling = true;
-                friend.IsInVideoCall = true;
+                friend.CallState = CallState.Calling;
+
+                if (e.VideoEnabled)
+                    friend.CallState = friend.CallState | CallState.ReceivingVideo;
             });
         }
 
         private void ToxAv_OnCallStateChanged(object sender, ToxAvEventArgs.CallStateEventArgs e)
         {
-            bool isCalling = false;
-            bool isCallInProgress = true;
-            bool isRinging = false;
+            var state = CallState.InProgress;
 
             if ((e.State & ToxAvCallState.Finished) != 0 || (e.State & ToxAvCallState.Error) != 0)
             {
@@ -115,7 +115,7 @@ namespace Toxy.Managers
                     _callInfo = null;
                 }
 
-                isCallInProgress = false;
+                state = CallState.None;
             }
             else if ((e.State & ToxAvCallState.ReceivingAudio) != 0 ||
                 (e.State & ToxAvCallState.ReceivingVideo) != 0 ||
@@ -123,22 +123,21 @@ namespace Toxy.Managers
                 (e.State & ToxAvCallState.SendingVideo) != 0)
             {
                 //start sending whatever from here
-                if (_callInfo.AudioEngine == null)
-                {
-                    _callInfo.AudioEngine = new AudioEngine();
-                    _callInfo.AudioEngine.OnMicDataAvailable += AudioEngine_OnMicDataAvailable;
-                    _callInfo.AudioEngine.StartRecording();
-
-                    _callInfo.VideoEngine = new VideoEngine();
-                    _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
-                    _callInfo.VideoEngine.StartRecording();
-                }
-                else
+                if (_callInfo.AudioEngine != null)
                 {
                     if (!_callInfo.AudioEngine.IsRecording)
                         _callInfo.AudioEngine.StartRecording();
                 }
+
+                if (_callInfo.VideoEngine != null)
+                {
+                    if (!_callInfo.VideoEngine.IsRecording)
+                        _callInfo.VideoEngine.StartRecording();
+                }
             }
+
+            if (e.State.HasFlag(ToxAvCallState.ReceivingVideo))
+                state |= CallState.ReceivingVideo;
 
             MainWindow.Instance.UInvoke(() =>
             {
@@ -149,10 +148,7 @@ namespace Toxy.Managers
                     return;
                 }
 
-                friend.IsCalling = isCalling;
-                friend.IsRinging = isRinging;
-                friend.IsCallInProgress = isCallInProgress;
-                //friend.ChangeCallState(e.State);
+                friend.CallState = state;
             });
         }
 
@@ -264,6 +260,11 @@ namespace Toxy.Managers
             } 
             
             _callInfo = new CallInfo(friendNumber);
+            _callInfo.AudioEngine = new AudioEngine();
+            _callInfo.AudioEngine.OnMicDataAvailable += AudioEngine_OnMicDataAvailable;
+            _callInfo.VideoEngine = new VideoEngine();
+            _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
+
             return true;
         }
 
@@ -292,5 +293,15 @@ namespace Toxy.Managers
         {
             return MainWindow.Instance.ViewModel.CurrentFriendListView.ChatCollection.FirstOrDefault(f => f.ChatNumber == friendNumber);
         }
+    }
+
+    public enum CallState
+    {
+        None = 1 << 0,
+        Ringing = 1 << 1,
+        Calling = 1 << 2,
+        InProgress = 1 << 3,
+        SendingVideo = 1 << 4,
+        ReceivingVideo = 1 << 5
     }
 }

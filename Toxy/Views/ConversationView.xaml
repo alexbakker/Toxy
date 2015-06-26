@@ -71,55 +71,43 @@
             </Grid.RowDefinitions>
             <Image Grid.Row="0" Source="{Binding CurrentFrame}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
-            <ListBox Grid.Row="2" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.ScrollUnit="Item" ItemsSource="{Binding Messages, Mode=OneWay}">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                        <Setter Property="Padding" Value="2,5,0,0"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                        <ContentPresenter/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsSelected" Value="true">
-                                            <Setter Property="Background" TargetName="Bd" Value="Transparent"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrush}}"/>
-                                        </Trigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsSelected" Value="true"/>
-                                                <Condition Property="Selector.IsSelectionActive" Value="false"/>
-                                            </MultiTrigger.Conditions>
-                                            <Setter Property="Background" TargetName="Bd" Value="Transparent"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrush}}"/>
-                                        </MultiTrigger>
-                                        <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrush}}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+            <ItemsControl Grid.Row="2" BorderThickness="0" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Messages, Mode=OneWay}">
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="FrameworkElement.Margin" Value="2,5,0,0"/>
                     </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemsPanel>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <Border
+                            BorderThickness="{TemplateBinding Border.BorderThickness}"
+                            Padding="{TemplateBinding Control.Padding}"
+                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                            Background="{TemplateBinding Panel.Background}"
+                            SnapsToDevicePixels="True">
+                            <ScrollViewer
+                                Padding="{TemplateBinding Control.Padding}"
+                                Focusable="False">
+                                <ItemsPresenter
+                                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel/>
                     </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.Resources>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Resources>
                     <DataTemplate DataType="{x:Type ViewModels:MessageViewModel}">
                         <Views:MessageView DataContext="{Binding Mode=OneWay}" />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type ViewModels:FileTransferViewModel}">
                         <Views:FileTransferView DataContext="{Binding Mode=OneWay}" />
                     </DataTemplate>
-                </ListBox.Resources>
-            </ListBox>
+                </ItemsControl.Resources>
+            </ItemsControl>
         </Grid>
         <Grid Grid.Row="2">
             <TextBox Text="{Binding EnteredText, Mode=TwoWay}" Name="TextBoxEnteredText" TextWrapping="Wrap" AcceptsReturn="True" Margin="10,10,91,10" BorderThickness="1,1,0,1" PreviewKeyDown="TextBoxEnteredText_KeyDown"></TextBox>

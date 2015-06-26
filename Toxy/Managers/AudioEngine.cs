@@ -31,7 +31,7 @@ namespace Toxy.Managers
                 var _waveSourceFormat = new WaveFormat(48000, capabilities.Channels);
 
                 _waveSource = new WaveInEvent();
-                _waveSource.BufferMilliseconds = 20; //we only want to process one frame each time
+                _waveSource.BufferMilliseconds = 20;
                 _waveSource.WaveFormat = _waveSourceFormat;
                 _waveSource.DeviceNumber = Config.Instance.RecordingDevice.Number;
                 _waveSource.DataAvailable += waveSource_DataAvailable;

@@ -128,7 +128,7 @@ namespace Toxy.Views
                 CallManager.Get().ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.SendingVideo));
                 Context.Friend.CallState = Context.Friend.CallState ^ CallState.SendingVideo;
             }
-            else
+            else if ((Context.Friend.CallState & CallState.Ringing) == 0)
             {
                 //send call request
                 if (CallManager.Get().SendRequest(Context.Friend.ChatNumber, true))

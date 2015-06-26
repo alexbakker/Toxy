@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using Toxy.Managers;
 using Toxy.MVVM;
@@ -17,9 +18,9 @@ namespace Toxy.ViewModels
             get { return new ObservableCollection<ProfileInfo>(ProfileManager.GetAllProfiles()); }
         }
 
-        public event MouseButtonEventHandler OnLoginButtonClicked;
+        public event RoutedEventHandler OnLoginButtonClicked;
 
-        public void RaiseButtonClicked(object sender, MouseButtonEventArgs e)
+        public void RaiseButtonClicked(object sender, RoutedEventArgs e)
         {
             if (OnLoginButtonClicked != null)
                 OnLoginButtonClicked(sender, e);

@@ -70,6 +70,12 @@ namespace Toxy
             }
         }
 
+        public void CloseInstance()
+        {
+            _instance.Close();
+            _instance = null;
+        }
+
         private MainWindow()
         {
             InitializeComponent();

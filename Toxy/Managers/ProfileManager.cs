@@ -97,25 +97,17 @@ namespace Toxy.Managers
             MainWindow.Instance.Reload();
         }
 
-        /*private static void TransferSubscriptions<T>(T oldObject, T newObject)
+        public void Logout()
         {
-            //nice hacks, right?
-            var events = typeof(T).GetEvents();
+            if (Tox != null)
+                Tox.Dispose();
 
-            foreach (var e in events)
-            {
-                string name = "_" + char.ToLower(e.Name[0]) + e.Name.Substring(1);
+            if (ToxAv != null)
+                ToxAv.Dispose();
 
-                var field = typeof(T).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
-                var value = (MulticastDelegate)field.GetValue(oldObject);
-
-                if (value != null)
-                {
-                    foreach (var handler in value.GetInvocationList())
-                        e.AddEventHandler(newObject, handler);
-                }
-            }
-        }*/
+            Config.Instance.ProfilePath = null;
+            Config.Instance.Save();
+        }
 
         public static IEnumerable<ProfileInfo> GetAllProfiles()
         {

@@ -10,6 +10,7 @@ using Toxy.Extensions;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Toxy.Windows;
 
 namespace Toxy.Views
 {
@@ -168,7 +169,11 @@ namespace Toxy.Views
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            /* TODO */
+            ProfileManager.Instance.Save();
+            ProfileManager.Instance.Logout();
+
+            new LoginWindow().Show();
+            MainWindow.Instance.CloseInstance();
         }
 
         private void VideoProperties_Click(object sender, RoutedEventArgs e)

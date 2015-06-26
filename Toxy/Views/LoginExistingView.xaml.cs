@@ -17,7 +17,7 @@ namespace Toxy.Views
             InitializeComponent();
         }
 
-        private void Login_Clicked(object sender, MouseButtonEventArgs e)
+        private void Login_Clicked(object sender, System.Windows.RoutedEventArgs e)
         {
             Context.RaiseButtonClicked(sender, e);
         }

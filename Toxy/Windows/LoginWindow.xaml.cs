@@ -22,7 +22,7 @@ namespace Toxy.Windows
             (Context.CurrentView as LoginExistingViewModel).OnLoginButtonClicked += LoginWindow_OnLoginButtonClicked;
         }
 
-        private void LoginWindow_OnLoginButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void LoginWindow_OnLoginButtonClicked(object sender, RoutedEventArgs e)
         {
             var model = Context.CurrentView as LoginExistingViewModel;
             if (model == null)

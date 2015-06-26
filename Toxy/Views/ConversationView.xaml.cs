@@ -14,6 +14,8 @@ namespace Toxy.Views
     /// </summary>
     public partial class ConversationView : UserControl
     {
+        private bool _autoScroll;
+
         public ConversationViewModel Context { get { return DataContext as ConversationViewModel; } }
 
         public ConversationView()
@@ -136,6 +138,19 @@ namespace Toxy.Views
                     Context.Friend.CallState = CallState.Ringing | CallState.SendingVideo;
                 }
             }
+        }
+
+        private void ScrollbackViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+            if (scrollViewer == null)
+                return;
+
+            if (e.ExtentHeightChange == 0)
+                _autoScroll = scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight;
+
+            if (_autoScroll && e.ExtentHeightChange != 0)
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.ExtentHeight);
         }
     }
 }

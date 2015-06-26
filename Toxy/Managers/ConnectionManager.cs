@@ -87,10 +87,17 @@ namespace Toxy.Managers
         {
             var error = ToxErrorBootstrap.Ok;
             bool success = ProfileManager.Instance.Tox.Bootstrap(node, out error);
+
             if (success)
                 Debugging.Write(string.Format("Bootstrapped off of {0}:{1}", node.Address, node.Port));
             else
                 Debugging.Write(string.Format("Could not bootstrap off of {0}:{1}, error: {2}", node.Address, node.Port, error));
+
+            //even if adding the tcp relay fails for some reason (while it shouldn't...), we'll consider this successful.
+            if (ProfileManager.Instance.Tox.AddTcpRelay(node, out error))
+                Debugging.Write(string.Format("Added TCP relay {0}:{1}", node.Address, node.Port));
+            else
+                Debugging.Write(string.Format("Could not add TCP relay {0}:{1}, error: {2}", node.Address, node.Port, error));
 
             return success;
         }

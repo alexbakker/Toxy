@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 using System.Collections.Generic;
@@ -10,9 +12,11 @@ using System.Windows.Media;
 using Toxy.Misc.QR;
 using Toxy.Managers;
 using Toxy.MVVM;
-using NAudio.Wave;
+using Toxy.Extensions;
 using Toxy.Views;
 using Toxy.Tools;
+
+using NAudio.Wave;
 using AForge.Video.DirectShow;
 
 namespace Toxy.ViewModels
@@ -23,22 +27,37 @@ namespace Toxy.ViewModels
         public ObservableCollection<DeviceInfo> PlaybackDevices { get; set; }
         public ObservableCollection<DeviceInfo> VideoDevices { get; set; }
 
+        public AudioEngine AudioEngine { get; private set; }
+        public VideoEngine VideoEngine { get; private set; }
+
         public DeviceInfo SelectedRecordingDevice
         {
             get { return Config.Instance.RecordingDevice; }
-            set { Config.Instance.RecordingDevice = value; }
-        }
-
-        public DeviceInfo SelectedVideoDevice
-        {
-            get { return Config.Instance.VideoDevice; }
-            set { Config.Instance.VideoDevice = value; }
+            set 
+            { 
+                Config.Instance.RecordingDevice = value;
+                ReloadAudio();
+            }
         }
 
         public DeviceInfo SelectedPlaybackDevice
         {
             get { return Config.Instance.PlaybackDevice; }
-            set { Config.Instance.PlaybackDevice = value; }
+            set 
+            { 
+                Config.Instance.PlaybackDevice = value;
+                ReloadVideo();
+            }
+        }
+
+        public DeviceInfo SelectedVideoDevice
+        {
+            get { return Config.Instance.VideoDevice; }
+            set 
+            { 
+                Config.Instance.VideoDevice = value;
+                ReloadAudio();
+            }
         }
 
         public ObservableCollection<ProfileInfo> Profiles
@@ -81,6 +100,36 @@ namespace Toxy.ViewModels
                     CurrentProfileView = new ProfileViewModel(profile);
 
                 OnPropertyChanged(() => SelectedProfile);
+            }
+        }
+
+        private ImageSource _currentVideoFrame;
+        public ImageSource CurrentVideoFrame
+        {
+            get { return _currentVideoFrame; }
+            set
+            {
+                if (Equals(value, _currentVideoFrame))
+                {
+                    return;
+                }
+                _currentVideoFrame = value;
+                OnPropertyChanged(() => CurrentVideoFrame);
+            }
+        }
+
+        private float _recordingVolume;
+        public float RecordingVolume
+        {
+            get { return _recordingVolume; }
+            set
+            {
+                if (Equals(value, _recordingVolume))
+                {
+                    return;
+                }
+                _recordingVolume = value;
+                OnPropertyChanged(() => RecordingVolume);
             }
         }
 
@@ -137,6 +186,67 @@ namespace Toxy.ViewModels
         public void AddProfile(ProfileInfo info)
         {
             Profiles.Add(info);
+        }
+
+        public void ReloadAudio()
+        {
+            if (AudioEngine != null)
+                AudioEngine.Dispose();
+
+            AudioEngine = new AudioEngine();
+            AudioEngine.OnMicVolumeChanged += AudioEngine_OnMicVolumeChanged;
+            AudioEngine.StartRecording();
+        }
+
+        public void ReloadVideo()
+        {
+            if (VideoEngine != null)
+                VideoEngine.Dispose();
+
+            VideoEngine = new VideoEngine();
+            VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
+            VideoEngine.StartRecording();
+        }
+
+        private void AudioEngine_OnMicVolumeChanged(float volume)
+        {
+            MainWindow.Instance.UInvoke(() => RecordingVolume = volume * 100);
+        }
+
+        private void VideoEngine_OnFrameAvailable(Bitmap frame)
+        {
+            //TODO: move this whole process to an extension method
+            //TODO: edit aforge source code to create a bitmapsource direcrtly instead of converting (?)
+            using (var stream = new MemoryStream())
+            {
+                frame.Save(stream, ImageFormat.Bmp);
+                stream.Position = 0;
+                frame.Dispose();
+
+                var bitmapImg = new BitmapImage();
+                bitmapImg.BeginInit();
+                bitmapImg.StreamSource = stream;
+                bitmapImg.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImg.EndInit();
+                bitmapImg.Freeze();
+
+                CurrentVideoFrame = bitmapImg;
+            }
+        }
+
+        public void Kill()
+        {
+            if (AudioEngine != null)
+            {
+                AudioEngine.Dispose();
+                AudioEngine = null;
+            }
+
+            if (VideoEngine != null)
+            {
+                VideoEngine.Dispose();
+                VideoEngine = null;
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]

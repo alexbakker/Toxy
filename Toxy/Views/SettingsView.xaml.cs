@@ -21,9 +21,6 @@ namespace Toxy.Views
     {
         public SettingsViewModel Context { get { return DataContext as SettingsViewModel; } }
 
-        private AudioEngine _audioEngine;
-        private VideoEngine _videoEngine;
-
         public SettingsView()
         {
             InitializeComponent();
@@ -101,7 +98,7 @@ namespace Toxy.Views
             {
                 ProfileManager.Instance.SwitchTo(profile);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error while trying to load profile", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -109,62 +106,20 @@ namespace Toxy.Views
 
         private void SettingTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (Context == null)
+                return;
+
             if (TabItemAudioVideo.IsSelected)
             {
-                if (_audioEngine != null)
-                    _audioEngine.Dispose();
-
-                if (_videoEngine != null)
-                    _videoEngine.Dispose();
-
-                _audioEngine = new AudioEngine();
-                _audioEngine.OnMicVolumeChanged += AudioEngine_OnMicVolumeChanged;
-                _audioEngine.StartRecording();
-
-                _videoEngine = new VideoEngine();
-                _videoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
-                _videoEngine.StartRecording();
+                Context.ReloadAudio();
+                Context.ReloadVideo();
             }
             else
             {
-                if (_audioEngine != null)
-                {
-                    _audioEngine.Dispose();
-                    _audioEngine = null;
-                }
-
-                if (_videoEngine != null)
-                {
-                    _videoEngine.Dispose();
-                    _videoEngine = null;
-                }
+                Context.Kill();
             }
-        }
 
-        private void VideoEngine_OnFrameAvailable(Bitmap frame)
-        {
-            //TODO: move this whole process to an extension method
-            //TODO: edit aforge source code to create a bitmapsource direcrtly instead of converting (?)
-            using (var stream = new MemoryStream())
-            {
-                frame.Save(stream, ImageFormat.Bmp);
-                stream.Position = 0;
-                frame.Dispose();
-
-                var bitmapImg = new BitmapImage();
-                bitmapImg.BeginInit();
-                bitmapImg.StreamSource = stream;
-                bitmapImg.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImg.EndInit();
-                bitmapImg.Freeze();
-
-                this.UInvoke(() => CurrentFrame.Source = bitmapImg);
-            }
-        }
-
-        private void AudioEngine_OnMicVolumeChanged(float volume)
-        {
-            this.UInvoke(() => ProgressBarRecord.Value = volume * 100);
+            e.Handled = true;
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -178,8 +133,11 @@ namespace Toxy.Views
 
         private void VideoProperties_Click(object sender, RoutedEventArgs e)
         {
+            if (Context.VideoEngine == null)
+                return;
+
             var handle = new System.Windows.Interop.WindowInteropHelper(MainWindow.Instance).Handle;
-            if (handle == IntPtr.Zero || !_videoEngine.DisplayPropertyWindow(handle))
+            if (handle == IntPtr.Zero || !Context.VideoEngine.DisplayPropertyWindow(handle))
                 MessageBox.Show("There is no property window available for this webcam", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

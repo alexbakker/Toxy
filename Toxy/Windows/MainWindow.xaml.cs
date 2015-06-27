@@ -35,14 +35,25 @@ namespace Toxy
             get
             {
                 if (_instance == null)
+                {
                     _instance = new MainWindow();
+                    _instance.Closing += Instance_Closing;
+                }
 
                 return _instance;
             }
             private set
             {
                 _instance = value;
+                _instance.Closing += Instance_Closing;
             }
+        }
+
+        static void Instance_Closing(object sender, CancelEventArgs e)
+        {
+            //make absolutely sure we've disposed all audio/video resources
+            Instance.ViewModel.CurrentSettingsView.Kill();
+            CallManager.Get().Kill();
         }
 
         public MainWindowViewModel ViewModel

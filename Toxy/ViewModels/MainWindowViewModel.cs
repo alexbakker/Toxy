@@ -24,6 +24,10 @@ namespace Toxy.ViewModels
                 {
                     return;
                 }
+
+                if (currentView is SettingsViewModel)
+                    (currentView as SettingsViewModel).Kill();
+
                 currentView = value;
                 OnPropertyChanged(() => CurrentView);
             }

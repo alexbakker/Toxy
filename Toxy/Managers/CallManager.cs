@@ -285,6 +285,18 @@ namespace Toxy.Managers
             return true;
         }
 
+        public void Kill()
+        {
+            if (_callInfo == null)
+                return;
+
+            if (_callInfo.AudioEngine != null)
+                _callInfo.AudioEngine.Dispose();
+
+            if (_callInfo.VideoEngine != null)
+                _callInfo.VideoEngine.Dispose();
+        }
+
         private class CallInfo : IDisposable
         {
             public readonly int FriendNumber;

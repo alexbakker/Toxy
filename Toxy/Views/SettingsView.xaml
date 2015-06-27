@@ -155,7 +155,7 @@
                                         <StackPanel Margin="10">
                                             <Label Content="Recording devices" HorizontalAlignment="Left" Margin="-5 0"/>
                                             <ComboBox ItemsSource="{Binding RecordingDevices, Mode=OneWay}" SelectedItem="{Binding SelectedRecordingDevice}" DisplayMemberPath="Name" VerticalAlignment="Top"/>
-                                            <ProgressBar x:Name="ProgressBarRecord" Height="10" Margin="0 5"/>
+                                            <ProgressBar Value="{Binding RecordingVolume, Mode=OneWay}" Height="10" Margin="0 5"/>
                                             <Label Content="Playback devices" HorizontalAlignment="Left" Margin="-5 0"/>
                                             <ComboBox ItemsSource="{Binding PlaybackDevices, Mode=OneWay}" SelectedItem="{Binding SelectedPlaybackDevice}" DisplayMemberPath="Name" Height="22" VerticalAlignment="Top"/>
                                             <ProgressBar x:Name="ProgressBarPlayback" Height="10" Margin="0 5"/>
@@ -169,7 +169,7 @@
                                             <Label Content="Video devices" HorizontalAlignment="Left" Margin="-5 0"/>
                                             <ComboBox ItemsSource="{Binding VideoDevices, Mode=OneWay}" SelectedItem="{Binding SelectedVideoDevice}" DisplayMemberPath="Name" VerticalAlignment="Top"/>
                                             <Grid>
-                                                <Image Stretch="Uniform" Margin="0,10" x:Name="CurrentFrame" Height="200" HorizontalAlignment="Left" Width="250"/>
+                                                <Image Stretch="Uniform" Margin="0,10" Height="200" HorizontalAlignment="Left" Width="250" Source="{Binding CurrentVideoFrame, Mode=OneWay}"/>
                                                 <Button Click="VideoProperties_Click" Margin="10" Content="Properties" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                                             </Grid>
                                         </StackPanel>

@@ -12,7 +12,7 @@ namespace Toxy.Managers
         private BufferedWaveProvider _waveSourceProvider;
         private MeteringSampleProvider _waveSourceMeter;
 
-        private WaveOut _waveOut;
+        private WaveOutEvent _waveOut;
         private BufferedWaveProvider _waveOutProvider;
 
         public bool IsRecording { get; private set; }
@@ -51,7 +51,7 @@ namespace Toxy.Managers
                 _waveOutProvider = new BufferedWaveProvider(_waveOutFormat);
                 _waveOutProvider.DiscardOnBufferOverflow = true;
 
-                _waveOut = new WaveOut();
+                _waveOut = new WaveOutEvent();
                 _waveOut.DeviceNumber = Config.Instance.PlaybackDevice.Number;
                 _waveOut.Init(_waveOutProvider);
                 _waveOut.Play();

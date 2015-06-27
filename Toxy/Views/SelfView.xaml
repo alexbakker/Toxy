@@ -26,7 +26,12 @@
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid>
-        <Border Width="40" Height="40" Margin="10,10,144,12" CornerRadius="5,5,5,5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="55"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="35"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Width="40" Margin="10,0,0,0" Height="40" CornerRadius="5,5,5,5">
             <Border.Background>
                 <ImageBrush ImageSource="{Binding Avatar, Mode=OneWay}"/>
             </Border.Background>
@@ -42,9 +47,11 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Border>
-        <Label Content="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,11,0,0" Foreground="White" FontSize="14" FontWeight="Bold"/>
-        <Label Content="{Binding StatusMessage, Mode=OneWay}" HorizontalAlignment="Left" Margin="60,30,0,0" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource ToxLightGreyBrush}"/>
-        <Border Name="ButtonUserStatus" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="48" Width="25" CornerRadius="5,5,5,5" MouseDown="ButtonUserStatus_MouseDown" Style="{StaticResource ToxMediumGreyButtonStyle}">
+        <Grid Grid.Column="1">
+            <TextBlock Text="{Binding Name, Mode=OneWay}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,17.5,0,0" Foreground="White" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Text="{Binding StatusMessage, Mode=OneWay}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="5,37.5,0,0" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource ToxLightGreyBrush}"/>
+        </Grid>
+        <Border Grid.Column="2" Name="ButtonUserStatus" Margin="0,0,5,0" Height="48" Width="25" CornerRadius="5,5,5,5" MouseDown="ButtonUserStatus_MouseDown" Style="{StaticResource ToxMediumGreyButtonStyle}">
             <Border.ContextMenu>
                 <ContextMenu Placement="Bottom" MenuItem.Click="ContextMenuItemStatus_Click">
                     <MenuItem Header="Online" Icon="{StaticResource tox_dot_online}" Tag="{x:Static Tox:ToxUserStatus.None}"/>

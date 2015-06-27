@@ -99,7 +99,7 @@ namespace Toxy.Managers
                 friend.CallState = CallState.Calling;
 
                 if (e.VideoEnabled)
-                    friend.CallState = friend.CallState | CallState.ReceivingVideo;
+                    friend.CallState |= CallState.SendingVideo;
             });
         }
 
@@ -174,6 +174,10 @@ namespace Toxy.Managers
             var frame = VideoUtils.BitmapToToxAvFrame(bmp);
             bmp.Dispose();
 
+            //yes, check again
+            if (_callInfo == null)
+                return;
+
             var error = ToxAvErrorSendFrame.Ok;
             if (!ProfileManager.Instance.ToxAv.SendVideoFrame(_callInfo.FriendNumber, frame))
                 Debugging.Write("Could not send video frame: " + error);
@@ -226,15 +230,6 @@ namespace Toxy.Managers
                 _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
                 _callInfo.VideoEngine.StartRecording();
             }
-
-            MainWindow.Instance.UInvoke(() =>
-            {
-                var friend = FindFriend(friendNumber);
-                if (friend == null)
-                    return;
-
-                friend.CallState = CallState.InProgress | CallState.SendingVideo;
-            });
 
             return true;
         }

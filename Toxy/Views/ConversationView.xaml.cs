@@ -93,7 +93,10 @@ namespace Toxy.Views
                 //answer the call
                 if (CallManager.Get().Answer(Context.Friend.ChatNumber, false))
                 {
-                    Context.Friend.CallState = CallState.InProgress;
+                    if ((Context.Friend.CallState & CallState.SendingVideo) != 0)
+                        Context.Friend.CallState = CallState.InProgress | CallState.SendingVideo;
+                    else
+                        Context.Friend.CallState = CallState.InProgress;
                 }
             }
             else if ((Context.Friend.CallState & CallState.InProgress) != 0 || (Context.Friend.CallState & CallState.Ringing) != 0)
@@ -122,13 +125,16 @@ namespace Toxy.Views
                 if (CallManager.Get().Answer(Context.Friend.ChatNumber, true))
                 {
                     Context.Friend.CallState = CallState.ReceivingVideo | CallState.InProgress;
+
+                    if ((Context.Friend.CallState & CallState.SendingVideo) != 0)
+                        Context.Friend.CallState |= CallState.SendingVideo;
                 }
             }
             else if ((Context.Friend.CallState & CallState.InProgress) != 0)
             {
                 //toggle video
                 CallManager.Get().ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.ReceivingVideo));
-                Context.Friend.CallState = Context.Friend.CallState ^ CallState.ReceivingVideo;
+                Context.Friend.CallState ^= CallState.ReceivingVideo;
             }
             else if ((Context.Friend.CallState & CallState.Ringing) == 0)
             {

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
+             xmlns:extra="clr-namespace:Toxy.Extensions"
              mc:Ignorable="d" 
              d:DesignHeight="20" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance ViewModels:MessageViewModel}">
@@ -22,7 +23,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Column="0" TextTrimming="CharacterEllipsis" Name="TextBoxName" Text="{Binding FriendName, Mode=OneTime}" HorizontalAlignment="Right" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
-        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="10 0" Name="TextBoxMessage" Text="{Binding Message, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
+        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="10 0" Name="TextBoxMessage" extra:UriParser.Text="{Binding Message, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
         <TextBlock Grid.Column="2" Margin="0 0 5 0" Name="TextBoxTime" Text="{Binding Time, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
     </Grid>
 </UserControl>

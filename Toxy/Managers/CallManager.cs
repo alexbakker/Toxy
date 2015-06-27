@@ -66,11 +66,17 @@ namespace Toxy.Managers
             ProfileManager.Instance.ToxAv.SetVideoBitrate(_callInfo.FriendNumber, enableVideo ? 3000 : 0, false);
 
             if (!enableVideo && _callInfo.VideoEngine != null)
+            {
                 _callInfo.VideoEngine.Dispose();
+                _callInfo.VideoEngine = null;
+            }
             else if (enableVideo)
             {
                 if (_callInfo.VideoEngine != null)
+                {
                     _callInfo.VideoEngine.Dispose();
+                    _callInfo.VideoEngine = null;
+                }
 
                 _callInfo.VideoEngine = new VideoEngine();
                 _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
@@ -134,10 +140,13 @@ namespace Toxy.Managers
                     if (!_callInfo.VideoEngine.IsRecording)
                         _callInfo.VideoEngine.StartRecording();
                 }
-            }
 
-            if (e.State.HasFlag(ToxAvFriendCallState.SendingVideo))
-                state |= CallState.SendingVideo;
+                if (e.State.HasFlag(ToxAvFriendCallState.SendingVideo))
+                    state |= CallState.SendingVideo;
+
+                if (_callInfo.VideoEngine != null)
+                    state |= CallState.ReceivingVideo;
+            }
 
             MainWindow.Instance.UInvoke(() =>
             {

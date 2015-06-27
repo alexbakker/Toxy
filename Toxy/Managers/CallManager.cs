@@ -262,8 +262,12 @@ namespace Toxy.Managers
             _callInfo = new CallInfo(friendNumber);
             _callInfo.AudioEngine = new AudioEngine();
             _callInfo.AudioEngine.OnMicDataAvailable += AudioEngine_OnMicDataAvailable;
-            _callInfo.VideoEngine = new VideoEngine();
-            _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
+
+            if (enableVideo)
+            {
+                _callInfo.VideoEngine = new VideoEngine();
+                _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
+            }
 
             return true;
         }

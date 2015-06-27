@@ -25,7 +25,7 @@ namespace Toxy.Managers
 
         public AudioEngine()
         {
-            if (Config.Instance.RecordingDevice != null && Config.Instance.RecordingDevice.Number <= WaveIn.DeviceCount)
+            if (Config.Instance.RecordingDevice != null && WaveIn.DeviceCount != 0 && Config.Instance.RecordingDevice.Number <= WaveIn.DeviceCount)
             {
                 var capabilities = WaveIn.GetCapabilities(Config.Instance.RecordingDevice.Number);
                 var _waveSourceFormat = new WaveFormat(48000, capabilities.Channels);
@@ -43,7 +43,7 @@ namespace Toxy.Managers
                 _waveSourceMeter.StreamVolume += _waveSourceMeter_StreamVolume;
             }
 
-            if (Config.Instance.PlaybackDevice != null && Config.Instance.PlaybackDevice.Number <= WaveOut.DeviceCount)
+            if (Config.Instance.PlaybackDevice != null && WaveOut.DeviceCount != 0 && Config.Instance.PlaybackDevice.Number <= WaveOut.DeviceCount)
             {
                 var capabilities = WaveIn.GetCapabilities(Config.Instance.PlaybackDevice.Number);
                 var _waveOutFormat = new WaveFormat(48000, capabilities.Channels);

@@ -164,11 +164,11 @@ namespace Toxy.ViewModels
                 }
 
                 //TODO: tidy up
-                if (value.HasFlag(CallState.SendingVideo) != _callState.HasFlag(CallState.SendingVideo))
-                    IsInVideoCall = value.HasFlag(CallState.SendingVideo);
+                //if (value.HasFlag(CallState.SendingVideo) != _callState.HasFlag(CallState.SendingVideo))
+                //    IsInVideoCall = value.HasFlag(CallState.SendingVideo);
 
-                if (value.HasFlag(CallState.ReceivingVideo) != _callState.HasFlag(CallState.ReceivingVideo))
-                    IsReceivingVideo = value.HasFlag(CallState.ReceivingVideo);
+                if (value.HasFlag(CallState.SendingVideo) != _callState.HasFlag(CallState.SendingVideo))
+                    IsReceivingVideo = value.HasFlag(CallState.SendingVideo);
 
                 _callState = value;
                 OnPropertyChanged(() => CallState);

@@ -7,7 +7,8 @@
              xmlns:extra="clr-namespace:Toxy.Extensions"
              mc:Ignorable="d" 
              d:DesignHeight="20" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance ViewModels:MessageViewModel}">
+             d:DataContext="{d:DesignInstance ViewModels:MessageViewModel}"
+             Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,6 +17,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Copy message" Click="CopyMessage_Click"/>
+            <MenuItem Header="Delete message" Click="DeleteMessage_Click"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>

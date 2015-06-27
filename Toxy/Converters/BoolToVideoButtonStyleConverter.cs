@@ -20,7 +20,7 @@ namespace Toxy.Converters
             if (state.HasFlag(CallState.None))
                 return dic["ToxGreenButtonStyle"];
 
-            if (state.HasFlag(CallState.InProgress) && state.HasFlag(CallState.SendingVideo))
+            if (state.HasFlag(CallState.InProgress) && state.HasFlag(CallState.ReceivingVideo))
                 return dic["ToxRedButtonStyle"];
 
             return dic["ToxGreenButtonStyle"];

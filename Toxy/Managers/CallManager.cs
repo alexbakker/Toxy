@@ -44,7 +44,7 @@ namespace Toxy.Managers
 
             if (_callInfo != null && _callInfo.FriendNumber == e.FriendNumber)
             {
-                ToxAv_OnCallStateChanged(null, new ToxAvEventArgs.CallStateEventArgs(e.FriendNumber, ToxAvCallState.Finished));
+                ToxAv_OnCallStateChanged(null, new ToxAvEventArgs.CallStateEventArgs(e.FriendNumber, ToxAvFriendCallState.Finished));
             }
         }
 
@@ -107,7 +107,7 @@ namespace Toxy.Managers
         {
             var state = CallState.InProgress;
 
-            if ((e.State & ToxAvCallState.Finished) != 0 || (e.State & ToxAvCallState.Error) != 0)
+            if ((e.State & ToxAvFriendCallState.Finished) != 0 || (e.State & ToxAvFriendCallState.Error) != 0)
             {
                 if (_callInfo != null)
                 {
@@ -117,10 +117,10 @@ namespace Toxy.Managers
 
                 state = CallState.None;
             }
-            else if ((e.State & ToxAvCallState.ReceivingAudio) != 0 ||
-                (e.State & ToxAvCallState.ReceivingVideo) != 0 ||
-                (e.State & ToxAvCallState.SendingAudio) != 0 ||
-                (e.State & ToxAvCallState.SendingVideo) != 0)
+            else if ((e.State & ToxAvFriendCallState.ReceivingAudio) != 0 ||
+                (e.State & ToxAvFriendCallState.ReceivingVideo) != 0 ||
+                (e.State & ToxAvFriendCallState.SendingAudio) != 0 ||
+                (e.State & ToxAvFriendCallState.SendingVideo) != 0)
             {
                 //start sending whatever from here
                 if (_callInfo.AudioEngine != null)
@@ -136,8 +136,8 @@ namespace Toxy.Managers
                 }
             }
 
-            if (e.State.HasFlag(ToxAvCallState.ReceivingVideo))
-                state |= CallState.ReceivingVideo;
+            if (e.State.HasFlag(ToxAvFriendCallState.SendingVideo))
+                state |= CallState.SendingVideo;
 
             MainWindow.Instance.UInvoke(() =>
             {
@@ -226,6 +226,15 @@ namespace Toxy.Managers
                 _callInfo.VideoEngine.OnFrameAvailable += VideoEngine_OnFrameAvailable;
                 _callInfo.VideoEngine.StartRecording();
             }
+
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(friendNumber);
+                if (friend == null)
+                    return;
+
+                friend.CallState = CallState.InProgress | CallState.SendingVideo;
+            });
 
             return true;
         }

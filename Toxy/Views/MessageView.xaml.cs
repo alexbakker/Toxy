@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Toxy.ViewModels;
 
 namespace Toxy.Views
 {
@@ -20,9 +10,22 @@ namespace Toxy.Views
     /// </summary>
     public partial class MessageView : UserControl
     {
+        public MessageViewModel Context { get { return DataContext as MessageViewModel; } }
+
         public MessageView()
         {
             InitializeComponent();
+        }
+
+        private void CopyMessage_Click(object sender, RoutedEventArgs e)
+        {
+            string message = string.Format("[{0}] {1}: {2}", Context.Time, Context.FriendName, Context.Message);
+            Clipboard.SetText(message);
+        }
+
+        private void DeleteMessage_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

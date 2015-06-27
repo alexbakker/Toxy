@@ -121,21 +121,21 @@ namespace Toxy.Views
                 //answer the call
                 if (CallManager.Get().Answer(Context.Friend.ChatNumber, true))
                 {
-                    Context.Friend.CallState = CallState.SendingVideo | CallState.InProgress;
+                    Context.Friend.CallState = CallState.ReceivingVideo | CallState.InProgress;
                 }
             }
             else if ((Context.Friend.CallState & CallState.InProgress) != 0)
             {
                 //toggle video
-                CallManager.Get().ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.SendingVideo));
-                Context.Friend.CallState = Context.Friend.CallState ^ CallState.SendingVideo;
+                CallManager.Get().ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.ReceivingVideo));
+                Context.Friend.CallState = Context.Friend.CallState ^ CallState.ReceivingVideo;
             }
             else if ((Context.Friend.CallState & CallState.Ringing) == 0)
             {
                 //send call request
                 if (CallManager.Get().SendRequest(Context.Friend.ChatNumber, true))
                 {
-                    Context.Friend.CallState = CallState.Ringing | CallState.SendingVideo;
+                    Context.Friend.CallState = CallState.Ringing | CallState.ReceivingVideo;
                 }
             }
         }

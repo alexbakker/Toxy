@@ -230,7 +230,7 @@ namespace Toxy.ViewModels
                 bitmapImg.EndInit();
                 bitmapImg.Freeze();
 
-                CurrentVideoFrame = bitmapImg;
+                MainWindow.Instance.UInvoke(() => CurrentVideoFrame = bitmapImg);
             }
         }
 

@@ -36,6 +36,9 @@ namespace Toxy.Managers
         public ProfileInfo CreateNew(string profileName)
         {
             string path = Path.Combine(ProfileDataPath, profileName + ".tox");
+            if (File.Exists(path))
+                return null;
+
             var tox = new Tox(ToxOptions.Default);
             tox.Name = profileName;
             tox.StatusMessage = "Toxing on Toxy";

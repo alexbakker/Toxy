@@ -28,7 +28,12 @@
         <Grid Grid.Row="0">
             <Border BorderBrush="{StaticResource ToxLightGreyBrush}" BorderThickness="0 0 0 1">
                 <Grid>
-                    <Border HorizontalAlignment="Left" Width="40" Height="40" Margin="10,10,0,9.333" CornerRadius="5,5,5,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" HorizontalAlignment="Left" Width="40" Height="40" Margin="10,10,0,9.333" CornerRadius="5,5,5,5">
                         <Border.Background>
                             <ImageBrush ImageSource="{Binding Friend.Avatar, Mode=OneWay}"/>
                         </Border.Background>
@@ -44,22 +49,26 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Border>
-                    <Label Content="{Binding Friend.Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,15,0,0" FontWeight="Bold" FontSize="12" Foreground="{StaticResource ToxDarkGreyBrush}"/>
-                    <Label Content="{Binding Friend.StatusMessage, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,32,0,0" FontSize="11" Foreground="{StaticResource ToxMediumGreyBrush}"/>
-                    <Button Click="ButtonVideo_Click" Margin="0,12,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToVideoButtonStyleConverter}}">
-                        <Rectangle Width="22.625" Height="14.396" Fill="{StaticResource ToxWhiteBrush}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_video}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-                    <Button Click="Call_Click" Margin="0,13,65,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
-                        <Rectangle Width="21.2" Height="19.7" Fill="{StaticResource ToxWhiteBrush}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_phone}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
+                    <Grid Grid.Column="1">
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Friend.Name, Mode=OneWay, TargetNullValue='Friend name'}" VerticalAlignment="Top" Margin="0,20,0,0" FontWeight="Bold" FontSize="12" Foreground="{StaticResource ToxDarkGreyBrush}"/>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Friend.StatusMessage, Mode=OneWay, TargetNullValue='Friend status message'}" VerticalAlignment="Top" Margin="0,35,0,0" FontSize="11" Foreground="{StaticResource ToxMediumGreyBrush}"/>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Button Click="ButtonVideo_Click" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToVideoButtonStyleConverter}}">
+                            <Rectangle Width="22.625" Height="14.396" Fill="{StaticResource ToxWhiteBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_video}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Button Click="Call_Click" Margin="10,10,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
+                            <Rectangle Width="21.2" Height="19.7" Fill="{StaticResource ToxWhiteBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_phone}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

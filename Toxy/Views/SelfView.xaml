@@ -7,8 +7,7 @@
              xmlns:Tox="clr-namespace:SharpTox.Core;assembly=SharpTox"
              mc:Ignorable="d" 
              d:DesignHeight="72" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance ViewModels:SelfViewModel}"
-             Loaded="SelfView_Loaded">
+             d:DataContext="{d:DesignInstance ViewModels:SelfViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,12 +18,9 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <UserControl.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="Edit" Click="EditAvatar_Click"/>
-            <MenuItem Header="Remove" Click="RemoveAvatar_Click"/>
-        </ContextMenu>
-    </UserControl.ContextMenu>
+    <UserControl.Background>
+        <StaticResource ResourceKey="ToxDarkGreyBrush"/>
+    </UserControl.Background>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="55"/>
@@ -32,6 +28,12 @@
             <ColumnDefinition Width="35"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Width="40" Margin="10,0,0,0" Height="40" CornerRadius="5,5,5,5">
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Edit" Click="EditAvatar_Click"/>
+                    <MenuItem Header="Remove" Click="RemoveAvatar_Click"/>
+                </ContextMenu>
+            </Border.ContextMenu>
             <Border.Background>
                 <ImageBrush ImageSource="{Binding Avatar, Mode=OneWay}"/>
             </Border.Background>
@@ -48,8 +50,8 @@
             </Rectangle>
         </Border>
         <Grid Grid.Column="1">
-            <TextBlock Text="{Binding Name, Mode=OneWay}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,17.5,0,0" Foreground="White" FontSize="14" FontWeight="Bold"/>
-            <TextBlock Text="{Binding StatusMessage, Mode=OneWay}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="5,37.5,0,0" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource ToxLightGreyBrush}"/>
+            <TextBlock Text="{Binding Name, Mode=OneWay, TargetNullValue='Self name'}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,17.5,0,0" Foreground="White" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Text="{Binding StatusMessage, Mode=OneWay, TargetNullValue='Self status message'}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Margin="5,37.5,0,0" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="11" Foreground="{StaticResource ToxLightGreyBrush}"/>
         </Grid>
         <Border Grid.Column="2" Name="ButtonUserStatus" Margin="0,0,5,0" Height="48" Width="25" CornerRadius="5,5,5,5" MouseDown="ButtonUserStatus_MouseDown" Style="{StaticResource ToxMediumGreyButtonStyle}">
             <Border.ContextMenu>

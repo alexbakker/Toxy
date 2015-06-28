@@ -171,9 +171,6 @@
     <Compile Include="Views\FriendControlView.xaml.cs">
       <DependentUpon>FriendControlView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\FriendListView.xaml.cs">
-      <DependentUpon>FriendListView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\LoginExistingView.xaml.cs">
       <DependentUpon>LoginExistingView.xaml</DependentUpon>
     </Compile>
@@ -252,10 +249,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FriendControlView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\FriendListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

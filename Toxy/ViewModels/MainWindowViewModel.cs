@@ -9,6 +9,7 @@ namespace Toxy.ViewModels
     {
         public MainWindowViewModel()
         {
+            _currentSelfView = new SelfViewModel();
             _currentFriendListView = new FriendListViewModel(this);
             _currentSettingsView = new SettingsViewModel(this);
         }
@@ -33,7 +34,7 @@ namespace Toxy.ViewModels
             }
         }
 
-        private SelfViewModel _currentSelfView = new SelfViewModel();
+        private SelfViewModel _currentSelfView;
 
         public SelfViewModel CurrentSelfView
         {

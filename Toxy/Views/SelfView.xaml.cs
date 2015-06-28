@@ -23,13 +23,6 @@ namespace Toxy.Views
         public SelfView()
         {
             InitializeComponent();
-
-            ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
-        }
-
-        private void Tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
-        {
-            this.UInvoke(() => Context.ConnectionStatus = e.Status);
         }
 
         private void ButtonUserStatus_MouseDown(object sender, MouseButtonEventArgs e)
@@ -39,13 +32,6 @@ namespace Toxy.Views
                 ButtonUserStatus.ContextMenu.PlacementTarget = ButtonUserStatus;
                 ButtonUserStatus.ContextMenu.IsOpen = true;
             }
-        }
-
-        private void SelfView_Loaded(object sender, RoutedEventArgs e)
-        {
-            Context.Name = ProfileManager.Instance.Tox.Name;
-            Context.StatusMessage = ProfileManager.Instance.Tox.StatusMessage;
-            Context.UserStatus = ProfileManager.Instance.Tox.Status;
         }
 
         private void ContextMenuItemStatus_Click(object sender, RoutedEventArgs e)

@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
-             mc:Ignorable="d" Height="60"
+             mc:Ignorable="d"
+             Height="60"
+             d:DesignWidth="200"
              RenderOptions.ClearTypeHint="Enabled"
              TextOptions.TextRenderingMode="ClearType"
              TextOptions.TextFormattingMode="Display"
-             BorderThickness="0" Width="190"
+             BorderThickness="0"
              d:DataContext="{d:DesignInstance ViewModels:FriendControlViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -48,9 +50,9 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Border>
-        <Grid Grid.Column="1">
-            <TextBlock Text="{Binding Name, Mode=OneWay}" TextTrimming="CharacterEllipsis" Foreground="{Binding IsSelected, Converter={StaticResource BoolToNameForegroundConverter}, Mode=OneWay}" Margin="5,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"/>
-            <TextBlock Text="{Binding StatusMessage, Mode=OneWay}" TextTrimming="CharacterEllipsis" Foreground="{Binding IsSelected, Converter={StaticResource BoolToStatusMessageForegroundConverter}, Mode=OneWay}" Margin="5,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Grid Grid.Column="1" HorizontalAlignment="Left">
+            <TextBlock Text="{Binding Name, Mode=OneWay, TargetNullValue='Friend name'}" TextTrimming="CharacterEllipsis" Foreground="{Binding IsSelected, Converter={StaticResource BoolToNameForegroundConverter}, Mode=OneWay}" Margin="5,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="12"/>
+            <TextBlock Text="{Binding StatusMessage, Mode=OneWay, TargetNullValue='Friend status message'}" TextTrimming="CharacterEllipsis" Foreground="{Binding IsSelected, Converter={StaticResource BoolToStatusMessageForegroundConverter}, Mode=OneWay}" Margin="5,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Grid>
         <Border Grid.Column="2" Name="IconUserStatus" Margin="0,10" HorizontalAlignment="Right" Width="21">
             <Rectangle Width="17" Height="17">

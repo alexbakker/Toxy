@@ -24,61 +24,74 @@
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate DataType="{x:Type ViewModels:SelfViewModel}">
-                <Views:SelfView />
-            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid x:Name="LayoutRoot" Background="White">
-        <Border HorizontalAlignment="Left" Width="205.2" Background="{StaticResource ToxMediumGreyBrush}" BorderThickness="0">
-            <Grid>
-                <Border Height="72" VerticalAlignment="Top" Background="{StaticResource ToxDarkGreyBrush}" BorderThickness="0">
-                    <ContentControl Content="{Binding CurrentSelfView, Mode=OneWay}"/>
-                </Border>
-                <Border Margin="0,72,0,38" BorderThickness="0">
-                    <Border.Resources>
-                        <DataTemplate DataType="{x:Type ViewModels:FriendListViewModel}">
-                            <Views:FriendListView />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="205" MinWidth="205" MaxWidth="400"/>
+            <ColumnDefinition Width="2"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="38"/>
+            </Grid.RowDefinitions>
+            <Views:SelfView Grid.Row="0" DataContext="{Binding CurrentSelfView}"/>
+            <ListBox Grid.Row="1" DataContext="{Binding CurrentFriendListView}" SelectedItem="{Binding SelectedChat}" BorderThickness="0" Background="{StaticResource ToxMediumGreyBrush}" ItemsSource="{Binding ChatCollection, Mode=OneWay}" ItemContainerStyle="{StaticResource ToxListBoxStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/ScrollviewerStyles.xaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                        <DataTemplate DataType="{x:Type ViewModels:FriendControlViewModel}">
+                            <Views:FriendControlView DataContext="{Binding Mode=OneWay}" />
                         </DataTemplate>
-                    </Border.Resources>
-                    <ContentControl Content="{Binding CurrentFriendListView}"/>
-                </Border>
-                <Border Background="{StaticResource ToxDarkGreyBrush}" Height="38" VerticalAlignment="Bottom">
-                    <StackPanel Name="PanelTaskbar" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Border Name="ButtonAddFriend" Width="45" MouseDown="ButtonAddFriend_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
-                            <Rectangle Width="15.884" Height="15.883" Fill="{StaticResource ToxWhiteBrush}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_add}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Border>
-                        <Border Name="ButtonGroup" Width="45" MouseDown="ButtonGroup_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
-                            <Rectangle Width="15.402" Height="15.918" Fill="{StaticResource ToxWhiteBrush}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_group}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Border>
-                        <Border Name="ButtonTransfers" Width="45" MouseDown="ButtonTransfers_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
-                            <Rectangle Width="15.604" Height="15.604" Fill="{StaticResource ToxWhiteBrush}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_transfer}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Border>
-                        <Border Name="ButtonSettings" Width="45" MouseDown="ButtonSettings_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
-                            <Rectangle Width="15.615" Height="15.616" Fill="{StaticResource ToxWhiteBrush}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_settings}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </Border>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
-        <Border Margin="205.2,0,0,0" BorderThickness="0">
-            <Border.Resources>
+                    </ResourceDictionary>
+                </ListBox.Resources>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+            <Border Grid.Row="2" Background="{StaticResource ToxDarkGreyBrush}">
+                <StackPanel Name="PanelTaskbar" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Border Name="ButtonAddFriend" Width="45" MouseDown="ButtonAddFriend_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
+                        <Rectangle Width="15.884" Height="15.883" Fill="{StaticResource ToxWhiteBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_add}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Border>
+                    <Border Name="ButtonGroup" Width="45" MouseDown="ButtonGroup_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
+                        <Rectangle Width="15.402" Height="15.918" Fill="{StaticResource ToxWhiteBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_group}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Border>
+                    <Border Name="ButtonTransfers" Width="45" MouseDown="ButtonTransfers_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
+                        <Rectangle Width="15.604" Height="15.604" Fill="{StaticResource ToxWhiteBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_transfer}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Border>
+                    <Border Name="ButtonSettings" Width="45" MouseDown="ButtonSettings_MouseDown" Style="{StaticResource ToxTaskBarButtonStyle}">
+                        <Rectangle Width="15.615" Height="15.616" Fill="{StaticResource ToxWhiteBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_settings}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" HorizontalAlignment="Stretch" Width="2"/>
+        <ContentControl Grid.Column="2" Content="{Binding CurrentView}" BorderThickness="0">
+            <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type ViewModels:ConversationViewModel}">
                     <Views:ConversationView />
                 </DataTemplate>
@@ -88,8 +101,7 @@
                 <DataTemplate DataType="{x:Type ViewModels:AddFriendViewModel}">
                     <Views:AddFriendView />
                 </DataTemplate>
-            </Border.Resources>
-            <ContentControl Content="{Binding CurrentView}" BorderThickness="0"/>
-        </Border>
+            </ContentControl.Resources>
+        </ContentControl>
     </Grid>
 </Window>

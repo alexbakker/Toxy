@@ -3,11 +3,26 @@ using System;
 using System.Windows.Media;
 using Toxy.Managers;
 using Toxy.MVVM;
+using Toxy.Extensions;
 
 namespace Toxy.ViewModels
 {
     public class SelfViewModel : ViewModelBase
     {
+        public SelfViewModel()
+        {
+            ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
+
+            Name = ProfileManager.Instance.Tox.Name;
+            StatusMessage = ProfileManager.Instance.Tox.StatusMessage;
+            UserStatus = ProfileManager.Instance.Tox.Status;
+        }
+
+        private void Tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() => ConnectionStatus = e.Status);
+        }
+
         private string _name;
         public string Name
         {

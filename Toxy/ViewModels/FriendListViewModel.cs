@@ -21,6 +21,26 @@ namespace Toxy.ViewModels
             ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
             ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
             ProfileManager.Instance.Tox.OnReadReceiptReceived += Tox_OnReadReceiptReceived;
+
+            Init();
+        }
+
+        private void Init()
+        {
+            foreach (int friend in ProfileManager.Instance.Tox.Friends)
+            {
+                string name = ProfileManager.Instance.Tox.GetFriendName(friend);
+                string statusMessage = ProfileManager.Instance.Tox.GetFriendStatusMessage(friend);
+
+                var model = new FriendControlViewModel();
+                model.ChatNumber = friend;
+                model.Name = string.IsNullOrEmpty(name) ? ProfileManager.Instance.Tox.GetFriendPublicKey(friend).ToString() : name;
+                model.StatusMessage = statusMessage;
+
+                AddObject(model);
+            }
+
+            RearrangeChatCollection();
         }
 
         private ObservableCollection<IChatObject> _chatCollection = new ObservableCollection<IChatObject>();

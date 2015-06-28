@@ -140,38 +140,34 @@
         </Setter>
     </Style>
     <Style x:Key="ToxListBoxStyle" TargetType="{x:Type ListBoxItem}">
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Padding" Value="4,1" />
-            <Setter Property="HorizontalContentAlignment" 
-                    Value="{Binding HorizontalContentAlignment,
-                    RelativeSource={RelativeSource FindAncestor,
-                    AncestorLevel=1,
-                    AncestorType={x:Type ItemsControl}}}" />
-            <Setter Property="VerticalContentAlignment"
-                    Value="{Binding VerticalContentAlignment,
-                    RelativeSource={RelativeSource FindAncestor,
-                    AncestorLevel=1,
-                    AncestorType={x:Type ItemsControl}}}" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FocusVisualStyle">
-                <Setter.Value>
-                    <Style>
-                        <Setter Property="Control.Template">
-                            <Setter.Value>
-                                <ControlTemplate>
-                                    <Rectangle Margin="2"
-                                        SnapsToDevicePixels="True"
-                                        Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                                        StrokeDashArray="1 2"
-                                        StrokeThickness="1" />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Setter.Value>
-            </Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Padding" Value="4,1" />
+        <Setter Property="VerticalContentAlignment"
+                Value="{Binding VerticalContentAlignment,
+                RelativeSource={RelativeSource FindAncestor,
+                AncestorLevel=1,
+                AncestorType={x:Type ItemsControl}}}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle">
+            <Setter.Value>
+                <Style>
+                    <Setter Property="Control.Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Rectangle Margin="2"
+                                    SnapsToDevicePixels="True"
+                                    Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                    StrokeDashArray="1 2"
+                                    StrokeThickness="1" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">

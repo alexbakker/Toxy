@@ -94,6 +94,8 @@ namespace Toxy
             DataContext = new MainWindowViewModel();
             ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
 
+            this.FixBackground();
+
             //only check for updates once at launch (TODO: check periodically?)
             //TODO: move this someplace else
             CheckForUpdates();

@@ -11,7 +11,8 @@
              TextOptions.TextRenderingMode="ClearType"
              TextOptions.TextFormattingMode="Display"
              BorderThickness="0"
-             d:DataContext="{d:DesignInstance ViewModels:FriendControlViewModel}">
+             d:DataContext="{d:DesignInstance ViewModels:FriendControlViewModel}"
+             Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,9 +24,10 @@
     </UserControl.Resources>
     <UserControl.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Remove friend" Click="RemoveFriend_Click"></MenuItem>
-            <MenuItem Header="Copy public key" Click="CopyPubKey_Click"></MenuItem>
-            <MenuItem Header="Clear scrollback" Click="ClearScrollback_Click"></MenuItem>
+            <MenuItem Header="Open in new window" Click="OpenInWindow_Click"/>
+            <MenuItem Header="Remove friend" Click="RemoveFriend_Click"/>
+            <MenuItem Header="Copy public key" Click="CopyPubKey_Click"/>
+            <MenuItem Header="Clear scrollback" Click="ClearScrollback_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid>

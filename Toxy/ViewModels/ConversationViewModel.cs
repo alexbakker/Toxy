@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using Toxy.MVVM;
 using Toxy.Views;
 using System.Windows.Media;
+using Toxy.Windows;
 
 namespace Toxy.ViewModels
 {
@@ -56,6 +57,8 @@ namespace Toxy.ViewModels
                 OnPropertyChanged(() => CurrentFrame);
             }
         }
+
+        public ConversationWindow Window { get; set; }
 
         public ConversationViewModel(FriendControlViewModel model)
         {

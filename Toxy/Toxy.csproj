@@ -141,6 +141,7 @@
     <Compile Include="Tools\VideoUtils.cs" />
     <Compile Include="ViewModels\AddFriendViewModel.cs" />
     <Compile Include="ViewModels\ConversationViewModel.cs" />
+    <Compile Include="ViewModels\ConversationWindowViewModel.cs" />
     <Compile Include="ViewModels\FileTransferViewModel.cs" />
     <Compile Include="ViewModels\FriendListViewModel.cs" />
     <Compile Include="ViewModels\IMessage.cs" />
@@ -213,6 +214,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\ConversationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -224,6 +229,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\ConversationWindow.xaml.cs">
+      <DependentUpon>ConversationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>

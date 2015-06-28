@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Toxy.Managers;
 using Toxy.ViewModels;
+using Toxy.Windows;
 
 namespace Toxy.Views
 {
@@ -41,6 +42,26 @@ namespace Toxy.Views
         private void ClearScrollback_Click(object sender, RoutedEventArgs e)
         {
             Context.ConversationView.Messages.Clear();
+        }
+
+        private void OpenInWindow_Click(object sender, RoutedEventArgs e)
+        {
+            if (Context.ConversationView.Window != null)
+            {
+                if (Context.ConversationView.Window.WindowState == WindowState.Minimized)
+                    Context.ConversationView.Window.WindowState = WindowState.Normal;
+                else
+                    Context.ConversationView.Window.Activate();
+
+                return;
+            }
+
+            var window = new ConversationWindow(Context.ConversationView);
+
+            Context.ConversationView.Window = window;
+            MainWindow.Instance.AddChildWindow(window);
+
+            window.Show();
         }
     }
 }

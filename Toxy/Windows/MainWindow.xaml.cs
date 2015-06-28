@@ -11,6 +11,8 @@ using Toxy.Extensions;
 using Toxy.Managers;
 using System.Threading.Tasks;
 using Squirrel;
+using System.Collections.Generic;
+using Toxy.Windows;
 
 namespace Toxy
 {
@@ -28,6 +30,8 @@ namespace Toxy
 #elif X64 && CANARY
         private const string _updateUrl = "http://update.toxing.me/toxy/x64/canary/";
 #endif
+
+        public List<ConversationWindow> Children { get; private set; }
 
         private static MainWindow _instance;
         public static MainWindow Instance
@@ -54,6 +58,10 @@ namespace Toxy
             //make absolutely sure we've disposed all audio/video resources
             Instance.ViewModel.CurrentSettingsView.Kill();
             CallManager.Get().Kill();
+
+            //reverse iterate because closing the windows also removes them from the list
+            for (int i = Instance.Children.Count - 1; i >= 0; i--)
+                Instance.Children[i].Close();
         }
 
         public MainWindowViewModel ViewModel
@@ -87,11 +95,34 @@ namespace Toxy
             _instance = null;
         }
 
+        public void AddChildWindow(ConversationWindow window)
+        {
+            if (!Children.Contains(window))
+            {
+                window.Closing += ChildWindow_Closing;
+                Children.Add(window);
+            }
+        }
+
+        private void ChildWindow_Closing(object sender, CancelEventArgs e)
+        {
+            var window = sender as ConversationWindow;
+            if (window == null)
+                return;
+
+            window.Context.CurrentView.Window = null;
+
+            if (Children.Contains(window))
+                Children.Remove(window);
+        }
+
         private MainWindow()
         {
             InitializeComponent();
 
             DataContext = new MainWindowViewModel();
+            Children = new List<ConversationWindow>();
+
             ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
 
             this.FixBackground();

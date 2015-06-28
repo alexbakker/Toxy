@@ -46,7 +46,7 @@ namespace Toxy.Windows
             }
         }
 
-        private void LoginWindow_OnNewProfileButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void LoginWindow_OnNewProfileButtonClicked(object sender, RoutedEventArgs e)
         {
             var model = Context.CurrentView as LoginNewViewModel;
             if (model == null)

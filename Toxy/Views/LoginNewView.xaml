@@ -20,8 +20,6 @@
         <TextBox x:Name="TextBoxProfileName" Margin="5,0" Height="25" FontSize="14"/>
         <Label Margin="0,25,0,0" Foreground="{StaticResource ToxMediumGreyBrush}" Content="Password" HorizontalAlignment="Left" FontSize="13"/>
         <PasswordBox Margin="5,0" Height="25" FontSize="14" IsEnabled="False"/>
-        <Border MouseDown="CreateProfile_Click" Margin="0,25,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="30" Width="110" CornerRadius="5,5,5,5" Style="{StaticResource ToxGreenButtonStyle}">
-            <TextBlock FontSize="13" FontWeight="Bold" VerticalAlignment="Center" Text="Create profile" TextAlignment="Center" Foreground="{StaticResource ToxWhiteBrush}"/>
-        </Border>
+        <Button Foreground="{StaticResource ToxWhiteBrush}" FontWeight="Bold" Content="Create profile" Click="CreateProfile_Click" Margin="0,25,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="30" Width="110" Style="{StaticResource ToxGreenButtonStyle}"/>
     </StackPanel>
 </UserControl>

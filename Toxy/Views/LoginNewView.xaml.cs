@@ -17,7 +17,7 @@ namespace Toxy.Views
             InitializeComponent();
         }
 
-        private void CreateProfile_Click(object sender, MouseButtonEventArgs e)
+        private void CreateProfile_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             //no, apparently a binding doesn't work here..
             Context.ProfileName = TextBoxProfileName.Text;

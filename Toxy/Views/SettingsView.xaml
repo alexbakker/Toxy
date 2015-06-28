@@ -194,16 +194,48 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Interface"/>
+                            <TextBlock Text="Advanced"/>
                         </StackPanel>
                     </TabItem.Header>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Advanced"/>
+                            <TextBlock Text="About"/>
                         </StackPanel>
                     </TabItem.Header>
+                    <TabItem.Content>
+                        <ScrollViewer>
+                            <StackPanel Orientation="Vertical" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <Grid>
+                                    <Label Content="License" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" Height="200" VerticalAlignment="Top">
+                                        <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <FlowDocument PagePadding="5" FontFamily="Segoe UI" FontSize="12">
+                                                <Paragraph>
+                                                    Toxy is free software: you can redistribute it and/or modify
+                                                    it under the terms of the GNU General Public License as published by
+                                                    the Free Software Foundation, either version 3 of the License, or
+                                                    (at your option) any later version.
+                                                </Paragraph>
+                                                <Paragraph>
+                                                    Toxy is distributed in the hope that it will be useful,
+                                                    but WITHOUT ANY WARRANTY; without even the implied warranty of
+                                                    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                                                    GNU General Public License for more details.
+                                                </Paragraph>
+                                                <Paragraph>
+                                                    You should have received a copy of the GNU General Public License
+                                                    along with this program.  If not, see
+                                                    <Hyperlink>http://www.gnu.org/licenses</Hyperlink>.
+                                                </Paragraph>
+                                            </FlowDocument>
+                                        </FlowDocumentScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem.Content>
                 </TabItem>
             </TabControl>
         </Border>

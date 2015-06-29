@@ -7,15 +7,24 @@ namespace Toxy.Extensions
 {
     public static class WindowExtensions
     {
-        public static void Flash(this Window window)
-        {
-
-        }
-
         public static void FixBackground(this Window window)
         {
             var handle = new WindowInteropHelper(window).EnsureHandle();
             var result = SetClassLong(handle, GCL_HBRBACKGROUND, GetSysColorBrush(COLOR_WINDOW));
+        }
+
+        public static bool Flash(this Window window)
+        {
+            IntPtr hWnd = new WindowInteropHelper(window).Handle;
+            FLASHWINFO fInfo = new FLASHWINFO();
+
+            fInfo.cbSize = Convert.ToUInt32(Marshal.SizeOf(fInfo));
+            fInfo.hwnd = hWnd;
+            fInfo.dwFlags = 3 | 12;
+            fInfo.uCount = UInt32.MaxValue;
+            fInfo.dwTimeout = 0;
+
+            return FlashWindowEx(ref fInfo);
         }
 
         private static IntPtr SetClassLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
@@ -37,5 +46,19 @@ namespace Toxy.Extensions
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetSysColorBrush(int nIndex);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FLASHWINFO
+        {
+            public UInt32 cbSize;
+            public IntPtr hwnd;
+            public UInt32 dwFlags;
+            public UInt32 uCount;
+            public UInt32 dwTimeout;
+        }
     }
 }

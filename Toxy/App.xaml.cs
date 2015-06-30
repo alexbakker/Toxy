@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Interop;
 
 using SharpTox.Core;
 using SharpTox.Av;
@@ -18,6 +20,8 @@ namespace Toxy
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+
             Debugging.Write("Tox version: " + ToxVersion.Current.ToString());
             Config.Instance.Reload();
 

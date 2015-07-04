@@ -12,11 +12,11 @@ namespace Toxy.Converters
             var dic = new ResourceDictionary();
             dic.Source = new Uri("pack://application:,,,/Toxy;component/Resources/Colors.xaml");
 
-            if (values.Length != 2)
-                return dic["ToxWhiteBrush"];
-
             if (values[0] != null)
                 return Brushes.Transparent;
+
+            if (values.Length != 2)
+                return dic["ToxMediumGreyBrush"];
 
             bool? selected = values[1] as bool?;
             if (selected == null)

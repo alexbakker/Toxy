@@ -41,7 +41,6 @@
                             <Rectangle.Fill>
                                 <MultiBinding Converter="{StaticResource BoolToFillColorConverter}">
                                     <Binding Path="Friend.Avatar"/>
-                                    <Binding Path="Friend.IsSelected"/>
                                 </MultiBinding>
                             </Rectangle.Fill>
                             <Rectangle.OpacityMask>

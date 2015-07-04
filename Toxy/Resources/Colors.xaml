@@ -14,6 +14,7 @@
     <Color x:Key="ToxRedDisabled">#e08282</Color>
     <Color x:Key="ToxBlack">#000000</Color>
     <Color x:Key="ToxDarkGrey">#1c1c1c</Color>
+    <Color x:Key="ToxMediumLightGrey">#7a7a7a</Color>
     <Color x:Key="ToxMediumGrey">#414141</Color>
     <Color x:Key="ToxMediumGreyHover">#4f4f4f</Color>
     <Color x:Key="ToxLightGrey">#d1d1d1</Color>
@@ -38,6 +39,7 @@
     <SolidColorBrush x:Key="ToxRedDisabledBrush" Color="{StaticResource ToxRedDisabled}"/>
     <SolidColorBrush x:Key="ToxBlackBrush" Color="{StaticResource ToxBlack}"/>
     <SolidColorBrush x:Key="ToxDarkGreyBrush" Color="{StaticResource ToxDarkGrey}"/>
+    <SolidColorBrush x:Key="ToxMediumLightGreyBrush" Color="{StaticResource ToxMediumLightGrey}"/>
     <SolidColorBrush x:Key="ToxMediumGreyBrush" Color="{StaticResource ToxMediumGrey}"/>
     <SolidColorBrush x:Key="ToxMediumGreyHoverBrush" Color="{StaticResource ToxMediumGreyHover}"/>
     <SolidColorBrush x:Key="ToxLightGreyBrush" Color="{StaticResource ToxLightGrey}"/>

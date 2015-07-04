@@ -9,7 +9,7 @@ namespace Toxy.Converters
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool selected = (bool)value;
-            return selected ? Visibility.Visible : Visibility.Hidden;
+            return selected ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -80,7 +80,7 @@
             </Grid.RowDefinitions>
             <Image Grid.Row="0" Source="{Binding CurrentFrame}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
-            <ItemsControl Grid.Row="2" BorderThickness="0" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Messages, Mode=OneWay}">
+            <ItemsControl VirtualizingPanel.CacheLength="20" Grid.Row="2" BorderThickness="0" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Messages, Mode=OneWay}">
                 <ItemsControl.ItemContainerStyle>
                     <Style>
                         <Setter Property="FrameworkElement.Margin" Value="2,5,0,0"/>

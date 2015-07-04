@@ -144,6 +144,7 @@
     <Compile Include="ViewModels\ConversationWindowViewModel.cs" />
     <Compile Include="ViewModels\FileTransferViewModel.cs" />
     <Compile Include="ViewModels\FriendListViewModel.cs" />
+    <Compile Include="ViewModels\FriendRequest.cs" />
     <Compile Include="ViewModels\IMessage.cs" />
     <Compile Include="ViewModels\LoginExistingViewModel.cs" />
     <Compile Include="ViewModels\LoginNewViewModel.cs" />
@@ -171,6 +172,9 @@
     </Compile>
     <Compile Include="Views\FriendControlView.xaml.cs">
       <DependentUpon>FriendControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FriendListView.xaml.cs">
+      <DependentUpon>FriendListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginExistingView.xaml.cs">
       <DependentUpon>LoginExistingView.xaml</DependentUpon>
@@ -203,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConversationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FriendListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

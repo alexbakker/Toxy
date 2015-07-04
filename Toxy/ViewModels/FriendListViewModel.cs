@@ -6,6 +6,8 @@ using SharpTox.Core;
 using Toxy.MVVM;
 using Toxy.Managers;
 using Toxy.Extensions;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
 namespace Toxy.ViewModels
 {
@@ -21,6 +23,7 @@ namespace Toxy.ViewModels
             ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
             ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
             ProfileManager.Instance.Tox.OnReadReceiptReceived += Tox_OnReadReceiptReceived;
+            ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
 
             Init();
         }
@@ -57,6 +60,24 @@ namespace Toxy.ViewModels
                 _chatCollection = value;
                 OnPropertyChanged(() => ChatCollection);
             }
+        }
+
+        private List<FriendRequest> _friendRequests = new List<FriendRequest>();
+        private FriendRequest _currentFriendRequest;
+
+        public FriendRequest CurrentFriendRequest
+        {
+            get { return _friendRequests.LastOrDefault(); }
+        }
+
+        public bool PendingFriendRequestsAvailable
+        {
+            get { return _friendRequests.Count != 0; }
+        }
+
+        public int PendingFriendRequestCount
+        {
+            get { return _friendRequests.Count; }
         }
 
         //we have to keep a reference of the main view model in order to change the current view from here
@@ -140,6 +161,60 @@ namespace Toxy.ViewModels
                 );
         }
 
+        public void AcceptCurrentFriendRequest()
+        {
+            if (CurrentFriendRequest == null)
+                return;
+
+            var error = ToxErrorFriendAdd.Ok;
+            int friendNumber = ProfileManager.Instance.Tox.AddFriendNoRequest(new ToxKey(ToxKeyType.Public, CurrentFriendRequest.PublicKey), out error);
+
+            if (error != ToxErrorFriendAdd.Ok)
+            {
+                Debugging.Write("Failed to add friend: " + error);
+            }
+            else
+            {
+                var model = new FriendControlViewModel();
+                model.ChatNumber = friendNumber;
+                model.Name = ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber).ToString();
+
+                //add the friend to the list, sorted
+                AddObject(model);
+                SortObject(model);
+
+                //auto switch to converation view of this friend (?)
+                SelectObject(model);
+            }
+
+            RemoveCurrentFriendRequest();
+        }
+
+        public void RemoveCurrentFriendRequest()
+        {
+            if (CurrentFriendRequest == null)
+                return;
+
+            _friendRequests.Remove(CurrentFriendRequest);
+
+            OnPropertyChanged(() => CurrentFriendRequest);
+            OnPropertyChanged(() => PendingFriendRequestsAvailable);
+            OnPropertyChanged(() => PendingFriendRequestCount);
+        }
+
+        private void Tox_OnFriendRequestReceived(object sender, ToxEventArgs.FriendRequestEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var request = new FriendRequest(e.PublicKey.ToString(), e.Message);
+                _friendRequests.Add(request);
+
+                OnPropertyChanged(() => CurrentFriendRequest);
+                OnPropertyChanged(() => PendingFriendRequestsAvailable);
+                OnPropertyChanged(() => PendingFriendRequestCount);
+            });
+        }
+        
         private void Tox_OnReadReceiptReceived(object sender, ToxEventArgs.ReadReceiptEventArgs e)
         {
             MainWindow.Instance.UInvoke(() =>

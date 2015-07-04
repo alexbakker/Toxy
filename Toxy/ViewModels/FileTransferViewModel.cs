@@ -43,7 +43,7 @@ namespace Toxy.ViewModels
             }
         }
 
-        private string _speed = "125KB/s";
+        private string _speed;
         public string Speed
         {
             get { return _speed; }
@@ -58,7 +58,7 @@ namespace Toxy.ViewModels
             }
         }
 
-        private string _timeLeft = "13:37";
+        private string _timeLeft;
         public string TimeLeft
         {
             get { return _timeLeft; }
@@ -73,7 +73,7 @@ namespace Toxy.ViewModels
             }
         }
 
-        private int _progress = 35;
+        private int _progress;
         public int Progress
         {
             get { return _progress; }

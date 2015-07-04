@@ -22,10 +22,10 @@
         <Border Grid.Column="0" Background="{StaticResource ToxLightGreyBrush}" CornerRadius="5,0,0,5">
             <Grid>
                 <Border Background="White" Margin="10,10,0,10" HorizontalAlignment="Left" Width="40" Height="40"/>
-                <TextBlock Text="{Binding Name, Mode=OneWay}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="55,7,35,0" Height="21" VerticalAlignment="Top"/>
-                <TextBlock FontSize="10" Text="{Binding Size, Mode=OneWay}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="55,0,35,21" Height="14" VerticalAlignment="Bottom"/>
-                <TextBlock FontSize="10" Text="{Binding Speed, Mode=OneWay}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="106,0,62,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-                <TextBlock FontSize="10" Text="01:37" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="0,0,10,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="29"/>
+                <TextBlock Text="{Binding Name, Mode=OneWay, TargetNullValue='File name'}" Foreground="{StaticResource ToxDarkGreyBrush}" Margin="55,7,35,0" Height="21" VerticalAlignment="Top"/>
+                <TextBlock FontSize="10" Text="{Binding Size, Mode=OneWay, TargetNullValue='0B'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="55,0,35,21" Height="14" VerticalAlignment="Bottom"/>
+                <TextBlock FontSize="10" Text="{Binding Speed, Mode=OneWay, TargetNullValue='0Kb/s'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="106,0,62,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                <TextBlock FontSize="10" Text="{Binding TimeLeft, Mode=OneWay, TargetNullValue='0:00'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="0,0,10,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="29"/>
                 <ProgressBar Margin="55,0,10,10" Height="11" VerticalAlignment="Bottom" Value="{Binding Progress, Mode=OneWay}" />
             </Grid>
         </Border>

@@ -123,7 +123,6 @@ namespace Toxy
             DataContext = new MainWindowViewModel();
             Children = new List<ConversationWindow>();
 
-            ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
             ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
 
             this.FixBackground();
@@ -181,37 +180,6 @@ namespace Toxy
                 }
             }
             catch (Exception ex) { Debugging.Write("Could not check for updates: " + ex.ToString()); }
-        }
-
-        private void Tox_OnFriendRequestReceived(object sender, ToxEventArgs.FriendRequestEventArgs e)
-        {
-            MainWindow.Instance.UInvoke(() =>
-            {
-                var result = MessageBox.Show(string.Format("{0} wants to add you to his/her friend list.\n\nMessage: {1}\n\nWould you like to accept this friend request?", e.PublicKey.ToString(), e.Message), "New friend request", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result != MessageBoxResult.Yes)
-                    return;
-
-                var error = ToxErrorFriendAdd.Ok;
-                int friendNumber = ProfileManager.Instance.Tox.AddFriendNoRequest(e.PublicKey, out error);
-
-                if (error != ToxErrorFriendAdd.Ok)
-                {
-                    Debugging.Write("Failed to add friend: " + error);
-                }
-                else
-                {
-                    var model = new FriendControlViewModel();
-                    model.ChatNumber = friendNumber;
-                    model.Name = ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber).ToString();
-
-                    //add the friend to the list, sorted
-                    MainWindow.Instance.ViewModel.CurrentFriendListView.AddObject(model);
-                    MainWindow.Instance.ViewModel.CurrentFriendListView.SortObject(model);
-
-                    //auto switch to converation view of this friend (?)
-                    MainWindow.Instance.ViewModel.CurrentFriendListView.SelectObject(model);
-                }
-            });
         }
 
         private void ButtonGroup_MouseDown(object sender, MouseButtonEventArgs e)

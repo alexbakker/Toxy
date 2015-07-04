@@ -81,7 +81,7 @@
             <ListBox.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/ScrollviewerStyles.xaml"/>
+                        <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/DarkScrollviewerStyle.xaml"/>
                     </ResourceDictionary.MergedDictionaries>
                     <DataTemplate DataType="{x:Type ViewModels:FriendControlViewModel}">
                         <Views:FriendControlView DataContext="{Binding Mode=OneWay}" />

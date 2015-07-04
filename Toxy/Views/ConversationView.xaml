@@ -109,12 +109,17 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Resources>
-                    <DataTemplate DataType="{x:Type ViewModels:MessageViewModel}">
-                        <Views:MessageView DataContext="{Binding Mode=OneWay}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type ViewModels:FileTransferViewModel}">
-                        <Views:FileTransferView DataContext="{Binding Mode=OneWay}" />
-                    </DataTemplate>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/LightScrollviewerStyle.xaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                        <DataTemplate DataType="{x:Type ViewModels:MessageViewModel}">
+                            <Views:MessageView DataContext="{Binding Mode=OneWay}" />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type ViewModels:FileTransferViewModel}">
+                            <Views:FileTransferView DataContext="{Binding Mode=OneWay}" />
+                        </DataTemplate>
+                    </ResourceDictionary>
                 </ItemsControl.Resources>
             </ItemsControl>
         </Grid>

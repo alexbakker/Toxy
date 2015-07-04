@@ -60,7 +60,7 @@
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                         </Button>
-                        <Button Click="Call_Click" Margin="10,10,70,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
+                        <Button Click="Call_Click" Margin="10,10,65,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
                             <Rectangle Width="21.2" Height="19.7" Fill="{StaticResource ToxWhiteBrush}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource tox_phone}" />

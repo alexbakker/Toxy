@@ -23,7 +23,7 @@ namespace Toxy
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
 
             Debugging.Write("Tox version: " + ToxVersion.Current.ToString());
-            Debugging.Write("ToxAV version: " + ToxAvVersion.Current.ToString());
+            Debugging.Write("ToxAv version: " + ToxAvVersion.Current.ToString());
 
             Config.Instance.Reload();
 

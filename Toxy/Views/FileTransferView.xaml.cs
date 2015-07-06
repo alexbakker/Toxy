@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SharpTox.Core;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Toxy.Managers;
+using Toxy.ViewModels;
 
 namespace Toxy.Views
 {
@@ -20,9 +12,35 @@ namespace Toxy.Views
     /// </summary>
     public partial class FileTransferView : UserControl
     {
+        public FileTransferViewModel Context { get { return DataContext as FileTransferViewModel; } }
+
         public FileTransferView()
         {
             InitializeComponent();
+        }
+
+        private void TopButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Context.IsFinished && !Context.IsInProgress && Context.Direction == FileTransferDirection.Incoming)
+            {
+                TransferManager.Instance.AcceptTransfer(Context.Transfer); //cancel the transfer if this fails
+            }
+            else if (Context.IsInProgress || (!Context.IsFinished && Context.Direction == FileTransferDirection.Outgoing))
+            {
+                TransferManager.Instance.CancelTransfer(Context.Transfer);
+            }
+        }
+
+        private void BottomButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Context.IsFinished && !Context.IsInProgress && Context.Direction == FileTransferDirection.Incoming)
+            {
+                TransferManager.Instance.CancelTransfer(Context.Transfer);
+            }
+            else if (Context.IsInProgress)
+            {
+                TransferManager.Instance.PauseTransfer(Context.Transfer);
+            }
         }
     }
 }

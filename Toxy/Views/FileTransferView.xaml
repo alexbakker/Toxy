@@ -5,27 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance ViewModels:FileTransferViewModel}" Height="59" Width="238">
+             d:DataContext="{d:DesignInstance ViewModels:FileTransferViewModel}" 
+             Height="60" Width="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Background="{StaticResource ToxLightGreyBrush}" CornerRadius="5,0,0,5">
             <Grid>
                 <Border Background="White" Margin="10,10,0,10" HorizontalAlignment="Left" Width="40" Height="40"/>
-                <TextBlock Text="{Binding Name, Mode=OneWay, TargetNullValue='File name'}" Foreground="{StaticResource ToxDarkGreyBrush}" Margin="55,7,35,0" Height="21" VerticalAlignment="Top"/>
+                <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name, Mode=OneWay, TargetNullValue='File name'}" Foreground="{StaticResource ToxDarkGreyBrush}" Margin="55,7,10,0" Height="21" VerticalAlignment="Top"/>
                 <TextBlock FontSize="10" Text="{Binding Size, Mode=OneWay, TargetNullValue='0B'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="55,0,35,21" Height="14" VerticalAlignment="Bottom"/>
                 <TextBlock FontSize="10" Text="{Binding Speed, Mode=OneWay, TargetNullValue='0Kb/s'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="106,0,62,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-                <TextBlock FontSize="10" Text="{Binding TimeLeft, Mode=OneWay, TargetNullValue='0:00'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="0,0,10,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="29"/>
+                <TextBlock FontSize="10" Text="{Binding TimeLeft, Mode=OneWay, TargetNullValue='0:00'}" Foreground="{StaticResource ToxMediumGreyBrush}" Margin="0,0,10,21" Height="14" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
                 <ProgressBar Margin="55,0,10,10" Height="11" VerticalAlignment="Bottom" Value="{Binding Progress, Mode=OneWay}" />
             </Grid>
         </Border>
@@ -34,20 +36,34 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Style="{StaticResource ToxGreenButtonTopRightStyle}" Margin="2 0 0 1">
+            <Button Grid.Row="0" Style="{StaticResource ToxGreenButtonTopRightStyle}" Margin="2 0 0 1" Click="TopButton_Click">
                 <Button.Content>
                     <Rectangle Width="10.086" Height="10.087" Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource tox_no}" />
+                            <VisualBrush Stretch="Fill">
+                                <VisualBrush.Visual>
+                                    <MultiBinding Mode="OneWay" Converter="{StaticResource TransferStateToTopButtonVisualConverter}">
+                                        <Binding Path="IsInProgress"/>
+                                        <Binding Path="Direction"/>
+                                    </MultiBinding>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button.Content>
             </Button>
-            <Button Grid.Row="1" Style="{StaticResource ToxGreenButtonBottomRightStyle}" Margin="2 1 0 0">
+            <Button Grid.Row="1" Style="{StaticResource ToxGreenButtonBottomRightStyle}" Margin="2 1 0 0" Click="BottomButton_Click">
                 <Button.Content>
                     <Rectangle Width="8.4" Height="9.4" Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Fill" Visual="{StaticResource tox_pause}" />
+                            <VisualBrush Stretch="Fill">
+                                <VisualBrush.Visual>
+                                    <MultiBinding Mode="OneWay" Converter="{StaticResource TransferStateToBottomButtonVisualConverter}">
+                                        <Binding Path="IsInProgress"/>
+                                        <Binding Path="Direction"/>
+                                    </MultiBinding>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button.Content>

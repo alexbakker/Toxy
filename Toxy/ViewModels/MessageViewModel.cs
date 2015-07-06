@@ -4,7 +4,7 @@ using Toxy.MVVM;
 
 namespace Toxy.ViewModels
 {
-    public class MessageViewModel : ViewModelBase, IMessage
+    public class MessageViewModel : ViewModelBase
     {
         private string _message;
         private string _friendName; //TODO: make this a binding to the friend view model (performace impact?)
@@ -80,11 +80,6 @@ namespace Toxy.ViewModels
                 _wasReceived = value;
                 OnPropertyChanged(() => WasReceived);
             }
-        }
-
-        public MessageType MessageType
-        {
-            get { return MessageType.Message; }
         }
     }
 }

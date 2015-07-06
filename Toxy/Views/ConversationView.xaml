@@ -117,8 +117,8 @@
                         <DataTemplate DataType="{x:Type ViewModels:MessageViewModel}">
                             <Views:MessageView DataContext="{Binding Mode=OneWay}" />
                         </DataTemplate>
-                        <DataTemplate DataType="{x:Type ViewModels:FileTransferViewModel}">
-                            <Views:FileTransferView DataContext="{Binding Mode=OneWay}" />
+                        <DataTemplate DataType="{x:Type ViewModels:FileTransferMessageViewModel}">
+                            <Views:FileTransferMessageView DataContext="{Binding Mode=OneWay}" />
                         </DataTemplate>
                     </ResourceDictionary>
                 </ItemsControl.Resources>
@@ -148,7 +148,7 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
-                <Button Grid.Column="1" Grid.Row="2" Width="19" Style="{StaticResource ToxGreenButtonBottomRightStyle}" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}">
+                <Button Grid.Column="1" Grid.Row="2" Width="19" Style="{StaticResource ToxGreenButtonBottomRightStyle}" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Click="ButtonSendFile_Click">
                     <Rectangle Width="13.736" Height="13.708" Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource tox_attach}" />

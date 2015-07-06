@@ -226,7 +226,7 @@ namespace Toxy.ViewModels
                     return;
                 }
 
-                var msg = friend.ConversationView.Messages.FirstOrDefault(m => m.MessageType == MessageType.Message && m.MessageId == e.Receipt);
+                var msg = friend.ConversationView.Messages.FirstOrDefault(m => m is MessageViewModel && (m as MessageViewModel).MessageId == e.Receipt) as MessageViewModel;
                 if (msg == null)
                 {
                     Debugging.Write("Received a read receipt for a message we don't know about!");

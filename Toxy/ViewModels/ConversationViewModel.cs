@@ -6,6 +6,8 @@ using Toxy.MVVM;
 using Toxy.Views;
 using System.Windows.Media;
 using Toxy.Windows;
+using Toxy.Managers;
+using Toxy.Extensions;
 
 namespace Toxy.ViewModels
 {
@@ -13,8 +15,8 @@ namespace Toxy.ViewModels
     {
         public FriendControlViewModel Friend { get; private set; }
 
-        private ObservableCollection<IMessage> _messages = new ObservableCollection<IMessage>();
-        public ObservableCollection<IMessage> Messages
+        private ObservableCollection<ViewModelBase> _messages = new ObservableCollection<ViewModelBase>();
+        public ObservableCollection<ViewModelBase> Messages
         {
             get { return _messages; }
             set
@@ -67,12 +69,26 @@ namespace Toxy.ViewModels
 
         public void AddMessage(MessageViewModel message)
         {
-            var lastMessage = _messages.LastOrDefault();
+            var lastMessage = _messages.LastOrDefault(m => m is MessageViewModel);
 
-            if (lastMessage != null && lastMessage.FriendNumber == message.FriendNumber)
+            if (lastMessage != null && (lastMessage as MessageViewModel).FriendNumber == message.FriendNumber)
                 message.FriendName = string.Empty;
 
             Messages.Add(message);
+        }
+
+        public void AddTransfer(FileTransfer transfer)
+        {
+            var transferModel = new FileTransferViewModel(transfer.FriendNumber, transfer);
+            transferModel.Name = transfer.Name;
+            transferModel.Size = transfer.Size.GetSizeString();
+
+            var viewModel = new FileTransferMessageViewModel(transfer.FriendNumber);
+            viewModel.FriendName = ProfileManager.Instance.Tox.GetFriendName(transfer.FriendNumber);
+            viewModel.Time = DateTime.Now.ToShortTimeString();
+            viewModel.FileTransferView = transferModel;
+
+            Messages.Add(viewModel);
         }
     }
 }

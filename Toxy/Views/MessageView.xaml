@@ -29,8 +29,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" TextTrimming="CharacterEllipsis" Name="TextBoxName" Text="{Binding FriendName, Mode=OneTime}" HorizontalAlignment="Right" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
-        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="10 0" Name="TextBoxMessage" extra:UriParser.Text="{Binding Message, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
-        <TextBlock Grid.Column="2" Margin="0 0 5 0" Name="TextBoxTime" Text="{Binding Time, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
+        <TextBlock Grid.Column="0" TextTrimming="CharacterEllipsis" Text="{Binding FriendName, Mode=OneTime}" HorizontalAlignment="Right" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
+        <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="10 0" extra:UriParser.Text="{Binding Message, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
+        <TextBlock Grid.Column="2" Margin="0 0 5 0" Text="{Binding Time, Mode=OneTime}" Foreground="{Binding WasReceived, Converter={StaticResource BoolToMessageForegroundConverter}, Mode=OneWay}"/>
     </Grid>
 </UserControl>

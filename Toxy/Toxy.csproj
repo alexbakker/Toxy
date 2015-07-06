@@ -118,6 +118,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BoolToButtonFillColorConverter.cs" />
     <Compile Include="Converters\BoolToFillColorConverter.cs" />
     <Compile Include="Converters\BoolToMessageForegroundConverter.cs" />
     <Compile Include="Converters\BoolToNameForegroundConverter.cs" />
@@ -125,9 +126,14 @@
     <Compile Include="Converters\BoolToStatusMessageForegroundConverter.cs" />
     <Compile Include="Converters\BoolToVideoButtonStyleConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\CallStateToVisibilityConverter.cs" />
+    <Compile Include="Converters\FileTransfers\TransferStateToBottomButtonVisualConverter.cs" />
+    <Compile Include="Converters\FileTransfers\TransferStateToTopButtonStyleConverter.cs" />
+    <Compile Include="Converters\FileTransfers\TransferStateToTopButtonVisualConverter.cs" />
     <Compile Include="Converters\ToxUserStatusToBrushConverter.cs" />
     <Compile Include="Converters\ToxUserStatusToVisualConverter.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\LongExtensions.cs" />
     <Compile Include="Extensions\UriParser.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
     <Compile Include="Managers\AudioEngine.cs" />
@@ -142,10 +148,10 @@
     <Compile Include="ViewModels\AddFriendViewModel.cs" />
     <Compile Include="ViewModels\ConversationViewModel.cs" />
     <Compile Include="ViewModels\ConversationWindowViewModel.cs" />
+    <Compile Include="ViewModels\FileTransferMessageViewModel.cs" />
     <Compile Include="ViewModels\FileTransferViewModel.cs" />
     <Compile Include="ViewModels\FriendListViewModel.cs" />
     <Compile Include="ViewModels\FriendRequest.cs" />
-    <Compile Include="ViewModels\IMessage.cs" />
     <Compile Include="ViewModels\LoginExistingViewModel.cs" />
     <Compile Include="ViewModels\LoginNewViewModel.cs" />
     <Compile Include="ViewModels\LoginWindowViewModel.cs" />
@@ -167,6 +173,9 @@
     <Compile Include="ViewModels\FriendControlViewModel.cs" />
     <Compile Include="ViewModels\IChatObject.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Views\FileTransferMessageView.xaml.cs">
+      <DependentUpon>FileTransferMessageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FileTransferView.xaml.cs">
       <DependentUpon>FileTransferView.xaml</DependentUpon>
     </Compile>
@@ -211,6 +220,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConversationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileTransferMessageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

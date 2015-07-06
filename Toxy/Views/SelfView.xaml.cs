@@ -69,7 +69,7 @@ namespace Toxy.Views
 
             foreach (int friend in ProfileManager.Instance.Tox.Friends)
                 if (ProfileManager.Instance.Tox.IsFriendOnline(friend))
-                    TransferManager.SendAvatar(friend, bytes);
+                    TransferManager.Instance.SendAvatar(friend, bytes);
 
             MainWindow.Instance.ViewModel.CurrentSelfView.Avatar = bmp;
         }

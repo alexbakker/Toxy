@@ -82,7 +82,7 @@ namespace Toxy.Managers
             Tox = newTox;
             ToxAv = newToxAv;
 
-            TransferManager.Get();
+            TransferManager.Init();
             CallManager.Get();
             AvatarManager.Instance.Rehash();
             ConnectionManager.Get().DoBootstrap();

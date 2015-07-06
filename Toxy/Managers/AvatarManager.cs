@@ -34,7 +34,7 @@ namespace Toxy.Managers
         private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
         {
             if (e.Status != ToxConnectionStatus.None)
-                TransferManager.SendAvatar(e.FriendNumber, _selfAvatar);
+                TransferManager.Instance.SendAvatar(e.FriendNumber, _selfAvatar);
         }
 
         public bool Contains(int friendNumber)
@@ -189,7 +189,7 @@ namespace Toxy.Managers
 
                 foreach(int friend in ProfileManager.Instance.Tox.Friends)
                     if (ProfileManager.Instance.Tox.IsFriendOnline(friend))
-                        TransferManager.SendAvatar(friend, null);
+                        TransferManager.Instance.SendAvatar(friend, null);
             }
             catch { }
         }

@@ -6,6 +6,8 @@ using Toxy.ViewModels;
 using Toxy.Extensions;
 using System.Windows.Input;
 using Toxy.Managers;
+using Microsoft.Win32;
+using System.Windows;
 
 namespace Toxy.Views
 {
@@ -157,6 +159,25 @@ namespace Toxy.Views
 
             if (_autoScroll && e.ExtentHeightChange != 0)
                 scrollViewer.ScrollToVerticalOffset(scrollViewer.ExtentHeight);
+        }
+
+        private void ButtonSendFile_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Multiselect = false;
+            dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            var transfer = TransferManager.Instance.SendFile(Context.Friend.ChatNumber, dialog.FileName);
+            if (transfer == null)
+            {
+                MessageBox.Show("Could not send file transfer request.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Context.Friend.ConversationView.AddTransfer(transfer);
         }
     }
 }

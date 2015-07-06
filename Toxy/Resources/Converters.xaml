@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:Converters="clr-namespace:Toxy.Converters">
+                    xmlns:Converters="clr-namespace:Toxy.Converters"
+                    xmlns:FileTransferConverters="clr-namespace:Toxy.Converters.FileTransfers">
     <Converters:ToxUserStatusToBrushConverter x:Key="ToxUserStatusToBrushConverter"/>
     <Converters:ToxUserStatusToVisualConverter x:Key="ToxUserStatusToVisualConverter"/>
     <Converters:BoolToNameForegroundConverter x:Key="BoolToNameForegroundConverter"/>
@@ -10,4 +11,9 @@
     <Converters:BoolToPhoneButtonStyleConverter x:Key="BoolToPhoneButtonStyleConverter"/>
     <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <Converters:BoolToVideoButtonStyleConverter x:Key="BoolToVideoButtonStyleConverter"/>
+    <Converters:CallStateToVisibilityConverter x:Key="CallStateToVisibilityConverter"/>
+    <Converters:BoolToButtonFillColorConverter x:Key="BoolToButtonFillColorConverter"/>
+    <FileTransferConverters:TransferStateToTopButtonStyleConverter x:Key="TransferStateToTopButtonStyleConverter"/>
+    <FileTransferConverters:TransferStateToTopButtonVisualConverter x:Key="TransferStateToTopButtonVisualConverter"/>
+    <FileTransferConverters:TransferStateToBottomButtonVisualConverter x:Key="TransferStateToBottomButtonVisualConverter"/>
 </ResourceDictionary>

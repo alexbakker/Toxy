@@ -76,7 +76,7 @@
                 <RowDefinition Height="Auto" MaxHeight="300"/>
                 <RowDefinition Height="2"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
             </Grid.RowDefinitions>
             <Image Grid.Row="0" Source="{Binding CurrentFrame}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
@@ -123,8 +123,18 @@
                     </ResourceDictionary>
                 </ItemsControl.Resources>
             </ItemsControl>
+            <TextBlock Visibility="{Binding Friend.IsTyping, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" 
+                       Margin="10,0" Grid.Row="3" 
+                       TextTrimming="CharacterEllipsis" 
+                       HorizontalAlignment="Stretch" 
+                       VerticalAlignment="Bottom">
+                <TextBlock.Text>
+                    <Binding Mode="OneWay" Path="Friend.Name" 
+                             StringFormat="{}{0} is typing..."/>
+                </TextBlock.Text>
+            </TextBlock>
         </Grid>
-        <Grid Grid.Row="3" Margin="10">
+        <Grid Grid.Row="4" Margin="10,5,10,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="10"/>
@@ -140,7 +150,7 @@
                     <RowDefinition Height="2"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBox Grid.Column="0" Grid.RowSpan="3" Text="{Binding EnteredText, Mode=TwoWay}" Name="TextBoxEnteredText" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="1,1,0,1" PreviewKeyDown="TextBoxEnteredText_KeyDown"/>
+                <TextBox Grid.Column="0" Grid.RowSpan="3" Text="{Binding EnteredText, Mode=TwoWay}" Name="TextBoxEnteredText" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="1,1,0,1" PreviewKeyDown="TextBoxEnteredText_KeyDown" TextChanged="TextBoxEnteredText_TextChanged"/>
                 <Button Grid.Column="1" Grid.Row="0" Width="19" Style="{StaticResource ToxGreenButtonTopRightStyle}">
                     <Rectangle Width="10" Height="10.3" Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>

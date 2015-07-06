@@ -19,5 +19,6 @@ namespace Toxy.ViewModels
         CallState CallState { get; set; }
         bool IsInVideoCall { get; set; }
         bool IsReceivingVideo { get; set; }
+        bool IsTyping { get; set; }
     }
 }

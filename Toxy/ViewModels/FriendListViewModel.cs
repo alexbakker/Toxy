@@ -24,6 +24,7 @@ namespace Toxy.ViewModels
             ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
             ProfileManager.Instance.Tox.OnReadReceiptReceived += Tox_OnReadReceiptReceived;
             ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
+            ProfileManager.Instance.Tox.OnFriendTypingChanged += Tox_OnFriendTypingChanged;
 
             Init();
         }
@@ -200,6 +201,21 @@ namespace Toxy.ViewModels
             OnPropertyChanged(() => CurrentFriendRequest);
             OnPropertyChanged(() => PendingFriendRequestsAvailable);
             OnPropertyChanged(() => PendingFriendRequestCount);
+        }
+
+        private void Tox_OnFriendTypingChanged(object sender, ToxEventArgs.TypingStatusEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var friend = FindFriend(e.FriendNumber);
+                if (friend == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                friend.IsTyping = e.IsTyping;
+            });
         }
 
         private void Tox_OnFriendRequestReceived(object sender, ToxEventArgs.FriendRequestEventArgs e)

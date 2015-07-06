@@ -77,6 +77,23 @@ namespace Toxy.ViewModels
             }
         }
 
+        private bool _isTyping;
+        public bool IsTyping
+        {
+            get { return _isTyping; }
+            set
+            {
+                if (Equals(value, _isTyping))
+                {
+                    return;
+                }
+                _isTyping = value;
+                OnPropertyChanged(() => IsTyping);
+            }
+        }
+
+        public bool SelfIsTyping { get; set; }
+
         private bool _isSelected;
         public bool IsSelected
         {
@@ -202,6 +219,18 @@ namespace Toxy.ViewModels
                 }
                 _isReceivingVideo = value;
                 OnPropertyChanged(() => IsReceivingVideo);
+            }
+        }
+
+        public void SetSelfTypingStatus(bool isTyping)
+        {
+            if (SelfIsTyping != isTyping)
+            {
+                var error = ToxErrorSetTyping.Ok;
+                if (!ProfileManager.Instance.Tox.SetTypingStatus(ChatNumber, isTyping))
+                    Debugging.Write(string.Format("Could not set typing status for friend {0}, error: {1}", ChatNumber, error));
+                else
+                    SelfIsTyping = isTyping;
             }
         }
     }

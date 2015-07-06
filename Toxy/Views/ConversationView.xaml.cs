@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Toxy.Managers;
 using Microsoft.Win32;
 using System.Windows;
+using System.Threading;
 
 namespace Toxy.Views
 {
@@ -17,12 +18,18 @@ namespace Toxy.Views
     public partial class ConversationView : UserControl
     {
         private bool _autoScroll;
+        private Timer _typingTimer;
 
         public ConversationViewModel Context { get { return DataContext as ConversationViewModel; } }
 
         public ConversationView()
         {
             InitializeComponent();
+
+            _typingTimer = new Timer((s) => 
+            {
+                MainWindow.Instance.UInvoke(() => Context.Friend.SetSelfTypingStatus(false));
+            }, null, Timeout.Infinite, Timeout.Infinite);
         }
 
         private void TextBoxEnteredText_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -178,6 +185,16 @@ namespace Toxy.Views
             }
 
             Context.Friend.ConversationView.AddTransfer(transfer);
+        }
+
+        private void TextBoxEnteredText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _typingTimer.Change(1000, -1);
+
+            if (!Context.Friend.SelfIsTyping)
+            {
+                Context.Friend.SetSelfTypingStatus(true);
+            }
         }
     }
 }

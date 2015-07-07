@@ -50,7 +50,7 @@ namespace Toxy.Managers
             var error = ToxErrorFileControl.Ok;
             ProfileManager.Instance.Tox.FileControl(transfer.FriendNumber, transfer.FileNumber, ToxFileControl.Cancel);
 
-            RemoveTransfer(transfer);
+            RemoveTransfer(transfer, true);
 
             if (error != ToxErrorFileControl.Ok)
             {
@@ -63,7 +63,30 @@ namespace Toxy.Managers
 
         public bool PauseTransfer(FileTransfer fileTransfer)
         {
-            return true;
+            if (fileTransfer.IsPaused)
+                return false;
+
+            var error = ToxErrorFileControl.Ok;
+            if (!ProfileManager.Instance.Tox.FileControl(fileTransfer.FriendNumber, fileTransfer.FileNumber, ToxFileControl.Pause, out error))
+                Debugging.Write("Could not pause file transfer, error: " + error);
+            else
+                fileTransfer.Pause(true);
+
+            return error == ToxErrorFileControl.Ok;
+        }
+        
+        public bool ResumeTransfer(FileTransfer fileTransfer)
+        {
+            if (!fileTransfer.IsPaused)
+                return false;
+
+            var error = ToxErrorFileControl.Ok;
+            if (!ProfileManager.Instance.Tox.FileControl(fileTransfer.FriendNumber, fileTransfer.FileNumber, ToxFileControl.Resume, out error))
+                Debugging.Write("Could not resume file transfer, error: " + error);
+            else
+                fileTransfer.Resume();
+
+            return error == ToxErrorFileControl.Ok;
         }
 
         public void SendAvatar(int friendNumber, byte[] avatar)
@@ -142,7 +165,7 @@ namespace Toxy.Managers
             return _transfers.FirstOrDefault(t => t.Key.FriendNumber == friendNumber && t.Key.FileNumber == fileNumber).Key;
         }
 
-        public bool AcceptTransfer(FileTransfer transfer)
+        public bool AcceptTransfer(FileTransfer transfer, string path)
         {
             var error = ToxErrorFileControl.Ok;
             ProfileManager.Instance.Tox.FileControl(transfer.FriendNumber, transfer.FileNumber, ToxFileControl.Resume, out error);
@@ -154,7 +177,8 @@ namespace Toxy.Managers
 
             try
             {
-                _transfers[transfer] = new FileStream(transfer.Name, FileMode.Create);
+                _transfers[transfer] = new FileStream(path, FileMode.Create);
+                transfer.Path = path;
                 transfer.Start();
                 return true;
             }
@@ -176,7 +200,7 @@ namespace Toxy.Managers
                     if (entry.Key.FriendNumber == e.FriendNumber)
                         continue;
 
-                    RemoveTransfer(entry.Key);
+                    RemoveTransfer(entry.Key, true);
                 }
 
                 Debugging.Write("A friend went offline, purged all file transfers");
@@ -198,7 +222,7 @@ namespace Toxy.Managers
             if (e.Data == null || e.Data.Length == 0)
             {
                 //looks like we're done!
-                RemoveTransfer(transfer);
+                RemoveTransfer(transfer, false);
 
                 if (transfer.Kind == ToxFileKind.Avatar)
                     AvatarManager.Instance.Rehash(e.FriendNumber);
@@ -234,7 +258,7 @@ namespace Toxy.Managers
                 Debugging.Write("Transfer finished");
 
                 //time to clean up
-                RemoveTransfer(transfer);
+                RemoveTransfer(transfer, false);
 
                 //let's be nice and send an empty chunk to let our friend know we're done sending the file
                 ProfileManager.Instance.Tox.FileSendChunk(e.FriendNumber, e.FileNumber, e.Position, new byte[0]);
@@ -271,9 +295,9 @@ namespace Toxy.Managers
                 transfer.TransferredBytes += e.Length;
         }
 
-        private void RemoveTransfer(FileTransfer transfer)
+        private void RemoveTransfer(FileTransfer transfer, bool force)
         {
-            transfer.Stop();
+            transfer.Stop(force);
 
             if (_transfers.ContainsKey(transfer))
             {
@@ -298,12 +322,25 @@ namespace Toxy.Managers
                 {
                     case ToxFileControl.Cancel:
                         {
-                            RemoveTransfer(transfer);
+                            RemoveTransfer(transfer, true);
                             break;
                         }
                     case ToxFileControl.Resume:
                         {
-                            transfer.Start();
+                            if (!transfer.IsPaused)
+                                transfer.Start();
+                            else
+                                transfer.Resume();
+
+                            break;
+                        }
+                    case ToxFileControl.Pause:
+                        {
+                            if (!transfer.IsPaused)
+                                transfer.Pause(false);
+                            else
+                                Debugging.Write("Friend tried to pause a transfer that was paused already!");
+
                             break;
                         }
                 }

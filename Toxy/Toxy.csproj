@@ -127,6 +127,8 @@
     <Compile Include="Converters\BoolToVideoButtonStyleConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\CallStateToVisibilityConverter.cs" />
+    <Compile Include="Converters\InverseBoolConverter.cs" />
+    <Compile Include="Converters\FileTransfers\TransferStateToBackColorConverter.cs" />
     <Compile Include="Converters\FileTransfers\TransferStateToBottomButtonVisualConverter.cs" />
     <Compile Include="Converters\FileTransfers\TransferStateToTopButtonStyleConverter.cs" />
     <Compile Include="Converters\FileTransfers\TransferStateToTopButtonVisualConverter.cs" />

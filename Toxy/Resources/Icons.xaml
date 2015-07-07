@@ -433,4 +433,13 @@
             </Path.Data>
         </Path>
     </Canvas>
+
+    <!-- this was taken from http://iconmonstr.com/arrow-37-icon/ -->
+    <Canvas x:Key="tox_play" Width="512" Height="512" ClipToBounds="True" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <Path Fill="#FF000000">
+            <Path.Data>
+                <PathGeometry FillRule="Nonzero" Figures="M418.999,256.001L121.001,462 121.001,50z" />
+            </Path.Data>
+        </Path>
+    </Canvas>
 </ResourceDictionary>

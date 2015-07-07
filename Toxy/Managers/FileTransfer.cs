@@ -13,9 +13,15 @@ namespace Toxy.Managers
         public string Name { get; set; }
         public long Size { get; set; }
         public long TransferredBytes { get; set; }
+        public string Path { get; set; }
+        public bool IsPaused { get; private set; }
 
-        public event EventHandler OnStopped;
+        public delegate void TransferBoolEvent(bool value);
+
+        public event TransferBoolEvent OnStopped;
         public event EventHandler OnStarted;
+        public event TransferBoolEvent OnPaused;
+        public event EventHandler OnResumed;
 
         public FileTransfer(int fileNumber, int friendNumber, ToxFileKind kind, FileTransferDirection direction)
         {
@@ -35,16 +41,32 @@ namespace Toxy.Managers
             return FriendNumber | (FileNumber << 1);
         }
 
-        public void Stop()
+        public void Stop(bool force)
         {
             if (OnStopped != null)
-                OnStopped(this, new EventArgs());
+                OnStopped(force);
         }
 
         public void Start()
         {
             if (OnStarted != null)
                 OnStarted(this, new EventArgs());
+        }
+
+        public void Pause(bool isSelf)
+        {
+            IsPaused = true;
+
+            if (OnPaused != null)
+                OnPaused(isSelf);
+        }
+
+        public void Resume()
+        {
+            IsPaused = false;
+
+            if (OnResumed != null)
+                OnResumed(this, new EventArgs());
         }
     }
 

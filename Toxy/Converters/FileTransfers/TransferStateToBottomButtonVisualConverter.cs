@@ -13,14 +13,15 @@ namespace Toxy.Converters.FileTransfers
             dic.Source = new Uri("pack://application:,,,/Toxy;component/Resources/Icons.xaml");
 
             var inProgress = values[0] as bool?;
-            var direction = values[1] as FileTransferDirection?;
+            var isSelfPaused = values[1] as bool?;
+            var direction = values[2] as FileTransferDirection?;
 
             if (inProgress == null || direction == null)
                 return null;
 
             if (direction == FileTransferDirection.Incoming)
             {
-                return inProgress == true ? dic["tox_pause"] : dic["tox_no"];
+                return inProgress == true ? (isSelfPaused == true ? dic["tox_play"] : dic["tox_pause"]) : dic["tox_no"];
             }
             else if (direction == FileTransferDirection.Outgoing)
             {

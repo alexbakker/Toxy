@@ -13,7 +13,9 @@
     <Converters:BoolToVideoButtonStyleConverter x:Key="BoolToVideoButtonStyleConverter"/>
     <Converters:CallStateToVisibilityConverter x:Key="CallStateToVisibilityConverter"/>
     <Converters:BoolToButtonFillColorConverter x:Key="BoolToButtonFillColorConverter"/>
+    <Converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
     <FileTransferConverters:TransferStateToTopButtonStyleConverter x:Key="TransferStateToTopButtonStyleConverter"/>
     <FileTransferConverters:TransferStateToTopButtonVisualConverter x:Key="TransferStateToTopButtonVisualConverter"/>
     <FileTransferConverters:TransferStateToBottomButtonVisualConverter x:Key="TransferStateToBottomButtonVisualConverter"/>
+    <FileTransferConverters:TransferStateToBackColorConverter x:Key="TransferStateToBackColorConverter"/>
 </ResourceDictionary>

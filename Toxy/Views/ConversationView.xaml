@@ -8,7 +8,6 @@
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       d:DataContext="{d:DesignInstance ViewModels:ConversationViewModel}">
-
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,14 +25,18 @@
             <RowDefinition Height="68"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Border BorderBrush="{StaticResource ToxLightGreyBrush}" BorderThickness="0 0 0 1">
+            <Border BorderBrush="{StaticResource ToxLightGreyBrush}" 
+                    BorderThickness="0 0 0 1">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" HorizontalAlignment="Left" Width="40" Height="40" Margin="10,10,0,9.333" CornerRadius="5,5,5,5">
+                    <Border Grid.Column="0" HorizontalAlignment="Left"
+                            Width="40" Height="40"
+                            Margin="10,10,0,9.333"
+                            CornerRadius="5,5,5,5">
                         <Border.Background>
                             <ImageBrush ImageSource="{Binding Friend.Avatar, Mode=OneWay}"/>
                         </Border.Background>
@@ -49,19 +52,40 @@
                         </Rectangle>
                     </Border>
                     <Grid Grid.Column="1">
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Friend.Name, Mode=OneWay, TargetNullValue='Friend name'}" VerticalAlignment="Top" Margin="0,20,0,0" FontWeight="Bold" FontSize="12" Foreground="{StaticResource ToxDarkGreyBrush}"/>
-                        <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Friend.StatusMessage, Mode=OneWay, TargetNullValue='Friend status message'}" VerticalAlignment="Top" Margin="0,35,0,0" FontSize="11" Foreground="{StaticResource ToxMediumGreyBrush}"/>
+                        <TextBlock TextTrimming="CharacterEllipsis" 
+                                   Text="{Binding Friend.Name, Mode=OneWay, TargetNullValue='Friend name'}" 
+                                   VerticalAlignment="Top" 
+                                   Margin="0,20,0,0" 
+                                   FontWeight="Bold" FontSize="12"
+                                   Foreground="{StaticResource ToxDarkGreyBrush}"/>
+                        <TextBlock TextTrimming="CharacterEllipsis" 
+                                   Text="{Binding Friend.StatusMessage, Mode=OneWay, TargetNullValue='Friend status message'}" 
+                                   VerticalAlignment="Top" 
+                                   Margin="0,35,0,0" 
+                                   FontSize="11" 
+                                   Foreground="{StaticResource ToxMediumGreyBrush}"/>
                     </Grid>
                     <Grid Grid.Column="2">
-                        <Button Click="ButtonVideo_Click" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToVideoButtonStyleConverter}}">
-                            <Rectangle Width="22.625" Height="14.396" Fill="{StaticResource ToxWhiteBrush}">
+                        <Button Click="ButtonVideo_Click" 
+                                Margin="10" 
+                                VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                Height="50" Width="50" 
+                                IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" 
+                                Style="{Binding Friend.CallState, Converter={StaticResource BoolToVideoButtonStyleConverter}}">
+                            <Rectangle Width="22.625" Height="14.396" 
+                                       Fill="{StaticResource ToxWhiteBrush}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource tox_video}" />
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                         </Button>
-                        <Button Click="Call_Click" Margin="10,10,65,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="50" Width="50" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
-                            <Rectangle Width="21.2" Height="19.7" Fill="{StaticResource ToxWhiteBrush}">
+                        <Button Click="Call_Click" Margin="10,10,65,0" 
+                                VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                Height="50" Width="50" 
+                                IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" 
+                                Style="{Binding Friend.CallState, Converter={StaticResource BoolToPhoneButtonStyleConverter}}">
+                            <Rectangle Width="21.2" Height="19.7" 
+                                       Fill="{StaticResource ToxWhiteBrush}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Fill" Visual="{StaticResource tox_phone}" />
                                 </Rectangle.OpacityMask>
@@ -78,9 +102,19 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="15"/>
             </Grid.RowDefinitions>
-            <Image Grid.Row="0" Source="{Binding CurrentFrame}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}" Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
-            <ItemsControl VirtualizingPanel.CacheLength="20" Grid.Row="2" BorderThickness="0" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Messages, Mode=OneWay}">
+            <Image Grid.Row="0"
+                   Source="{Binding CurrentFrame}"
+                   Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}"
+                          Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
+            <ItemsControl VirtualizingPanel.CacheLength="20"
+                          Grid.Row="2" BorderThickness="0"
+                          VirtualizingPanel.ScrollUnit="Pixel"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          ScrollViewer.CanContentScroll="True"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ItemsSource="{Binding Messages, Mode=OneWay}">
                 <ItemsControl.ItemContainerStyle>
                     <Style>
                         <Setter Property="FrameworkElement.Margin" Value="2,5,0,0"/>
@@ -150,24 +184,42 @@
                     <RowDefinition Height="2"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBox Grid.Column="0" Grid.RowSpan="3" Text="{Binding EnteredText, Mode=TwoWay}" Name="TextBoxEnteredText" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="1,1,0,1" PreviewKeyDown="TextBoxEnteredText_KeyDown" TextChanged="TextBoxEnteredText_TextChanged"/>
-                <Button Grid.Column="1" Grid.Row="0" Width="19" Style="{StaticResource ToxGreenButtonTopRightStyle}">
-                    <Rectangle Width="10" Height="10.3" Fill="{StaticResource ToxWhiteBrush}">
+                <TextBox Grid.Column="0" Grid.RowSpan="3"
+                         Text="{Binding EnteredText, Mode=TwoWay}"
+                         Name="TextBoxEnteredText"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         BorderThickness="1,1,0,1"
+                         PreviewKeyDown="TextBoxEnteredText_KeyDown"
+                         TextChanged="TextBoxEnteredText_TextChanged"/>
+                <Button Grid.Column="1" Grid.Row="0" 
+                        Width="19" 
+                        Style="{StaticResource ToxGreenButtonTopRightStyle}">
+                    <Rectangle Width="10" Height="10.3"
+                               Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource tox_emoticon}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
-                <Button Grid.Column="1" Grid.Row="2" Width="19" Style="{StaticResource ToxGreenButtonBottomRightStyle}" IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}" Click="ButtonSendFile_Click">
-                    <Rectangle Width="13.736" Height="13.708" Fill="{StaticResource ToxWhiteBrush}">
+                <Button Grid.Column="1" Grid.Row="2"
+                        Width="19"
+                        Style="{StaticResource ToxGreenButtonBottomRightStyle}"
+                        IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}"
+                        Click="ButtonSendFile_Click">
+                    <Rectangle Width="13.736" Height="13.708" 
+                               Fill="{StaticResource ToxWhiteBrush}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Fill" Visual="{StaticResource tox_attach}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
             </Grid>
-            <Button Grid.Column="2" Width="50" Style="{StaticResource ToxGreenButtonStyle}" Click="ButtonSendMessage_Click">
-                <Rectangle Width="19.509" Height="23.089" Fill="{StaticResource ToxWhiteBrush}">
+            <Button Grid.Column="2" Width="50"
+                    Style="{StaticResource ToxGreenButtonStyle}"
+                    Click="ButtonSendMessage_Click">
+                <Rectangle Width="19.509" Height="23.089"
+                           Fill="{StaticResource ToxWhiteBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill" Visual="{StaticResource tox_sendmessage}" />
                     </Rectangle.OpacityMask>

@@ -19,9 +19,26 @@ namespace Toxy.ViewModels
             Transfer = transfer;
             Transfer.OnStopped += transfer_OnStopped;
             Transfer.OnStarted += transfer_OnStarted;
+            Transfer.OnPaused += Transfer_OnPaused;
+            Transfer.OnResumed += Transfer_OnResumed;
 
             _timer = new Timer(500d);
             _timer.Elapsed += timer_Elapsed;
+        }
+
+        private void Transfer_OnResumed(object sender, EventArgs e)
+        {
+            IsSelfPaused = false;
+            IsPaused = false;
+            _timer.Start();
+        }
+
+        private void Transfer_OnPaused(bool isSelf)
+        {
+            IsSelfPaused = isSelf;
+            IsPaused = true;
+
+            _timer.Stop();
         }
 
         private void transfer_OnStarted(object sender, EventArgs e)
@@ -30,10 +47,12 @@ namespace Toxy.ViewModels
             IsInProgress = true;
         }
 
-        private void transfer_OnStopped(object sender, EventArgs e)
+        private void transfer_OnStopped(bool force)
         {
+            IsPaused = false;
             IsInProgress = false;
             IsFinished = true;
+            IsCancelled = force;
 
             _timer.Dispose();
             timer_Elapsed(null, null);
@@ -159,6 +178,51 @@ namespace Toxy.ViewModels
                 }
                 _isInProgress = value;
                 OnPropertyChanged(() => IsInProgress);
+            }
+        }
+
+        private bool _isPaused;
+        public bool IsPaused
+        {
+            get { return _isPaused; }
+            set
+            {
+                if (Equals(value, _isPaused))
+                {
+                    return;
+                }
+                _isPaused = value;
+                OnPropertyChanged(() => IsPaused);
+            }
+        }
+
+        private bool _isCancelled;
+        public bool IsCancelled
+        {
+            get { return _isCancelled; }
+            set
+            {
+                if (Equals(value, _isCancelled))
+                {
+                    return;
+                }
+                _isCancelled = value;
+                OnPropertyChanged(() => IsCancelled);
+            }
+        }
+
+        private bool _isSelfPaused;
+        public bool IsSelfPaused
+        {
+            get { return _isSelfPaused; }
+            set
+            {
+                if (Equals(value, _isSelfPaused))
+                {
+                    return;
+                }
+                _isSelfPaused = value;
+                OnPropertyChanged(() => IsSelfPaused);
             }
         }
 

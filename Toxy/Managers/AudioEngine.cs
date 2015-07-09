@@ -17,6 +17,9 @@ namespace Toxy.Managers
 
         public bool IsRecording { get; private set; }
 
+        public WaveFormat RecordingFormat { get { return _waveOut.OutputWaveFormat; } }
+        public WaveFormat PlaybackFormat { get { return _waveSource.WaveFormat; } }
+
         public delegate void AudioEngineRecordingVolumeChanged(float volume);
         public delegate void AudioEngineMicDataAvailable(short[] data, int sampleRate, int channels);
 
@@ -28,34 +31,57 @@ namespace Toxy.Managers
             if (Config.Instance.RecordingDevice != null && WaveIn.DeviceCount != 0 && Config.Instance.RecordingDevice.Number <= WaveIn.DeviceCount)
             {
                 var capabilities = WaveIn.GetCapabilities(Config.Instance.RecordingDevice.Number);
-                var _waveSourceFormat = new WaveFormat(48000, capabilities.Channels);
-
-                _waveSource = new WaveInEvent();
-                _waveSource.BufferMilliseconds = 20;
-                _waveSource.WaveFormat = _waveSourceFormat;
-                _waveSource.DeviceNumber = Config.Instance.RecordingDevice.Number;
-                _waveSource.DataAvailable += waveSource_DataAvailable;
-
-                _waveSourceProvider = new BufferedWaveProvider(_waveSourceFormat);
-                _waveSourceProvider.DiscardOnBufferOverflow = true;
-
-                _waveSourceMeter = new MeteringSampleProvider(_waveSourceProvider.ToSampleProvider());
-                _waveSourceMeter.StreamVolume += _waveSourceMeter_StreamVolume;
+                SetRecordingSettings(48000, capabilities.Channels > 2 ? 2 : capabilities.Channels);
             }
 
             if (Config.Instance.PlaybackDevice != null && WaveOut.DeviceCount != 0 && Config.Instance.PlaybackDevice.Number <= WaveOut.DeviceCount)
             {
-                var capabilities = WaveIn.GetCapabilities(Config.Instance.PlaybackDevice.Number);
-                var _waveOutFormat = new WaveFormat(48000, capabilities.Channels);
-
-                _waveOutProvider = new BufferedWaveProvider(_waveOutFormat);
-                _waveOutProvider.DiscardOnBufferOverflow = true;
-
-                _waveOut = new WaveOutEvent();
-                _waveOut.DeviceNumber = Config.Instance.PlaybackDevice.Number;
-                _waveOut.Init(_waveOutProvider);
-                _waveOut.Play();
+                var capabilities = WaveOut.GetCapabilities(Config.Instance.PlaybackDevice.Number);
+                SetPlaybackSettings(48000, capabilities.Channels > 2 ? 2 : capabilities.Channels);
             }
+        }
+
+        public void SetPlaybackSettings(int sampleRate, int channels)
+        {
+            //TODO: what if our friend is sending stereo but our output device only supports mono? write a conversion method for that
+            var capabilities = WaveOut.GetCapabilities(Config.Instance.PlaybackDevice.Number);
+            var waveOutFormat = new WaveFormat(sampleRate, channels);
+
+            if (_waveOut != null)
+                _waveOut.Dispose();
+
+            _waveOutProvider = new BufferedWaveProvider(waveOutFormat);
+            _waveOutProvider.DiscardOnBufferOverflow = true;
+
+            _waveOut = new WaveOutEvent();
+            _waveOut.DeviceNumber = Config.Instance.PlaybackDevice.Number;
+            _waveOut.Init(_waveOutProvider);
+            _waveOut.Play();
+
+            Debugging.Write(string.Format("Changed playback config to: samplingRate: {0}, channels: {1}", sampleRate, channels));
+        }
+
+        public void SetRecordingSettings(int sampleRate, int channels)
+        {
+            var capabilities = WaveIn.GetCapabilities(Config.Instance.RecordingDevice.Number);
+            var waveSourceFormat = new WaveFormat(sampleRate, channels);
+
+            if (_waveSource != null)
+                _waveSource.Dispose();
+
+            _waveSource = new WaveInEvent();
+            _waveSource.BufferMilliseconds = 20;
+            _waveSource.WaveFormat = waveSourceFormat;
+            _waveSource.DeviceNumber = Config.Instance.RecordingDevice.Number;
+            _waveSource.DataAvailable += waveSource_DataAvailable;
+
+            _waveSourceProvider = new BufferedWaveProvider(waveSourceFormat);
+            _waveSourceProvider.DiscardOnBufferOverflow = true;
+
+            _waveSourceMeter = new MeteringSampleProvider(_waveSourceProvider.ToSampleProvider());
+            _waveSourceMeter.StreamVolume += _waveSourceMeter_StreamVolume;
+
+            Debugging.Write(string.Format("Changed recording config to: samplingRate: {0}, channels: {1}", sampleRate, channels));
         }
 
         private void _waveSourceMeter_StreamVolume(object sender, StreamVolumeEventArgs e)

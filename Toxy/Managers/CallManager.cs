@@ -208,9 +208,14 @@ namespace Toxy.Managers
         {
             if (_callInfo != null && _callInfo.AudioEngine != null)
             {
+                //in case the friend suddenly changed audio config, account for it here
+                if (e.Frame.Channels != _callInfo.AudioEngine.PlaybackFormat.Channels ||
+                    e.Frame.SamplingRate != _callInfo.AudioEngine.PlaybackFormat.SampleRate)
+                    _callInfo.AudioEngine.SetPlaybackSettings(e.Frame.SamplingRate, e.Frame.Channels);
+
+                //send the frame to the audio engine
                 _callInfo.AudioEngine.ProcessAudioFrame(e.Frame);
             }
-            //Debugging.Write(string.Format("Received frame: length: {0}, channels: {1}, sampling rate: {2}", e.Frame.Data.Length, e.Frame.Channels, e.Frame.SamplingRate));
         }
 
         public bool Answer(int friendNumber, bool enableVideo)

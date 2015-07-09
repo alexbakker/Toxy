@@ -72,7 +72,7 @@ namespace Toxy.Views
             if (path == null)
                 return;
 
-            if (path != null && path.EndsWith(".exe"))
+            if (path.EndsWith(".exe"))
             {
                 var result = MessageBox.Show("Opening executable files could be harmful to your device, do you wish to continue?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result != MessageBoxResult.Yes)

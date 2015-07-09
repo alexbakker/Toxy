@@ -99,18 +99,27 @@ namespace Toxy.Managers
                     if (friend == null)
                         return;
 
-                    using (var stream = new MemoryStream(_avatars[friendNumber]))
+                    try
                     {
-                        BitmapImage bmp = new BitmapImage();
-                        bmp.BeginInit();
-                        bmp.CacheOption = BitmapCacheOption.OnLoad;
-                        bmp.StreamSource = stream;
-                        bmp.EndInit();
-                        bmp.Freeze();
-
-                        friend.Avatar = bmp;
+                        friend.Avatar = CreateImage(_avatars[friendNumber]);
                     }
+                    catch (Exception ex) { Debugging.Write("Could not apply avatar, exception: " + ex.ToString()); }
                 });
+            }
+        }
+
+        private static BitmapImage CreateImage(byte[] bytes)
+        {
+            using (var stream = new MemoryStream(bytes))
+            {
+                BitmapImage bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.StreamSource = stream;
+                bmp.EndInit();
+                bmp.Freeze();
+
+                return bmp;
             }
         }
 
@@ -145,20 +154,7 @@ namespace Toxy.Managers
             {
                 _selfAvatar = File.ReadAllBytes(filename);
                 //TODO: move this to the view model
-                MainWindow.Instance.UInvoke(() =>
-                {
-                    using (var stream = new MemoryStream(_selfAvatar))
-                    {
-                        BitmapImage bmp = new BitmapImage();
-                        bmp.BeginInit();
-                        bmp.CacheOption = BitmapCacheOption.OnLoad;
-                        bmp.StreamSource = stream;
-                        bmp.EndInit();
-                        bmp.Freeze();
-
-                        MainWindow.Instance.ViewModel.CurrentSelfView.Avatar = bmp;
-                    }
-                });
+                MainWindow.Instance.ViewModel.CurrentSelfView.Avatar = CreateImage(_selfAvatar);
                 return true;
             }
             catch (Exception ex)

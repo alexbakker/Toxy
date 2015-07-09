@@ -18,6 +18,7 @@ using Toxy.Tools;
 
 using NAudio.Wave;
 using AForge.Video.DirectShow;
+using NAudio.CoreAudioApi;
 
 namespace Toxy.ViewModels
 {
@@ -147,16 +148,15 @@ namespace Toxy.ViewModels
             PlaybackDevices = new ObservableCollection<DeviceInfo>();
             VideoDevices = new ObservableCollection<DeviceInfo>();
 
-            for (int i = 0; i < WaveIn.DeviceCount; i++)
+            var enumerator = new MMDeviceEnumerator();
+            foreach(var inputDevice in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active))
             {
-                var capabilities = WaveIn.GetCapabilities(i);
-                RecordingDevices.Add(new DeviceInfo() { Number = i, Name = capabilities.ProductName });
+                RecordingDevices.Add(new DeviceInfo() { ID = inputDevice.ID, Name = inputDevice.FriendlyName });
             }
 
-            for (int i = 0; i < WaveOut.DeviceCount; i++)
+            foreach (var outputDevice in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
             {
-                var capabilities = WaveOut.GetCapabilities(i);
-                PlaybackDevices.Add(new DeviceInfo() { Number = i, Name = capabilities.ProductName });
+                PlaybackDevices.Add(new DeviceInfo() { ID = outputDevice.ID, Name = outputDevice.FriendlyName });
             }
 
             foreach (FilterInfo device in new FilterInfoCollection(FilterCategory.VideoInputDevice))
@@ -256,7 +256,7 @@ namespace Toxy.ViewModels
     [Serializable]
     public class DeviceInfo
     {
-        public int Number { get; set; }
+        public string ID { get; set; }
         public string Name { get; set; }
 
         public static bool operator ==(DeviceInfo info1, DeviceInfo info2)
@@ -267,7 +267,7 @@ namespace Toxy.ViewModels
             if ((object)info1 == null ^ (object)info2 == null)
                 return false;
 
-            return (info1.Name == info2.Name);
+            return (info1.ID == info2.ID);
         }
 
         public static bool operator !=(DeviceInfo node1, DeviceInfo node2)

@@ -365,7 +365,8 @@ namespace Toxy.Managers
                             AvatarManager.Instance.RemoveAvatar(e.FriendNumber);
                             ProfileManager.Instance.Tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
 
-                            Debugging.Write("Friend removed friend avatar");
+                            Debugging.Write("Friend removed avatar");
+                            break;
                         }
 
                         if (e.FileSize > 1 << 16)

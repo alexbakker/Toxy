@@ -430,11 +430,11 @@ namespace Toxy.Managers
 
                         MainWindow.Instance.UInvoke(() =>
                         {
-                            var friend = FindFriend(e.FriendNumber);
+                            var friend = MainWindow.Instance.ViewModel.CurrentFriendListView.FindFriend(e.FriendNumber);
                             if (friend == null)
                                 return;
 
-                            friend.ConversationView.AddTransfer(transfer);
+                            (friend.ConversationView as ConversationViewModel).AddTransfer(transfer);
                         });
 
                         break;
@@ -442,11 +442,6 @@ namespace Toxy.Managers
             }
 
             Debugging.Write("New file send request: " + e.FileKind.ToString());
-        }
-
-        private IChatObject FindFriend(int friendNumber)
-        {
-            return MainWindow.Instance.ViewModel.CurrentFriendListView.ChatCollection.FirstOrDefault(f => f.ChatNumber == friendNumber);
         }
     }
 }

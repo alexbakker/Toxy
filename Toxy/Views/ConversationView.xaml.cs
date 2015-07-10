@@ -28,7 +28,11 @@ namespace Toxy.Views
 
             _typingTimer = new Timer((s) => 
             {
-                MainWindow.Instance.UInvoke(() => Context.Friend.SetSelfTypingStatus(false));
+                MainWindow.Instance.UInvoke(() => 
+                {
+                    if (Context != null) 
+                        Context.Friend.SetSelfTypingStatus(false);
+                });
             }, null, Timeout.Infinite, Timeout.Infinite);
         }
 
@@ -184,7 +188,7 @@ namespace Toxy.Views
                 return;
             }
 
-            Context.Friend.ConversationView.AddTransfer(transfer);
+            (Context.Friend.ConversationView as ConversationViewModel).AddTransfer(transfer);
         }
 
         private void TextBoxEnteredText_TextChanged(object sender, TextChangedEventArgs e)

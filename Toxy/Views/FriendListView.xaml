@@ -86,6 +86,9 @@
                     <DataTemplate DataType="{x:Type ViewModels:FriendControlViewModel}">
                         <Views:FriendControlView DataContext="{Binding Mode=OneWay}" />
                     </DataTemplate>
+                    <DataTemplate DataType="{x:Type ViewModels:GroupControlViewModel}">
+                        <Views:GroupControlView DataContext="{Binding Mode=OneWay}" />
+                    </DataTemplate>
                 </ResourceDictionary>
             </ListBox.Resources>
             <ListBox.ItemsPanel>

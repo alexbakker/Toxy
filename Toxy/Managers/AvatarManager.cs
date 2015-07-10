@@ -5,6 +5,7 @@ using System.Linq;
 using SharpTox.Core;
 using Toxy.Extensions;
 using System.Windows.Media.Imaging;
+using Toxy.ViewModels;
 
 namespace Toxy.Managers
 {
@@ -95,7 +96,7 @@ namespace Toxy.Managers
                 //TODO: move this to the view model
                 MainWindow.Instance.UInvoke(() =>
                 {
-                    var friend = MainWindow.Instance.ViewModel.CurrentFriendListView.ChatCollection.FirstOrDefault(f => f.ChatNumber == friendNumber);
+                    var friend = (IFriendObject)MainWindow.Instance.ViewModel.CurrentFriendListView.ChatCollection.FirstOrDefault(f => f is IFriendObject && f.ChatNumber == friendNumber);
                     if (friend == null)
                         return;
 

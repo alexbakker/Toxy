@@ -118,6 +118,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BoolToAvatarFillColorConverter.cs" />
     <Compile Include="Converters\BoolToButtonFillColorConverter.cs" />
     <Compile Include="Converters\BoolToFillColorConverter.cs" />
     <Compile Include="Converters\BoolToMessageForegroundConverter.cs" />
@@ -154,6 +155,12 @@
     <Compile Include="ViewModels\FileTransferViewModel.cs" />
     <Compile Include="ViewModels\FriendListViewModel.cs" />
     <Compile Include="ViewModels\FriendRequest.cs" />
+    <Compile Include="ViewModels\GroupControlViewModel.cs" />
+    <Compile Include="ViewModels\GroupConversationViewModel.cs" />
+    <Compile Include="ViewModels\GroupPeer.cs" />
+    <Compile Include="ViewModels\IConversationView.cs" />
+    <Compile Include="ViewModels\IFriendObject.cs" />
+    <Compile Include="ViewModels\IGroupObject.cs" />
     <Compile Include="ViewModels\LoginExistingViewModel.cs" />
     <Compile Include="ViewModels\LoginNewViewModel.cs" />
     <Compile Include="ViewModels\LoginWindowViewModel.cs" />
@@ -186,6 +193,12 @@
     </Compile>
     <Compile Include="Views\FriendListView.xaml.cs">
       <DependentUpon>FriendListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GroupControlView.xaml.cs">
+      <DependentUpon>GroupControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GroupConversationView.xaml.cs">
+      <DependentUpon>GroupConversationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginExistingView.xaml.cs">
       <DependentUpon>LoginExistingView.xaml</DependentUpon>
@@ -230,6 +243,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FriendListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GroupControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GroupConversationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

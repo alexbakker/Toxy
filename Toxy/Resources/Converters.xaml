@@ -14,6 +14,7 @@
     <Converters:CallStateToVisibilityConverter x:Key="CallStateToVisibilityConverter"/>
     <Converters:BoolToButtonFillColorConverter x:Key="BoolToButtonFillColorConverter"/>
     <Converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    <Converters:BoolToAvatarFillColorConverter x:Key="BoolToAvatarFillColorConverter"/>
     <FileTransferConverters:TransferStateToTopButtonStyleConverter x:Key="TransferStateToTopButtonStyleConverter"/>
     <FileTransferConverters:TransferStateToTopButtonVisualConverter x:Key="TransferStateToTopButtonVisualConverter"/>
     <FileTransferConverters:TransferStateToBottomButtonVisualConverter x:Key="TransferStateToBottomButtonVisualConverter"/>

@@ -1,0 +1,197 @@
+﻿<UserControl x:Class="Toxy.Views.GroupConversationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
+              xmlns:Views="clr-namespace:Toxy.Views"
+              mc:Ignorable="d" 
+              d:DesignHeight="300" d:DesignWidth="300"
+              d:DataContext="{d:DesignInstance ViewModels:GroupConversationViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="68"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Border BorderBrush="{StaticResource ToxLightGreyBrush}" 
+                    BorderThickness="0 0 0 1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" HorizontalAlignment="Left"
+                            Width="40" Height="40"
+                            Margin="10,10,0,9.333"
+                            CornerRadius="5,5,5,5">
+                        <Rectangle Width="35" Height="38" Fill="{StaticResource ToxMediumGreyBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_group}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Border>
+                    <Grid Grid.Column="1">
+                        <TextBlock TextTrimming="CharacterEllipsis" 
+                                   Text="{Binding Group.Name, Mode=OneWay, TargetNullValue='Group title'}" 
+                                   VerticalAlignment="Top" 
+                                   Margin="0,20,0,0" 
+                                   FontWeight="Bold" FontSize="12"
+                                   Foreground="{StaticResource ToxDarkGreyBrush}"/>
+                        <TextBlock TextTrimming="CharacterEllipsis" 
+                                   VerticalAlignment="Top" 
+                                   Margin="0,35,0,0" 
+                                   FontSize="11" 
+                                   Foreground="{StaticResource ToxMediumGreyBrush}">
+                            <TextBlock.Text>
+                                <Binding Mode="OneWay" Path="Group.Peers.Count"
+                                             StringFormat="{}{0} peers online"/>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Button Click="Call_Click" Margin="10" 
+                                VerticalAlignment="Top" HorizontalAlignment="Right" 
+                                Height="50" Width="50" 
+                                IsEnabled="False" 
+                                Style="{StaticResource ToxGreenButtonStyle}">
+                            <Rectangle Width="21.2" Height="19.7" 
+                                       Fill="{StaticResource ToxWhiteBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_phone}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="130"/>
+            </Grid.ColumnDefinitions>
+            <ItemsControl VirtualizingPanel.CacheLength="20"
+                          BorderThickness="0"
+                          Grid.Column="0"
+                          VirtualizingPanel.ScrollUnit="Pixel"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          ScrollViewer.CanContentScroll="True"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          ItemsSource="{Binding Messages, Mode=OneWay}">
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="FrameworkElement.Margin" Value="2,5,0,0"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <Border
+                            BorderThickness="{TemplateBinding Border.BorderThickness}"
+                            Padding="{TemplateBinding Control.Padding}"
+                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                            Background="{TemplateBinding Panel.Background}"
+                            SnapsToDevicePixels="True">
+                            <ScrollViewer
+                                Padding="{TemplateBinding Control.Padding}"
+                                Focusable="False"
+                                ScrollChanged="ScrollbackViewer_ScrollChanged">
+                                <ItemsPresenter
+                                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/LightScrollviewerStyle.xaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                        <DataTemplate DataType="{x:Type ViewModels:MessageViewModel}">
+                            <Views:MessageView DataContext="{Binding Mode=OneWay}" />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type ViewModels:FileTransferMessageViewModel}">
+                            <Views:FileTransferMessageView DataContext="{Binding Mode=OneWay}" />
+                        </DataTemplate>
+                    </ResourceDictionary>
+                </ItemsControl.Resources>
+            </ItemsControl>
+            <ListBox Grid.Column="1" ItemsSource="{Binding Group.Peers, Mode=OneWay}" DisplayMemberPath="Name" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="1,0,1,1" BorderBrush="{StaticResource ToxLightGreyBrush}"/>
+        </Grid>
+        <Grid Grid.Row="3" Margin="10,5,10,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Column="0" Grid.RowSpan="3"
+                         Text="{Binding EnteredText, Mode=TwoWay}"
+                         Name="TextBoxEnteredText"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         BorderThickness="1,1,0,1"
+                         PreviewKeyDown="TextBoxEnteredText_KeyDown"/>
+                <Button Grid.Column="1" Grid.Row="0" 
+                        Width="19" 
+                        Style="{StaticResource ToxGreenButtonTopRightStyle}"
+                        IsEnabled="False">
+                    <Rectangle Width="10" Height="10.3"
+                               Fill="{StaticResource ToxWhiteBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource tox_emoticon}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+                <Button Grid.Column="1" Grid.Row="2"
+                        Width="19"
+                        Style="{StaticResource ToxGreenButtonBottomRightStyle}"
+                        IsEnabled="False">
+                    <Rectangle Width="13.736" Height="13.708" 
+                               Fill="{StaticResource ToxWhiteBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource tox_attach}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+            </Grid>
+            <Button Grid.Column="2" Width="50"
+                    Style="{StaticResource ToxGreenButtonStyle}"
+                    Click="ButtonSendMessage_Click">
+                <Rectangle Width="19.509" Height="23.089"
+                           Fill="{StaticResource ToxWhiteBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource tox_sendmessage}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

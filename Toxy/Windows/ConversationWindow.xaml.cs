@@ -12,7 +12,7 @@ namespace Toxy.Windows
     {
         public ConversationWindowViewModel Context { get { return DataContext as ConversationWindowViewModel; } }
 
-        public ConversationWindow(ConversationViewModel model)
+        public ConversationWindow(IConversationView model)
         {
             InitializeComponent();
             DataContext = new ConversationWindowViewModel(model);

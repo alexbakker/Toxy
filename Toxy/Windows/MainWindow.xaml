@@ -79,6 +79,9 @@
                 <DataTemplate DataType="{x:Type ViewModels:ConversationViewModel}">
                     <Views:ConversationView />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type ViewModels:GroupConversationViewModel}">
+                    <Views:GroupConversationView />
+                </DataTemplate>
                 <DataTemplate DataType="{x:Type ViewModels:SettingsViewModel}">
                     <Views:SettingsView />
                 </DataTemplate>

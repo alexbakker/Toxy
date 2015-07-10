@@ -96,7 +96,7 @@ namespace Toxy.Managers
 
             MainWindow.Instance.UInvoke(() =>
             {
-                var friend = FindFriend(e.FriendNumber);
+                var friend = MainWindow.Instance.ViewModel.CurrentFriendListView.FindFriend(e.FriendNumber);
                 if (friend == null)
                 {
                     Debugging.Write("Received a call request from a friend we don't know about!");
@@ -151,7 +151,7 @@ namespace Toxy.Managers
 
             MainWindow.Instance.UInvoke(() =>
             {
-                var friend = FindFriend(e.FriendNumber);
+                var friend = MainWindow.Instance.ViewModel.CurrentFriendListView.FindFriend(e.FriendNumber);
                 if (friend == null)
                 {
                     Debugging.Write("Received a call state change from a friend we don't know about!");
@@ -168,11 +168,11 @@ namespace Toxy.Managers
 
             MainWindow.Instance.UInvoke(() =>
             {
-                var friend = FindFriend(e.FriendNumber);
+                var friend = MainWindow.Instance.ViewModel.CurrentFriendListView.FindFriend(e.FriendNumber);
                 if (friend == null)
                     return;
 
-                friend.ConversationView.CurrentFrame = source;
+                (friend.ConversationView as ConversationViewModel).CurrentFrame = source;
             });
         }
 
@@ -323,11 +323,6 @@ namespace Toxy.Managers
                 if (VideoEngine != null)
                     VideoEngine.Dispose();
             }
-        }
-
-        private IChatObject FindFriend(int friendNumber)
-        {
-            return MainWindow.Instance.ViewModel.CurrentFriendListView.ChatCollection.FirstOrDefault(f => f.ChatNumber == friendNumber);
         }
     }
 

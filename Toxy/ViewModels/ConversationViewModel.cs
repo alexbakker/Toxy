@@ -11,7 +11,7 @@ using Toxy.Extensions;
 
 namespace Toxy.ViewModels
 {
-    public class ConversationViewModel : ViewModelBase
+    public class ConversationViewModel : ViewModelBase, IConversationView
     {
         public FriendControlViewModel Friend { get; private set; }
 

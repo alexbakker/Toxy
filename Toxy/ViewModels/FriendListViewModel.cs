@@ -26,7 +26,105 @@ namespace Toxy.ViewModels
             ProfileManager.Instance.Tox.OnFriendRequestReceived += Tox_OnFriendRequestReceived;
             ProfileManager.Instance.Tox.OnFriendTypingChanged += Tox_OnFriendTypingChanged;
 
+            ProfileManager.Instance.Tox.OnGroupInvite += Tox_OnGroupInvite;
+            ProfileManager.Instance.Tox.OnGroupTitleChanged += Tox_OnGroupTitleChanged;
+            ProfileManager.Instance.Tox.OnGroupMessage += Tox_OnGroupMessage;
+            ProfileManager.Instance.Tox.OnGroupAction += Tox_OnGroupAction;
+            ProfileManager.Instance.Tox.OnGroupNamelistChange += Tox_OnGroupNamelistChange;
+
             Init();
+        }
+
+        private void Tox_OnGroupNamelistChange(object sender, ToxEventArgs.GroupNamelistChangeEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var group = FindGroup(e.GroupNumber);
+                if (group == null)
+                {
+                    Debugging.Write("We don't know about this group!");
+                    return;
+                }
+
+                var peer = group.FindPeer(ProfileManager.Instance.Tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+
+                switch (e.Change)
+                {
+                    case ToxChatChange.PeerAdd:
+                        {
+                            if (peer != null)
+                            {
+                                Debugging.Write("Received ToxChatChange.PeerAdd but that peer is already in our list, replacing...");
+                                group.Peers.Remove(peer);
+                            }
+
+                            group.Peers.Add(new GroupPeer(e.PeerNumber, ProfileManager.Instance.Tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber)));
+                            break;
+                        }
+                    case ToxChatChange.PeerDel:
+                        {
+                            if (peer == null)
+                                Debugging.Write("Received ToxChatChange.PeerDel but we don't know about this peer, ignoring...");
+                            else
+                                group.Peers.Remove(peer);
+
+                            break;
+                        }
+                    case ToxChatChange.PeerName:
+                        {
+                            if (peer == null)
+                                Debugging.Write("Received ToxChatChange.PeerName but we don't know about this peer, HELP!");
+                            else
+                                peer.Name = ProfileManager.Instance.Tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+
+                            break;
+                        }
+                }
+            });
+        }
+
+        private void Tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
+        {
+            //TODO: handle separately
+            Tox_OnGroupMessage(sender, new ToxEventArgs.GroupMessageEventArgs(e.GroupNumber, e.PeerNumber, e.Action));
+        }
+
+        private void Tox_OnGroupMessage(object sender, ToxEventArgs.GroupMessageEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var group = FindGroup(e.GroupNumber);
+                if (group == null)
+                {
+                    Debugging.Write("We don't know about this friend!");
+                    return;
+                }
+
+                var msg = new MessageViewModel(e.PeerNumber);
+                msg.FriendName = ProfileManager.Instance.Tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+                msg.Message = e.Message;
+                msg.Time = DateTime.Now.ToShortTimeString();
+
+                (group.ConversationView as GroupConversationViewModel).AddMessage(msg);
+
+                //if this is the first unread message, set HasUnreadMessages to true to make sure the status indicator gets updated
+                if (!group.HasUnreadMessages && !group.IsSelected) group.HasUnreadMessages = true;
+            });
+        }
+
+        private void Tox_OnGroupTitleChanged(object sender, ToxEventArgs.GroupTitleEventArgs e)
+        {
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var group = FindGroup(e.GroupNumber);
+                if (group == null)
+                {
+                    Debugging.Write("We don't know about this group!");
+                    return;
+                }
+
+                group.Name = e.Title;
+            });
         }
 
         private void Init()
@@ -84,8 +182,8 @@ namespace Toxy.ViewModels
         //we have to keep a reference of the main view model in order to change the current view from here
         public readonly MainWindowViewModel MainWindowView;
 
-        private FriendControlViewModel _selectedChat;
-        public FriendControlViewModel SelectedChat
+        private IChatObject _selectedChat;
+        public IChatObject SelectedChat
         {
             get { return _selectedChat; }
             set
@@ -108,7 +206,7 @@ namespace Toxy.ViewModels
                         _selectedChat.HasUnreadMessages = false;
 
                     _selectedChat.IsSelected = true;
-                    MainWindowView.CurrentView = _selectedChat.ConversationView;
+                    MainWindowView.CurrentView = (ViewModelBase)_selectedChat.ConversationView;
                 }
 
                 OnPropertyChanged(() => SelectedChat);
@@ -124,7 +222,7 @@ namespace Toxy.ViewModels
         {
             var item = ChatCollection.FirstOrDefault();
             if (item != null)
-                MainWindowView.CurrentView = item.ConversationView;
+                MainWindowView.CurrentView = (ViewModelBase)item.ConversationView;
             else
                 MainWindowView.CurrentView = new AddFriendViewModel();
 
@@ -136,7 +234,7 @@ namespace Toxy.ViewModels
             //this procedure may seem silly but will be better performance-wise compared to calling RearrangeChatCollection all day
             var tempColl = new ObservableCollection<IChatObject>(
                 ChatCollection.OrderBy(chat =>
-                    GetStatusPriority(chat.IsOnline, chat.UserStatus)).
+                    chat is IFriendObject ? GetStatusPriority(((IFriendObject)chat).IsOnline, ((IFriendObject)chat).UserStatus) : 0).
                     ThenBy(chat => chat.Name)
                 );
 
@@ -147,7 +245,7 @@ namespace Toxy.ViewModels
                 ChatCollection.Move(oldIndex, newIndex);
         }
 
-        public void SelectObject(FriendControlViewModel obj)
+        public void SelectObject(IChatObject obj)
         {
             SelectedChat = obj;
         }
@@ -155,9 +253,10 @@ namespace Toxy.ViewModels
         //this should only be used after initially populating the friend list
         public void RearrangeChatCollection()
         {
+            //TODO: clean this up
             ChatCollection = new ObservableCollection<IChatObject>(
                 ChatCollection.OrderBy(chat =>
-                    GetStatusPriority(chat.IsOnline, chat.UserStatus)).
+                    chat is IFriendObject ? GetStatusPriority(((IFriendObject)chat).IsOnline, ((IFriendObject)chat).UserStatus) : 0).
                     ThenBy(chat => chat.Name)
                 );
         }
@@ -201,6 +300,25 @@ namespace Toxy.ViewModels
             OnPropertyChanged(() => CurrentFriendRequest);
             OnPropertyChanged(() => PendingFriendRequestsAvailable);
             OnPropertyChanged(() => PendingFriendRequestCount);
+        }
+
+        private void Tox_OnGroupInvite(object sender, ToxEventArgs.GroupInviteEventArgs e)
+        {
+            int groupNumber = ProfileManager.Instance.Tox.JoinGroup(e.FriendNumber, e.Data);
+
+            MainWindow.Instance.UInvoke(() =>
+            {
+                var model = new GroupControlViewModel();
+                model.ChatNumber = groupNumber;
+                model.Name = ProfileManager.Instance.Tox.GetGroupTitle(groupNumber);
+
+                //add the friend to the list, sorted
+                AddObject(model);
+                SortObject(model);
+
+                //auto switch to converation view of this friend (?)
+                SelectObject(model);
+            });
         }
 
         private void Tox_OnFriendTypingChanged(object sender, ToxEventArgs.TypingStatusEventArgs e)
@@ -269,7 +387,7 @@ namespace Toxy.ViewModels
                 msg.Message = e.Message;
                 msg.Time = DateTime.Now.ToShortTimeString();
 
-                friend.ConversationView.AddMessage(msg);
+                (friend.ConversationView as ConversationViewModel).AddMessage(msg);
 
                 //if this is the first unread message, set HasUnreadMessages to true to make sure the status indicator gets updated
                 if (!friend.HasUnreadMessages && !friend.IsSelected) friend.HasUnreadMessages = true;
@@ -341,9 +459,14 @@ namespace Toxy.ViewModels
             });
         }
 
-        private IChatObject FindFriend(int friendNumber)
+        public IFriendObject FindFriend(int friendNumber)
         {
-            return ChatCollection.FirstOrDefault(f => f.ChatNumber == friendNumber);
+            return (IFriendObject)ChatCollection.FirstOrDefault(f => f is IFriendObject && f.ChatNumber == friendNumber);
+        }
+
+        public IGroupObject FindGroup(int groupNumber)
+        {
+            return (IGroupObject)ChatCollection.FirstOrDefault(f => f is IGroupObject && f.ChatNumber == groupNumber);
         }
 
         private static int GetStatusPriority(bool isOnline, ToxUserStatus status)

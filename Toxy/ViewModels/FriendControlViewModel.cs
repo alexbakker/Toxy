@@ -8,7 +8,7 @@ using Toxy.Managers;
 
 namespace Toxy.ViewModels
 {
-    public class FriendControlViewModel : ViewModelBase, IChatObject
+    public class FriendControlViewModel : ViewModelBase, IFriendObject
     {
         public FriendControlViewModel()
         {
@@ -109,8 +109,8 @@ namespace Toxy.ViewModels
             }
         }
 
-        private ConversationViewModel _conversationView;
-        public ConversationViewModel ConversationView
+        private IConversationView _conversationView;
+        public IConversationView ConversationView
         {
             get { return _conversationView; }
             set

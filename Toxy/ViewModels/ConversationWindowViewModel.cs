@@ -4,9 +4,9 @@ namespace Toxy.ViewModels
 {
     public class ConversationWindowViewModel
     {
-        public ConversationViewModel CurrentView { get; private set; }
+        public IConversationView CurrentView { get; private set; }
 
-        public ConversationWindowViewModel(ConversationViewModel model)
+        public ConversationWindowViewModel(IConversationView model)
         {
             CurrentView = model;
         }

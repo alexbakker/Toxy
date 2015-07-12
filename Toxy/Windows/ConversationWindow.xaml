@@ -14,11 +14,13 @@
         <DataTemplate DataType="{x:Type ViewModels:ConversationViewModel}">
             <Views:ConversationView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModels:GroupConversationViewModel}">
+            <Views:GroupConversationView />
+        </DataTemplate>
     </Window.Resources>
     <Window.Title>
-        <MultiBinding StringFormat="{}{0} - {1}">
-            <Binding Path="CurrentView.Friend.Name" Mode="OneWay"/>
-            <Binding Path="CurrentView.Friend.StatusMessage" Mode="OneWay"/>
+        <MultiBinding StringFormat="{}{0}">
+            <Binding Path="CurrentView.Group.Name" Mode="OneWay"/>
         </MultiBinding>
     </Window.Title>
     <Views:ConversationView Content="{Binding CurrentView}"/>

@@ -25,7 +25,7 @@
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem Header="Open in new window" Click="OpenInWindow_Click"/>
-            <MenuItem Header="LeaveGroup" Click="LeaveGroup_Click"/>
+            <MenuItem Header="Leave group" Click="LeaveGroup_Click"/>
             <MenuItem Header="Clear scrollback" Click="ClearScrollback_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>

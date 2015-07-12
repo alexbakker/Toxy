@@ -58,7 +58,13 @@ namespace Toxy.ViewModels
                                 group.Peers.Remove(peer);
                             }
 
-                            group.Peers.Add(new GroupPeer(e.PeerNumber, ProfileManager.Instance.Tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber)));
+                            peer = new GroupPeer(e.PeerNumber, ProfileManager.Instance.Tox.GetGroupPeerPublicKey(e.GroupNumber, e.PeerNumber));
+                            string name = ProfileManager.Instance.Tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
+
+                            if (!string.IsNullOrEmpty(name))
+                                peer.Name = name;
+
+                            group.Peers.Add(peer);
                             break;
                         }
                     case ToxChatChange.PeerDel:

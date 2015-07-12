@@ -3,17 +3,16 @@ using System.Linq;
 using SharpTox.Av;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
-using NAudio.CoreAudioApi;
 
 namespace Toxy.Managers
 {
     public class AudioEngine : IDisposable
     {
-        private WasapiCapture _waveSource;
+        private WaveInEvent _waveSource;
         private BufferedWaveProvider _waveSourceProvider;
         private MeteringSampleProvider _waveSourceMeter;
 
-        private WasapiOut _waveOut;
+        private WaveOutEvent _waveOut;
         private BufferedWaveProvider _waveOutProvider;
 
         public bool IsRecording { get; private set; }
@@ -29,28 +28,23 @@ namespace Toxy.Managers
 
         public AudioEngine()
         {
-            var deviceEnumerator = new MMDeviceEnumerator();
-
-            if (Config.Instance.RecordingDevice != null)
+            if (Config.Instance.RecordingDevice != null && WaveIn.DeviceCount != 0 && Config.Instance.RecordingDevice.Number <= WaveIn.DeviceCount)
             {
-                var device = deviceEnumerator.GetDevice(Config.Instance.RecordingDevice.ID);
-                int channels = device.AudioClient.MixFormat.Channels;
-
-                SetRecordingSettings(device, 48000, channels > 2 ? 2 : channels);
+                var capabilities = WaveIn.GetCapabilities(Config.Instance.RecordingDevice.Number);
+                SetRecordingSettings(48000, capabilities.Channels > 2 ? 2 : capabilities.Channels);
             }
 
-            if (Config.Instance.PlaybackDevice != null)
+            if (Config.Instance.PlaybackDevice != null && WaveOut.DeviceCount != 0 && Config.Instance.PlaybackDevice.Number <= WaveOut.DeviceCount)
             {
-                var device = deviceEnumerator.GetDevice(Config.Instance.PlaybackDevice.ID);
-                int channels = device.AudioClient.MixFormat.Channels;
-
-                SetPlaybackSettings(device, 48000, channels > 2 ? 2 : channels);
+                var capabilities = WaveOut.GetCapabilities(Config.Instance.PlaybackDevice.Number);
+                SetPlaybackSettings(48000, capabilities.Channels > 2 ? 2 : capabilities.Channels);
             }
         }
 
-        public void SetPlaybackSettings(MMDevice device, int sampleRate, int channels)
+        public void SetPlaybackSettings(int sampleRate, int channels)
         {
             //TODO: what if our friend is sending stereo but our output device only supports mono? write a conversion method for that
+            var capabilities = WaveOut.GetCapabilities(Config.Instance.PlaybackDevice.Number);
             var waveOutFormat = new WaveFormat(sampleRate, channels);
 
             if (_waveOut != null)
@@ -59,24 +53,26 @@ namespace Toxy.Managers
             _waveOutProvider = new BufferedWaveProvider(waveOutFormat);
             _waveOutProvider.DiscardOnBufferOverflow = true;
 
-            _waveOut = new WasapiOut(device, AudioClientShareMode.Shared, true, 0);
+            _waveOut = new WaveOutEvent();
+            _waveOut.DeviceNumber = Config.Instance.PlaybackDevice.Number;
             _waveOut.Init(_waveOutProvider);
             _waveOut.Play();
 
             Debugging.Write(string.Format("Changed playback config to: samplingRate: {0}, channels: {1}", sampleRate, channels));
         }
 
-        public void SetRecordingSettings(MMDevice device, int sampleRate, int channels)
+        public void SetRecordingSettings(int sampleRate, int channels)
         {
+            var capabilities = WaveIn.GetCapabilities(Config.Instance.RecordingDevice.Number);
             var waveSourceFormat = new WaveFormat(sampleRate, channels);
 
             if (_waveSource != null)
                 _waveSource.Dispose();
 
-            _waveSource = new WasapiCapture(device);
-            //_waveSource.BufferMilliseconds = 20;
+            _waveSource = new WaveInEvent();
+            _waveSource.BufferMilliseconds = 20;
             _waveSource.WaveFormat = waveSourceFormat;
-            _waveSource.ShareMode = AudioClientShareMode.Exclusive;
+            _waveSource.DeviceNumber = Config.Instance.RecordingDevice.Number;
             _waveSource.DataAvailable += waveSource_DataAvailable;
 
             _waveSourceProvider = new BufferedWaveProvider(waveSourceFormat);

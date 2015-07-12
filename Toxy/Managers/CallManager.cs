@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Toxy.Tools;
-using NAudio.CoreAudioApi;
 
 namespace Toxy.Managers
 {
@@ -212,8 +211,7 @@ namespace Toxy.Managers
                 //in case the friend suddenly changed audio config, account for it here
                 if (e.Frame.Channels != _callInfo.AudioEngine.PlaybackFormat.Channels ||
                     e.Frame.SamplingRate != _callInfo.AudioEngine.PlaybackFormat.SampleRate)
-                    //TODO: be lesss lazy
-                    _callInfo.AudioEngine.SetPlaybackSettings(new MMDeviceEnumerator().GetDevice(Config.Instance.PlaybackDevice.ID), e.Frame.SamplingRate, e.Frame.Channels);
+                    _callInfo.AudioEngine.SetPlaybackSettings(e.Frame.SamplingRate, e.Frame.Channels);
 
                 //send the frame to the audio engine
                 _callInfo.AudioEngine.ProcessAudioFrame(e.Frame);

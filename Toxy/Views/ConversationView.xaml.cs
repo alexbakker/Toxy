@@ -193,6 +193,9 @@ namespace Toxy.Views
 
         private void TextBoxEnteredText_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!Config.Instance.SendTypingNotifications)
+                return;
+
             _typingTimer.Change(1000, -1);
 
             if (!Context.Friend.SelfIsTyping)

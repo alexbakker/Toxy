@@ -30,6 +30,8 @@ namespace Toxy.Managers
         public DeviceInfo PlaybackDevice { get; set; }
         public DeviceInfo VideoDevice { get; set; }
 
+        public bool SendTypingNotifications { get; set; }
+
         public string ProfilePath { get; set; }
 
         public void Save()

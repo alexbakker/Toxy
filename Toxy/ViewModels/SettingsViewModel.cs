@@ -60,6 +60,12 @@ namespace Toxy.ViewModels
             }
         }
 
+        public bool SendTypingNotifications
+        {
+            get { return Config.Instance.SendTypingNotifications; }
+            set { Config.Instance.SendTypingNotifications = value; }
+        }
+
         public ObservableCollection<ProfileInfo> Profiles
         {
             get

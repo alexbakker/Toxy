@@ -190,6 +190,11 @@
                             <TextBlock Margin="5 10" Text="Privacy"/>
                         </StackPanel>
                     </TabItem.Header>
+                    <TabItem.Content>
+                        <StackPanel Margin="10">
+                            <CheckBox Content="Send typing notifications" IsChecked="{Binding SendTypingNotifications}"/>
+                        </StackPanel>
+                    </TabItem.Content>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>

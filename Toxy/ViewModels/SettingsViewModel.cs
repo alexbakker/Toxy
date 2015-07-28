@@ -64,6 +64,23 @@ namespace Toxy.ViewModels
             set { Config.Instance.SendTypingNotifications = value; }
         }
 
+        public bool EnableAutoAway
+        {
+            get { return Config.Instance.EnableAutoAway; }
+            set { Config.Instance.EnableAutoAway = value; }
+        }
+
+        public string AwayTimeMinutes
+        {
+            get { return Config.Instance.AwayTimeMinutes.ToString(); }
+            set
+            {
+                int minutes;
+                if (int.TryParse(value, out minutes))
+                    Config.Instance.AwayTimeMinutes = minutes;
+            }
+        }
+
         private string _nospam;
         public string Nospam
         {

@@ -1,14 +1,17 @@
 ﻿using SharpTox.Core;
-using System;
 using System.Windows.Media;
 using Toxy.Managers;
 using Toxy.MVVM;
 using Toxy.Extensions;
+using System.Timers;
+using Toxy.Tools;
 
 namespace Toxy.ViewModels
 {
     public class SelfViewModel : ViewModelBase
     {
+        private Timer _awayTimer;
+
         public SelfViewModel()
         {
             ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
@@ -16,11 +19,49 @@ namespace Toxy.ViewModels
             Name = ProfileManager.Instance.Tox.Name;
             StatusMessage = ProfileManager.Instance.Tox.StatusMessage;
             UserStatus = ProfileManager.Instance.Tox.Status;
+
+            //TODO: only start a timer when EnableAutoAway changes to 'true' at runtime or if it's already 'true' here
+            _awayTimer = new Timer(1000d);
+            _awayTimer.Elapsed += awayTimer_Elapsed;
+            _awayTimer.Start();
+        }
+
+        private void awayTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (Config.Instance.EnableAutoAway)
+                IsAway = TimeUtils.GetIdleTime().TotalMinutes >= Config.Instance.AwayTimeMinutes;
+        }
+
+        //bad bad bad
+        ~SelfViewModel()
+        {
+            if (_awayTimer != null)
+                _awayTimer.Dispose();
         }
 
         private void Tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
         {
             MainWindow.Instance.UInvoke(() => ConnectionStatus = e.Status);
+        }
+
+        private bool _isAway;
+        public bool IsAway
+        {
+            get { return _isAway; }
+            set
+            {
+                if (Equals(value, _isAway))
+                {
+                    return;
+                }
+
+                //TODO: save the previous status and set it back to that instead of ToxUserStatus.None once the user isn't AFK anymore
+                UserStatus = value ? ToxUserStatus.Away : ToxUserStatus.None;
+                ProfileManager.Instance.Tox.Status = UserStatus;
+
+                _isAway = value;
+                OnPropertyChanged(() => Name);
+            }
         }
 
         private string _name;

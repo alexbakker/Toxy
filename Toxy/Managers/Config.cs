@@ -29,10 +29,10 @@ namespace Toxy.Managers
         public DeviceInfo RecordingDevice { get; set; }
         public DeviceInfo PlaybackDevice { get; set; }
         public DeviceInfo VideoDevice { get; set; }
-
         public bool SendTypingNotifications { get; set; }
-
         public string ProfilePath { get; set; }
+        public int AwayTimeMinutes { get; set; } = 1;
+        public bool EnableAutoAway { get; set; }
 
         public void Save()
         {

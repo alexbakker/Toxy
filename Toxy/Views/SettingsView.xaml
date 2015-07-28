@@ -193,6 +193,11 @@
                     <TabItem.Content>
                         <StackPanel Margin="10">
                             <CheckBox Content="Send typing notifications" IsChecked="{Binding SendTypingNotifications}"/>
+                            <StackPanel Margin="0,5" Orientation="Horizontal">
+                                <CheckBox Content="Show me as Away when I've been inactive for" IsChecked="{Binding EnableAutoAway}"/>
+                                <TextBox Margin="5,0" Width="25" Text="{Binding AwayTimeMinutes}"/>
+                                <TextBlock Text="minutes"/>
+                            </StackPanel>
                         </StackPanel>
                     </TabItem.Content>
                 </TabItem>

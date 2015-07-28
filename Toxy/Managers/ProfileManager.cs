@@ -116,7 +116,7 @@ namespace Toxy.Managers
         {
             try
             {
-                return Directory.GetFiles(ProfileManager.ProfileDataPath, "*.tox", SearchOption.TopDirectoryOnly).
+                return Directory.GetFiles(ProfileDataPath, "*.tox", SearchOption.TopDirectoryOnly).
                         Where(s => s.EndsWith(".tox")).
                         Select(p => new ProfileInfo(p));
             }

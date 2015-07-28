@@ -57,12 +57,21 @@ namespace Toxy.Views
             if (dialog.ShowDialog() != true)
                 return;
 
-            var bmp = new BitmapImage();
-            bmp.BeginInit();
-            bmp.UriSource = new Uri(dialog.FileName);
-            bmp.DecodePixelWidth = 128; //this should make the file size smaller than 1 << 16
-            bmp.CacheOption = BitmapCacheOption.OnLoad;
-            bmp.EndInit();
+            BitmapImage bmp;
+            try
+            {
+                bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.UriSource = new Uri(dialog.FileName);
+                bmp.DecodePixelWidth = 128; //this should make the file size smaller than 1 << 16
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.EndInit();
+            }
+            catch
+            {
+                MessageBox.Show("The image you selected appears to be invalid or corrupted.", "Invalid image", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             
             byte[] bytes = BitmapImageToBytes(bmp);
             AvatarManager.Instance.SaveAvatar(ProfileManager.Instance.Tox.Id.PublicKey.ToString(), bytes);

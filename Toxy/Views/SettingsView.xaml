@@ -202,6 +202,27 @@
                             <TextBlock Text="Advanced"/>
                         </StackPanel>
                     </TabItem.Header>
+                    <TabItem.Content>
+                        <StackPanel Orientation="Vertical" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                            <Grid>
+                                <Label Content="Nospam" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" Height="Auto" VerticalAlignment="Top">
+                                    <StackPanel Margin="10">
+                                        <TextBlock TextWrapping="Wrap">
+                                            In case you're getting spammed with friend requests you can change the nospam value of your Tox ID here.
+                                            This will prevent anyone who knows your original Tox ID from spamming you.<LineBreak/>
+                                            Note: This <Bold>will</Bold> change your Tox ID but contacts that are already in your list aren't affected by this in any way.
+                                        </TextBlock>
+                                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                            <TextBox Width="150" Text="{Binding Nospam, Mode=TwoWay}"/>
+                                            <Button Margin="5,0" Content="Apply" Click="Apply_Nospam"/>
+                                            <Button Content="Randomize" Click="RandomizeNospam_Click"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </TabItem.Content>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>

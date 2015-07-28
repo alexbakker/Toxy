@@ -140,5 +140,28 @@ namespace Toxy.Views
             if (handle == IntPtr.Zero || !Context.VideoEngine.DisplayPropertyWindow(handle))
                 MessageBox.Show("There is no property window available for this webcam", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        private void Apply_Nospam(object sender, RoutedEventArgs e)
+        {
+            uint nospam;
+            if (!uint.TryParse(Context.Nospam.Trim(), out nospam))
+            {
+                MessageBox.Show("Could not change nospam. The entered number is not a valid 32-bit unsigned integer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            ProfileManager.Instance.Tox.SetNospam(nospam);
+        }
+
+        private void RandomizeNospam_Click(object sender, RoutedEventArgs e)
+        {
+            byte[] bytes = new byte[4];
+            var random = new Random();
+
+            random.NextBytes(bytes);
+            uint nospam = BitConverter.ToUInt32(bytes, 0);
+
+            Context.Nospam = nospam.ToString();
+        }
     }
 }

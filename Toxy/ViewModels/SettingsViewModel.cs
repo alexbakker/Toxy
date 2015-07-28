@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 
@@ -13,7 +12,6 @@ using Toxy.Misc.QR;
 using Toxy.Managers;
 using Toxy.MVVM;
 using Toxy.Extensions;
-using Toxy.Views;
 using Toxy.Tools;
 
 using NAudio.Wave;
@@ -33,8 +31,8 @@ namespace Toxy.ViewModels
         public DeviceInfo SelectedRecordingDevice
         {
             get { return Config.Instance.RecordingDevice; }
-            set 
-            { 
+            set
+            {
                 Config.Instance.RecordingDevice = value;
                 ReloadAudio();
             }
@@ -43,8 +41,8 @@ namespace Toxy.ViewModels
         public DeviceInfo SelectedPlaybackDevice
         {
             get { return Config.Instance.PlaybackDevice; }
-            set 
-            { 
+            set
+            {
                 Config.Instance.PlaybackDevice = value;
                 ReloadVideo();
             }
@@ -53,8 +51,8 @@ namespace Toxy.ViewModels
         public DeviceInfo SelectedVideoDevice
         {
             get { return Config.Instance.VideoDevice; }
-            set 
-            { 
+            set
+            {
                 Config.Instance.VideoDevice = value;
                 ReloadAudio();
             }
@@ -64,6 +62,21 @@ namespace Toxy.ViewModels
         {
             get { return Config.Instance.SendTypingNotifications; }
             set { Config.Instance.SendTypingNotifications = value; }
+        }
+
+        private string _nospam;
+        public string Nospam
+        {
+            get { return _nospam ?? ProfileManager.Instance.Tox.GetNospam().ToString(); }
+            set
+            {
+                if (Equals(value, _nospam))
+                {
+                    return;
+                }
+                _nospam = value;
+                OnPropertyChanged(() => Nospam);
+            }
         }
 
         public ObservableCollection<ProfileInfo> Profiles

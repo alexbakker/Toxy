@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using SharpTox.Core;
 using Toxy.ViewModels;
 using Toxy.Managers;
+using Toxy.Tools;
 
 namespace Toxy.Views
 {
@@ -31,6 +32,32 @@ namespace Toxy.Views
 
             if (string.IsNullOrEmpty(message))
                 message = (string)TextBoxMessage.Tag;
+
+            if (id.Contains("@"))
+            {
+                //try resolving 3 times
+                for (int tries = 0; tries < 3; tries++)
+                {
+                    try
+                    {
+                        string toxId = DnsUtils.DiscoverToxID(id, Config.Instance.NameServices, false);
+                        if (!string.IsNullOrEmpty(toxId))
+                        {
+                            //show the tox id to the user before actually adding it to the friend list
+                            TextBoxFriendId.Text = toxId;
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debugging.Write(string.Format("Could not resolve {0}: {1}", id, ex.Message));
+                    }
+                }
+
+                //if we got this far the discovery must have failed
+                ShowError("Could not resolve tox username.");
+                return;
+            }
 
             if (!ToxId.IsValid(id))
             {

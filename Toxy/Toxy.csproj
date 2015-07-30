@@ -146,6 +146,7 @@
     <Compile Include="Managers\FileTransfer.cs" />
     <Compile Include="Managers\VideoEngine.cs" />
     <Compile Include="Misc\QR\QRCoder.cs" />
+    <Compile Include="Tools\DnsUtils.cs" />
     <Compile Include="Tools\TimeUtils.cs" />
     <Compile Include="Tools\ToxSave.cs" />
     <Compile Include="Tools\VideoUtils.cs" />

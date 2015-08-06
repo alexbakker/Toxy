@@ -16,6 +16,7 @@ using Toxy.Tools;
 
 using NAudio.Wave;
 using AForge.Video.DirectShow;
+using SharpTox.Core;
 
 namespace Toxy.ViewModels
 {
@@ -79,6 +80,24 @@ namespace Toxy.ViewModels
                 if (int.TryParse(value, out minutes))
                     Config.Instance.AwayTimeMinutes = minutes;
             }
+        }
+
+        public string ProxyAddress
+        {
+            get { return Config.Instance.ProxyAddress; }
+            set { Config.Instance.ProxyAddress = value; }
+        }
+
+        public string ProxyPort
+        {
+            get { return Config.Instance.ProxyPort.ToString(); }
+            set { Config.Instance.ProxyPort = string.IsNullOrEmpty(value) ? 0 : int.Parse(value); }
+        }
+
+        public int ProxyType
+        {
+            get { return (int)Config.Instance.ProxyType; }
+            set { Config.Instance.ProxyType = (ToxProxyType)value; }
         }
 
         private string _nospam;

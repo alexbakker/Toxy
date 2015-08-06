@@ -2,6 +2,7 @@
 using System.Xml.Serialization;
 using System.IO;
 using Toxy.ViewModels;
+using SharpTox.Core;
 
 namespace Toxy.Managers
 {
@@ -33,6 +34,9 @@ namespace Toxy.Managers
         public string ProfilePath { get; set; }
         public int AwayTimeMinutes { get; set; } = 1;
         public bool EnableAutoAway { get; set; }
+        public string ProxyAddress { get; set; }
+        public int ProxyPort { get; set; }
+        public ToxProxyType ProxyType { get; set; }
 
         public ToxNameService[] NameServices { get; set; } = new[]
         {

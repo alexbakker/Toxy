@@ -163,5 +163,10 @@ namespace Toxy.Views
 
             Context.Nospam = nospam.ToString();
         }
+
+        private void ProxyPort_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = e.Text.FirstOrDefault(c => !char.IsDigit(c)) != char.MinValue;
+        }
     }
 }

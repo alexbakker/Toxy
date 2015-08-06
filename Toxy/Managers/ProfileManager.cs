@@ -52,6 +52,15 @@ namespace Toxy.Managers
 
         public void SwitchTo(ProfileInfo profile)
         {
+            var options = ToxOptions.Default;
+            
+            if (Config.Instance.ProxyType != ToxProxyType.None)
+            {
+                options.ProxyType = Config.Instance.ProxyType;
+                options.ProxyHost = Config.Instance.ProxyAddress;
+                options.ProxyPort = Config.Instance.ProxyPort;
+            }
+
             Tox newTox;
 
             if (profile != null)
@@ -64,11 +73,11 @@ namespace Toxy.Managers
                 //if (data.IsEncrypted)
                 //  throw new Exception("Data is encrypted, Toxy does not support encrypted profiles yet.");
 
-                newTox = new Tox(ToxOptions.Default, data);
+                newTox = new Tox(options, data);
             }
             else
             {
-                newTox = new Tox(ToxOptions.Default);
+                newTox = new Tox(options);
             }
 
             var newToxAv = new ToxAv(newTox);

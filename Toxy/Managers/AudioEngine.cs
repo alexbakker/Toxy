@@ -3,6 +3,7 @@ using System.Linq;
 using SharpTox.Av;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using System.Collections.Generic;
 
 namespace Toxy.Managers
 {
@@ -14,6 +15,7 @@ namespace Toxy.Managers
 
         private WaveOutEvent _waveOut;
         private BufferedWaveProvider _waveOutProvider;
+        private List<short> _receivedAudioBuffer = new List<short>();
 
         public bool IsRecording { get; private set; }
 
@@ -112,7 +114,29 @@ namespace Toxy.Managers
 
         public void ProcessAudioFrame(ToxAvAudioFrame frame)
         {
-            if (_waveOutProvider != null)
+            if (_waveOutProvider == null)
+                return;
+
+            //what is the length of this audio frame?
+            int audioLength = ((frame.Data.Length / frame.Channels) * 1000) / frame.SamplingRate;
+
+            //what should the length of this frame have been? (we want 20ms to send to the provider)
+            int wantedDataLength = ((20 * frame.SamplingRate) / 1000) * frame.Channels;
+
+            if (wantedDataLength != frame.Data.Length)
+            {
+                //if we didn't get the amount of data we wanted, we need to buffer it
+                _receivedAudioBuffer.AddRange(frame.Data);
+                if (_receivedAudioBuffer.Count == wantedDataLength)
+                {
+                    short[] shorts = _receivedAudioBuffer.ToArray();
+                    byte[] bytes = ShortsToBytes(shorts);
+
+                    _waveOutProvider.AddSamples(bytes, 0, bytes.Length);
+                    _receivedAudioBuffer.Clear();
+                }
+            }
+            else
             {
                 byte[] bytes = ShortsToBytes(frame.Data);
                 _waveOutProvider.AddSamples(bytes, 0, bytes.Length);

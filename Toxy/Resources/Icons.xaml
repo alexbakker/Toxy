@@ -442,4 +442,16 @@
             </Path.Data>
         </Path>
     </Canvas>
+
+    <!-- this was taken from qtox, https://raw.githubusercontent.com/tux3/qTox/master/ui/screenshotButton/screenshotButton.svg -->
+    <Canvas x:Key="tox_screenshot" Width="16" Height="16" ClipToBounds="True" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <Canvas>
+            <Rectangle RadiusX="1" RadiusY="1" Stroke="#FFFFFFFF" StrokeThickness="2" StrokeMiterLimit="4" Width="14" Height="8" Canvas.Left="1" Canvas.Top="3" />
+            <Path Fill="#FFFFFFFF" Stroke="#FFFFFFFF" StrokeMiterLimit="4">
+                <Path.Data>
+                    <PathGeometry FillRule="Nonzero" Figures="M4.50183,15.49984L8.00043,11.37776 11.49909,15.49984 4.50184,15.49984z" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
 </ResourceDictionary>

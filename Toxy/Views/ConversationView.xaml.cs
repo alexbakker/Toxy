@@ -9,6 +9,9 @@ using Toxy.Managers;
 using Microsoft.Win32;
 using System.Windows;
 using System.Threading;
+using ShareX.ScreenCaptureLib;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace Toxy.Views
 {
@@ -201,6 +204,32 @@ namespace Toxy.Views
             if (!Context.Friend.SelfIsTyping)
             {
                 Context.Friend.SetSelfTypingStatus(true);
+            }
+        }
+
+        private void ButtonSendScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            using (var screenshot = Screenshot.CaptureFullscreen())
+            using (var surface = new RectangleRegion())
+            {
+                surface.SurfaceImage = screenshot;
+                surface.Prepare();
+                surface.ShowDialog();
+
+                using (var img = surface.GetRegionImage())
+                {
+                    var stream = new MemoryStream();
+                    img.Save(stream, ImageFormat.Png);
+
+                    var transfer = TransferManager.Instance.SendFile(Context.Friend.ChatNumber, stream, "screenshot.png");
+                    if (transfer == null)
+                    {
+                        MessageBox.Show("Could not send screenshot.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    (Context.Friend.ConversationView as ConversationViewModel).AddTransfer(transfer);
+                }
             }
         }
     }

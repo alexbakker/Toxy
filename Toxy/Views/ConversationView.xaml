@@ -214,6 +214,19 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                 </Button>
+                <Button Grid.Column="1" Grid.Row="2"
+                        Width="19"
+                        Margin="-41 0 0 0"
+                        Style="{StaticResource ToxGreenButtonStyle}"
+                        IsEnabled="{Binding Friend.IsOnline, Mode=OneWay}"
+                        Click="ButtonSendScreenshot_Click">
+                    <Rectangle Width="13.736" Height="13.708" 
+                               Fill="{StaticResource ToxWhiteBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource tox_screenshot}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
             </Grid>
             <Button Grid.Column="2" Width="50"
                     Style="{StaticResource ToxGreenButtonStyle}"

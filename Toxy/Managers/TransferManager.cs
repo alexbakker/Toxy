@@ -134,6 +134,11 @@ namespace Toxy.Managers
             try { stream = new FileStream(path, FileMode.Open, FileAccess.Read); }
             catch { return null; }
 
+            return SendFile(friendNumber, stream, fileName);
+        }
+
+        public FileTransfer SendFile(int friendNumber, Stream stream, string fileName)
+        {
             long size = stream.Length;
             var error = ToxErrorFileSend.Ok;
 

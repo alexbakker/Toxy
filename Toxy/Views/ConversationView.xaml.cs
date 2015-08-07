@@ -218,6 +218,9 @@ namespace Toxy.Views
 
                 using (var img = surface.GetRegionImage())
                 {
+                    if (img == null)
+                        return;
+
                     var stream = new MemoryStream();
                     img.Save(stream, ImageFormat.Png);
 

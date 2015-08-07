@@ -51,28 +51,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums.cs" />
-    <Compile Include="Forms\RectangleAnnotate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RectangleTransparent.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="MonitorRegion.cs" />
     <Compile Include="MonitorRegionDefaultCreator.cs" />
     <Compile Include="RectangleAnnotateOptions.cs" />
     <Compile Include="RegionHelpers\RegionInfo.cs" />
     <Compile Include="Screencast\FFmpegOptions.cs" />
     <Compile Include="Screencast\FFmpegHelper.cs" />
-    <Compile Include="Screencast\FFmpegOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Screencast\FFmpegOptionsForm.Designer.cs">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Screencast\ScreencastOptions.cs" />
-    <Compile Include="Forms\RectangleLight.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\Surface.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,12 +70,6 @@
     </Compile>
     <Compile Include="RegionHelpers\AreaManager.cs" />
     <Compile Include="RegionHelpers\DrawObject.cs" />
-    <Compile Include="Forms\FreeHandRegion.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\PolygonRegion.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\RectangleRegion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,33 +122,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.tr.resx" />
     <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.de.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.es.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.fr.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.hu.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.ko-KR.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.nl-NL.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.tr.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screencast\FFmpegOptionsForm.zh-CN.resx">
-      <DependentUpon>FFmpegOptionsForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

@@ -52,17 +52,6 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gma.QrCodeNet.Encoding, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\QrCode.Net.0.4.0.0\lib\net40\Gma.QrCodeNet.Encoding.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SevenZipSharp">
-      <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
@@ -127,19 +116,12 @@
     <Compile Include="CLI\ExternalCLIManager.cs" />
     <Compile Include="EnumInfo.cs" />
     <Compile Include="Extensions\NumberExtensions.cs" />
-    <Compile Include="FFmpegDownloader.cs" />
     <Compile Include="FontSafe.cs" />
     <Compile Include="Forms\OutputBox.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OutputBox.Designer.cs">
       <DependentUpon>OutputBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\QRCodeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\QRCodeForm.Designer.cs">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HelpersOptions.cs" />
     <Compile Include="Helpers\URLHelpers.cs" />
@@ -163,12 +145,6 @@
     <Compile Include="PingHelper.cs" />
     <Compile Include="PingResult.cs" />
     <Compile Include="ProxyInfo.cs" />
-    <Compile Include="Controls\ExportImportControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ExportImportControl.Designer.cs">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\TablessControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -270,7 +246,6 @@
     <Compile Include="GIF\Quantizer.cs" />
     <Compile Include="Helpers\ImageHelpers.cs" />
     <Compile Include="Native\FolderSelectDialog.cs" />
-    <Compile Include="SettingsBase.cs" />
     <Compile Include="Helpers\ShortcutHelpers.cs" />
     <Compile Include="ShareXResources.cs" />
     <Compile Include="StringLineReader.cs" />
@@ -284,14 +259,7 @@
     <Compile Include="Cryptographic\TranslatorHelper.cs" />
     <Compile Include="UITypeEditors\NameParserEditor.cs" />
     <Compile Include="UnsafeBitmap.cs" />
-    <Compile Include="UpdateChecker\GitHubUpdateChecker.cs" />
     <Compile Include="UpdateChecker\UpdateChecker.cs" />
-    <Compile Include="UpdateChecker\DownloaderForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UpdateChecker\DownloaderForm.Designer.cs">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="FileDownloader.cs" />
     <Compile Include="Controls\BlackStyle\BlackStyleButton.cs">
       <SubType>Component</SubType>
@@ -337,16 +305,9 @@
     </Compile>
     <Compile Include="Printer\PrintTextHelper.cs" />
     <Compile Include="Helpers\RegistryHelpers.cs" />
-    <Compile Include="SettingsHelper.cs" />
     <Compile Include="SingleInstanceApplication\ApplicationInstanceManager.cs" />
     <Compile Include="SingleInstanceApplication\InstanceProxy.cs" />
     <Compile Include="DebugHelper.cs" />
-    <Compile Include="UpdateChecker\UpdateCheckerLabel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UpdateChecker\UpdateCheckerLabel.Designer.cs">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SplitContainerCustomSplitter.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -374,12 +335,6 @@
     </Compile>
     <Compile Include="Controls\MyPictureBox.Designer.cs">
       <DependentUpon>MyPictureBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UpdateChecker\UpdateMessageBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UpdateChecker\UpdateMessageBox.Designer.cs">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
     </Compile>
     <Compile Include="UpdateChecker\XMLUpdateChecker.cs" />
     <Compile Include="Links.cs" />
@@ -458,30 +413,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Colors\GradientPickerForm.zh-CN.resx">
       <DependentUpon>GradientPickerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.de.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.es.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.fr.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.hu.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.ko-KR.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.nl-NL.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.tr.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.zh-CN.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MyPictureBox.de.resx">
       <DependentUpon>MyPictureBox.cs</DependentUpon>
@@ -705,41 +636,11 @@
     <EmbeddedResource Include="Forms\OutputBox.resx">
       <DependentUpon>OutputBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.de.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.es.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.fr.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.hu.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.ko-KR.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.nl-NL.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportImportControl.resx">
-      <DependentUpon>ExportImportControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\TabToListView.resx">
       <DependentUpon>TabToListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TabToTreeView.resx">
       <DependentUpon>TabToTreeView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.tr.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\QRCodeForm.zh-CN.resx">
-      <DependentUpon>QRCodeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Printer\PrintForm.de.resx">
       <DependentUpon>PrintForm.cs</DependentUpon>
@@ -797,32 +698,6 @@
     <EmbeddedResource Include="Properties\Resources.nl-NL.resx" />
     <EmbeddedResource Include="Properties\Resources.tr.resx" />
     <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.de.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.es.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.fr.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.hu.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.ko-KR.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.nl-NL.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Printer\PrintForm.resx">
       <DependentUpon>PrintForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -839,70 +714,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.tr.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\DownloaderForm.zh-CN.resx">
-      <DependentUpon>DownloaderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.de.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.es.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.fr.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.hu.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.ko-KR.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.nl-NL.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MyPictureBox.resx">
       <DependentUpon>MyPictureBox.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.tr.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateCheckerLabel.zh-CN.resx">
-      <DependentUpon>UpdateCheckerLabel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.de.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.es.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.fr.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.hu.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.ko-KR.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.nl-NL.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.tr.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateChecker\UpdateMessageBox.zh-CN.resx">
-      <DependentUpon>UpdateMessageBox.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -925,12 +739,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Crosshair.cur" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Greenshot.ImageEditor\Greenshot.ImageEditor.csproj">
-      <Project>{cd642bf4-d815-4d67-a0b5-c69f0b8231af}</Project>
-      <Name>Greenshot.ImageEditor</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ShareX_Icon.ico" />

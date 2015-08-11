@@ -28,7 +28,7 @@ Pre-compiled versions of Toxy can be found [here](https://jenkins.impy.me/ "Toxy
 
 ### Screenshots
 
-![Main Window](https://impy.me/i/54e080.png)
+![Main Window](https://impy.me/i/0a1538.png)
 ![Main Window with settings)](https://impy.me/u/c1946d.png)
 
 Compiling Toxy

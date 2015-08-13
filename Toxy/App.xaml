@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Languages/Kr.xaml"/>
                 <ResourceDictionary Source="Languages/Ru.xaml"/>
                 <ResourceDictionary Source="Languages/Eng.xaml"/>
+                <ResourceDictionary Source="Languages/Fr.xaml"/>
 
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 

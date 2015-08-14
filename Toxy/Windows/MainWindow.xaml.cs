@@ -187,7 +187,20 @@ namespace Toxy
             if (e.ChangedButton != MouseButton.Left || e.ButtonState != MouseButtonState.Pressed)
                 return;
 
-            DeselectFriendList();
+            var group = ProfileManager.Instance.Tox.NewGroup();
+            if (group < 0)
+                return;
+
+            var title = "New groupchat";
+            ProfileManager.Instance.Tox.SetGroupTitle(group, title);
+
+            var model = new GroupControlViewModel();
+            model.ChatNumber = group;
+            model.Name = title;
+
+            ViewModel.CurrentFriendListView.AddObject(model);
+            ViewModel.CurrentFriendListView.SortObject(model);
+            ViewModel.CurrentFriendListView.SelectObject(model);
         }
 
         private void ButtonTransfers_MouseDown(object sender, MouseButtonEventArgs e)

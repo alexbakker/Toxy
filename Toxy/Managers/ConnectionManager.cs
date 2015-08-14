@@ -55,19 +55,21 @@ namespace Toxy.Managers
 
         public void DoBootstrap()
         {
-            if (_nodes.Length >= 4)
+            var nodes = Config.Instance.Nodes;
+
+            if (nodes.Length >= 4)
             {
                 var random = new Random();
                 var indices = new List<int>();
 
                 for (int i = 0; i < 4; )
                 {
-                    int index = random.Next(_nodes.Length);
+                    int index = random.Next(nodes.Length);
                     if (indices.Contains(index))
                         continue;
 
-                    var node = _nodes[index];
-                    if (Bootstrap(_nodes[index]))
+                    var node = nodes[index];
+                    if (Bootstrap(nodes[index]))
                     {
                         indices.Add(index);
                         i++;
@@ -76,17 +78,18 @@ namespace Toxy.Managers
             }
             else
             {
-                foreach (var node in _nodes)
+                foreach (var node in nodes)
                     Bootstrap(node);
             }
 
             WaitAndBootstrap(20000);
         }
 
-        private bool Bootstrap(ToxNode node)
+        private bool Bootstrap(ToxConfigNode node)
         {
+            var toxNode = new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.PublicKey));
             var error = ToxErrorBootstrap.Ok;
-            bool success = ProfileManager.Instance.Tox.Bootstrap(node, out error);
+            bool success = ProfileManager.Instance.Tox.Bootstrap(toxNode, out error);
 
             if (success)
                 Debugging.Write(string.Format("Bootstrapped off of {0}:{1}", node.Address, node.Port));
@@ -94,20 +97,12 @@ namespace Toxy.Managers
                 Debugging.Write(string.Format("Could not bootstrap off of {0}:{1}, error: {2}", node.Address, node.Port, error));
 
             //even if adding the tcp relay fails for some reason (while it shouldn't...), we'll consider this successful.
-            if (ProfileManager.Instance.Tox.AddTcpRelay(node, out error))
+            if (ProfileManager.Instance.Tox.AddTcpRelay(toxNode, out error))
                 Debugging.Write(string.Format("Added TCP relay {0}:{1}", node.Address, node.Port));
             else
                 Debugging.Write(string.Format("Could not add TCP relay {0}:{1}, error: {2}", node.Address, node.Port, error));
 
             return success;
         }
-
-        private static ToxNode[] _nodes = new ToxNode[]
-        {
-            new ToxNode("178.62.250.138", 33445, new ToxKey(ToxKeyType.Public, "788236D34978D1D5BD822F0A5BEBD2C53C64CC31CD3149350EE27D4D9A2F9B6B")),
-            new ToxNode("192.210.149.121", 33445, new ToxKey(ToxKeyType.Public, "F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67")),
-            new ToxNode("178.62.125.224", 33445, new ToxKey(ToxKeyType.Public, "10B20C49ACBD968D7C80F2E8438F92EA51F189F4E70CFBBB2C2C8C799E97F03E")),
-            new ToxNode("76.191.23.96", 33445, new ToxKey(ToxKeyType.Public, "93574A3FAB7D612FEA29FD8D67D3DD10DFD07A075A5D62E8AF3DD9F5D0932E11")),
-        };
     }
 }

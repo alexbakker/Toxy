@@ -6,37 +6,18 @@ using System.IO;
 using SharpTox.Core;
 using Toxy.ViewModels;
 using Toxy.Extensions;
+using SharpTox.Av;
 
 namespace Toxy.Managers
 {
-    public class TransferManager
+    public class TransferManager : IToxManager
     {
-        private static TransferManager _instance;
         private Dictionary<FileTransfer, Stream> _transfers = new Dictionary<FileTransfer, Stream>();
+        private Tox _tox;
 
-        private TransferManager()
+        public TransferManager(Tox tox)
         {
-            ProfileManager.Instance.Tox.OnFileChunkReceived += Tox_OnFileChunkReceived;
-            ProfileManager.Instance.Tox.OnFileChunkRequested += Tox_OnFileChunkRequested;
-            ProfileManager.Instance.Tox.OnFileControlReceived += Tox_OnFileControlReceived;
-            ProfileManager.Instance.Tox.OnFileSendRequestReceived += Tox_OnFileSendRequestReceived;
-            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
-        }
-
-        public static TransferManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new TransferManager();
-
-                return _instance;
-            }
-        }
-
-        public static TransferManager Init()
-        {
-            return Instance;
+            SwitchProfile(tox, null);
         }
 
         public bool CancelTransfer(FileTransfer transfer)
@@ -48,7 +29,7 @@ namespace Toxy.Managers
             }
 
             var error = ToxErrorFileControl.Ok;
-            ProfileManager.Instance.Tox.FileControl(transfer.FriendNumber, transfer.FileNumber, ToxFileControl.Cancel);
+            _tox.FileControl(transfer.FriendNumber, transfer.FileNumber, ToxFileControl.Cancel);
 
             RemoveTransfer(transfer, true);
 
@@ -67,7 +48,7 @@ namespace Toxy.Managers
                 return false;
 
             var error = ToxErrorFileControl.Ok;
-            if (!ProfileManager.Instance.Tox.FileControl(fileTransfer.FriendNumber, fileTransfer.FileNumber, ToxFileControl.Pause, out error))
+            if (!_tox.FileControl(fileTransfer.FriendNumber, fileTransfer.FileNumber, ToxFileControl.Pause, out error))
                 Debugging.Write("Could not pause file transfer, error: " + error);
             else
                 fileTransfer.Pause(true);
@@ -81,7 +62,7 @@ namespace Toxy.Managers
                 return false;
 
             var error = ToxErrorFileControl.Ok;
-            if (!ProfileManager.Instance.Tox.FileControl(fileTransfer.FriendNumber, fileTransfer.FileNumber, ToxFileControl.Resume, out error))
+            if (!_tox.FileControl(fileTransfer.FriendNumber, fileTransfer.FileNumber, ToxFileControl.Resume, out error))
                 Debugging.Write("Could not resume file transfer, error: " + error);
             else
                 fileTransfer.Resume();
@@ -104,9 +85,9 @@ namespace Toxy.Managers
             ToxFileInfo fileInfo;
 
             if (avatar != null)
-                fileInfo = ProfileManager.Instance.Tox.FileSend(friendNumber, ToxFileKind.Avatar, avatar.Length, "avatar.png", ToxTools.Hash(avatar), out error);
+                fileInfo = _tox.FileSend(friendNumber, ToxFileKind.Avatar, avatar.Length, "avatar.png", ToxTools.Hash(avatar), out error);
             else
-                fileInfo = ProfileManager.Instance.Tox.FileSend(friendNumber, ToxFileKind.Avatar, 0, "avatar.png");
+                fileInfo = _tox.FileSend(friendNumber, ToxFileKind.Avatar, 0, "avatar.png");
 
             if (error != ToxErrorFileSend.Ok)
             {
@@ -142,7 +123,7 @@ namespace Toxy.Managers
             long size = stream.Length;
             var error = ToxErrorFileSend.Ok;
 
-            ToxFileInfo fileInfo = ProfileManager.Instance.Tox.FileSend(friendNumber, ToxFileKind.Data, size, fileName, out error);
+            ToxFileInfo fileInfo = _tox.FileSend(friendNumber, ToxFileKind.Data, size, fileName, out error);
 
             if (error != ToxErrorFileSend.Ok)
             {
@@ -173,7 +154,7 @@ namespace Toxy.Managers
         public bool AcceptTransfer(FileTransfer transfer, string path)
         {
             var error = ToxErrorFileControl.Ok;
-            ProfileManager.Instance.Tox.FileControl(transfer.FriendNumber, transfer.FileNumber, ToxFileControl.Resume, out error);
+            _tox.FileControl(transfer.FriendNumber, transfer.FileNumber, ToxFileControl.Resume, out error);
             if (error != ToxErrorFileControl.Ok)
             {
                 Debugging.Write("Could not accept file transfer, error: " + error);
@@ -230,7 +211,7 @@ namespace Toxy.Managers
                 RemoveTransfer(transfer, false);
 
                 if (transfer.Kind == ToxFileKind.Avatar)
-                    AvatarManager.Instance.Rehash(e.FriendNumber);
+                    ProfileManager.Instance.AvatarManager.Rehash(e.FriendNumber);
 
                 Debugging.Write("File transfer finished");
                 return;
@@ -266,7 +247,7 @@ namespace Toxy.Managers
                 RemoveTransfer(transfer, false);
 
                 //let's be nice and send an empty chunk to let our friend know we're done sending the file
-                ProfileManager.Instance.Tox.FileSendChunk(e.FriendNumber, e.FileNumber, e.Position, new byte[0]);
+                _tox.FileSendChunk(e.FriendNumber, e.FileNumber, e.Position, new byte[0]);
                 return;
             }
 
@@ -294,7 +275,7 @@ namespace Toxy.Managers
             }
 
             var error = ToxErrorFileSendChunk.Ok;
-            if (!ProfileManager.Instance.Tox.FileSendChunk(e.FriendNumber, e.FileNumber, e.Position, buffer, out error))
+            if (!_tox.FileSendChunk(e.FriendNumber, e.FileNumber, e.Position, buffer, out error))
                 Debugging.Write("Failed to send chunk: " + error);
             else
                 transfer.TransferredBytes += e.Length;
@@ -367,8 +348,8 @@ namespace Toxy.Managers
                         if (e.FileSize == 0)
                         {
                             //friend removed avatar, remove it from our store too
-                            AvatarManager.Instance.RemoveAvatar(e.FriendNumber);
-                            ProfileManager.Instance.Tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
+                            ProfileManager.Instance.AvatarManager.RemoveAvatar(e.FriendNumber);
+                            _tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
 
                             Debugging.Write("Friend removed avatar");
                             break;
@@ -377,32 +358,32 @@ namespace Toxy.Managers
                         if (e.FileSize > 1 << 16)
                         {
                             //we don't like this avatar, it's too big
-                            ProfileManager.Instance.Tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
+                            _tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
 
                             Debugging.Write("Avatar too big, ignoring");
                             break;
                         }
 
-                        if (AvatarManager.Instance.Contains(e.FriendNumber))
+                        if (ProfileManager.Instance.AvatarManager.Contains(e.FriendNumber))
                         {
                             //compare hashes to see if we already have this avatar
-                            byte[] hash = ProfileManager.Instance.Tox.FileGetId(e.FriendNumber, e.FileNumber);
-                            if (hash != null && AvatarManager.Instance.HashMatches(e.FriendNumber, hash))
+                            byte[] hash = _tox.FileGetId(e.FriendNumber, e.FileNumber);
+                            if (hash != null && ProfileManager.Instance.AvatarManager.HashMatches(e.FriendNumber, hash))
                             {
                                 //we already have this avatar, cancel the transfer
-                                ProfileManager.Instance.Tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
+                                _tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Cancel);
                                 break;
                             }
                         }
 
                         var error = ToxErrorFileControl.Ok;
-                        if (!ProfileManager.Instance.Tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume, out error))
+                        if (!_tox.FileControl(e.FriendNumber, e.FileNumber, ToxFileControl.Resume, out error))
                         {
                             Debugging.Write("Failed to accept avatar transfer request: " + error);
                             break;
                         }
 
-                        var avatarPath = AvatarManager.Instance.GetAvatarFilename(e.FriendNumber);
+                        var avatarPath = ProfileManager.Instance.AvatarManager.GetAvatarFilename(e.FriendNumber);
                         if (avatarPath == null)
                         {
                             Debugging.Write("Could not find public key for friend");
@@ -447,6 +428,24 @@ namespace Toxy.Managers
             }
 
             Debugging.Write("New file send request: " + e.FileKind.ToString());
+        }
+
+        public void SwitchProfile(Tox tox, ToxAv toxAv)
+        {
+            //clear all transfers
+            for (int i = _transfers.Count() - 1; i >= 0; i--)
+            {
+                var entry = _transfers.ElementAt(i);
+                CancelTransfer(entry.Key);
+            }
+
+            _tox = tox;
+
+            _tox.OnFileChunkReceived += Tox_OnFileChunkReceived;
+            _tox.OnFileChunkRequested += Tox_OnFileChunkRequested;
+            _tox.OnFileControlReceived += Tox_OnFileControlReceived;
+            _tox.OnFileSendRequestReceived += Tox_OnFileSendRequestReceived;
+            _tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
     }
 }

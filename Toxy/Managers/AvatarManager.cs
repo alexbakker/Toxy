@@ -6,36 +6,27 @@ using SharpTox.Core;
 using Toxy.Extensions;
 using System.Windows.Media.Imaging;
 using Toxy.ViewModels;
+using SharpTox.Av;
 
 namespace Toxy.Managers
 {
-    public class AvatarManager
+    public class AvatarManager : IToxManager
     {
         public static string AvatarDataPath = Path.Combine(ProfileManager.ProfileDataPath, "avatars");
+
         private Dictionary<int, byte[]> _avatars = new Dictionary<int, byte[]>();
         private byte[] _selfAvatar;
+        private Tox _tox;
 
-        private static AvatarManager _instance;
-        public static AvatarManager Instance
+        public AvatarManager(Tox tox)
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new AvatarManager();
-
-                return _instance;
-            }
-        }
-
-        private AvatarManager()
-        {
-            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            SwitchProfile(tox, null);
         }
 
         private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
         {
             if (e.Status != ToxConnectionStatus.None)
-                TransferManager.Instance.SendAvatar(e.FriendNumber, _selfAvatar);
+                ProfileManager.Instance.TransferManager.SendAvatar(e.FriendNumber, _selfAvatar);
         }
 
         public bool Contains(int friendNumber)
@@ -45,7 +36,7 @@ namespace Toxy.Managers
 
         public string GetAvatarFilename(int friendNumber)
         {
-            var publicKey = ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber);
+            var publicKey = _tox.GetFriendPublicKey(friendNumber);
             if (publicKey == null)
                 return null;
 
@@ -78,8 +69,9 @@ namespace Toxy.Managers
         public void Rehash()
         {
             _avatars.Clear();
+            _selfAvatar = null;
 
-            foreach (int friend in ProfileManager.Instance.Tox.Friends)
+            foreach (int friend in _tox.Friends)
                 Rehash(friend);
 
             LoadSelfAvatar();
@@ -147,7 +139,7 @@ namespace Toxy.Managers
         //TODO: refactor this crap too
         private bool LoadSelfAvatar()
         {
-            string filename = Path.Combine(AvatarDataPath, ProfileManager.Instance.Tox.Id.PublicKey.ToString() + ".png");
+            string filename = Path.Combine(AvatarDataPath, _tox.Id.PublicKey.ToString() + ".png");
             if (!File.Exists(filename))
                 return false;
 
@@ -179,14 +171,14 @@ namespace Toxy.Managers
             try
             {
                 _selfAvatar = null;
-                string filename = GetAvatarFilename(ProfileManager.Instance.Tox.Id.PublicKey.ToString());
+                string filename = GetAvatarFilename(_tox.Id.PublicKey.ToString());
 
                 if (File.Exists(filename))
                     File.Delete(filename);
 
-                foreach(int friend in ProfileManager.Instance.Tox.Friends)
-                    if (ProfileManager.Instance.Tox.IsFriendOnline(friend))
-                        TransferManager.Instance.SendAvatar(friend, null);
+                foreach(int friend in _tox.Friends)
+                    if (_tox.IsFriendOnline(friend))
+                        ProfileManager.Instance.TransferManager.SendAvatar(friend, null);
             }
             catch { }
         }
@@ -198,12 +190,18 @@ namespace Toxy.Managers
                 if (_avatars.ContainsKey(friendNumber))
                     _avatars.Remove(friendNumber);
 
-                string filename = GetAvatarFilename(ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber).ToString());
+                string filename = GetAvatarFilename(_tox.GetFriendPublicKey(friendNumber).ToString());
 
                 if (File.Exists(filename))
                     File.Delete(filename);
             }
             catch { }
+        }
+
+        public void SwitchProfile(Tox tox, ToxAv toxAv)
+        {
+            _tox = tox;
+            _tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
     }
 }

@@ -107,7 +107,7 @@ namespace Toxy.Views
             if ((Context.Friend.CallState & CallState.Calling) != 0)
             {
                 //answer the call
-                if (CallManager.Get().Answer(Context.Friend.ChatNumber, false))
+                if (ProfileManager.Instance.CallManager.Answer(Context.Friend.ChatNumber, false))
                 {
                     if ((Context.Friend.CallState & CallState.SendingVideo) != 0)
                         Context.Friend.CallState = CallState.InProgress | CallState.SendingVideo;
@@ -118,7 +118,7 @@ namespace Toxy.Views
             else if ((Context.Friend.CallState & CallState.InProgress) != 0 || (Context.Friend.CallState & CallState.Ringing) != 0)
             {
                 //hang up
-                if (CallManager.Get().Hangup(Context.Friend.ChatNumber))
+                if (ProfileManager.Instance.CallManager.Hangup(Context.Friend.ChatNumber))
                 {
                     Context.Friend.CallState = CallState.None;
                 }
@@ -126,7 +126,7 @@ namespace Toxy.Views
             else
             {
                 //send call request
-                if (CallManager.Get().SendRequest(Context.Friend.ChatNumber, false))
+                if (ProfileManager.Instance.CallManager.SendRequest(Context.Friend.ChatNumber, false))
                 {
                     Context.Friend.CallState = CallState.Ringing;
                 }
@@ -138,7 +138,7 @@ namespace Toxy.Views
             if ((Context.Friend.CallState & CallState.Calling) != 0)
             {
                 //answer the call
-                if (CallManager.Get().Answer(Context.Friend.ChatNumber, true))
+                if (ProfileManager.Instance.CallManager.Answer(Context.Friend.ChatNumber, true))
                 {
                     Context.Friend.CallState = CallState.ReceivingVideo | CallState.InProgress;
 
@@ -149,13 +149,13 @@ namespace Toxy.Views
             else if ((Context.Friend.CallState & CallState.InProgress) != 0)
             {
                 //toggle video
-                CallManager.Get().ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.ReceivingVideo));
+                ProfileManager.Instance.CallManager.ToggleVideo(!Context.Friend.CallState.HasFlag(CallState.ReceivingVideo));
                 Context.Friend.CallState ^= CallState.ReceivingVideo;
             }
             else if ((Context.Friend.CallState & CallState.Ringing) == 0)
             {
                 //send call request
-                if (CallManager.Get().SendRequest(Context.Friend.ChatNumber, true))
+                if (ProfileManager.Instance.CallManager.SendRequest(Context.Friend.ChatNumber, true))
                 {
                     Context.Friend.CallState = CallState.Ringing | CallState.ReceivingVideo;
                 }
@@ -184,7 +184,7 @@ namespace Toxy.Views
             if (dialog.ShowDialog() != true)
                 return;
 
-            var transfer = TransferManager.Instance.SendFile(Context.Friend.ChatNumber, dialog.FileName);
+            var transfer = ProfileManager.Instance.TransferManager.SendFile(Context.Friend.ChatNumber, dialog.FileName);
             if (transfer == null)
             {
                 MessageBox.Show("Could not send file transfer request.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -224,7 +224,7 @@ namespace Toxy.Views
                     var stream = new MemoryStream();
                     img.Save(stream, ImageFormat.Png);
 
-                    var transfer = TransferManager.Instance.SendFile(Context.Friend.ChatNumber, stream, "screenshot.png");
+                    var transfer = ProfileManager.Instance.TransferManager.SendFile(Context.Friend.ChatNumber, stream, "screenshot.png");
                     if (transfer == null)
                     {
                         MessageBox.Show("Could not send screenshot.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

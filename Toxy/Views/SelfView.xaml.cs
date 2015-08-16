@@ -74,11 +74,11 @@ namespace Toxy.Views
             }
             
             byte[] bytes = BitmapImageToBytes(bmp);
-            AvatarManager.Instance.SaveAvatar(ProfileManager.Instance.Tox.Id.PublicKey.ToString(), bytes);
+            ProfileManager.Instance.AvatarManager.SaveAvatar(ProfileManager.Instance.Tox.Id.PublicKey.ToString(), bytes);
 
             foreach (int friend in ProfileManager.Instance.Tox.Friends)
                 if (ProfileManager.Instance.Tox.IsFriendOnline(friend))
-                    TransferManager.Instance.SendAvatar(friend, bytes);
+                    ProfileManager.Instance.TransferManager.SendAvatar(friend, bytes);
 
             MainWindow.Instance.ViewModel.CurrentSelfView.Avatar = bmp;
         }

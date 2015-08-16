@@ -33,11 +33,11 @@ namespace Toxy.Views
                 if (dialog.ShowDialog() != true)
                     return;
 
-                TransferManager.Instance.AcceptTransfer(Context.Transfer, dialog.FileName); //cancel the transfer if this fails
+                ProfileManager.Instance.TransferManager.AcceptTransfer(Context.Transfer, dialog.FileName); //cancel the transfer if this fails
             }
             else if (Context.IsInProgress || (!Context.IsFinished && Context.Direction == FileTransferDirection.Outgoing))
             {
-                TransferManager.Instance.CancelTransfer(Context.Transfer);
+                ProfileManager.Instance.TransferManager.CancelTransfer(Context.Transfer);
             }
         }
 
@@ -45,15 +45,15 @@ namespace Toxy.Views
         {
             if (!Context.IsFinished && !Context.IsInProgress && Context.Direction == FileTransferDirection.Incoming)
             {
-                TransferManager.Instance.CancelTransfer(Context.Transfer);
+                ProfileManager.Instance.TransferManager.CancelTransfer(Context.Transfer);
             }
             else if (Context.IsInProgress && !Context.IsPaused)
             {
-                TransferManager.Instance.PauseTransfer(Context.Transfer);
+                ProfileManager.Instance.TransferManager.PauseTransfer(Context.Transfer);
             }
             else if (Context.IsInProgress && Context.IsSelfPaused)
             {
-                TransferManager.Instance.ResumeTransfer(Context.Transfer);
+                ProfileManager.Instance.TransferManager.ResumeTransfer(Context.Transfer);
             }
         }
 

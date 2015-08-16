@@ -2,30 +2,22 @@
 using SharpTox.Core;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using SharpTox.Av;
 
 namespace Toxy.Managers
 {
-    public class ConnectionManager
+    public class ConnectionManager : IToxManager
     {
-        private static ConnectionManager _instance;
+        private Tox _tox;
 
-        private ConnectionManager()
+        public ConnectionManager(Tox tox)
         {
-            ProfileManager.Instance.Tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
-            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            SwitchProfile(tox, null);
         }
 
         private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
         {
-            Debugging.Write(string.Format("Friend {0} connnection status changed to: {1}", ProfileManager.Instance.Tox.GetFriendName(e.FriendNumber), e.Status));
-        }
-
-        public static ConnectionManager Get()
-        {
-            if (_instance == null)
-                _instance = new ConnectionManager();
-
-            return _instance;
+            Debugging.Write(string.Format("Friend {0} connnection status changed to: {1}", _tox.GetFriendName(e.FriendNumber), e.Status));
         }
 
         private void Tox_OnConnectionStatusChanged(object sender, ToxEventArgs.ConnectionStatusEventArgs e)
@@ -45,7 +37,7 @@ namespace Toxy.Managers
                 //wait 'delay' seconds, check if we're connected, if not, bootstrap again
                 await Task.Delay(delay);
 
-                if (!ProfileManager.Instance.Tox.IsConnected)
+                if (!_tox.IsConnected)
                 {
                     Debugging.Write("We're still not connected, bootstrapping again");
                     DoBootstrap();
@@ -89,7 +81,7 @@ namespace Toxy.Managers
         {
             var toxNode = new ToxNode(node.Address, node.Port, new ToxKey(ToxKeyType.Public, node.PublicKey));
             var error = ToxErrorBootstrap.Ok;
-            bool success = ProfileManager.Instance.Tox.Bootstrap(toxNode, out error);
+            bool success = _tox.Bootstrap(toxNode, out error);
 
             if (success)
                 Debugging.Write(string.Format("Bootstrapped off of {0}:{1}", node.Address, node.Port));
@@ -97,12 +89,20 @@ namespace Toxy.Managers
                 Debugging.Write(string.Format("Could not bootstrap off of {0}:{1}, error: {2}", node.Address, node.Port, error));
 
             //even if adding the tcp relay fails for some reason (while it shouldn't...), we'll consider this successful.
-            if (ProfileManager.Instance.Tox.AddTcpRelay(toxNode, out error))
+            if (_tox.AddTcpRelay(toxNode, out error))
                 Debugging.Write(string.Format("Added TCP relay {0}:{1}", node.Address, node.Port));
             else
                 Debugging.Write(string.Format("Could not add TCP relay {0}:{1}, error: {2}", node.Address, node.Port, error));
 
             return success;
+        }
+
+        public void SwitchProfile(Tox tox, ToxAv toxAv)
+        {
+            _tox = tox;
+
+            _tox.OnConnectionStatusChanged += Tox_OnConnectionStatusChanged;
+            _tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
     }
 }

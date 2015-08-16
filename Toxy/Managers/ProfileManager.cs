@@ -14,6 +14,8 @@ namespace Toxy.Managers
     {
         public static string ProfileDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
 
+        private List<IToxManager> _managers { get; set; } = new List<IToxManager>();
+
         private static ProfileManager _instance;
         public static ProfileManager Instance
         {
@@ -26,7 +28,10 @@ namespace Toxy.Managers
             }
         }
 
-        private ProfileManager() { }
+        public TransferManager TransferManager { get; private set; }
+        public AvatarManager AvatarManager { get; private set; }
+        public CallManager CallManager { get; private set; }
+        public ConnectionManager ConnectionManager { get; private set; }
 
         public Tox Tox { get; private set; }
         public ToxAv ToxAv { get; private set; }
@@ -81,6 +86,8 @@ namespace Toxy.Managers
 
             var newToxAv = new ToxAv(newTox);
 
+            InitManagers(newTox, newToxAv);
+
             if (Tox != null)
                 Tox.Dispose();
 
@@ -90,10 +97,8 @@ namespace Toxy.Managers
             Tox = newTox;
             ToxAv = newToxAv;
 
-            TransferManager.Init();
-            CallManager.Get();
-            AvatarManager.Instance.Rehash();
-            ConnectionManager.Get().DoBootstrap();
+            AvatarManager.Rehash();
+            ConnectionManager.DoBootstrap();
 
             //TODO: move this someplace else and make it configurable
             if (string.IsNullOrEmpty(Tox.Name))
@@ -106,6 +111,53 @@ namespace Toxy.Managers
 
             CurrentProfile = profile;
             MainWindow.Instance.Reload();
+        }
+
+        private void InitManagers(Tox tox, ToxAv toxAv)
+        {
+            if (TransferManager == null)
+            {
+                var transferManager = new TransferManager(tox);
+                TransferManager = transferManager;
+                _managers.Add(TransferManager);
+            }
+            else
+            {
+                TransferManager.SwitchProfile(tox, toxAv);
+            }
+
+            if (AvatarManager == null)
+            {
+                var avatarManager = new AvatarManager(tox);
+                AvatarManager = avatarManager;
+                _managers.Add(AvatarManager);
+            }
+            else
+            {
+                AvatarManager.SwitchProfile(tox, toxAv);
+            }
+
+            if (CallManager == null)
+            {
+                var callManager = new CallManager(tox, toxAv);
+                CallManager = callManager;
+                _managers.Add(CallManager);
+            }
+            else
+            {
+                CallManager.SwitchProfile(tox, toxAv);
+            }
+
+            if (ConnectionManager == null)
+            {
+                var connectionManager = new ConnectionManager(tox);
+                ConnectionManager = connectionManager;
+                _managers.Add(ConnectionManager);
+            }
+            else
+            {
+                ConnectionManager.SwitchProfile(tox, toxAv);
+            }
         }
 
         public void Logout()

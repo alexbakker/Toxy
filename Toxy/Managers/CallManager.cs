@@ -13,28 +13,15 @@ using Toxy.Tools;
 
 namespace Toxy.Managers
 {
-    public class CallManager
+    public class CallManager : IToxManager
     {
         private volatile CallInfo _callInfo;
-        private static CallManager _instance;
+        private Tox _tox;
+        private ToxAv _toxAv;
 
-        public static CallManager Get()
+        public CallManager(Tox tox, ToxAv toxAv)
         {
-            if (_instance == null)
-                _instance = new CallManager();
-
-            return _instance;
-        }
-
-        private CallManager() 
-        {
-            ProfileManager.Instance.ToxAv.OnAudioFrameReceived += ToxAv_OnAudioFrameReceived;
-            ProfileManager.Instance.ToxAv.OnVideoFrameReceived += ToxAv_OnVideoFrameReceived;
-            ProfileManager.Instance.ToxAv.OnCallStateChanged += ToxAv_OnCallStateChanged;
-            ProfileManager.Instance.ToxAv.OnCallRequestReceived += ToxAv_OnCallRequestReceived;
-            ProfileManager.Instance.ToxAv.OnAudioBitrateChanged += ToxAv_OnAudioBitrateChanged;
-            ProfileManager.Instance.ToxAv.OnVideoBitrateChanged += ToxAv_OnVideoBitrateChanged;
-            ProfileManager.Instance.Tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
+            SwitchProfile(tox, toxAv);
         }
 
         private void Tox_OnFriendConnectionStatusChanged(object sender, SharpTox.Core.ToxEventArgs.FriendConnectionStatusEventArgs e)
@@ -63,7 +50,7 @@ namespace Toxy.Managers
             if (_callInfo == null)
                 return;
 
-            ProfileManager.Instance.ToxAv.SetVideoBitrate(_callInfo.FriendNumber, enableVideo ? 3000 : 0, false);
+            _toxAv.SetVideoBitrate(_callInfo.FriendNumber, enableVideo ? 3000 : 0, false);
 
             if (!enableVideo && _callInfo.VideoEngine != null)
             {
@@ -89,7 +76,7 @@ namespace Toxy.Managers
             if (_callInfo != null)
             {
                 //TODO: notify the user there's yet another call incoming
-                ProfileManager.Instance.ToxAv.SendControl(e.FriendNumber, ToxAvCallControl.Cancel);
+                _toxAv.SendControl(e.FriendNumber, ToxAvCallControl.Cancel);
                 return;
             }
 
@@ -188,7 +175,7 @@ namespace Toxy.Managers
                 return;
 
             var error = ToxAvErrorSendFrame.Ok;
-            if (!ProfileManager.Instance.ToxAv.SendVideoFrame(_callInfo.FriendNumber, frame))
+            if (!_toxAv.SendVideoFrame(_callInfo.FriendNumber, frame))
                 Debugging.Write("Could not send video frame: " + error);
         }
 
@@ -198,7 +185,7 @@ namespace Toxy.Managers
                 return;
 
             var error = ToxAvErrorSendFrame.Ok;
-            if (!ProfileManager.Instance.ToxAv.SendAudioFrame(_callInfo.FriendNumber, new ToxAvAudioFrame(data, sampleRate, channels), out error))
+            if (!_toxAv.SendAudioFrame(_callInfo.FriendNumber, new ToxAvAudioFrame(data, sampleRate, channels), out error))
             {
                 Debugging.Write("Failed to send audio frame: " + error);
             }
@@ -227,7 +214,7 @@ namespace Toxy.Managers
             }
 
             var error = ToxAvErrorAnswer.Ok;
-            if (!ProfileManager.Instance.ToxAv.Answer(friendNumber, 48, enableVideo ? 3000 : 0, out error))
+            if (!_toxAv.Answer(friendNumber, 48, enableVideo ? 3000 : 0, out error))
             {
                 Debugging.Write("Could not answer call for friend: " + error);
                 return false;
@@ -251,7 +238,7 @@ namespace Toxy.Managers
         public bool Hangup(int friendNumber)
         {
             var error = ToxAvErrorCallControl.Ok;
-            if (!ProfileManager.Instance.ToxAv.SendControl(friendNumber, ToxAvCallControl.Cancel, out error))
+            if (!_toxAv.SendControl(friendNumber, ToxAvCallControl.Cancel, out error))
             {
                 Debugging.Write("Could not answer call for friend: " + error);
                 return false;
@@ -271,7 +258,7 @@ namespace Toxy.Managers
             }
 
             var error = ToxAvErrorCall.Ok;
-            if (!ProfileManager.Instance.ToxAv.Call(friendNumber, 48, enableVideo ? 3000 : 0, out error))
+            if (!_toxAv.Call(friendNumber, 48, enableVideo ? 3000 : 0, out error))
             {
                 Debugging.Write("Could not send call request to friend: " + error);
                 return false;
@@ -300,6 +287,20 @@ namespace Toxy.Managers
 
             if (_callInfo.VideoEngine != null)
                 _callInfo.VideoEngine.Dispose();
+        }
+
+        public void SwitchProfile(Tox tox, ToxAv toxAv)
+        {
+            _tox = tox;
+            _toxAv = toxAv;
+
+            _toxAv.OnAudioFrameReceived += ToxAv_OnAudioFrameReceived;
+            _toxAv.OnVideoFrameReceived += ToxAv_OnVideoFrameReceived;
+            _toxAv.OnCallStateChanged += ToxAv_OnCallStateChanged;
+            _toxAv.OnCallRequestReceived += ToxAv_OnCallRequestReceived;
+            _toxAv.OnAudioBitrateChanged += ToxAv_OnAudioBitrateChanged;
+            _toxAv.OnVideoBitrateChanged += ToxAv_OnVideoBitrateChanged;
+            _tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
 
         private class CallInfo : IDisposable

@@ -57,7 +57,7 @@ namespace Toxy
         {
             //make absolutely sure we've disposed all audio/video resources
             Instance.ViewModel.CurrentSettingsView.Kill();
-            CallManager.Get().Kill();
+            ProfileManager.Instance.CallManager.Kill();
 
             //reverse iterate because closing the windows also removes them from the list
             for (int i = Instance.Children.Count - 1; i >= 0; i--)

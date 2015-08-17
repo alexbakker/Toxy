@@ -110,7 +110,7 @@
             <ItemsControl VirtualizingPanel.CacheLength="20"
                           Grid.Row="2" BorderThickness="0"
                           VirtualizingPanel.ScrollUnit="Pixel"
-                          VirtualizingStackPanel.VirtualizationMode="Standard"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
                           VirtualizingStackPanel.IsVirtualizing="True"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"

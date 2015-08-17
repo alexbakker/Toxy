@@ -1,44 +1,40 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
+using Toxy.Managers;
 using Toxy.MVVM;
 
 namespace Toxy.ViewModels
 {
     public class LoginWindowViewModel : ViewModelBase
     {
-        private ViewModelBase _currentView = new LoginExistingViewModel();
-
-        public ViewModelBase CurrentView
+        private bool _isLoginExistingSelected = true;
+        public bool IsLoginExistingSelected
         {
-            get { return _currentView; }
+            get { return _isLoginExistingSelected; }
             set
             {
-                if (Equals(value, _currentView))
+                if (Equals(value, _isLoginExistingSelected))
                 {
                     return;
                 }
-
-                _currentView = value;
-
-                OnPropertyChanged(() => CurrentView);
+                _isLoginExistingSelected = value;
                 OnPropertyChanged(() => IsLoginExistingSelected);
                 OnPropertyChanged(() => IsLoginNewSelected);
             }
         }
 
-        public bool IsLoginExistingSelected
-        {
-            get
-            {
-                return CurrentView.GetType() == typeof(LoginExistingViewModel);
-            }
-        }
-
         public bool IsLoginNewSelected
         {
-            get
-            {
-                return CurrentView.GetType() == typeof(LoginNewViewModel);
-            }
+            get { return !_isLoginExistingSelected; }
+        }
+
+        public ProfileInfo SelectedProfile { get; set; }
+        public string ProfileName { get; set; }
+        public string Password { get; set; }
+        public bool RememberChoice { get; set; }
+
+        public ObservableCollection<ProfileInfo> Profiles
+        {
+            get { return new ObservableCollection<ProfileInfo>(ProfileManager.GetAllProfiles()); }
         }
     }
 }

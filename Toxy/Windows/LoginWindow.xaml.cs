@@ -15,46 +15,24 @@ namespace Toxy.Windows
         public LoginWindow()
         {
             InitializeComponent();
-
             DataContext = new LoginWindowViewModel();
-
-            Context.CurrentView = new LoginExistingViewModel();
-            (Context.CurrentView as LoginExistingViewModel).OnLoginButtonClicked += LoginWindow_OnLoginButtonClicked;
         }
 
-        private void LoginWindow_OnLoginButtonClicked(object sender, RoutedEventArgs e)
+        private void NewUser_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var model = Context.CurrentView as LoginExistingViewModel;
-            if (model == null)
-                return;
-
-            if (model.SelectedProfile != null)
-            {
-                ProfileManager.Instance.SwitchTo(model.SelectedProfile);
-
-                if (model.RememberChoice)
-                {
-                    Config.Instance.ProfilePath = model.SelectedProfile.Path;
-                    Config.Instance.Save();
-                }
-
-                Close();
-            }
-            else
-            {
-                MessageBox.Show("Could not load existing profile. Unknown error.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            Context.IsLoginExistingSelected = false;
         }
 
-        private void LoginWindow_OnNewProfileButtonClicked(object sender, RoutedEventArgs e)
+        private void ExistingUser_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var model = Context.CurrentView as LoginNewViewModel;
-            if (model == null)
-                return;
+            Context.IsLoginExistingSelected = true;
+        }
 
-            if (!string.IsNullOrEmpty(model.ProfileName))
+        private void CreateProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Context.ProfileName))
             {
-                var profile = ProfileManager.Instance.CreateNew(model.ProfileName);
+                var profile = ProfileManager.Instance.CreateNew(Context.ProfileName);
                 if (profile != null)
                 {
                     ProfileManager.Instance.SwitchTo(profile);
@@ -67,18 +45,24 @@ namespace Toxy.Windows
             }
         }
 
-        private void NewUser_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Login_Clicked(object sender, RoutedEventArgs e)
         {
-            var model = new LoginNewViewModel();
-            model.OnNewProfileButtonClicked += LoginWindow_OnNewProfileButtonClicked;
-            Context.CurrentView = model;
-        }
+            if (Context.SelectedProfile != null)
+            {
+                ProfileManager.Instance.SwitchTo(Context.SelectedProfile);
 
-        private void ExistingUser_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var model = new LoginExistingViewModel();
-            model.OnLoginButtonClicked += LoginWindow_OnLoginButtonClicked;
-            Context.CurrentView = model;
+                if (Context.RememberChoice)
+                {
+                    Config.Instance.ProfilePath = Context.SelectedProfile.Path;
+                    Config.Instance.Save();
+                }
+
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Could not load existing profile. Unknown error.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Toxy.Windows"
         xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
         xmlns:Views="clr-namespace:Toxy.Views"
+        xmlns:Windows="clr-namespace:Toxy.Windows"
         d:DataContext="{d:DesignInstance ViewModels:LoginWindowViewModel}"
         mc:Ignorable="d"
         Title="Login" Height="244" Width="550" 
@@ -20,11 +21,26 @@
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Styles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate DataType="{x:Type ViewModels:LoginExistingViewModel}">
-                <Views:LoginExistingView DataContext="{Binding Mode=OneWay}" />
+            <DataTemplate x:Key="NewProfileTemplate">
+                <StackPanel Margin="10">
+                    <Label Foreground="{StaticResource ToxMediumGreyBrush}" Content="Username" HorizontalAlignment="Left" FontSize="13"/>
+                    <TextBox Margin="5,0" Height="25" FontSize="14" Text="{Binding DataContext.ProfileName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"/>
+                    <Label Margin="0,25,0,0" Foreground="{StaticResource ToxMediumGreyBrush}" Content="Password" HorizontalAlignment="Left" FontSize="13"/>
+                    <PasswordBox Margin="5,0" Height="25" FontSize="14" IsEnabled="False"/>
+                    <Button Foreground="{StaticResource ToxWhiteBrush}" FontWeight="Bold" Content="Create profile" Click="CreateProfile_Click" Margin="0,25,5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="30" Width="110" Style="{StaticResource ToxGreenButtonStyle}"/>
+                </StackPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type ViewModels:LoginNewViewModel}">
-                <Views:LoginNewView DataContext="{Binding Mode=OneWay}" />
+            <DataTemplate x:Key="ExistingProfileTemplate">
+                <StackPanel Margin="10">
+                    <Label Foreground="{StaticResource ToxMediumGreyBrush}" Content="Select a profile" HorizontalAlignment="Left" FontSize="13"/>
+                    <ComboBox Margin="5,0" Height="25" FontSize="14" ItemsSource="{Binding DataContext.Profiles, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" SelectedItem="{Binding DataContext.SelectedProfile, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" DisplayMemberPath="Name"/>
+                    <Label Margin="0,25,0,0" Foreground="{StaticResource ToxMediumGreyBrush}" Content="Password" HorizontalAlignment="Left" FontSize="13"/>
+                    <PasswordBox Margin="5,0" Height="25" FontSize="14" IsEnabled="False"/>
+                    <Grid Margin="5,25,5,0">
+                        <CheckBox IsChecked="{Binding DataContext.RememberChoice, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Content="Remember choice" Foreground="{StaticResource ToxMediumGreyBrush}" FontSize="13"/>
+                        <Button Content="Login" Foreground="{StaticResource ToxWhiteBrush}" FontWeight="Bold" Click="Login_Clicked" Height="30" Width="75" Style="{StaticResource ToxGreenButtonStyle}" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
@@ -62,7 +78,18 @@
             </Grid>
         </Grid>
         <Grid Grid.Column="1">
-            <ContentControl Content="{Binding CurrentView}"/>
+            <ContentControl Content="{Binding CurrentView}">
+                <ContentControl.Style>
+                    <Style TargetType="{x:Type ContentControl}">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ExistingProfileTemplate}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoginExistingSelected}" Value="False">
+                                <Setter Property="ContentTemplate" Value="{StaticResource NewProfileTemplate}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
         </Grid>
     </Grid>
 </Window>

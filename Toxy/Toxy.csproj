@@ -166,8 +166,6 @@
     <Compile Include="ViewModels\IConversationView.cs" />
     <Compile Include="ViewModels\IFriendObject.cs" />
     <Compile Include="ViewModels\IGroupObject.cs" />
-    <Compile Include="ViewModels\LoginExistingViewModel.cs" />
-    <Compile Include="ViewModels\LoginNewViewModel.cs" />
     <Compile Include="ViewModels\LoginWindowViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
@@ -204,12 +202,6 @@
     </Compile>
     <Compile Include="Views\GroupConversationView.xaml.cs">
       <DependentUpon>GroupConversationView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\LoginExistingView.xaml.cs">
-      <DependentUpon>LoginExistingView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\LoginNewView.xaml.cs">
-      <DependentUpon>LoginNewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MessageView.xaml.cs">
       <DependentUpon>MessageView.xaml</DependentUpon>
@@ -256,14 +248,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GroupConversationView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\LoginExistingView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\LoginNewView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

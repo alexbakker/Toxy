@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Interop;
 
@@ -44,6 +42,11 @@ namespace Toxy
 
             ProfileManager.Instance.Save();
             ProfileManager.Instance.Dispose();
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Debugging.Write("Toxy crashed: " + e.Exception.ToString());
         }
     }
 }

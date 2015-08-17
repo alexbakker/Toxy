@@ -110,7 +110,7 @@
             <ItemsControl VirtualizingPanel.CacheLength="20"
                           Grid.Row="2" BorderThickness="0"
                           VirtualizingPanel.ScrollUnit="Pixel"
-                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          VirtualizingStackPanel.VirtualizationMode="Standard"
                           VirtualizingStackPanel.IsVirtualizing="True"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -191,7 +191,9 @@
                          AcceptsReturn="True"
                          BorderThickness="1,1,0,1"
                          PreviewKeyDown="TextBoxEnteredText_KeyDown"
-                         TextChanged="TextBoxEnteredText_TextChanged"/>
+                         TextChanged="TextBoxEnteredText_TextChanged"
+                         Tag="Type your message here..."
+                         Style="{StaticResource PlaceholderTextBoxStyle}"/>
                 <Button Grid.Column="1" Grid.Row="0"
                         Width="19"
                         Style="{StaticResource ToxGreenButtonTopRightStyle}"

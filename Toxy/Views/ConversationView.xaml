@@ -145,9 +145,6 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.Resources>
                     <ResourceDictionary>
-                        <ResourceDictionary.MergedDictionaries>
-                            <ResourceDictionary Source="pack://application:,,,/Toxy;component/Resources/LightScrollviewerStyle.xaml"/>
-                        </ResourceDictionary.MergedDictionaries>
                         <DataTemplate DataType="{x:Type ViewModels:MessageViewModel}">
                             <Views:MessageView DataContext="{Binding Mode=OneWay}" />
                         </DataTemplate>

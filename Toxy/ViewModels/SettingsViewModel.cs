@@ -106,6 +106,24 @@ namespace Toxy.ViewModels
             set { Config.Instance.EnableDeferredScrolling = value; }
         }
 
+        public bool EnableToxDns
+        {
+            get { return Config.Instance.EnableToxDns; }
+            set { Config.Instance.EnableToxDns = value; }
+        }
+
+        public bool AllowTox1Lookups
+        {
+            get { return Config.Instance.AllowTox1Lookups; }
+            set { Config.Instance.AllowTox1Lookups = value; }
+        }
+
+        public bool AllowPublicKeyLookups
+        {
+            get { return Config.Instance.AllowPublicKeyLookups; }
+            set { Config.Instance.AllowPublicKeyLookups = value; }
+        }
+
         private string _nospam;
         public string Nospam
         {

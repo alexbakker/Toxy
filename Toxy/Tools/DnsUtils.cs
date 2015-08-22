@@ -20,7 +20,7 @@ namespace Toxy.Tools
 
         private static ToxNameService FindNameServiceFromStore(ToxNameService[] services, string suffix)
         {
-            return services.Where(s => s.Domain == suffix).First();
+            return services.Where(s => s.Domain == suffix).FirstOrDefault();
         }
 
         public static ToxNameService FindNameService(string domain)
@@ -39,20 +39,20 @@ namespace Toxy.Tools
             return null;
         }
 
-        public static string DiscoverToxID(string domain, ToxNameService[] services, bool localStoreOnly)
+        public static string DiscoverToxID(string domain, ToxNameService[] services, bool localStoreOnly, bool tox3Only)
         {
             ToxNameService service = null;
 
             try
             {
                 if (!localStoreOnly)
-                    service = FindNameService(domain.Split('@')[1]) ?? FindNameServiceFromStore(services, domain.Split('@')[1]);
+                    service = FindNameServiceFromStore(services, domain.Split('@')[1]) ?? FindNameService(domain.Split('@')[1]);
                 else
                     service = FindNameServiceFromStore(services, domain.Split('@')[1]);
             }
             catch { }
 
-            if (service == null)
+            if (service == null && !tox3Only)
             {
                 //this name service does not use tox3, how unencrypted of them
                 domain = domain.Replace("@", "._tox.");
@@ -77,7 +77,7 @@ namespace Toxy.Tools
                     }
                 }
             }
-            else
+            else if (service != null)
             {
                 string public_key;
 

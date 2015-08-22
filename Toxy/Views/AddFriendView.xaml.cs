@@ -33,14 +33,14 @@ namespace Toxy.Views
             if (string.IsNullOrEmpty(message))
                 message = (string)TextBoxMessage.Tag;
 
-            if (id.Contains("@"))
+            if (Config.Instance.EnableToxDns && id.Contains("@"))
             {
                 //try resolving 3 times
                 for (int tries = 0; tries < 3; tries++)
                 {
                     try
                     {
-                        string toxId = DnsUtils.DiscoverToxID(id, Config.Instance.NameServices, false);
+                        string toxId = DnsUtils.DiscoverToxID(id, Config.Instance.NameServices, !Config.Instance.AllowPublicKeyLookups, !Config.Instance.AllowTox1Lookups);
                         if (!string.IsNullOrEmpty(toxId))
                         {
                             //show the tox id to the user before actually adding it to the friend list

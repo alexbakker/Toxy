@@ -35,24 +35,23 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Border Grid.Column="0" HorizontalAlignment="Left"
-                            Width="40" Height="40"
-                            Margin="10,10,0,9.333"
+                            Width="50" Height="50" Margin="10 0 0 0"
                             CornerRadius="5,5,5,5">
                         <Border.Background>
                             <ImageBrush ImageSource="{Binding Friend.Avatar, Mode=OneWay}"/>
                         </Border.Background>
-                        <Rectangle Width="35" Height="38">
+                        <Rectangle>
                             <Rectangle.Fill>
                                 <MultiBinding Converter="{StaticResource BoolToFillColorConverter}">
                                     <Binding Path="Friend.Avatar"/>
                                 </MultiBinding>
                             </Rectangle.Fill>
                             <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{StaticResource tox_blank_avatar}" />
+                                <VisualBrush Stretch="Uniform" Visual="{StaticResource tox_blank_avatar}" Viewport="0.05,0.05,0.9,0.9" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Border>
-                    <Grid Grid.Column="1">
+                    <Grid Grid.Column="1" Margin="7.5 0 0 0">
                         <TextBlock TextTrimming="CharacterEllipsis" 
                                    Text="{Binding Friend.Name, Mode=OneWay, TargetNullValue='Friend name'}" 
                                    VerticalAlignment="Top" 

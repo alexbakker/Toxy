@@ -35,9 +35,9 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" Margin="12.5,0,0,0" CornerRadius="5,5,5,5" HorizontalAlignment="Left" Width="40" Height="40">
-            <Rectangle Width="35" Height="38" Fill="{Binding IsSelected, Mode=OneWay, Converter={StaticResource BoolToAvatarFillColorConverter}}">
+            <Rectangle Fill="{Binding IsSelected, Mode=OneWay, Converter={StaticResource BoolToAvatarFillColorConverter}}">
                 <Rectangle.OpacityMask>
-                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_group}" />
+                    <VisualBrush Stretch="Uniform" Visual="{StaticResource tox_group}" Viewport="0.05,0.05,0.9,0.9" />
                 </Rectangle.OpacityMask>
             </Rectangle>
         </Border>

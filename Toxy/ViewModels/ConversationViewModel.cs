@@ -15,6 +15,11 @@ namespace Toxy.ViewModels
     {
         public FriendControlViewModel Friend { get; private set; }
 
+        public IChatObject ChatObject
+        {
+            get { return Friend; }
+        }
+
         private ObservableCollection<ViewModelBase> _messages = new ObservableCollection<ViewModelBase>();
         public ObservableCollection<ViewModelBase> Messages
         {

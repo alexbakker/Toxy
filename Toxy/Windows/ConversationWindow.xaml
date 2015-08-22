@@ -20,7 +20,7 @@
     </Window.Resources>
     <Window.Title>
         <MultiBinding StringFormat="{}{0}">
-            <Binding Path="CurrentView.Group.Name" Mode="OneWay"/>
+            <Binding Path="CurrentView.ChatObject.Name" Mode="OneWay"/>
         </MultiBinding>
     </Window.Title>
     <Views:ConversationView Content="{Binding CurrentView}"/>

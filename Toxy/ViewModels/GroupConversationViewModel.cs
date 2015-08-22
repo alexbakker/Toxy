@@ -2,12 +2,18 @@
 using System.Collections.ObjectModel;
 using Toxy.MVVM;
 using Toxy.Windows;
+using System;
 
 namespace Toxy.ViewModels
 {
     public class GroupConversationViewModel : ViewModelBase, IConversationView
     {
         public GroupControlViewModel Group { get; private set; }
+
+        public IChatObject ChatObject
+        {
+            get { return Group; }
+        }
 
         private ObservableCollection<ViewModelBase> _messages = new ObservableCollection<ViewModelBase>();
         public ObservableCollection<ViewModelBase> Messages

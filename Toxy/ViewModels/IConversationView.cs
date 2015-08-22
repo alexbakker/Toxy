@@ -9,5 +9,6 @@ namespace Toxy.ViewModels
         ObservableCollection<ViewModelBase> Messages { get; set; }
         string EnteredText { get; set; }
         ConversationWindow Window { get; set; }
+        IChatObject ChatObject { get; }
     }
 }

@@ -100,6 +100,12 @@ namespace Toxy.ViewModels
             set { Config.Instance.ProxyType = (ToxProxyType)value; }
         }
 
+        public bool EnableDeferredScrolling
+        {
+            get { return Config.Instance.EnableDeferredScrolling; }
+            set { Config.Instance.EnableDeferredScrolling = value; }
+        }
+
         private string _nospam;
         public string Nospam
         {

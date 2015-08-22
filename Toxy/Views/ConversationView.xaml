@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
       xmlns:Views="clr-namespace:Toxy.Views"
+      xmlns:Managers="clr-namespace:Toxy.Managers"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       d:DataContext="{d:DesignInstance ViewModels:ConversationViewModel}">
@@ -108,6 +109,7 @@
             <GridSplitter IsEnabled="{Binding Friend.IsReceivingVideo}"
                           Visibility="{Binding Friend.IsReceivingVideo, Converter={StaticResource BoolToVisibilityConverter}}" ResizeDirection="Rows" HorizontalAlignment="Stretch" Height="2" Grid.Row="1" Background="{StaticResource ToxLightGreyBrush}"/>
             <ItemsControl VirtualizingPanel.CacheLength="20"
+                          ScrollViewer.IsDeferredScrollingEnabled="{Binding Source={x:Static Managers:Config.Instance}, Path=EnableDeferredScrolling}"
                           Grid.Row="2" BorderThickness="0"
                           VirtualizingPanel.ScrollUnit="Pixel"
                           VirtualizingStackPanel.VirtualizationMode="Recycling"

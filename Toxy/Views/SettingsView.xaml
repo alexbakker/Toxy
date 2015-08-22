@@ -137,6 +137,18 @@
                         </ScrollViewer>
                     </TabItem.Content>
                 </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="5 10" Text="Interface"/>
+                        </StackPanel>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <StackPanel Margin="10">
+                            <CheckBox Content="Enable deferred scrolling in the chat scrollback" IsChecked="{Binding EnableDeferredScrolling}"/>
+                        </StackPanel>
+                    </TabItem.Content>
+                </TabItem>
                 <TabItem x:Name="TabItemAudioVideo">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">

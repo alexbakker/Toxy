@@ -3,11 +3,12 @@ using System.Xml.Serialization;
 using System.IO;
 using Toxy.ViewModels;
 using SharpTox.Core;
+using Toxy.MVVM;
 
 namespace Toxy.Managers
 {
     [Serializable]
-    public class Config
+    public class Config : ViewModelBase
     {
         public static string ConfigPath = Path.Combine(ProfileManager.ProfileDataPath, "Toxy");
         private const string _fileName = "config.xml";
@@ -37,6 +38,21 @@ namespace Toxy.Managers
         public string ProxyAddress { get; set; }
         public int ProxyPort { get; set; }
         public ToxProxyType ProxyType { get; set; }
+
+        private bool _enableDeferredScrolling;
+        public bool EnableDeferredScrolling
+        {
+            get { return _enableDeferredScrolling; }
+            set
+            {
+                if (Equals(value, _enableDeferredScrolling))
+                {
+                    return;
+                }
+                _enableDeferredScrolling = value;
+                OnPropertyChanged(() => EnableDeferredScrolling);
+            }
+        }
 
         public ToxNameService[] NameServices { get; set; } = new[]
         {

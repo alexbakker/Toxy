@@ -36,12 +36,12 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="32" Height="32" Fill="{StaticResource ToxBlackBrush}">
+                            <Rectangle Width="15" Height="15" Fill="{StaticResource ToxBlackBrush}">
                                 <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="None" Visual="{StaticResource tox_identify}" />
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_identify}"/>
                                 </Rectangle.OpacityMask>
                             </Rectangle>
-                            <TextBlock Margin="5 10" Text="Identity"/>
+                            <TextBlock Margin="5 0" Text="Identity"/>
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -140,7 +140,7 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="5 10" Text="Interface"/>
+                            <TextBlock Margin="5 0" Text="Interface"/>
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -152,12 +152,12 @@
                 <TabItem x:Name="TabItemAudioVideo">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="32" Height="32" Fill="{StaticResource ToxBlackBrush}">
+                            <Rectangle Width="15" Height="15" Fill="{StaticResource ToxBlackBrush}">
                                 <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="None" Visual="{StaticResource tox_av}" />
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_av}" />
                                 </Rectangle.OpacityMask>
                             </Rectangle>
-                            <TextBlock Margin="5 10" Text="Audio/Video"/>
+                            <TextBlock Margin="5 0" Text="Audio/Video"/>
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -196,12 +196,12 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="32" Height="32" Fill="{StaticResource ToxBlackBrush}">
+                            <Rectangle Width="15" Height="15" Fill="{StaticResource ToxBlackBrush}">
                                 <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="None" Visual="{StaticResource tox_privacy2}" />
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource tox_privacy2}" />
                                 </Rectangle.OpacityMask>
                             </Rectangle>
-                            <TextBlock Margin="5 10" Text="Privacy"/>
+                            <TextBlock Margin="5 0" Text="Privacy"/>
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -218,7 +218,7 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Advanced"/>
+                            <TextBlock Margin="5 0" Text="Advanced"/>
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>
@@ -305,7 +305,7 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="About"/>
+                            <TextBlock Margin="5 0" Text="About"/>
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>

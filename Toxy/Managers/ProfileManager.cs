@@ -57,12 +57,18 @@ namespace Toxy.Managers
         public void SwitchTo(ProfileInfo profile)
         {
             var options = ToxOptions.Default;
-            
+            options.Ipv6Enabled = Config.Instance.EnableIpv6;
+
             if (Config.Instance.ProxyType != ToxProxyType.None)
             {
+                options.UdpEnabled = false;
                 options.ProxyType = Config.Instance.ProxyType;
                 options.ProxyHost = Config.Instance.ProxyAddress;
                 options.ProxyPort = Config.Instance.ProxyPort;
+            }
+            else
+            {
+                options.UdpEnabled = Config.Instance.EnableUdp;
             }
 
             Tox newTox;

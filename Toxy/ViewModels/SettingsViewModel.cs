@@ -124,6 +124,18 @@ namespace Toxy.ViewModels
             set { Config.Instance.AllowPublicKeyLookups = value; }
         }
 
+        public bool EnableUdp
+        {
+            get { return Config.Instance.EnableUdp; }
+            set { Config.Instance.EnableUdp = value; }
+        }
+
+        public bool EnableIpv6
+        {
+            get { return Config.Instance.EnableIpv6; }
+            set { Config.Instance.EnableIpv6 = value; }
+        }
+
         private string _nospam;
         public string Nospam
         {

@@ -41,6 +41,8 @@ namespace Toxy.Managers
         public bool EnableToxDns { get; set; } = true;
         public bool AllowTox1Lookups { get; set; }
         public bool AllowPublicKeyLookups { get; set; }
+        public bool EnableUdp { get; set; } = true;
+        public bool EnableIpv6 { get; set; } = true;
 
         private bool _enableDeferredScrolling;
         public bool EnableDeferredScrolling

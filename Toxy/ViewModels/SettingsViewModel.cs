@@ -174,11 +174,15 @@ namespace Toxy.ViewModels
                 }
                 _selectedProfile = value;
 
-                var profile = ToxSave.FromDisk(_selectedProfile.Path);
-                if (profile != null)
-                    CurrentProfileView = new ProfileViewModel(profile);
+                var data = ToxData.FromDisk(_selectedProfile.Path);
+                if (data != null)
+                {
+                    ToxDataInfo info;
+                    if (data.TryParse(out info))
+                        CurrentProfileView = new ProfileViewModel(info);
 
-                OnPropertyChanged(() => SelectedProfile);
+                    OnPropertyChanged(() => SelectedProfile);
+                }
             }
         }
 

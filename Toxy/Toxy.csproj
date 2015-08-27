@@ -151,7 +151,6 @@
     <Compile Include="Misc\QR\QRCoder.cs" />
     <Compile Include="Tools\DnsUtils.cs" />
     <Compile Include="Tools\TimeUtils.cs" />
-    <Compile Include="Tools\ToxSave.cs" />
     <Compile Include="Tools\VideoUtils.cs" />
     <Compile Include="ViewModels\AddFriendViewModel.cs" />
     <Compile Include="ViewModels\ConversationViewModel.cs" />

@@ -12,7 +12,7 @@ namespace Toxy.ViewModels
         public ToxUserStatus UserStatus { get; set; }
         public ToxId ToxId { get; set; }
 
-        public ProfileViewModel(ToxSave profile)
+        public ProfileViewModel(ToxDataInfo profile)
         {
             Name = profile.Name;
             UserStatus = profile.Status;

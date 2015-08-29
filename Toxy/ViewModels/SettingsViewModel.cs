@@ -97,7 +97,13 @@ namespace Toxy.ViewModels
         public int ProxyType
         {
             get { return (int)Config.Instance.ProxyType; }
-            set { Config.Instance.ProxyType = (ToxProxyType)value; }
+            set
+            {
+                Config.Instance.ProxyType = (ToxProxyType)value;
+
+                ProxyEnabled = Config.Instance.ProxyType != ToxProxyType.None;
+                OnPropertyChanged(() => ProxyEnabled);
+            }
         }
 
         public bool EnableDeferredScrolling
@@ -135,6 +141,8 @@ namespace Toxy.ViewModels
             get { return Config.Instance.EnableIpv6; }
             set { Config.Instance.EnableIpv6 = value; }
         }
+
+        public bool ProxyEnabled { get; private set; }
 
         private string _nospam;
         public string Nospam

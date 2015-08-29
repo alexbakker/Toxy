@@ -258,7 +258,7 @@
                                         </Grid.RowDefinitions>
                                         <TextBlock Margin="10 10 0 -5" Text="General" FontWeight="Bold" Grid.Column="0" Grid.Row="0"/>
                                         <StackPanel Margin="10" Grid.Column="0" Grid.Row="1">
-                                            <CheckBox Content="Enable UDP" IsChecked="{Binding EnableUdp}"/>
+                                            <CheckBox Content="Enable UDP" IsChecked="{Binding EnableUdp}" IsEnabled="{Binding ProxyEnabled, Converter={StaticResource InverseBoolConverter}}"/>
                                             <CheckBox Content="Enable IPv6" IsChecked="{Binding EnableIpv6}"/>
                                         </StackPanel>
                                         <TextBlock Margin="10 10 0 -5" Text="Proxy" FontWeight="Bold" Grid.Column="1" Grid.Row="0"/>

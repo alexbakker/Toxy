@@ -111,8 +111,8 @@
                                     <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,10">
                                         <Grid Margin="10">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="250"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>

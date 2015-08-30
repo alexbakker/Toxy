@@ -222,6 +222,24 @@ namespace Toxy.ViewModels
             }
         }
 
+        public bool EnableNotifications
+        {
+            get { return !Config.Instance.NotificationBlacklist.Contains(ProfileManager.Instance.Tox.GetFriendPublicKey(ChatNumber).ToString()); }
+            set
+            {
+                string pubKey = ProfileManager.Instance.Tox.GetFriendPublicKey(ChatNumber).ToString();
+                bool isInList = Config.Instance.NotificationBlacklist.Contains(pubKey);
+
+                if (value == !isInList)
+                    return;
+
+                if (isInList && value)
+                    Config.Instance.NotificationBlacklist.Remove(pubKey);
+                else if (!isInList && !value)
+                    Config.Instance.NotificationBlacklist.Add(pubKey);
+            }
+        }
+
         public void SetSelfTypingStatus(bool isTyping)
         {
             if (SelfIsTyping != isTyping)

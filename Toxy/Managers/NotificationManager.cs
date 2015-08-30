@@ -41,7 +41,7 @@ namespace Toxy.Managers
 
         private void Tox_OnFriendMessageReceived(object sender, ToxEventArgs.FriendMessageEventArgs e)
         {
-            if (!Config.Instance.EnableFlashOnFriendMessage)
+            if (!Config.Instance.EnableFlashOnFriendMessage || Config.Instance.NotificationBlacklist.Contains(ProfileManager.Instance.Tox.GetFriendPublicKey(e.FriendNumber).ToString()))
                 return;
 
             var window = MainWindow.Instance;

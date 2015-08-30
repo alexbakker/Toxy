@@ -25,9 +25,12 @@
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem Header="Open in new window" Click="OpenInWindow_Click"/>
-            <MenuItem Header="Remove friend" Click="RemoveFriend_Click"/>
-            <MenuItem Header="Copy public key" Click="CopyPubKey_Click"/>
             <MenuItem Header="Clear scrollback" Click="ClearScrollback_Click"/>
+            <Separator/>
+            <MenuItem Header="Copy public key" Click="CopyPubKey_Click"/>
+            <MenuItem Header="Remove friend" Click="RemoveFriend_Click"/>
+            <Separator/>
+            <MenuItem Header="Enable notifications" IsCheckable="True" IsChecked="{Binding EnableNotifications}"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid>

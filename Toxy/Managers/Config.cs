@@ -4,6 +4,7 @@ using System.IO;
 using Toxy.ViewModels;
 using SharpTox.Core;
 using Toxy.MVVM;
+using System.Collections.Generic;
 
 namespace Toxy.Managers
 {
@@ -64,6 +65,8 @@ namespace Toxy.Managers
                 OnPropertyChanged(() => EnableDeferredScrolling);
             }
         }
+
+        public List<string> NotificationBlacklist { get; set; } = new List<string>();
 
         public ToxNameService[] NameServices { get; set; } = new[]
         {

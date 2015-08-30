@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
         xmlns:Views="clr-namespace:Toxy.Views"
         mc:Ignorable="d"
@@ -90,5 +91,17 @@
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
+        <tb:TaskbarIcon Visibility="Visible"
+                        IconSource="pack://application:,,,/Resources/Icons/64x64.ico"
+                        ToolTipText="Toxy"
+                        MenuActivation="LeftOrRightClick"
+                        PopupActivation="DoubleClick">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu ContextMenuService.Placement="Top">
+                    <MenuItem Header="Open"/>
+                    <MenuItem Header="Exit"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>

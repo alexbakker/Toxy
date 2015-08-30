@@ -27,6 +27,18 @@
             <MenuItem Header="Open in new window" Click="OpenInWindow_Click"/>
             <MenuItem Header="Clear scrollback" Click="ClearScrollback_Click"/>
             <Separator/>
+            <MenuItem Header="Invite to" ItemsSource="{Binding FriendListView.Groups, Mode=OneWay}" Visibility="{Binding FriendListView.AnyGroupExists, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Header"
+                                Value="{Binding Name, Mode=OneWay}" />
+                        <Setter Property="Command"
+                                Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget.DataContext.GroupInviteCommand, Mode=OneWay}" />
+                        <Setter Property="CommandParameter"
+                                Value="{Binding Mode=OneWay}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
             <MenuItem Header="Copy public key" Click="CopyPubKey_Click"/>
             <MenuItem Header="Remove friend" Click="RemoveFriend_Click"/>
             <Separator/>

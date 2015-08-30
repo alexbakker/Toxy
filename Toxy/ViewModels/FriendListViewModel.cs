@@ -140,7 +140,7 @@ namespace Toxy.ViewModels
                 string name = ProfileManager.Instance.Tox.GetFriendName(friend);
                 string statusMessage = ProfileManager.Instance.Tox.GetFriendStatusMessage(friend);
 
-                var model = new FriendControlViewModel();
+                var model = new FriendControlViewModel(this);
                 model.ChatNumber = friend;
                 model.Name = string.IsNullOrEmpty(name) ? ProfileManager.Instance.Tox.GetFriendPublicKey(friend).ToString() : name;
                 model.StatusMessage = statusMessage;
@@ -165,6 +165,16 @@ namespace Toxy.ViewModels
                 _chatCollection = value;
                 OnPropertyChanged(() => ChatCollection);
             }
+        }
+
+        public ObservableCollection<IGroupObject> Groups
+        {
+            get { return new ObservableCollection<IGroupObject>(ChatCollection.OfType<IGroupObject>()); }
+        }
+
+        public bool AnyGroupExists
+        {
+            get { return ChatCollection.OfType<IGroupObject>().Count() != 0; }
         }
 
         private List<FriendRequest> _friendRequests = new List<FriendRequest>();
@@ -222,6 +232,12 @@ namespace Toxy.ViewModels
         public void AddObject(IChatObject obj)
         {
             ChatCollection.Add(obj);
+
+            if (obj is IGroupObject)
+            {
+                OnPropertyChanged(() => Groups);
+                OnPropertyChanged(() => AnyGroupExists);
+            }
         }
 
         public bool RemoveObject(IChatObject obj)
@@ -232,7 +248,14 @@ namespace Toxy.ViewModels
             else
                 MainWindowView.CurrentView = new AddFriendViewModel();
 
-            return ChatCollection.Remove(obj);
+            bool success = ChatCollection.Remove(obj);
+            if (success && obj is IGroupObject)
+            {
+                OnPropertyChanged(() => Groups);
+                OnPropertyChanged(() => AnyGroupExists);
+            }
+
+            return success;
         }
 
         public void SortObject(IChatObject obj)
@@ -281,7 +304,7 @@ namespace Toxy.ViewModels
             }
             else
             {
-                var model = new FriendControlViewModel();
+                var model = new FriendControlViewModel(this);
                 model.ChatNumber = friendNumber;
                 model.Name = ProfileManager.Instance.Tox.GetFriendPublicKey(friendNumber).ToString();
 

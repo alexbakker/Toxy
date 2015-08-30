@@ -5,13 +5,17 @@ using System.Windows.Media;
 using System.Windows;
 using SharpTox.Av;
 using Toxy.Managers;
+using System.Windows.Input;
 
 namespace Toxy.ViewModels
 {
     public class FriendControlViewModel : ViewModelBase, IFriendObject
-    {
-        public FriendControlViewModel()
+    { 
+        public FriendListViewModel FriendListView { get; private set; }
+
+        public FriendControlViewModel(FriendListViewModel listModel)
         {
+            FriendListView = listModel;
             _conversationView = new ConversationViewModel(this);
         }
 
@@ -219,6 +223,29 @@ namespace Toxy.ViewModels
                 }
                 _isReceivingVideo = value;
                 OnPropertyChanged(() => IsReceivingVideo);
+            }
+        }
+
+        private ICommand _groupInviteCommand;
+
+        public ICommand GroupInviteCommand
+        {
+            get
+            {
+                if (_groupInviteCommand == null)
+                {
+                    _groupInviteCommand = new DelegateCommand<IGroupObject>((g) =>
+                    {
+                        if (!ProfileManager.Instance.Tox.InviteFriend(ChatNumber, g.ChatNumber))
+                            Debugging.Write(string.Format("Could not invite friend {0} to groupchat {1}", ChatNumber, g.ChatNumber));
+                    },
+                    (g) =>
+                    {
+                        return ConnectionStatus != ToxConnectionStatus.None;
+                    });
+                }
+
+                return _groupInviteCommand;
             }
         }
 

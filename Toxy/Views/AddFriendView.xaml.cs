@@ -74,7 +74,7 @@ namespace Toxy.Views
                 return;
             }
 
-            var model = new FriendControlViewModel();
+            var model = new FriendControlViewModel(MainWindow.Instance.ViewModel.CurrentFriendListView);
             model.ChatNumber = friendNumber;
             model.Name = id;
             model.StatusMessage = "Friend request sent";

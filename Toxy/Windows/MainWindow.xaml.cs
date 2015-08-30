@@ -62,6 +62,9 @@ namespace Toxy
             //reverse iterate because closing the windows also removes them from the list
             for (int i = Instance.Children.Count - 1; i >= 0; i--)
                 Instance.Children[i].Close();
+
+            //get rid of the tray icon
+            Instance.TrayIcon.Dispose();
         }
 
         public MainWindowViewModel ViewModel

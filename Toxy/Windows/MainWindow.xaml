@@ -91,7 +91,8 @@
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
-        <tb:TaskbarIcon Visibility="Visible"
+        <tb:TaskbarIcon x:Name="TrayIcon"
+                        Visibility="Visible"
                         IconSource="pack://application:,,,/Resources/Icons/64x64.ico"
                         ToolTipText="Toxy"
                         MenuActivation="LeftOrRightClick"

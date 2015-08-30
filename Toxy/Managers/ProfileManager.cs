@@ -32,6 +32,7 @@ namespace Toxy.Managers
         public AvatarManager AvatarManager { get; private set; }
         public CallManager CallManager { get; private set; }
         public ConnectionManager ConnectionManager { get; private set; }
+        public NotificationManager NotificationManager { get; private set; }
 
         public Tox Tox { get; private set; }
         public ToxAv ToxAv { get; private set; }
@@ -163,6 +164,17 @@ namespace Toxy.Managers
             else
             {
                 ConnectionManager.SwitchProfile(tox, toxAv);
+            }
+
+            if (NotificationManager == null)
+            {
+                var notificationManager = new NotificationManager(tox, toxAv);
+                NotificationManager = notificationManager;
+                _managers.Add(NotificationManager);
+            }
+            else
+            {
+                NotificationManager.SwitchProfile(tox, toxAv);
             }
         }
 

@@ -142,6 +142,42 @@ namespace Toxy.ViewModels
             set { Config.Instance.EnableIpv6 = value; }
         }
 
+        public bool EnableFlashOnFriendMessage
+        {
+            get { return Config.Instance.EnableFlashOnFriendMessage; }
+            set { Config.Instance.EnableFlashOnFriendMessage = value; }
+        }
+
+        public bool EnableFlashOnGroupMessage
+        {
+            get { return Config.Instance.EnableFlashOnGroupMessage; }
+            set { Config.Instance.EnableFlashOnGroupMessage = value; }
+        }
+
+        public bool EnableSoundOnFriendMessage
+        {
+            get { return Config.Instance.EnableSoundOnFriendMessage; }
+            set { Config.Instance.EnableSoundOnFriendMessage = value; }
+        }
+
+        public bool EnableSoundOnGroupMessage
+        {
+            get { return Config.Instance.EnableSoundOnGroupMessage; }
+            set { Config.Instance.EnableSoundOnGroupMessage = value; }
+        }
+
+        public bool EnableNotificationOnFriendMessage
+        {
+            get { return Config.Instance.EnableNotificationOnFriendMessage; }
+            set { Config.Instance.EnableNotificationOnFriendMessage = value; }
+        }
+
+        public bool EnableNotificationOnGroupMessage
+        {
+            get { return Config.Instance.EnableNotificationOnGroupMessage; }
+            set { Config.Instance.EnableNotificationOnGroupMessage = value; }
+        }
+
         public bool ProxyEnabled { get; private set; }
 
         private string _nospam;

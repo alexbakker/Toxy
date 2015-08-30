@@ -43,6 +43,12 @@ namespace Toxy.Managers
         public bool AllowPublicKeyLookups { get; set; }
         public bool EnableUdp { get; set; } = true;
         public bool EnableIpv6 { get; set; } = true;
+        public bool EnableFlashOnFriendMessage { get; set; } = true;
+        public bool EnableFlashOnGroupMessage { get; set; } = true;
+        public bool EnableSoundOnFriendMessage { get; set; } = true;
+        public bool EnableSoundOnGroupMessage { get; set; } = true;
+        public bool EnableNotificationOnFriendMessage { get; set; } = false;
+        public bool EnableNotificationOnGroupMessage { get; set; } = false;
 
         private bool _enableDeferredScrolling;
         public bool EnableDeferredScrolling

@@ -144,8 +144,31 @@
                         </StackPanel>
                     </TabItem.Header>
                     <TabItem.Content>
-                        <StackPanel Margin="10">
-                            <CheckBox Content="Enable deferred scrolling in the chat scrollback" IsChecked="{Binding EnableDeferredScrolling}"/>
+                        <StackPanel>
+                            <Grid>
+                                <Label Content="Notifications" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" VerticalAlignment="Top">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Margin="10" Grid.Column="0">
+                                            <TextBlock Text="When I receive a message from a friend:"/>
+                                            <CheckBox Content="Play a sound" IsEnabled="False" IsChecked="{Binding EnableSoundOnFriendMessage}"/>
+                                            <CheckBox Content="Flash the taskbar icon" IsChecked="{Binding EnableFlashOnFriendMessage}"/>
+                                            <CheckBox Content="Show a notification popup" IsEnabled="False" IsChecked="{Binding EnableNotificationOnFriendMessage}"></CheckBox>
+                                        </StackPanel>
+                                        <StackPanel Margin="10" Grid.Column="1">
+                                            <TextBlock Text="When I receive a message from a group:"/>
+                                            <CheckBox Content="Play a sound" IsEnabled="False" IsChecked="{Binding EnableSoundOnGroupMessage}"/>
+                                            <CheckBox Content="Flash the taskbar icon" IsChecked="{Binding EnableFlashOnGroupMessage}"/>
+                                            <CheckBox Content="Show a notification popup" IsEnabled="False" IsChecked="{Binding EnableNotificationOnGroupMessage}"></CheckBox>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <CheckBox Margin="10" Content="Enable deferred scrolling in the chat scrollback" IsChecked="{Binding EnableDeferredScrolling}"/>
                         </StackPanel>
                     </TabItem.Content>
                 </TabItem>

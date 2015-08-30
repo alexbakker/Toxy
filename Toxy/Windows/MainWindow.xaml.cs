@@ -123,24 +123,11 @@ namespace Toxy
             DataContext = new MainWindowViewModel();
             Children = new List<ConversationWindow>();
 
-            ProfileManager.Instance.Tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
-
             this.FixBackground();
 
             //only check for updates once at launch (TODO: check periodically?)
             //TODO: move this someplace else
             CheckForUpdates();
-        }
-
-        private void Tox_OnFriendMessageReceived(object sender, ToxEventArgs.FriendMessageEventArgs e)
-        {
-            this.UInvoke(() =>
-            {
-                if (!this.IsActive || this.WindowState == WindowState.Minimized)
-                {
-                    this.Flash();
-                }
-            });
         }
 
         private async Task CheckForUpdates()

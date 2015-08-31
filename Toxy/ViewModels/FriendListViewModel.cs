@@ -195,6 +195,21 @@ namespace Toxy.ViewModels
             get { return _friendRequests.Count; }
         }
 
+        private bool _isFriendRequestToggleButtonChecked;
+        public bool IsFriendRequestToggleButtonChecked
+        {
+            get { return _isFriendRequestToggleButtonChecked; }
+            set
+            {
+                if (Equals(value, _isFriendRequestToggleButtonChecked))
+                {
+                    return;
+                }
+                _isFriendRequestToggleButtonChecked = value;
+                OnPropertyChanged(() => IsFriendRequestToggleButtonChecked);
+            }
+        }
+
         //we have to keep a reference of the main view model in order to change the current view from here
         public readonly MainWindowViewModel MainWindowView;
 
@@ -329,6 +344,8 @@ namespace Toxy.ViewModels
             OnPropertyChanged(() => CurrentFriendRequest);
             OnPropertyChanged(() => PendingFriendRequestsAvailable);
             OnPropertyChanged(() => PendingFriendRequestCount);
+
+            IsFriendRequestToggleButtonChecked = PendingFriendRequestsAvailable;
         }
 
         private void Tox_OnGroupInvite(object sender, ToxEventArgs.GroupInviteEventArgs e)

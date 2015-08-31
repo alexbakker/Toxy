@@ -34,7 +34,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Grid.Column="0" Margin="5,5,3,5" Style="{StaticResource ToxMediumLightGreyButtonStyle}" Content="All ▾" Foreground="{StaticResource ToxWhiteBrush}" FontWeight="Bold" FontSize="13"/>
-                <ToggleButton IsEnabled="{Binding PendingFriendRequestsAvailable, Mode=OneWay}" x:Name="ToggleButtonFriendRequests" Grid.Row="0" Grid.Column="1" Margin="3,5,5,5" Style="{StaticResource ToxGreenToggleButtonStyle}" Foreground="{StaticResource ToxWhiteBrush}" FontWeight="Bold" FontSize="13">
+                <ToggleButton IsChecked="{Binding IsFriendRequestToggleButtonChecked, Mode=TwoWay}" IsEnabled="{Binding PendingFriendRequestsAvailable, Mode=OneWay}" x:Name="ToggleButtonFriendRequests" Grid.Row="0" Grid.Column="1" Margin="3,5,5,5" Style="{StaticResource ToxGreenToggleButtonStyle}" Foreground="{StaticResource ToxWhiteBrush}" FontWeight="Bold" FontSize="13">
                     <ToggleButton.Content>
                         <TextBlock>
                             <Run Text="{Binding PendingFriendRequestCount, Mode=OneWay}"/>

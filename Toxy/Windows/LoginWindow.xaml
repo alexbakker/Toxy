@@ -72,8 +72,8 @@
                     </StackPanel>
                 </Grid>
                 <StackPanel Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                    <Polygon Visibility="{Binding IsLoginExistingSelected, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 15,20 0,40" />
-                    <Polygon Visibility="{Binding IsLoginNewSelected, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 15,20 0,40"/>
+                    <Polygon Visibility="{Binding IsLoginExistingSelected, Converter={StaticResource BoolToVisibilityConverter2}, Mode=OneWay}" Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 15,20 0,40" />
+                    <Polygon Visibility="{Binding IsLoginNewSelected, Converter={StaticResource BoolToVisibilityConverter2}, Mode=OneWay}" Fill="{StaticResource ToxDarkGreyBrush}" Points="0,0 15,20 0,40"/>
                 </StackPanel>
             </Grid>
         </Grid>

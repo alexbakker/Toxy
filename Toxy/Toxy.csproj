@@ -132,6 +132,7 @@
     <Compile Include="Converters\BoolToStatusMessageForegroundConverter.cs" />
     <Compile Include="Converters\BoolToVideoButtonStyleConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter2.cs" />
     <Compile Include="Converters\CallStateToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
     <Compile Include="Converters\FileTransfers\TransferStateToBackColorConverter.cs" />

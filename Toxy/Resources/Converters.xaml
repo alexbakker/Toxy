@@ -10,6 +10,7 @@
     <Converters:BoolToMessageForegroundConverter x:Key="BoolToMessageForegroundConverter"/>
     <Converters:BoolToPhoneButtonStyleConverter x:Key="BoolToPhoneButtonStyleConverter"/>
     <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <Converters:BoolToVisibilityConverter2 x:Key="BoolToVisibilityConverter2"/>
     <Converters:BoolToVideoButtonStyleConverter x:Key="BoolToVideoButtonStyleConverter"/>
     <Converters:CallStateToVisibilityConverter x:Key="CallStateToVisibilityConverter"/>
     <Converters:BoolToButtonFillColorConverter x:Key="BoolToButtonFillColorConverter"/>

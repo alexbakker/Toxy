@@ -39,7 +39,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="38"/>
             </Grid.RowDefinitions>
-            <Views:SelfView Grid.Row="0" DataContext="{Binding CurrentSelfView}"/>
+            <Views:SelfView Grid.Row="0" Background="{StaticResource ToxDarkGreyBrush}" DataContext="{Binding CurrentSelfView}"/>
             <Views:FriendListView Grid.Row="1" DataContext="{Binding CurrentFriendListView}"/>
             <Border Grid.Row="2" Background="{StaticResource ToxDarkGreyBrush}">
                 <StackPanel Name="PanelTaskbar" Orientation="Horizontal" HorizontalAlignment="Center">

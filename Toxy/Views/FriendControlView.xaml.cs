@@ -30,6 +30,9 @@ namespace Toxy.Views
             if (result != MessageBoxResult.Yes)
                 return;
 
+            //we don't want to keep this friend's avatar
+            ProfileManager.Instance.AvatarManager.RemoveAvatar(Context.ChatNumber);
+
             if (!(MainWindow.Instance.ViewModel.CurrentFriendListView.RemoveObject(Context) && ProfileManager.Instance.Tox.DeleteFriend(Context.ChatNumber)))
             {
                 Debugging.Write("Could not remove friend");

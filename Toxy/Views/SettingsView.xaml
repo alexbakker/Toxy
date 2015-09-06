@@ -8,7 +8,8 @@
              xmlns:ViewModels="clr-namespace:Toxy.ViewModels"
              xmlns:Views="clr-namespace:Toxy.Views"
              xmlns:Extensions="clr-namespace:Toxy.Extensions.Markup"
-             xmlns:Tox="clr-namespace:SharpTox.Core;assembly=SharpTox">
+             xmlns:Tox="clr-namespace:SharpTox.Core;assembly=SharpTox"
+             xmlns:Toxy="clr-namespace:Toxy;assembly=Toxy">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -353,7 +354,7 @@
                             <StackPanel Orientation="Vertical" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Hidden">
                                 <Grid>
                                     <Label Content="License" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                    <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" Height="200" VerticalAlignment="Top">
+                                    <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" VerticalAlignment="Top">
                                         <FlowDocumentScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                             <FlowDocument PagePadding="5" FontFamily="Segoe UI" FontSize="12">
                                                 <Paragraph>
@@ -371,10 +372,60 @@
                                                 <Paragraph>
                                                     You should have received a copy of the GNU General Public License
                                                     along with this program.  If not, see
-                                                    <Hyperlink>http://www.gnu.org/licenses</Hyperlink>.
+                                                    <Hyperlink>http://www.gnu.org/licenses</Hyperlink> .
                                                 </Paragraph>
                                             </FlowDocument>
                                         </FlowDocumentScrollViewer>
+                                    </Border>
+                                </Grid>
+                                <Grid>
+                                    <Label Content="Version" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" VerticalAlignment="Top">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Margin="10" Grid.Column="1">
+                                                <TextBlock>
+                                                    <Run Text="Toxy: "/>
+                                                    <Run FontWeight="Bold" Text="{Binding ToxyVersion, Mode=OneTime}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Tox: "/>
+                                                    <Run FontWeight="Bold" Text="{Binding ToxVersion, Mode=OneTime}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="ToxAV: "/>
+                                                    <Run FontWeight="Bold" Text="{Binding ToxAvVersion, Mode=OneTime}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel Margin="10" Grid.Column="0">
+                                                <TextBlock>
+                                                    <Run Text="Build number: "/>
+                                                    <Run Text="{Binding Source={x:Static Toxy:BuildInfo.BuildNumber}, Mode=OneTime}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Build date: "/>
+                                                    <Run Text="{Binding Source={x:Static Toxy:BuildInfo.Date}, Mode=OneTime}"/>
+                                                </TextBlock>
+                                                <TextBlock>
+                                                    <Run Text="Platform: "/>
+                                                    <Run Text="{Binding Source={x:Static Toxy:BuildInfo.Platform}, Mode=OneTime}"/>
+                                                </TextBlock>
+                                                <TextBlock TextTrimming="CharacterEllipsis">
+                                                    <Run Text="Commit hash: "/>
+                                                    <Hyperlink>
+                                                        <Run Text="{Binding Source={x:Static Toxy:BuildInfo.CommitHash}, Mode=OneTime}"/>
+                                                        <Hyperlink.NavigateUri>
+                                                            <MultiBinding StringFormat="https://github.com/Impyy/Toxy/commit/{0}">
+                                                                <Binding Path=""/>
+                                                            </MultiBinding>
+                                                        </Hyperlink.NavigateUri>
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Grid>
                                     </Border>
                                 </Grid>
                             </StackPanel>

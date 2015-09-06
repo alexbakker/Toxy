@@ -14,9 +14,9 @@ namespace Toxy.ViewModels
             _currentSettingsView = new SettingsViewModel(this);
         }
 
-        private ViewModelBase currentView;
+        private IView currentView;
 
-        public ViewModelBase CurrentView
+        public IView CurrentView
         {
             get { return currentView; }
             set

@@ -8,7 +8,7 @@
         xmlns:Views="clr-namespace:Toxy.Views"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance ViewModels:MainWindowViewModel}"
-        Title="Toxy"
+        Title="{Binding CurrentView.Title, FallbackValue='Toxy'}"
         Height="600"
         Width="800"
         MinHeight="400"

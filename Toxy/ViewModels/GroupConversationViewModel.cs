@@ -10,6 +10,11 @@ namespace Toxy.ViewModels
     {
         public GroupControlViewModel Group { get; private set; }
 
+        public string Title
+        {
+            get { return string.Format(BuildInfo.TitleFormat, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, Group.Name); }
+        }
+
         public IChatObject ChatObject
         {
             get { return Group; }

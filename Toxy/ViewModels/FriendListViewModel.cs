@@ -237,7 +237,7 @@ namespace Toxy.ViewModels
                         _selectedChat.HasUnreadMessages = false;
 
                     _selectedChat.IsSelected = true;
-                    MainWindowView.CurrentView = (ViewModelBase)_selectedChat.ConversationView;
+                    MainWindowView.CurrentView = _selectedChat.ConversationView;
                 }
 
                 OnPropertyChanged(() => SelectedChat);
@@ -259,7 +259,7 @@ namespace Toxy.ViewModels
         {
             var item = ChatCollection.FirstOrDefault();
             if (item != null)
-                MainWindowView.CurrentView = (ViewModelBase)item.ConversationView;
+                MainWindowView.CurrentView = item.ConversationView;
             else
                 MainWindowView.CurrentView = new AddFriendViewModel();
 

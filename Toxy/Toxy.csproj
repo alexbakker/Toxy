@@ -156,6 +156,7 @@
     <Compile Include="Managers\VideoEngine.cs" />
     <Compile Include="Misc\QR\QRCoder.cs" />
     <Compile Include="MVVM\DelegateCommand.cs" />
+    <Compile Include="Resources\BuildInfo.cs" />
     <Compile Include="Tools\DnsUtils.cs" />
     <Compile Include="Tools\TimeUtils.cs" />
     <Compile Include="Tools\VideoUtils.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="ViewModels\IConversationView.cs" />
     <Compile Include="ViewModels\IFriendObject.cs" />
     <Compile Include="ViewModels\IGroupObject.cs" />
+    <Compile Include="ViewModels\IView.cs" />
     <Compile Include="ViewModels\LoginWindowViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />

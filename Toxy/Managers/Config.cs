@@ -14,7 +14,7 @@ namespace Toxy.Managers
         public static string ConfigPath = Path.Combine(ProfileManager.ProfileDataPath, "Toxy");
         private const string _fileName = "config.xml";
         private static Config _instance;
-
+        
         [XmlIgnore]
         public static Config Instance
         {

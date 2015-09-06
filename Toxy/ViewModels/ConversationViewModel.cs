@@ -15,6 +15,11 @@ namespace Toxy.ViewModels
     {
         public FriendControlViewModel Friend { get; private set; }
 
+        public string Title
+        {
+            get { return string.Format(BuildInfo.TitleFormat, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, Friend.Name); }
+        }
+
         public IChatObject ChatObject
         {
             get { return Friend; }

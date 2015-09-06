@@ -17,11 +17,18 @@ using Toxy.Tools;
 using NAudio.Wave;
 using AForge.Video.DirectShow;
 using SharpTox.Core;
+using SharpTox.Av;
+using System.Reflection;
 
 namespace Toxy.ViewModels
 {
-    public class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : ViewModelBase, IView
     {
+        public string Title
+        {
+            get { return string.Format(BuildInfo.TitleFormat, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version, "Settings"); }
+        }
+
         public ObservableCollection<DeviceInfo> RecordingDevices { get; set; }
         public ObservableCollection<DeviceInfo> PlaybackDevices { get; set; }
         public ObservableCollection<DeviceInfo> VideoDevices { get; set; }
@@ -270,6 +277,21 @@ namespace Toxy.ViewModels
                 _recordingVolume = value;
                 OnPropertyChanged(() => RecordingVolume);
             }
+        }
+
+        public ToxVersion ToxVersion
+        {
+            get { return ToxVersion.Current; }
+        }
+
+        public ToxAvVersion ToxAvVersion
+        {
+            get { return ToxAvVersion.Current; }
+        }
+
+        public Version ToxyVersion
+        {
+            get { return Assembly.GetExecutingAssembly().GetName().Version; }
         }
 
         public string ToxID { get { return ProfileManager.Instance.Tox.Id.ToString(); } }

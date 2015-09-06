@@ -4,7 +4,7 @@ using Toxy.Windows;
 
 namespace Toxy.ViewModels
 {
-    public interface IConversationView
+    public interface IConversationView : IView
     {
         ObservableCollection<ViewModelBase> Messages { get; set; }
         string EnteredText { get; set; }

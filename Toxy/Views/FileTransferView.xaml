@@ -17,9 +17,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.ContextMenu>
-        <ContextMenu IsEnabled="{Binding IsFinished, Mode=OneWay}">
-            <MenuItem Header="Open file" Click="OpenFile_Click"/>
-            <MenuItem Header="Open file location" Click="OpenFileLocation_Click"/>
+        <ContextMenu>
+            <MenuItem Header="Open file" Click="OpenFile_Click" IsEnabled="{Binding IsFinished, Mode=OneWay}"/>
+            <MenuItem Header="Open file location" Click="OpenFileLocation_Click" IsEnabled="{Binding IsFinished, Mode=OneWay}"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid>

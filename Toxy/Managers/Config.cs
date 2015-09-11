@@ -32,10 +32,10 @@ namespace Toxy.Managers
         public DeviceInfo RecordingDevice { get; set; }
         public DeviceInfo PlaybackDevice { get; set; }
         public DeviceInfo VideoDevice { get; set; }
-        public bool SendTypingNotifications { get; set; }
+        public bool SendTypingNotifications { get; set; } = true;
         public string ProfilePath { get; set; }
         public int AwayTimeMinutes { get; set; } = 1;
-        public bool EnableAutoAway { get; set; }
+        public bool EnableAutoAway { get; set; } = true;
         public string ProxyAddress { get; set; }
         public int ProxyPort { get; set; }
         public ToxProxyType ProxyType { get; set; }

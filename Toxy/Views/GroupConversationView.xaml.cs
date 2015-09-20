@@ -64,6 +64,33 @@ namespace Toxy.Views
                 SendMessage(text);
                 e.Handled = true;
             }
+            else if (e.Key == Key.Tab)
+            {
+                string[] names = ProfileManager.Instance.Tox.GetGroupNames(Context.Group.ChatNumber);
+
+                foreach (string name in names)
+                {
+                    string lastPart = text.Split(' ').Last();
+                    if (!name.ToLower().StartsWith(lastPart.ToLower()))
+                        continue;
+
+                    if (text.Split(' ').Length > 1)
+                    {
+                        if (text.Last() != ' ')
+                        {
+                            TextBoxEnteredText.Text = string.Format("{0}{1} ", text.Substring(0, text.Length - lastPart.Length), name);
+                            TextBoxEnteredText.SelectionStart = TextBoxEnteredText.Text.Length;
+                        }
+                    }
+                    else
+                    {
+                        TextBoxEnteredText.Text = string.Format("{0}, ", name);
+                        TextBoxEnteredText.SelectionStart = TextBoxEnteredText.Text.Length;
+                    }
+                }
+
+                e.Handled = true;
+            }
         }
 
         private void ButtonSendMessage_Click(object sender, System.Windows.RoutedEventArgs e)

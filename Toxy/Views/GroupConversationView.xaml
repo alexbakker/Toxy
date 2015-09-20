@@ -166,6 +166,7 @@
                          Name="TextBoxEnteredText"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
+                         AcceptsTab="True"
                          BorderThickness="1,1,0,1"
                          PreviewKeyDown="TextBoxEnteredText_KeyDown"/>
                 <Button Grid.Column="1" Grid.Row="0" 

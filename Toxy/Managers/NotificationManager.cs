@@ -21,6 +21,7 @@ namespace Toxy.Managers
 
             _tox.OnFriendMessageReceived += Tox_OnFriendMessageReceived;
             _tox.OnGroupMessage += Tox_OnGroupMessage;
+            _tox.OnGroupAction += Tox_OnGroupAction;
         }
 
         private void Tox_OnGroupMessage(object sender, ToxEventArgs.GroupMessageEventArgs e)
@@ -37,6 +38,11 @@ namespace Toxy.Managers
                     window.Flash();
                 }
             });
+        }
+
+        private void Tox_OnGroupAction(object sender, ToxEventArgs.GroupActionEventArgs e)
+        {
+            Tox_OnGroupMessage(sender, new ToxEventArgs.GroupMessageEventArgs(e.GroupNumber, e.PeerNumber, e.Action));
         }
 
         private void Tox_OnFriendMessageReceived(object sender, ToxEventArgs.FriendMessageEventArgs e)

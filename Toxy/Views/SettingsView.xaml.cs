@@ -36,6 +36,12 @@ namespace Toxy.Views
             if (Context.SelectedProfile == null)
                 return;
 
+            if (Context.SelectedProfile.Path == ProfileManager.Instance.CurrentProfile.Path)
+            {
+                MessageBox.Show("You are already using this profile!", "Can't switch profile", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             try
             {
                 ProfileManager.Instance.SwitchTo(Context.SelectedProfile);

@@ -9,6 +9,8 @@ namespace Toxy.ViewModels
         public int PeerNumber { get; set; }
         public ToxKey PublicKey { get; private set; }
 
+        public bool Ignored { get; set; }
+
         public GroupPeer(int peerNumber, ToxKey publicKey)
         {
             PeerNumber = peerNumber;

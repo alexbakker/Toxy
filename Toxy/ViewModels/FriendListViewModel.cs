@@ -106,6 +106,11 @@ namespace Toxy.ViewModels
                     return;
                 }
 
+                //pretty slow, potentially
+                var peer = group.FindPeer(ProfileManager.Instance.Tox.GetGroupPeerPublicKey(group.ChatNumber, e.PeerNumber));
+                if (peer == null || peer.Ignored)
+                    return;
+
                 var msg = new MessageViewModel(e.PeerNumber);
                 msg.FriendName = ProfileManager.Instance.Tox.GetGroupMemberName(e.GroupNumber, e.PeerNumber);
                 msg.Message = e.Message;

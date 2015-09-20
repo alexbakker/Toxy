@@ -99,5 +99,14 @@ namespace Toxy.Views
 
             TextBoxEnteredText.Text = string.Empty;
         }
+
+        private void PeerCopyPublicKey_Click(object sender, RoutedEventArgs e)
+        {
+            var peer = (e.Source as MenuItem)?.DataContext as GroupPeer;
+            if (peer == null)
+                return;
+
+            Clipboard.SetText(ProfileManager.Instance.Tox.GetGroupPeerPublicKey(Context.ChatObject.ChatNumber, peer.PeerNumber).ToString());
+        }
     }
 }

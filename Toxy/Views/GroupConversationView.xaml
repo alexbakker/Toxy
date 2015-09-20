@@ -132,7 +132,17 @@
                     </ResourceDictionary>
                 </ItemsControl.Resources>
             </ItemsControl>
-            <ListBox Grid.Column="1" ItemsSource="{Binding Group.Peers, Mode=OneWay}" DisplayMemberPath="Name" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="1,0,1,1" BorderBrush="{StaticResource ToxLightGreyBrush}"/>
+            <ListBox Grid.Column="1" ItemsSource="{Binding Group.Peers, Mode=OneWay}" DisplayMemberPath="Name" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="1,0,1,1" BorderBrush="{StaticResource ToxLightGreyBrush}">
+                <ListBox.Resources>
+                    <ContextMenu x:Key="PeerContextMenu">
+                        <MenuItem Header="Copy public key" Click="PeerCopyPublicKey_Click"/>
+                        <MenuItem Header="Ignore messages" IsCheckable="True" IsChecked="{Binding Ignored}"/>
+                    </ContextMenu>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="ContextMenu" Value="{StaticResource PeerContextMenu}"/>
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
             <Line Stretch="Fill" X2="1" Height="2" Grid.Column="0" VerticalAlignment="Bottom" Stroke="{StaticResource ToxLightGreyBrush}"/>
         </Grid>
         <Grid Grid.Row="3" Margin="10,5,10,10">

@@ -10,11 +10,6 @@ namespace Toxy.Managers
     {
         private Tox _tox;
 
-        public ConnectionManager(Tox tox)
-        {
-            SwitchProfile(tox, null);
-        }
-
         private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
         {
             Debugging.Write(string.Format("Friend {0} connnection status changed to: {1}", _tox.GetFriendName(e.FriendNumber), e.Status));

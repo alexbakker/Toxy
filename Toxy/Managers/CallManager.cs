@@ -19,11 +19,6 @@ namespace Toxy.Managers
         private Tox _tox;
         private ToxAv _toxAv;
 
-        public CallManager(Tox tox, ToxAv toxAv)
-        {
-            SwitchProfile(tox, toxAv);
-        }
-
         private void Tox_OnFriendConnectionStatusChanged(object sender, SharpTox.Core.ToxEventArgs.FriendConnectionStatusEventArgs e)
         {
             if (e.Status != ToxConnectionStatus.None)

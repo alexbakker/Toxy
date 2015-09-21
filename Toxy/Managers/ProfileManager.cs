@@ -14,8 +14,6 @@ namespace Toxy.Managers
     {
         public static string ProfileDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Tox");
 
-        private List<IToxManager> _managers { get; set; } = new List<IToxManager>();
-
         private static ProfileManager _instance;
         public static ProfileManager Instance
         {
@@ -120,62 +118,29 @@ namespace Toxy.Managers
             MainWindow.Instance.Reload();
         }
 
+        private T InitManager<T>(T prop, Tox tox, ToxAv toxAv) where T : IToxManager, new()
+        {
+            if (prop == null)
+            {
+                var man = new T();
+                man.SwitchProfile(tox, toxAv);
+                prop = man;
+            }
+            else
+            {
+                prop.SwitchProfile(tox, toxAv);
+            }
+
+            return prop;
+        }
+
         private void InitManagers(Tox tox, ToxAv toxAv)
         {
-            if (TransferManager == null)
-            {
-                var transferManager = new TransferManager(tox);
-                TransferManager = transferManager;
-                _managers.Add(TransferManager);
-            }
-            else
-            {
-                TransferManager.SwitchProfile(tox, toxAv);
-            }
-
-            if (AvatarManager == null)
-            {
-                var avatarManager = new AvatarManager(tox);
-                AvatarManager = avatarManager;
-                _managers.Add(AvatarManager);
-            }
-            else
-            {
-                AvatarManager.SwitchProfile(tox, toxAv);
-            }
-
-            if (CallManager == null)
-            {
-                var callManager = new CallManager(tox, toxAv);
-                CallManager = callManager;
-                _managers.Add(CallManager);
-            }
-            else
-            {
-                CallManager.SwitchProfile(tox, toxAv);
-            }
-
-            if (ConnectionManager == null)
-            {
-                var connectionManager = new ConnectionManager(tox);
-                ConnectionManager = connectionManager;
-                _managers.Add(ConnectionManager);
-            }
-            else
-            {
-                ConnectionManager.SwitchProfile(tox, toxAv);
-            }
-
-            if (NotificationManager == null)
-            {
-                var notificationManager = new NotificationManager(tox, toxAv);
-                NotificationManager = notificationManager;
-                _managers.Add(NotificationManager);
-            }
-            else
-            {
-                NotificationManager.SwitchProfile(tox, toxAv);
-            }
+            TransferManager = InitManager(TransferManager, tox, toxAv);
+            AvatarManager = InitManager(AvatarManager, tox, toxAv);
+            CallManager = InitManager(CallManager, tox, toxAv);
+            ConnectionManager = InitManager(ConnectionManager, tox, toxAv);
+            NotificationManager = InitManager(NotificationManager, tox, toxAv);
         }
 
         public void Logout()

@@ -9,11 +9,6 @@ namespace Toxy.Managers
         private Tox _tox;
         private ToxAv _toxAv;
 
-        public NotificationManager(Tox tox, ToxAv toxAv)
-        {
-            SwitchProfile(tox, toxAv);
-        }
-
         public void SwitchProfile(Tox tox, ToxAv toxAv)
         {
             _tox = tox;

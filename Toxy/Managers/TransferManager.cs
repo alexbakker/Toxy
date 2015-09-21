@@ -15,11 +15,6 @@ namespace Toxy.Managers
         private Dictionary<FileTransfer, Stream> _transfers = new Dictionary<FileTransfer, Stream>();
         private Tox _tox;
 
-        public TransferManager(Tox tox)
-        {
-            SwitchProfile(tox, null);
-        }
-
         public bool CancelTransfer(FileTransfer transfer)
         {
             if (!_transfers.ContainsKey(transfer))

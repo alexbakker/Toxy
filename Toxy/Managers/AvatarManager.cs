@@ -18,11 +18,6 @@ namespace Toxy.Managers
         private byte[] _selfAvatar;
         private Tox _tox;
 
-        public AvatarManager(Tox tox)
-        {
-            SwitchProfile(tox, null);
-        }
-
         private void Tox_OnFriendConnectionStatusChanged(object sender, ToxEventArgs.FriendConnectionStatusEventArgs e)
         {
             if (e.Status != ToxConnectionStatus.None)

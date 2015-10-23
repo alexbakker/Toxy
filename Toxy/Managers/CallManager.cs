@@ -30,14 +30,16 @@ namespace Toxy.Managers
             }
         }
 
-        private void ToxAv_OnVideoBitrateChanged(object sender, ToxAvEventArgs.BitrateStatusEventArgs e)
+        private void ToxAv_OnBitrateSuggestion(object sender, ToxAvEventArgs.BitrateStatusEventArgs e)
         {
-            Debugging.Write(string.Format("Changed video bitrate to {1}, stable: {2} friend: {0}", e.FriendNumber, e.Bitrate, e.Stable));
-        }
+            Debugging.Write(string.Format("Applying ToxAV suggestion: {1} for audio, {2} for video", e.AudioBitrate, e.VideoBitrate));
 
-        private void ToxAv_OnAudioBitrateChanged(object sender, ToxAvEventArgs.BitrateStatusEventArgs e)
-        {
-            Debugging.Write(string.Format("Changed audio bitrate to {1}, stable: {2}, friend: {0}", e.FriendNumber, e.Bitrate, e.Stable));
+            var error = ToxAvErrorSetBitrate.Ok;
+            if (!_toxAv.SetAudioBitrate(e.FriendNumber, e.AudioBitrate, out error))
+                Debugging.Write(string.Format("Could not set audio bitrate to {0}, error: {1}", e.AudioBitrate, error));
+
+            if (!_toxAv.SetVideoBitrate(e.FriendNumber, e.VideoBitrate, out error))
+                Debugging.Write(string.Format("Could not set video bitrate to {0}, error: {1}", e.AudioBitrate, error));
         }
 
         public void ToggleVideo(bool enableVideo)
@@ -45,7 +47,7 @@ namespace Toxy.Managers
             if (_callInfo == null)
                 return;
 
-            _toxAv.SetVideoBitrate(_callInfo.FriendNumber, enableVideo ? 3000 : 0, false);
+            _toxAv.SetVideoBitrate(_callInfo.FriendNumber, enableVideo ? 3000 : 0);
 
             if (!enableVideo && _callInfo.VideoEngine != null)
             {
@@ -293,8 +295,7 @@ namespace Toxy.Managers
             _toxAv.OnVideoFrameReceived += ToxAv_OnVideoFrameReceived;
             _toxAv.OnCallStateChanged += ToxAv_OnCallStateChanged;
             _toxAv.OnCallRequestReceived += ToxAv_OnCallRequestReceived;
-            _toxAv.OnAudioBitrateChanged += ToxAv_OnAudioBitrateChanged;
-            _toxAv.OnVideoBitrateChanged += ToxAv_OnVideoBitrateChanged;
+            _toxAv.OnBitrateSuggestion += ToxAv_OnBitrateSuggestion;
             _tox.OnFriendConnectionStatusChanged += Tox_OnFriendConnectionStatusChanged;
         }
 

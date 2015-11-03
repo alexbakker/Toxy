@@ -172,7 +172,7 @@ namespace Toxy.Managers
                 return;
 
             var error = ToxAvErrorSendFrame.Ok;
-            if (!_toxAv.SendVideoFrame(_callInfo.FriendNumber, frame))
+            if (!_toxAv.SendVideoFrame(_callInfo.FriendNumber, frame, out error))
                 Debugging.Write("Could not send video frame: " + error);
         }
 

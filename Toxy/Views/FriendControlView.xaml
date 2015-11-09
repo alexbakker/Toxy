@@ -98,7 +98,7 @@
                 </Rectangle>
             </Border>
         </Grid>
-        <Grid Grid.Row="1" Visibility="{Binding CallState, Mode=OneWay, Converter={StaticResource CallStateToVisibilityConverter}}">
+        <!--<Grid Grid.Row="1" Visibility="{Binding CallState, Mode=OneWay, Converter={StaticResource CallStateToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Border Margin="5" Width="40" Height="25" CornerRadius="5,5,5,5" Background="Transparent" BorderThickness="2" BorderBrush="{Binding IsSelected, Mode=OneWay, Converter={StaticResource BoolToButtonFillColorConverter}}">
                     <Rectangle Width="16.2" Height="14.7" Fill="{StaticResource ToxGreenBrush}">
@@ -119,6 +119,6 @@
                     </Rectangle>
                 </Border>
             </StackPanel>
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

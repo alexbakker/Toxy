@@ -19,8 +19,8 @@ namespace Toxy.Managers
 
         public bool IsRecording { get; private set; }
 
-        public WaveFormat RecordingFormat { get { return _waveOut.OutputWaveFormat; } }
-        public WaveFormat PlaybackFormat { get { return _waveSource.WaveFormat; } }
+        public WaveFormat RecordingFormat { get { return _waveSource.WaveFormat; } }
+        public WaveFormat PlaybackFormat { get { return _waveOut.OutputWaveFormat; } }
 
         public delegate void AudioEngineRecordingVolumeChanged(float volume);
         public delegate void AudioEngineMicDataAvailable(short[] data, int sampleRate, int channels);

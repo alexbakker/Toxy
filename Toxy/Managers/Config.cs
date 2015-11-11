@@ -70,7 +70,6 @@ namespace Toxy.Managers
 
         public ToxNameService[] NameServices { get; set; } = new[]
         {
-            new ToxNameService { Domain = "toxme.se", PublicKey = "5D72C517DF6AEC54F1E977A6B6F25914EA4CF7277A85027CD9F5196DF17E0B13" },
             new ToxNameService { Domain = "utox.org", PublicKey = "D3154F65D28A5B41A05D4AC7E4B39C6B1C233CC857FB365C56E8392737462A12" },
             new ToxNameService { Domain = "toxme.io", PublicKey = "1A39E7A5D5FA9CF155C751570A32E625698A60A55F6D88028F949F66144F4F25" }
         };

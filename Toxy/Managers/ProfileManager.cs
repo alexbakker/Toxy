@@ -46,6 +46,13 @@ namespace Toxy.Managers
             tox.Name = profileName;
             tox.StatusMessage = "Toxing on Toxy";
 
+            try
+            {
+                if (!Directory.Exists(ProfileDataPath))
+                    Directory.CreateDirectory(ProfileDataPath);
+            }
+            catch { return null; }
+
             if (!tox.GetData().Save(path))
                 return null;
 

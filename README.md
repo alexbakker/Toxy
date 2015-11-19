@@ -1,7 +1,7 @@
 Toxy
 ====
 
-Tox client for Windows that tries to follow the official mockup. [Tox](https://github.com/irungentoo/ProjectTox-Core "ProjectTox GitHub repo") is a free (as in freedom) Skype replacement.
+Tox client for Windows that loosely follows the official mockup and aims to be [TCS](https://tox.gitbooks.io/tox-client-standard/content/) complaint. [Tox](https://github.com/irungentoo/ProjectTox-Core "Toxcore GitHub repo") is a free (as in freedom) Skype replacement.
 
 Feel free to contribute.
 

@@ -130,7 +130,7 @@ namespace Toxy
 
             //only check for updates once at launch (TODO: check periodically?)
             //TODO: move this someplace else
-            CheckForUpdates();
+            //CheckForUpdates();
         }
 
         private async Task CheckForUpdates()

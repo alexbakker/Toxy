@@ -156,7 +156,7 @@ namespace Toxy.Views
                 return;
             }
 
-            ProfileManager.Instance.Tox.SetNospam(nospam);
+            ProfileManager.Instance.Tox.SetNospam(unchecked((int)nospam));
         }
 
         private void RandomizeNospam_Click(object sender, RoutedEventArgs e)

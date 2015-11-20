@@ -89,7 +89,7 @@ namespace Toxy.Tools
                 string[] split = domain.Split('@');
 
                 ToxDns tox_dns = new ToxDns(new ToxKey(ToxKeyType.Public, public_key));
-                uint request_id;
+                int request_id;
                 string dns3_string = tox_dns.GenerateDns3String(split[0], out request_id);
 
                 string query = string.Format("_{0}._tox.{1}", dns3_string, split[1]);

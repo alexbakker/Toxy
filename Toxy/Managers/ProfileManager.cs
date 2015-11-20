@@ -85,9 +85,8 @@ namespace Toxy.Managers
                 if (data == null)
                     throw new Exception("Could not load profile.");
 
-                //why does this always return true?!?
-                //if (data.IsEncrypted)
-                //  throw new Exception("Data is encrypted, Toxy does not support encrypted profiles yet.");
+                if (data.IsEncrypted)
+                  throw new Exception("Data is encrypted, Toxy does not support encrypted profiles yet.");
 
                 newTox = new Tox(options, data);
             }

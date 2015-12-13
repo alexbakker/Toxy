@@ -29,7 +29,7 @@ using System.Text;
 using System.Drawing;
 using System.Collections;
 
-namespace Toxy.Misc.QR
+namespace Toxy.Misc
 {
     public class QRCodeGenerator
     {

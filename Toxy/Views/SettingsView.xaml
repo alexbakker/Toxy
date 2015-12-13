@@ -318,25 +318,7 @@
                                 <Label Content="Tox DNS" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 <Border BorderThickness="1" BorderBrush="{StaticResource ToxLightGreyBrush}" Margin="10,24,10,0" Height="Auto" VerticalAlignment="Top">
                                     <StackPanel Margin="10">
-                                        <CheckBox Content="Enable Tox DNS" IsChecked="{Binding EnableToxDns}"/>
-                                        <CheckBox IsChecked="{Binding AllowTox1Lookups}">
-                                            <CheckBox.Content>
-                                                <TextBlock>
-                                                    <Run>Allow falling back to tox1 (</Run>
-                                                    <Run Foreground="Red" FontWeight="Bold" FontStyle="Italic">Warning: potentially harmful!</Run>
-                                                    <Run>)</Run>
-                                                </TextBlock>
-                                            </CheckBox.Content>
-                                        </CheckBox>
-                                        <CheckBox IsChecked="{Binding AllowPublicKeyLookups}">
-                                            <CheckBox.Content>
-                                                <TextBlock TextWrapping="Wrap">
-                                                    <Run>Attempt to look up the public key of a tox3 service if we don't have it in our local store (</Run>
-                                                    <Run Foreground="Red" FontWeight="Bold" FontStyle="Italic">Warning: potentially harmful!</Run>
-                                                    <Run>)</Run>
-                                                </TextBlock>
-                                            </CheckBox.Content>
-                                        </CheckBox>
+                                        <CheckBox Content="Enable Tox DNS" IsChecked="{Binding EnableToxMe}"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>

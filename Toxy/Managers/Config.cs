@@ -39,9 +39,7 @@ namespace Toxy.Managers
         public string ProxyAddress { get; set; }
         public int ProxyPort { get; set; }
         public ToxProxyType ProxyType { get; set; }
-        public bool EnableToxDns { get; set; } = true;
-        public bool AllowTox1Lookups { get; set; }
-        public bool AllowPublicKeyLookups { get; set; }
+        public bool EnableToxMe { get; set; } = true;
         public bool EnableUdp { get; set; } = true;
         public bool EnableIpv6 { get; set; } = true;
         public bool EnableFlashOnFriendMessage { get; set; } = true;

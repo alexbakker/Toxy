@@ -33,29 +33,25 @@ namespace Toxy.Views
             if (string.IsNullOrEmpty(message))
                 message = (string)TextBoxMessage.Tag;
 
-            if (Config.Instance.EnableToxDns && id.Contains("@"))
+            if (Config.Instance.EnableToxMe && id.Contains("@"))
             {
-                //try resolving 3 times
-                for (int tries = 0; tries < 3; tries++)
+                string[] parts = id.Split('@');
+                var api = new ToxMeApi(parts[1]);
+
+                try { id = api.LookupID(parts[0]); }
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        string toxId = DnsUtils.DiscoverToxID(id, Config.Instance.NameServices, !Config.Instance.AllowPublicKeyLookups, !Config.Instance.AllowTox1Lookups);
-                        if (!string.IsNullOrEmpty(toxId))
-                        {
-                            //show the tox id to the user before actually adding it to the friend list
-                            TextBoxFriendId.Text = toxId;
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debugging.Write(string.Format("Could not resolve {0}: {1}", id, ex.Message));
-                    }
+                    ShowError("Lookup failed, " + ex.Message);
+                    return;
                 }
 
-                //if we got this far the discovery must have failed
-                ShowError("Could not resolve tox username.");
+                if (id == null || !ToxId.IsValid(id))
+                {
+                    ShowError("The retrieved Tox ID is invalid.");
+                    return;
+                }
+
+                TextBoxFriendId.Text = id;
                 return;
             }
 

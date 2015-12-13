@@ -8,7 +8,7 @@ using System.Windows.Interop;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 
-using Toxy.Misc.QR;
+using Toxy.Misc;
 using Toxy.Managers;
 using Toxy.MVVM;
 using Toxy.Extensions;
@@ -119,22 +119,10 @@ namespace Toxy.ViewModels
             set { Config.Instance.EnableDeferredScrolling = value; }
         }
 
-        public bool EnableToxDns
+        public bool EnableToxMe
         {
-            get { return Config.Instance.EnableToxDns; }
-            set { Config.Instance.EnableToxDns = value; }
-        }
-
-        public bool AllowTox1Lookups
-        {
-            get { return Config.Instance.AllowTox1Lookups; }
-            set { Config.Instance.AllowTox1Lookups = value; }
-        }
-
-        public bool AllowPublicKeyLookups
-        {
-            get { return Config.Instance.AllowPublicKeyLookups; }
-            set { Config.Instance.AllowPublicKeyLookups = value; }
+            get { return Config.Instance.EnableToxMe; }
+            set { Config.Instance.EnableToxMe = value; }
         }
 
         public bool EnableUdp

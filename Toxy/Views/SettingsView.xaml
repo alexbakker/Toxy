@@ -418,7 +418,7 @@
                                                     <Hyperlink>
                                                         <Run Text="{Binding Source={x:Static Toxy:BuildInfo.CommitHash}, Mode=OneTime}"/>
                                                         <Hyperlink.NavigateUri>
-                                                            <MultiBinding StringFormat="https://github.com/Impyy/Toxy/commit/{0}">
+                                                            <MultiBinding StringFormat="https://github.com/alexbakker/Toxy/commit/{0}">
                                                                 <Binding Path=""/>
                                                             </MultiBinding>
                                                         </Hyperlink.NavigateUri>

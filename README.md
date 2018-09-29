@@ -25,8 +25,8 @@ Feel free to contribute.
 
 ### Screenshots
 
-![Main Window](https://impy.me/i/0a1538.png)
-![Main Window with settings)](https://impy.me/u/c1946d.png)
+![Main Window](https://alexbakker.me/u/lzfwrz0a.png)
+![Main Window with settings)](https://alexbakker.me/u/iwe5bi81.png)
 
 Compiling Toxy
 ===
